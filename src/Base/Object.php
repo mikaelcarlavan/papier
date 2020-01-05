@@ -18,16 +18,6 @@ abstract class Object
      */
     public function __toString()
     {
-        return $this->build();
-    }
-
-    /**
-     * Build object's content.
-     *
-     * @return string
-     */
-    public function build()
-    {
         return $this->format();
     }
 
@@ -38,7 +28,7 @@ abstract class Object
      */
     public function format()
     {
-        return $this->getValue();
+        return null;
     }
 
     /**
