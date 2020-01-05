@@ -10,10 +10,11 @@ use InvalidArgumentException;
 class Real extends Object
 {
     /**
-     * Format object's value.
-     *
-     * @return string
-     */
+    * Set object's value.
+    *
+    * @throws InvalidArgumentException if the provided argument is not of type 'float'.
+    * @return \Papier\Base\Real
+    */
     public function setValue($value)
     {
         if (!RealValidator::isValid($value)) {

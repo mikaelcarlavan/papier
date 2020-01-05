@@ -7,10 +7,10 @@ use Papier\Base\Object;
 class Boolean extends Object
 {
     /**
-     * Set value to true.
-     *  
-     * @return \Papier\Base\Boolean
-     */
+    * Set value to true.
+    *
+    * @return \Papier\Base\Boolean
+    */
     public function setTrue()
     {
         return $this->setValue(true);

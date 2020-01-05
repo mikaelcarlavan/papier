@@ -11,7 +11,7 @@ class Dictionary extends Object
      *  
      * @param  string  $value
      * @param  string  $key
-     * @return \Papier\Object
+     * @return \Papier\Base\Dictionary
      */
     protected function setValueForKey($value, $key)
     {
@@ -31,7 +31,7 @@ class Dictionary extends Object
      * Add value.
      *  
      * @param  string  $value
-     * @return \Papier\Object
+     * @return \Papier\Base\Dictionary
      */
     protected function addValue($value)
     {
@@ -48,7 +48,7 @@ class Dictionary extends Object
      *  
      * @param  string  $value
      * @param  string  $key
-     * @return \Papier\Object
+     * @return \Papier\Base\Dictionary
      */
     protected function addValueForKey($value, $key)
     {
@@ -70,9 +70,8 @@ class Dictionary extends Object
     protected function getValueForKey($key, $default = null)
     {
         $values = $this->getValue();
+        $value = $values[$key] ?? $default;
 
-        $val = is_null($subKey) ? ($values[$key] ?? $default) : ($values[$key][$subKey] ?? $default);
-
-        return $val;
+        return $value;
     }   
 }
