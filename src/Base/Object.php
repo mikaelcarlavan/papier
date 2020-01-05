@@ -7,7 +7,7 @@ abstract class Object
     /**
      * The value of the object.
      *
-     * @var string
+     * @var mixed
      */
     protected $value;
 
@@ -44,7 +44,7 @@ abstract class Object
     /**
      * Set object's value.
      *  
-     * @param  string  $value
+     * @param  mixed  $value
      * @return \Papier\Object
      */
     protected function setValue($value)
