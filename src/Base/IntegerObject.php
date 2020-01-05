@@ -7,18 +7,18 @@ use Papier\Validator\IntValidator;
 
 use InvalidArgumentException;
 
-class Integer extends Object
+class IntegerObject extends Object
 {
     /**
     * Set object's value.
     *
     * @throws InvalidArgumentException if the provided argument is not of type 'int'.
-    * @return \Papier\Base\Integer
+    * @return \Papier\Base\IntegerObject
     */
     public function setValue($value)
     {
         if (!IntValidator::isValid($value)) {
-            throw new InvalidArgumentException("Integer is incorrect. See Integer class's documentation for possible values.");
+            throw new InvalidArgumentException("Integer is incorrect. See IntegerObject class's documentation for possible values.");
         }
 
         return parent::setValue($value);

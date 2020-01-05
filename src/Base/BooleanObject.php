@@ -4,12 +4,12 @@ namespace Papier\Base;
 
 use Papier\Base\Object;
 
-class Boolean extends Object
+class BooleanObject extends Object
 {
     /**
     * Set value to true.
     *
-    * @return \Papier\Base\Boolean
+    * @return \Papier\Base\BooleanObject
     */
     public function setTrue()
     {
@@ -19,7 +19,7 @@ class Boolean extends Object
     /**
      * Set value to false.
      *  
-     * @return \Papier\Base\Boolean
+     * @return \Papier\Base\BooleanObject
      */
     public function setFalse()
     {
