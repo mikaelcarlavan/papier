@@ -12,6 +12,13 @@ abstract class Object
     protected $value;
 
     /**
+     * End-of-line marker.
+     *
+     * @var string
+     */
+    const EOL_MARKER = "\r\n"; 
+
+    /**
      * Magical method.
      *
      * @return string
