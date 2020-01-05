@@ -6,7 +6,7 @@ use Papier\Validator\Base\Validator;
 class RealValidator implements Validator
 {
      /**
-     * Test if given string is a valid real.
+     * Test if given parameter is a valid real.
      * 
      * @param  mixed  $value
      * @return bool

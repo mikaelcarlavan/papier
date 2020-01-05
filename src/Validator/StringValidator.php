@@ -6,7 +6,7 @@ use Papier\Validator\Base\Validator;
 class StringValidator implements Validator
 {
      /**
-     * Test if given string is a valid string.
+     * Test if given parameter is a valid string.
      * 
      * @param  mixed  $value
      * @return bool
