@@ -6,6 +6,30 @@ use Papier\Base\Object;
 
 class ArrayObject extends Object
 {
+
+    /**
+     * Create a new ArrayObject instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->value = array();
+        parent::__construct();
+    }  
+
+    /**
+     * Get number of objects.
+     *  
+     * @return int
+     */
+    public function length()
+    {
+        $objects = $this->getValue();
+        return count($objects);
+    }
+
+    
     /**
      * Add object to array.
      *  
