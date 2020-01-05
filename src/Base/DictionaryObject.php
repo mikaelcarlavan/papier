@@ -37,17 +37,6 @@ class DictionaryObject extends Object
     }
 
     /**
-     * Get number of objects.
-     *  
-     * @return int
-     */
-    public function length()
-    {
-        $objects = $this->getValue();
-        return count($objects);
-    }
-
-    /**
      * Set object for given key.
      *  
      * @param  mixed  $object
@@ -75,6 +64,18 @@ class DictionaryObject extends Object
 
         return $object;
     }  
+    
+
+    /**
+     * Get number of objects.
+     *  
+     * @return int
+     */
+    public function length()
+    {
+        $objects = $this->getValue();
+        return count($objects);
+    }
     
     /**
      * Format object's value.
