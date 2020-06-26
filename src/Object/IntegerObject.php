@@ -1,6 +1,6 @@
 <?php
 
-namespace Papier\Base;
+namespace Papier\Object;
 
 use Papier\Base\Object;
 use Papier\Validator\IntValidator;
@@ -12,8 +12,9 @@ class IntegerObject extends Object
     /**
     * Set object's value.
     *
+    * @param  mixed  $value
     * @throws InvalidArgumentException if the provided argument is not of type 'int'.
-    * @return \Papier\Base\IntegerObject
+    * @return \Papier\Object\IntegerObject
     */
     public function setValue($value)
     {

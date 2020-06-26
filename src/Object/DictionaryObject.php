@@ -1,11 +1,13 @@
 <?php
 
-namespace Papier\Base;
+namespace Papier\Object;
 
 use Papier\Base\Object;
-use Papier\Base\NullObject;
+use Papier\Object\NullObject;
 
-class DictionaryObject extends Object
+use Countable;
+
+class DictionaryObject extends Object implements Countable
 {
     /**
      * Create a new DictionaryObject instance.
@@ -41,7 +43,7 @@ class DictionaryObject extends Object
      *  
      * @param  mixed  $object
      * @param  string  $key
-     * @return \Papier\Base\DictionaryObject
+     * @return \Papier\Object\DictionaryObject
      */
     protected function setObjectForKey($key, $object)
     {
@@ -71,7 +73,7 @@ class DictionaryObject extends Object
      *  
      * @return int
      */
-    public function length()
+    public function count()
     {
         $objects = $this->getValue();
         return count($objects);

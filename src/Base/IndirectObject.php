@@ -3,45 +3,36 @@
 namespace Papier\Base;
 
 use Papier\Base\Object;
-use Papier\Base\IntegerObject;
-use Papier\Base\DictionaryObject;
-use Exception;
+use Papier\Validator\BoolValidator;
 
-class IndirectObject extends Object
+abstract class IndirectObject extends Object
 {
+    /**
+     * Define object as indirect.
+     *
+     * @var bool
+     */
+    protected $isIndirect = false;
+
     /**
      * The number of the object.
      *
      * @var int
      */
-    protected $number;
+    protected $number = 1;
   
     /**
      * The generation number of the object.
      *
      * @var int
      */
-    protected $generation;
-
-    /**
-     * Create a new IndirectObject instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->number = 1;
-        $this->generation = 0;
-
-        parent::__construct();
-    } 
-
+    protected $generation = 0;
 
     /**
      * Set object's number.
      *  
      * @param  int  $number
-     * @return \Papier\IndirectObject
+     * @return \Papier\Base\IndirectObject
      */
     protected function setNumber($number)
     {
@@ -49,7 +40,7 @@ class IndirectObject extends Object
             throw new InvalidArgumentException("Object number is incorrect. See IndirectObject class's documentation for possible values.");
         }
 
-        $this->generation = $generation;
+        $this->number = $number;
         return $this;
     } 
 
@@ -57,7 +48,7 @@ class IndirectObject extends Object
      * Set object's generation number.
      *  
      * @param  int  $generation
-     * @return \Papier\IndirectObject
+     * @return \Papier\Base\IndirectObject
      */
     protected function setGeneration($generation)
     {
@@ -68,6 +59,33 @@ class IndirectObject extends Object
         $this->generation = $generation;
         return $this;
     } 
+
+    /**
+     * Set object to be indirect.
+     *  
+     * @param  bool  $indirect
+     * @return \Papier\Base\IndirectObject
+     */
+    protected function setIndirect($indirect = true)
+    {
+        if (!BoolValidator::isValid($indirect)) {
+            throw new InvalidArgumentException("Indirect boolean is incorrect. See IndirectObject class's documentation for possible values.");
+        }
+
+        $this->indirect = $indirect;
+        return $this;
+    } 
+
+    /**
+     * Returns if object is indirect.
+     *  
+     * @return bool
+     */
+    protected function isIndirect()
+    {
+        return $this->indirect;
+    } 
+
 
     /**
      * Get object's number.
@@ -105,15 +123,17 @@ class IndirectObject extends Object
      *
      * @return string
      */
-    public function format()
+    public function write()
     {
-        $object = $this->getValue();
-
-        $value = sprintf('%d %d obj', $this->getNumber(), $this->getGeneration());
-        if ($object) {
-            $value .= $object->format() . $this->EOL_MARKER;
+        $value = null;
+        if ($this->isIndirect()) {
+            $value = sprintf('%d %d obj', $this->getNumber(), $this->getGeneration());
+            $value .= $this->getReference(). $this->EOL_MARKER;
+            $value .= 'endobj';
+        } else {
+            $value = $this->format(). $this->EOL_MARKER;
         }
-        $value .= 'endobj';
+
 
         return $value;
     }

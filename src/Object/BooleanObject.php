@@ -1,6 +1,6 @@
 <?php
 
-namespace Papier\Base;
+namespace Papier\Object;
 
 use Papier\Base\Object;
 
@@ -9,7 +9,7 @@ class BooleanObject extends Object
     /**
     * Set value to true.
     *
-    * @return \Papier\Base\BooleanObject
+    * @return \Papier\Object\BooleanObject
     */
     public function setTrue()
     {
@@ -19,7 +19,7 @@ class BooleanObject extends Object
     /**
      * Set value to false.
      *  
-     * @return \Papier\Base\BooleanObject
+     * @return \Papier\Object\BooleanObject
      */
     public function setFalse()
     {

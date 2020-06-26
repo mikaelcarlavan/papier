@@ -52,7 +52,7 @@ abstract class Object
      * Set object's value.
      *  
      * @param  mixed  $value
-     * @return \Papier\Object
+     * @return \Papier\Base\Object
      */
     protected function setValue($value)
     {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Papier\Base;
+namespace Papier\Object;
 
 use Papier\Base\Object;
-use Papier\Base\IntegerObject;
-use Papier\Base\DictionaryObject;
+use Papier\Object\IntegerObject;
+use Papier\Object\DictionaryObject;
 use Exception;
 
 class StreamObject extends Object
@@ -51,7 +51,7 @@ class StreamObject extends Object
      * Set object's stream.
      *  
      * @param  mixed  $stream
-     * @return \Papier\StreamObject
+     * @return \Papier\Object\StreamObject
      */
     protected function setStream($stream)
     {
@@ -64,7 +64,7 @@ class StreamObject extends Object
      *      
      * @param  string  $key
      * @param  mixed  $object
-     * @return \Papier\StreamObject
+     * @return \Papier\Object\StreamObject
      */
     protected function addEntry($key, $object)
     {

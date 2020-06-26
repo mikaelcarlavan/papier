@@ -7,18 +7,19 @@ use Papier\Validator\StringValidator;
 
 use InvalidArgumentException;
 
-class LiteralString extends Object
+class NameObject extends Object
 {
     /**
     * Set object's value.
     *
+    * @param  mixed  $value
     * @throws InvalidArgumentException if the provided argument is not of type 'string'.
-    * @return \Papier\Base\LiteralString
+    * @return \Papier\Base\NameObject
     */
     public function setValue($value)
     {
         if (!StringValidator::isValid($value)) {
-            throw new InvalidArgumentException("String is incorrect. See LiteralString class's documentation for possible values.");
+            throw new InvalidArgumentException("String is incorrect. See NameObject class's documentation for possible values.");
         }
 
         return parent::setValue($value);
@@ -34,9 +35,13 @@ class LiteralString extends Object
     {
         $value = $this->getValue();
 
-        $trans = array('(' => '\(', ')' => '\)', '\\' => '\\\\');
+        $trans = array(
+            ' ' => '#20', '(' => '#28', ')' => '#29', '#' => '#23', '<' => '#3C', '>' => '#3E', 
+            '[' => '#5B', ']' => '#5D', '{' => '#7B', '}' => '#7D', '/' => '#2F', '%' => '#25'
+        );
+
         $value = strtr($value, $trans);
 
-        return '('.$value.')';
+        return '/'.$value;
     }
 }

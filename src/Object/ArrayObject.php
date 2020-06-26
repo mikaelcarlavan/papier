@@ -1,10 +1,11 @@
 <?php
 
-namespace Papier\Base;
+namespace Papier\Object;
 
 use Papier\Base\Object;
+use Countable;
 
-class ArrayObject extends Object
+class ArrayObject extends Object implements Countable
 {
 
     /**
@@ -23,7 +24,7 @@ class ArrayObject extends Object
      *  
      * @return int
      */
-    public function length()
+    public function count()
     {
         $objects = $this->getValue();
         return count($objects);
@@ -34,7 +35,7 @@ class ArrayObject extends Object
      * Add object to array.
      *  
      * @param  mixed  $object
-     * @return \Papier\Base\ArrayObject
+     * @return \Papier\Object\ArrayObject
      */
     protected function addObject($object)
     {
