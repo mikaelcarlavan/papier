@@ -34,7 +34,7 @@ class FileHeader extends Object
         if ($hasBinaryData) {
             $comment = new Comment();
             $chars = array_map('chr', range(128, 131));
-            $value .= $comment->setValue(implode('', $chars))->write();
+            $value .= $comment->setValue(implode('', $chars))->format();
         }
         return $value;
     }
