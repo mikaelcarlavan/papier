@@ -138,11 +138,11 @@ class FileTrailer extends Object
      */
     public function setEncrypt($encrypt)
     {
-        if (!$root instanceof DictionaryObject) {
+        if (!$encrypt instanceof DictionaryObject) {
             throw new InvalidArgumentException("Encrypt is incorrect. See FileTrailer class's documentation for possible values.");
         }
 
-        $this->addEntry('Encrypt', $root->getReference());
+        $this->addEntry('Encrypt', $encrypt->getReference());
         return $this;
     } 
 
@@ -155,11 +155,11 @@ class FileTrailer extends Object
      */
     public function setInfo($info)
     {
-        if (!$root instanceof DictionaryObject) {
+        if (!$info instanceof DictionaryObject) {
             throw new InvalidArgumentException("Info is incorrect. See FileTrailer class's documentation for possible values.");
         }
 
-        $this->addEntry('Info', $root->getReference());
+        $this->addEntry('Info', $info->getReference());
         return $this;
     } 
 }
