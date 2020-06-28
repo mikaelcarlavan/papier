@@ -95,7 +95,7 @@ class StreamObject extends IndirectObject
 
         $value = '';
         if ($dictionary) {
-            $value .= $dictionary->format() . $this->EOL_MARKER;
+            $value .= $dictionary->write();
         }
         $value .= 'stream' . $this->EOL_MARKER;
         $value .= $stream ? $stream . $this->EOL_MARKER : '';
