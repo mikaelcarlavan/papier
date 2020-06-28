@@ -5,6 +5,7 @@ namespace Papier\File;
 use Papier\Base\Object;
 use Papier\Validator\IntValidator;
 use Papier\Object\DictionaryObject;
+use Papier\Object\ArrayObject;
 
 use InvalidArgumentException;
 
@@ -98,7 +99,7 @@ class FileTrailer extends Object
     } 
 
     /**
-     * Set size (total number of entries in cross reference table).
+     * Set size (total number of entries in the file's cross-reference table).
      *  
      * @param  int  $size
      * @return \Papier\File\FileTrailer
@@ -114,7 +115,23 @@ class FileTrailer extends Object
     } 
 
     /**
-     * Set root (catalog dictionary for the document).
+     * Set prev (byte offset in the decoded stream from the beginning of the file to the beginning of the previous cross-reference section).
+     *  
+     * @param  int  $prev
+     * @return \Papier\File\FileTrailer
+     */
+    public function setPrev($prev)
+    {
+        if (!IntValidator::isValid($prev)) {
+            throw new InvalidArgumentException("Prev is incorrect. See FileTrailer class's documentation for possible values.");
+        }
+
+        $this->addEntry('Prev', $prev);
+        return $this;
+    } 
+
+    /**
+     * Set root (catalog dictionary for the PDF document contained in the file).
      *  
      * @param  \Papier\Object\DictionaryObject  $root
      * @return \Papier\File\FileTrailer
@@ -131,7 +148,7 @@ class FileTrailer extends Object
 
 
     /**
-     * Set root (catalog dictionary for the document).
+     * Set encrypt (document’s encryption dictionary).
      *  
      * @param  \Papier\Object\DictionaryObject  $encrypt
      * @return \Papier\File\FileTrailer
@@ -148,7 +165,7 @@ class FileTrailer extends Object
 
 
     /**
-     * Set root (catalog dictionary for the document).
+     * Set info (document’s information dictionary).
      *  
      * @param  \Papier\Object\DictionaryObject  $info
      * @return \Papier\File\FileTrailer
@@ -160,6 +177,22 @@ class FileTrailer extends Object
         }
 
         $this->addEntry('Info', $info->getReference());
+        return $this;
+    } 
+
+    /**
+     * Set ID (array of two byte-strings constituting a file identifier).
+     *  
+     * @param  \Papier\Object\ArrayObject  $ID
+     * @return \Papier\File\FileTrailer
+     */
+    public function setID($ID)
+    {
+        if (!$ID instanceof ArrayObject) {
+            throw new InvalidArgumentException("ID is incorrect. See FileTrailer class's documentation for possible values.");
+        }
+
+        $this->addEntry('ID', $ID->write());
         return $this;
     } 
 }
