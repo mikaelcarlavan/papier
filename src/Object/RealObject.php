@@ -2,7 +2,7 @@
 
 namespace Papier\Object;
 
-use Papier\Base\Object;
+use Papier\Object\Base\IndirectObject;
 use Papier\Validator\RealValidator;
 
 use InvalidArgumentException;

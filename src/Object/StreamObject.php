@@ -2,12 +2,11 @@
 
 namespace Papier\Object;
 
-use Papier\Base\Object;
 use Papier\Object\IntegerObject;
 use Papier\Object\DictionaryObject;
 use Exception;
 
-class StreamObject extends Object
+class StreamObject extends IndirectObject
 {
     /**
      * The content of the object.

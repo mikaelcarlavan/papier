@@ -2,7 +2,7 @@
 
 namespace Papier\Object;
 
-use Papier\Base\StringObject;
+use Papier\Object\Base\StringObject;
 
 
 class LiteralStringObject extends StringObject

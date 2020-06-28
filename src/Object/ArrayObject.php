@@ -2,10 +2,10 @@
 
 namespace Papier\Object;
 
-use Papier\Base\Object;
+use Papier\Object\Base\IndirectObject;
 use Countable;
 
-class ArrayObject extends Object implements Countable
+class ArrayObject extends IndirectObject implements Countable
 {
 
     /**

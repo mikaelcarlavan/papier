@@ -2,12 +2,12 @@
 
 namespace Papier\Object;
 
-use Papier\Base\Object;
+use Papier\Object\Base\IndirectObject;
 use Papier\Object\NullObject;
 
 use Countable;
 
-class DictionaryObject extends Object implements Countable
+class DictionaryObject extends IndirectObject implements Countable
 {
     /**
      * Create a new DictionaryObject instance.

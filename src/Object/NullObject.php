@@ -2,9 +2,9 @@
 
 namespace Papier\Object;
 
-use Papier\Base\Object;
+use Papier\Object\Base\IndirectObject;
 
-class NullObject extends Object
+class NullObject extends IndirectObject
 {
 
     /**

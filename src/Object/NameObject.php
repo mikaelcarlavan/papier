@@ -1,13 +1,13 @@
 <?php
 
-namespace Papier\Base;
+namespace Papier\Object;
 
-use Papier\Base\Object;
+use Papier\Object\Base\IndirectObject;
 use Papier\Validator\StringValidator;
 
 use InvalidArgumentException;
 
-class NameObject extends Object
+class NameObject extends IndirectObject
 {
     /**
     * Set object's value.

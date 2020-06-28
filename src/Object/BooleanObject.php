@@ -2,9 +2,9 @@
 
 namespace Papier\Object;
 
-use Papier\Base\Object;
+use Papier\Object\Base\IndirectObject;
 
-class BooleanObject extends Object
+class BooleanObject extends IndirectObject
 {
     /**
     * Set value to true.
