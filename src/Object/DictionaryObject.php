@@ -39,6 +39,18 @@ class DictionaryObject extends IndirectObject implements Countable
     }
 
     /**
+     * Check if object has given key.
+     *  
+     * @param  string  $key
+     * @return bool
+     */
+    protected function hasKey($key)
+    {
+        $objects = $this->getValue();
+        return isset($objects[$key]);
+    }
+
+    /**
      * Set object for given key.
      *  
      * @param  mixed  $object
