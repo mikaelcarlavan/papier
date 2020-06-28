@@ -2,7 +2,7 @@
 
 namespace Papier\Object\Base;
 
-use Papier\Object\Base\Object;
+use Papier\Object\Base\IndirectObject;
 use Papier\Validator\StringValidator;
 
 use InvalidArgumentException;
