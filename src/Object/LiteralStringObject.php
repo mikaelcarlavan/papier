@@ -19,6 +19,6 @@ class LiteralStringObject extends StringObject
         $trans = array('(' => '\(', ')' => '\)', '\\' => '\\\\');
         $value = strtr($value, $trans);
 
-        return '('.$value.')';
+        return '(' .$value. ')';
     }
 }

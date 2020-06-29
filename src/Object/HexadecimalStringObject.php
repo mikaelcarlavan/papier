@@ -23,6 +23,6 @@ class HexadecimalStringObject extends StringObject
             }
         }
 
-        return '<'.$value.'>';
+        return '<' .$value. '>';
     }
 }

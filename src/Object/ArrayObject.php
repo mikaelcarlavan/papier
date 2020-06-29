@@ -62,6 +62,6 @@ class ArrayObject extends IndirectObject implements Countable
             }
         }
 
-        return '['.$value.']';
+        return '[' .$value. ']';
     }
 }

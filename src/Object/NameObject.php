@@ -42,6 +42,6 @@ class NameObject extends IndirectObject
 
         $value = strtr($value, $trans);
 
-        return '/'.$value;
+        return '/' .$value;
     }
 }

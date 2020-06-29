@@ -106,10 +106,10 @@ class DictionaryObject extends IndirectObject implements Countable
                 $name = new NameObject();
                 $name->setValue($key);
 
-                $value .= $name->format() .' ' .$object->format(). $this->EOL_MARKER;
+                $value .= $name->format() .' '. $object->write();
             }
         }
 
-        return '<<'.$value.'>>';
+        return '<<' .$value. '>>';
     }
 }
