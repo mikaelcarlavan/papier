@@ -14,7 +14,7 @@ class CrossReferenceSection extends ArrayObject
     public function __set($key, $object)
     {
         if (!$object instanceof CrossReferenceSubsection) {
-            throw new InvalidArgumentException("Object is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Cross-reference subsection is incorrect. See ".get_class($this)." class's documentation for possible values.");
         }
         $this->setObjectForKey($key, $object);
     }
@@ -65,7 +65,7 @@ class CrossReferenceSection extends ArrayObject
     {
         $objects = $this->getSubsections();
 
-        $value = 'xref'. $this->EOL_MARKER;
+        $value = 'xref'. self::EOL_MARKER;
         if (is_array($objects)) {
             foreach ($objects as $key => $object) {
                 $value .= $object->write();
