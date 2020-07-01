@@ -30,7 +30,7 @@ class FileHeader extends Object
      *
      * @var bool
      */
-    private $hasBinaryData = true;  
+    private $binaryData = true;  
     /**
      * Format header's content.
      *
@@ -39,7 +39,7 @@ class FileHeader extends Object
     public function format()
     {
         $value = sprintf("%%PDF-1.%d", $this->getVersion());
-        if ($this->getHasBinaryData()) {
+        if ($this->hasBinaryData()) {
             $comment = new Comment();
             $chars = array_map('chr', range(128, 131));
             $value .= $comment->setValue(implode('', $chars))->format();
@@ -77,24 +77,24 @@ class FileHeader extends Object
      *
      * @return int
      */
-    protected function getHasBinaryData()
+    protected function hasBinaryData()
     {
-        return $this->hasBinaryData;
+        return $this->binaryData;
     }
 
     /**
-     * Set if file has bianry data.
+     * Set if file has binary data.
      *  
-     * @param  bool  $hasBinaryData
+     * @param  bool  $binaryData
      * @return \Papier\File\FileHeader
      */
-    protected function setHasBinaryData($hasBinaryData)
+    protected function setBinaryData($binaryData)
     {
-        if (!BoolValidator::isValid($hasBinaryData)) {
-            throw new InvalidArgumentException("HasBinaryData is incorrect. See ".get_class($this)." class's documentation for possible values.");
+        if (!BoolValidator::isValid($binaryData)) {
+            throw new InvalidArgumentException("BinaryData is incorrect. See ".get_class($this)." class's documentation for possible values.");
         }
 
-        $this->hasBinaryData = $hasBinaryData;
+        $this->binaryData = $binaryData;
         return $this;
     } 
 }
