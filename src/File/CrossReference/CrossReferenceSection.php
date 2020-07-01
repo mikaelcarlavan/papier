@@ -2,29 +2,20 @@
 
 namespace Papier\File\CrossReference;
 
-use Papier\Base\Object;
+use Papier\Object\ArrayObject;
+use Papier\File\CrossReference\CrossReferenceSubsection;
 
-use Countable;
-
-class CrossReferenceSection extends Object implements Countable
+class CrossReferenceSection extends ArrayObject
 {
-    /**
-     * Create a new DictionaryObject instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->value = array();
-        parent::__construct();
-    }  
-
     /**
      * Magical method.
      *  
      */
     public function __set($key, $object)
     {
+        if (!$object instanceof CrossReferenceSubsection) {
+            throw new InvalidArgumentException("Object is incorrect. See ".get_class($this)." class's documentation for possible values.");
+        }
         $this->setObjectForKey($key, $object);
     }
 
@@ -38,46 +29,33 @@ class CrossReferenceSection extends Object implements Countable
     }
 
     /**
-     * Set object for given key.
+     * Add new subsection.
      *  
-     * @param  mixed  $object
-     * @param  string  $key
-     * @return \Papier\Object\DictionaryObject
+     * @return \Papier\Object\CrossReferenceSubsection
      */
-    protected function setObjectForKey($key, $object)
+    public function addSubsection()
     {
-        $objects = $this->getValue();
-        $objects[$key] = $object;
+        $objects = $this->getSubsections();
 
-        return $this->setValue($objects);
-    }
+        $object = new CrossReferenceSubsection();
+        $objects[] = $object;
 
-    /**
-     * Get value for given key.
-     *  
-     * @param  string  $key
-     * @return \Papier\Base\Object
-     */
-    protected function getObjectForKey($key)
-    {
-        $objects = $this->getValue();
-        $object = $objects[$key] ?? new NullObject();
+        $this->setObjects($objects);
 
         return $object;
-    }  
-    
+    }
 
     /**
-     * Get number of objects.
+     * Get subsections.
      *  
-     * @return int
+     * @return array
      */
-    public function count()
+    public function getSubsections()
     {
-        $objects = $this->getValue();
-        return count($objects);
-    }
-    
+        $objects = $this->getObjects();
+        return $objects;
+    }  
+
     /**
      * Format object's value.
      *
@@ -85,7 +63,7 @@ class CrossReferenceSection extends Object implements Countable
      */
     public function format()
     {
-        $objects = $this->getValue();
+        $objects = $this->getSubsections();
 
         $value = 'xref'. $this->EOL_MARKER;
         if (is_array($objects)) {
