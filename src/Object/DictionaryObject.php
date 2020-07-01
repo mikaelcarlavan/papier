@@ -26,6 +26,9 @@ class DictionaryObject extends IndirectObject implements Countable
      */
     public function __set($key, $object)
     {
+        if (!$object instanceof IndirectObject) {
+            throw new InvalidArgumentException("Object is incorrect. See ".get_class($this)." class's documentation for possible values.");
+        }
         $this->setObjectForKey($key, $object);
     }
 
@@ -46,7 +49,7 @@ class DictionaryObject extends IndirectObject implements Countable
      */
     protected function hasKey($key)
     {
-        $objects = $this->getValue();
+        $objects = $this->getObjects();
         return isset($objects[$key]);
     }
 
@@ -59,10 +62,10 @@ class DictionaryObject extends IndirectObject implements Countable
      */
     protected function setObjectForKey($key, $object)
     {
-        $objects = $this->getValue();
+        $objects = $this->getObjects();
         $objects[$key] = $object;
 
-        return $this->setValue($objects);
+        return $this->setObjects($objects);
     }
 
     /**
@@ -73,7 +76,7 @@ class DictionaryObject extends IndirectObject implements Countable
      */
     protected function getObjectForKey($key)
     {
-        $objects = $this->getValue();
+        $objects = $this->getObjects();
         $object = $objects[$key] ?? new NullObject();
 
         return $object;
@@ -87,10 +90,42 @@ class DictionaryObject extends IndirectObject implements Countable
      */
     public function count()
     {
-        $objects = $this->getValue();
+        $objects = $this->getObjects();
         return count($objects);
     }
     
+    /**
+     * Get objects.
+     *  
+     * @return array
+     */
+    public function getObjects()
+    {
+        $objects = $this->getValue();
+        return $objects;
+    }
+
+    /**
+     * Set objects.
+     *  
+     * @return \Papier\Object\DictionaryObject
+     */
+    protected function setObjects($objects)
+    {
+        if (!is_array($objects)) {
+            throw new InvalidArgumentException("Object's list is incorrect. See ".get_class($this)." class's documentation for possible values.");
+        }
+
+        foreach ($objects as $object) {
+            if (!$object instanceof IndirectObject) {
+                throw new InvalidArgumentException("Object is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            }
+        }
+        
+        $this->setValue($objects);
+        return $this;
+    }
+
     /**
      * Format object's value.
      *
@@ -98,7 +133,7 @@ class DictionaryObject extends IndirectObject implements Countable
      */
     public function format()
     {
-        $objects = $this->getValue();
+        $objects = $this->getObjects();
 
         $value = '';
         if (is_array($objects)) {
