@@ -69,7 +69,7 @@ abstract class Object
      */
     public function write()
     {
-        $value = $this->format(). $this->EOL_MARKER;
+        $value = $this->format(). self::EOL_MARKER;
         return $value;
     }
 }
