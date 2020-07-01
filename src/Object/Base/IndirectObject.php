@@ -37,7 +37,7 @@ abstract class IndirectObject extends Object
     protected function setNumber($number)
     {
         if (!IntValidator::isValid($number, 1)) {
-            throw new InvalidArgumentException("Object number is incorrect. See IndirectObject class's documentation for possible values.");
+            throw new InvalidArgumentException("Object number is incorrect. See ".get_class($this)." class's documentation for possible values.");
         }
 
         $this->number = $number;
@@ -53,7 +53,7 @@ abstract class IndirectObject extends Object
     protected function setGeneration($generation)
     {
         if (!IntValidator::isValid($generation)) {
-            throw new InvalidArgumentException("Generation number is incorrect. See IndirectObject class's documentation for possible values.");
+            throw new InvalidArgumentException("Generation number is incorrect. See ".get_class($this)." class's documentation for possible values.");
         }
 
         $this->generation = $generation;
@@ -69,7 +69,7 @@ abstract class IndirectObject extends Object
     protected function setIndirect($indirect = true)
     {
         if (!BoolValidator::isValid($indirect)) {
-            throw new InvalidArgumentException("Indirect boolean is incorrect. See IndirectObject class's documentation for possible values.");
+            throw new InvalidArgumentException("Indirect boolean is incorrect. See ".get_class($this)." class's documentation for possible values.");
         }
 
         $this->indirect = $indirect;

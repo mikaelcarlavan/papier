@@ -91,7 +91,7 @@ class FileHeader extends Object
     protected function setHasBinaryData($hasBinaryData)
     {
         if (!BoolValidator::isValid($hasBinaryData)) {
-            throw new InvalidArgumentException("HasBinaryData is incorrect. See FileHeader class's documentation for possible values.");
+            throw new InvalidArgumentException("HasBinaryData is incorrect. See ".get_class($this)." class's documentation for possible values.");
         }
 
         $this->hasBinaryData = $hasBinaryData;

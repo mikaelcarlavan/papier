@@ -20,7 +20,7 @@ class RealObject extends Object
     public function setValue($value, $maxDecimals = 10)
     {
         if (!RealValidator::isValid($value)) {
-            throw new InvalidArgumentException("Real is incorrect. See RealObject class's documentation for possible values.");
+            throw new InvalidArgumentException("Real is incorrect. See ".get_class($this)." class's documentation for possible values.");
         }
 
         // Convert from scientific notation

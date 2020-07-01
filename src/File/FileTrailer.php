@@ -91,7 +91,7 @@ class FileTrailer extends Object
     public function setCrossReferenceOffset($crossReferenceOffset)
     {
         if (!IntValidator::isValid($crossReferenceOffset)) {
-            throw new InvalidArgumentException("Cross reference offset is incorrect. See FileTrailer class's documentation for possible values.");
+            throw new InvalidArgumentException("Cross reference offset is incorrect. See ".get_class($this)." class's documentation for possible values.");
         }
 
         $this->crossReferenceOffset = $crossReferenceOffset;
@@ -107,7 +107,7 @@ class FileTrailer extends Object
     public function setSize($size)
     {
         if (!IntValidator::isValid($size)) {
-            throw new InvalidArgumentException("Size is incorrect. See FileTrailer class's documentation for possible values.");
+            throw new InvalidArgumentException("Size is incorrect. See ".get_class($this)." class's documentation for possible values.");
         }
 
         $this->addEntry('Size', $size);
@@ -123,7 +123,7 @@ class FileTrailer extends Object
     public function setPrev($prev)
     {
         if (!IntValidator::isValid($prev)) {
-            throw new InvalidArgumentException("Prev is incorrect. See FileTrailer class's documentation for possible values.");
+            throw new InvalidArgumentException("Prev is incorrect. See ".get_class($this)." class's documentation for possible values.");
         }
 
         $this->addEntry('Prev', $prev);
@@ -139,7 +139,7 @@ class FileTrailer extends Object
     public function setRoot($root)
     {
         if (!$root instanceof DictionaryObject) {
-            throw new InvalidArgumentException("Root is incorrect. See FileTrailer class's documentation for possible values.");
+            throw new InvalidArgumentException("Root is incorrect. See ".get_class($this)." class's documentation for possible values.");
         }
 
         $this->addEntry('Root', $root->getReference());
@@ -156,7 +156,7 @@ class FileTrailer extends Object
     public function setEncrypt($encrypt)
     {
         if (!$encrypt instanceof DictionaryObject) {
-            throw new InvalidArgumentException("Encrypt is incorrect. See FileTrailer class's documentation for possible values.");
+            throw new InvalidArgumentException("Encrypt is incorrect. See ".get_class($this)." class's documentation for possible values.");
         }
 
         $this->addEntry('Encrypt', $encrypt->getReference());
@@ -173,7 +173,7 @@ class FileTrailer extends Object
     public function setInfo($info)
     {
         if (!$info instanceof DictionaryObject) {
-            throw new InvalidArgumentException("Info is incorrect. See FileTrailer class's documentation for possible values.");
+            throw new InvalidArgumentException("Info is incorrect. See ".get_class($this)." class's documentation for possible values.");
         }
 
         $this->addEntry('Info', $info->getReference());
@@ -189,7 +189,7 @@ class FileTrailer extends Object
     public function setID($ID)
     {
         if (!$ID instanceof ArrayObject) {
-            throw new InvalidArgumentException("ID is incorrect. See FileTrailer class's documentation for possible values.");
+            throw new InvalidArgumentException("ID is incorrect. See ".get_class($this)." class's documentation for possible values.");
         }
 
         $this->addEntry('ID', $ID->write());

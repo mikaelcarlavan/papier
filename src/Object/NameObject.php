@@ -19,7 +19,7 @@ class NameObject extends IndirectObject
     public function setValue($value)
     {
         if (!StringValidator::isValid($value)) {
-            throw new InvalidArgumentException("String is incorrect. See NameObject class's documentation for possible values.");
+            throw new InvalidArgumentException("String is incorrect. See ".get_class($this)." class's documentation for possible values.");
         }
 
         return parent::setValue($value);
