@@ -12,7 +12,7 @@ abstract class IndirectObject extends Object
      *
      * @var bool
      */
-    protected $isIndirect = false;
+    protected $indirect = false;
 
     /**
      * The number of the object.
@@ -128,10 +128,10 @@ abstract class IndirectObject extends Object
         $value = null;
         if ($this->isIndirect()) {
             $value = sprintf('%d %d obj', $this->getNumber(), $this->getGeneration());
-            $value .= $this->getReference(). $this->EOL_MARKER;
+            $value .= $this->getReference(). self::EOL_MARKER;
             $value .= 'endobj';
         } else {
-            $value = $this->format(). $this->EOL_MARKER;
+            $value = $this->format(). self::EOL_MARKER;
         }
 
         return $value;
