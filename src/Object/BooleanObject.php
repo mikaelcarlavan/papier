@@ -25,4 +25,24 @@ class BooleanObject extends IndirectObject
     {
         return $this->setValue(false);
     }
+
+    /**
+     * Returns if boolean is true.
+     *  
+     * @return bool
+     */
+    public function isTrue()
+    {
+        return $this->getValue();
+    }
+    
+    /**
+     * Returns if boolean is false.
+     *  
+     * @return bool
+     */
+    public function isFalse()
+    {
+        return !$this->isTrue();
+    } 
 }
