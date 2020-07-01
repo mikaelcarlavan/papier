@@ -2,10 +2,10 @@
 
 namespace Papier\Object;
 
+use Papier\Object\DictionaryObject;
 use Papier\Object\Base\IndirectObject;
-use Countable;
 
-class ArrayObject extends IndirectObject implements Countable
+class ArrayObject extends DictionaryObject
 {
 
     /**
@@ -26,7 +26,7 @@ class ArrayObject extends IndirectObject implements Countable
      */
     public function count()
     {
-        $objects = $this->getValue();
+        $objects = $this->getObjects();
         return count($objects);
     }
 
@@ -37,14 +37,14 @@ class ArrayObject extends IndirectObject implements Countable
      * @param  mixed  $object
      * @return \Papier\Object\ArrayObject
      */
-    protected function addObject($object)
+    public function addObject($object)
     {
-        $objects = $this->getValue();
+        $objects = $this->getObjects();
 
         $arr = is_array($objects) ? $objects : array($objects);
         $arr[] = $object;
 
-        return $this->setValue($arr);
+        return $this->setObjects($arr);
     }
 
     /**
@@ -54,11 +54,11 @@ class ArrayObject extends IndirectObject implements Countable
      */
     public function format()
     {
-        $objects = $this->getValue() ?? array();
+        $objects = $this->getObjects() ?? array();
         $value = '';
         if (is_array($objects)) {
             foreach ($objects as $object) {
-                $value .= ' '.$object->format();
+                $value .= ' '.$object->write();
             }
         }
 
