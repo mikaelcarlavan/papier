@@ -61,12 +61,12 @@ class FileTrailer extends Object
     {
         $dictionary = $this->getDictionary();
 
-        $value = 'trailer' . $this->EOL_MARKER;
+        $value = 'trailer' . self::EOL_MARKER;
         if ($dictionary) {
             $value .= $dictionary->write();
         }
-        $value .= 'startxref' . $this->EOL_MARKER;
-        $value .= $this->getCrossReferenceOffset() . $this->EOL_MARKER;
+        $value .= 'startxref' . self::EOL_MARKER;
+        $value .= $this->getCrossReferenceOffset() . self::EOL_MARKER;
         $value .= '%%EOF';
         
         return $value;
