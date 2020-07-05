@@ -12,7 +12,7 @@ use Exception;
 class DocumentCatalog extends IndirectObject
 {
     /**
-     * Create a new FileTrailer instance.
+     * Create a new DocumentCatalog instance.
      *
      * @return void
      */
