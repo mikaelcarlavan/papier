@@ -6,7 +6,6 @@ use Papier\Base\Object;
 use Papier\Validator\IntValidator;
 use Papier\Validator\BoolValidator;
 
-
 use InvalidArgumentException;
 
 class FileHeader extends Object
@@ -31,6 +30,7 @@ class FileHeader extends Object
      * @var bool
      */
     private $binaryData = true;  
+    
     /**
      * Format header's content.
      *
@@ -61,6 +61,7 @@ class FileHeader extends Object
      * Set header's version.
      *  
      * @param  int  $version
+     * @throws InvalidArgumentException if the provided argument is not of type 'int' or is outside acceptable values.
      * @return \Papier\File\FileHeader
      */
     protected function setVersion($version)
@@ -86,6 +87,7 @@ class FileHeader extends Object
      * Set if file has binary data.
      *  
      * @param  bool  $binaryData
+     * @throws InvalidArgumentException if the provided argument is not of type 'bool'.
      * @return \Papier\File\FileHeader
      */
     protected function setBinaryData($binaryData)
