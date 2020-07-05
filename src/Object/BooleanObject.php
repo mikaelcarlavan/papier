@@ -2,7 +2,7 @@
 
 namespace Papier\Object;
 
-use Papier\Object\Base\IndirectObject;
+use Papier\Base\IndirectObject;
 
 class BooleanObject extends IndirectObject
 {

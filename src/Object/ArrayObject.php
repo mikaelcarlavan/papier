@@ -3,7 +3,7 @@
 namespace Papier\Object;
 
 use Papier\Object\DictionaryObject;
-use Papier\Object\Base\IndirectObject;
+use Papier\Base\IndirectObject;
 
 class ArrayObject extends DictionaryObject
 {

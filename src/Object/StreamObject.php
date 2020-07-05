@@ -2,7 +2,7 @@
 
 namespace Papier\Object;
 
-use Papier\Object\IntegerObject;
+use Papier\Base\IntegerObject;
 use Papier\Object\DictionaryObject;
 use Exception;
 
@@ -65,7 +65,7 @@ class StreamObject extends IndirectObject
      * @param  mixed  $object
      * @return \Papier\Object\StreamObject
      */
-    protected function addEntry($key, $object)
+    private function addEntry($key, $object)
     {
         $this->getDictionary()->setObjectForKey($key, $object);
         return $this;
@@ -83,15 +83,11 @@ class StreamObject extends IndirectObject
         $stream = $stream ? $stream->format() : '';
 
         // Compute length of stream and set it into dictionary
-        try {
-            $length = strlen($stream);
-            $length = new IntegerObject();
-            $length->setValue(intval($length));
+        $length = strlen($stream);
+        $length = new IntegerObject();
+        $length->setValue(intval($length));
     
-            $dictionary->addEntry('Length', $length);
-        } catch (Exception $e) {
-            throw $e;
-        }
+        $this->addEntry('Length', $length);
 
         $value = '';
         if ($dictionary) {

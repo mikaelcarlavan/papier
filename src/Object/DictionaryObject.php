@@ -2,7 +2,7 @@
 
 namespace Papier\Object;
 
-use Papier\Object\Base\IndirectObject;
+use Papier\Base\IndirectObject;
 use Papier\Object\NullObject;
 
 use Countable;
@@ -23,6 +23,10 @@ class DictionaryObject extends IndirectObject implements Countable
     /**
      * Magical method.
      *  
+     * @param  mixed  $object
+     * @param  string  $key
+     * @throws InvalidArgumentException if the provided argument does not inherit 'IndirectObject'.
+     * @return \Papier\Object\DictionaryObject
      */
     public function __set($key, $object)
     {
@@ -35,6 +39,8 @@ class DictionaryObject extends IndirectObject implements Countable
     /**
      * Magical method.
      *  
+     * @param  string  $key
+     * @return \Papier\Base\Object
      */
     public function __get($key)
     {
@@ -107,7 +113,8 @@ class DictionaryObject extends IndirectObject implements Countable
 
     /**
      * Set objects.
-     *  
+     * 
+     * @throws InvalidArgumentException if the provided argument is not of type 'array' or if each element of the argument does not inherit 'IndirectObject'.
      * @return \Papier\Object\DictionaryObject
      */
     protected function setObjects($objects)

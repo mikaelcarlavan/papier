@@ -1,6 +1,6 @@
 <?php
 
-namespace Papier\Object\Base;
+namespace Papier\Base;
 
 use Papier\Base\Object;
 use Papier\Validator\BoolValidator;
