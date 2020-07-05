@@ -38,6 +38,7 @@ class CrossReferenceEntry extends IndirectObject
      * Set entry's offset.
      *  
      * @param  int  $offset
+     * @throws InvalidArgumentException if the provided argument does not inherit 'int'.
      * @return \Papier\File\CrossReference\CrossReferenceEntry
      */
     protected function setOffset($offset)
@@ -54,6 +55,7 @@ class CrossReferenceEntry extends IndirectObject
      * Set entry to be free.
      *  
      * @param  bool  $free
+     * @throws InvalidArgumentException if the provided argument does not inherit 'bool'.
      * @return \Papier\File\CrossReference\CrossReferenceEntry
      */
     protected function setFree($free = true)
