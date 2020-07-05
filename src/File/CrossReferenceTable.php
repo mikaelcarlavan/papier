@@ -10,6 +10,10 @@ class CrossReferenceTable extends ArrayObject
     /**
      * Magical method.
      *  
+     * @param  mixed  $object
+     * @param  string  $key
+     * @throws InvalidArgumentException if the provided argument does not inherit 'IndirectObject'.
+     * @return \Papier\Object\DictionaryObject
      */
     public function __set($key, $object)
     {
