@@ -32,7 +32,7 @@ class FileTrailer extends Object
     /**
      * Get trailer's dictionary.
      *
-     * @return string
+     * @return \Papier\Object\DictionaryObject
      */
     private function getDictionary()
     {
@@ -86,6 +86,7 @@ class FileTrailer extends Object
      * Set cross reference offset.
      *  
      * @param  int  $crossReferenceOffset
+     * @throws InvalidArgumentException if the provided argument is not of type 'int'.
      * @return \Papier\File\FileTrailer
      */
     public function setCrossReferenceOffset($crossReferenceOffset)
@@ -102,6 +103,7 @@ class FileTrailer extends Object
      * Set size (total number of entries in the file's cross-reference table).
      *  
      * @param  int  $size
+     * @throws InvalidArgumentException if the provided argument is not of type 'int'.
      * @return \Papier\File\FileTrailer
      */
     public function setSize($size)
@@ -118,6 +120,7 @@ class FileTrailer extends Object
      * Set prev (byte offset in the decoded stream from the beginning of the file to the beginning of the previous cross-reference section).
      *  
      * @param  int  $prev
+     * @throws InvalidArgumentException if the provided argument is not of type 'int'.
      * @return \Papier\File\FileTrailer
      */
     public function setPrev($prev)
@@ -134,6 +137,7 @@ class FileTrailer extends Object
      * Set root (catalog dictionary for the PDF document contained in the file).
      *  
      * @param  \Papier\Object\DictionaryObject  $root
+     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
      * @return \Papier\File\FileTrailer
      */
     public function setRoot($root)
@@ -151,6 +155,7 @@ class FileTrailer extends Object
      * Set encrypt (document’s encryption dictionary).
      *  
      * @param  \Papier\Object\DictionaryObject  $encrypt
+     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
      * @return \Papier\File\FileTrailer
      */
     public function setEncrypt($encrypt)
@@ -168,6 +173,7 @@ class FileTrailer extends Object
      * Set info (document’s information dictionary).
      *  
      * @param  \Papier\Object\DictionaryObject  $info
+     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
      * @return \Papier\File\FileTrailer
      */
     public function setInfo($info)
@@ -184,6 +190,7 @@ class FileTrailer extends Object
      * Set ID (array of two byte-strings constituting a file identifier).
      *  
      * @param  \Papier\Object\ArrayObject  $ID
+     * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
      * @return \Papier\File\FileTrailer
      */
     public function setID($ID)
