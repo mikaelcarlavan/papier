@@ -10,6 +10,10 @@ class CrossReferenceSection extends ArrayObject
     /**
      * Magical method.
      *  
+     * @param  mixed  $object
+     * @param  string  $key
+     * @throws InvalidArgumentException if the provided argument does not inherit 'CrossReferenceSubsection'.
+     * @return \Papier\File\CrossReference\CrossReferenceSection
      */
     public function __set($key, $object)
     {
@@ -22,6 +26,8 @@ class CrossReferenceSection extends ArrayObject
     /**
      * Magical method.
      *  
+     * @param  string  $key
+     * @return \Papier\File\CrossReference\CrossReferenceSubsection
      */
     public function __get($key)
     {
@@ -31,7 +37,7 @@ class CrossReferenceSection extends ArrayObject
     /**
      * Add new subsection.
      *  
-     * @return \Papier\Object\CrossReferenceSubsection
+     * @return \Papier\File\CrossReference\CrossReferenceSubsection
      */
     public function addSubsection()
     {
