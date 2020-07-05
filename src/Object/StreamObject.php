@@ -16,7 +16,7 @@ class StreamObject extends IndirectObject
     protected $stream;
     
     /**
-     * Create a new ArrayObject instance.
+     * Create a new StreamObject instance.
      *
      * @return void
      */
