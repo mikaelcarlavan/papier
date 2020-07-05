@@ -6,11 +6,36 @@ use Papier\Base\IndirectObject;
 use Papier\Object\DictionaryObject;
 use Papier\Object\NameObject;
 
+use Papier\Validator\StringValidator;
+
+use Papier\Document\PageLayout;
+
 use InvalidArgumentException;
 use Exception;
 
 class DocumentCatalog extends IndirectObject
 {
+    /**
+     * Default page layout.
+     *
+     * @var string
+     */
+    const DEFAULT_PAGE_LAYOUT = PageLayout::SINGLE_PAGE_LAYOUT;
+
+    /**
+     * Page layouts.
+     *
+     * @var array
+     */
+    const PAGE_LAYOUTS = array(
+        PageLayout::SINGLE_PAGE_LAYOUT,
+        PageLayout::ONE_COLUMN_LAYOUT,
+        PageLayout::TWO_COLUMN_LEFT_LAYOUT,
+        PageLayout::TWO_COLUMN_RIGHT_LAYOUT,
+        PageLayout::TWO_PAGE_LEFT_LAYOUT,
+        PageLayout::TWO_PAGE_RIGHT_LAYOUT,
+    );
+
     /**
      * Create a new DocumentCatalog instance.
      *
@@ -19,7 +44,6 @@ class DocumentCatalog extends IndirectObject
     public function __construct()
     {
         $this->value = new DictionaryObject();
-
         parent::__construct();
     } 
 
@@ -45,24 +69,6 @@ class DocumentCatalog extends IndirectObject
         $this->getDictionary()->setObjectForKey($key, $object);
         return $this;
     } 
-
-    /**
-     * Format catalog's content.
-     *
-     * @return string
-     */
-    public function format()
-    {
-        $type = new NameObject();
-        $type->setValue('Catalog');
-        $this->addEntry('Type', $type);
-
-        $dictionary = $this->getDictionary();
-
-        $value = $dictionary->write();
-        
-        return $value;
-    }
 
     /**
      * Set PDF version.
@@ -117,5 +123,103 @@ class DocumentCatalog extends IndirectObject
 
         $this->addEntry('Pages', $pages->getReference());
         return $this;
+    }
+    
+    /**
+     * Set document's name dictionary.
+     *  
+     * @param  \Papier\Object\DictionaryObject  $names
+     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
+     * @return \Papier\Document\DocumentCatalog
+     */
+    public function setNames($names)
+    {
+        if (!$names instanceof DictionaryObject) {
+            throw new InvalidArgumentException("Names is incorrect. See ".get_class($this)." class's documentation for possible values.");
+        }
+
+        $this->addEntry('Names', $names->getReference());
+        return $this;
     } 
+
+    /**
+     * Set names and coresponding destimations.
+     *  
+     * @param  \Papier\Object\DictionaryObject  $dests
+     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
+     * @return \Papier\Document\DocumentCatalog
+     */
+    public function setDests($dests)
+    {
+        if (!$dests instanceof DictionaryObject) {
+            throw new InvalidArgumentException("Dests is incorrect. See ".get_class($this)." class's documentation for possible values.");
+        }
+
+        $this->addEntry('Dests', $dests->getReference());
+        return $this;
+    } 
+
+    /**
+     * Set viewer preferences.
+     *  
+     * @param  \Papier\Object\DictionaryObject  $preferences
+     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
+     * @return \Papier\Document\DocumentCatalog
+     */
+    public function setViewerPreferences($preferences)
+    {
+        if (!$preferences instanceof DictionaryObject) {
+            throw new InvalidArgumentException("ViewPreferences is incorrect. See ".get_class($this)." class's documentation for possible values.");
+        }
+
+        $this->addEntry('ViewerPreferences', $preferences->getReference());
+        return $this;
+    } 
+
+    /**
+     * Set page layout.
+     *  
+     * @param  string  $layout
+     * @throws InvalidArgumentException if the provided argument is not of type 'string'.
+     * @return \Papier\Document\DocumentCatalog
+     */
+    public function setPageLayout($layout)
+    {
+        if (!StringValidator::isValid($layout) || !in_array($layout, self::PAGE_LAYOUTS)) {
+            throw new InvalidArgumentException("Layout is incorrect. See ".get_class($this)." class's documentation for possible values.");
+        }
+
+        try {
+            $lay = new NameObject();
+            $lay->setValue($layout);
+            $this->addEntry('PageLayout', $lay);
+        } catch (Exception $e) {
+            throw $e;
+        }
+
+        return $this;
+    } 
+
+
+    /**
+     * Format catalog's content.
+     *
+     * @return string
+     */
+    public function format()
+    {
+        $type = new NameObject();
+        $type->setValue('Catalog');
+        $this->addEntry('Type', $type);
+
+        $dictionary = $this->getDictionary();
+
+        if (!$dictionary->hasKey('PageLayout')) {
+            $this->setPageLayout(self::DEFAULT_PAGE_LAYOUT);
+        }
+
+        $value = $dictionary->write();
+        
+        return $value;
+    }
 }
