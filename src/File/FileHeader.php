@@ -3,7 +3,7 @@
 namespace Papier\File;
 
 use Papier\Base\Object;
-use Papier\Validator\IntValidator;
+use Papier\Validator\VersionValidator;
 use Papier\Validator\BoolValidator;
 
 use InvalidArgumentException;
@@ -11,26 +11,12 @@ use InvalidArgumentException;
 class FileHeader extends Object
 {
     /**
-     * Minimum allowable value of header's version.
-     *
-     * @var int
-     */
-    private $minVersion = 0;
-
-    /**
-     * Maximal allowable value of header's version.
-     *
-     * @var int
-     */
-    private $maxVersion = 7;
-
-    /**
      * Bool which indicates if file has binary data.
      *
      * @var bool
      */
     private $binaryData = true;  
-    
+
     /**
      * Format header's content.
      *
@@ -66,7 +52,7 @@ class FileHeader extends Object
      */
     protected function setVersion($version)
     {
-        if (!IntValidator::isValid($version, $this->minVersion, $this->maxVersion)) {
+        if (!VersionValidator::isValid($version)) {
             throw new InvalidArgumentException("Version is incorrect. See FileHeader class's documentation for possible values.");
         }
 
