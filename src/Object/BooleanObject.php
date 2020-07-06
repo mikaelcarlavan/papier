@@ -44,5 +44,17 @@ class BooleanObject extends IndirectObject
     public function isFalse()
     {
         return !$this->isTrue();
-    } 
+    }
+    
+    /**
+     * Format object's value.
+     *
+     * @return string
+     */
+    public function format()
+    {
+        $value = $this->getValue();
+
+        return $value ? 'true' : 'false';
+    }
 }
