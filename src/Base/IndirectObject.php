@@ -114,8 +114,23 @@ abstract class IndirectObject extends Object
      */
     protected function getReference()
     {
-        $reference = sprintf('%d %d R', $this->getNumber(), $this->getGeneration());
-        return $reference;
+        $value = sprintf('%d %d R', $this->getNumber(), $this->getGeneration());
+        return $value;
+    }
+
+
+    /**
+     * Get object's content.
+     *
+     * @return string
+     */
+    protected function getContent()
+    {
+        $value = sprintf('%d %d obj', $this->getNumber(), $this->getGeneration()). self::EOL_MARKER;
+        $value .= $this->format(). self::EOL_MARKER;
+        $value .= 'endobj';
+        
+        return $value;
     }
 
     /**
@@ -125,15 +140,7 @@ abstract class IndirectObject extends Object
      */
     public function write()
     {
-        $value = null;
-        if ($this->isIndirect()) {
-            $value = sprintf('%d %d obj', $this->getNumber(), $this->getGeneration());
-            $value .= $this->getReference(). self::EOL_MARKER;
-            $value .= 'endobj';
-        } else {
-            $value = $this->format(). self::EOL_MARKER;
-        }
-
-        return $value;
+        $value = $this->isIndirect() ? $this->getReference() : $this->getContent();
+        return $value. self::EOL_MARKER;
     }
 }
