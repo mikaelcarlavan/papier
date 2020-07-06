@@ -5,10 +5,12 @@ namespace Papier\Document;
 use Papier\Base\IndirectObject;
 use Papier\Object\DictionaryObject;
 use Papier\Object\NameObject;
+use Papier\Object\ArrayObject;
 
-use Papier\Validator\StringValidator;
-
+use Papier\Validator\PageLayoutValidator;
 use Papier\Document\PageLayout;
+use Papier\Validator\PageModeValidator;
+use Papier\Document\PageMode;
 
 use InvalidArgumentException;
 use Exception;
@@ -23,18 +25,11 @@ class DocumentCatalog extends IndirectObject
     const DEFAULT_PAGE_LAYOUT = PageLayout::SINGLE_PAGE_LAYOUT;
 
     /**
-     * Page layouts.
+     * Default page mode.
      *
-     * @var array
+     * @var string
      */
-    const PAGE_LAYOUTS = array(
-        PageLayout::SINGLE_PAGE_LAYOUT,
-        PageLayout::ONE_COLUMN_LAYOUT,
-        PageLayout::TWO_COLUMN_LEFT_LAYOUT,
-        PageLayout::TWO_COLUMN_RIGHT_LAYOUT,
-        PageLayout::TWO_PAGE_LEFT_LAYOUT,
-        PageLayout::TWO_PAGE_RIGHT_LAYOUT,
-    );
+    const DEFAULT_PAGE_MODE = PageMode::USE_NONE_MODE;
 
     /**
      * Create a new DocumentCatalog instance.
@@ -180,12 +175,12 @@ class DocumentCatalog extends IndirectObject
      * Set page layout.
      *  
      * @param  string  $layout
-     * @throws InvalidArgumentException if the provided argument is not of type 'string'.
+     * @throws InvalidArgumentException if the provided argument is not a valid layout.
      * @return \Papier\Document\DocumentCatalog
      */
     public function setPageLayout($layout)
     {
-        if (!StringValidator::isValid($layout) || !in_array($layout, self::PAGE_LAYOUTS)) {
+        if (!PageLayoutValidator::isValid($layout)) {
             throw new InvalidArgumentException("Layout is incorrect. See ".get_class($this)." class's documentation for possible values.");
         }
 
@@ -200,6 +195,131 @@ class DocumentCatalog extends IndirectObject
         return $this;
     } 
 
+    /**
+     * Set page mode.
+     *  
+     * @param  string  $mode
+     * @throws InvalidArgumentException if the provided argument is not a valid mode.
+     * @return \Papier\Document\DocumentCatalog
+     */
+    public function setPageMode($mode)
+    {
+        if (!PageModeValidator::isValid($mode)) {
+            throw new InvalidArgumentException("Mode is incorrect. See ".get_class($this)." class's documentation for possible values.");
+        }
+
+        try {
+            $mod = new NameObject();
+            $mod->setValue($mode);
+            $this->addEntry('PageMode', $mod);
+        } catch (Exception $e) {
+            throw $e;
+        }
+
+        return $this;
+    } 
+
+    /**
+     * Set outlines.
+     *  
+     * @param  \Papier\Object\DictionaryObject  $outlines
+     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
+     * @return \Papier\Document\DocumentCatalog
+     */
+    public function setOutlines($outlines)
+    {
+        if (!$outlines instanceof DictionaryObject) {
+            throw new InvalidArgumentException("Outlines is incorrect. See ".get_class($this)." class's documentation for possible values.");
+        }
+
+        $this->addEntry('Outlines', $outlines->getReference());
+        return $this;
+    } 
+
+    /**
+     * Set threads.
+     *  
+     * @param  \Papier\Object\ArrayObject  $threads
+     * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
+     * @return \Papier\Document\DocumentCatalog
+     */
+    public function setThreads($threads)
+    {
+        if (!$threads instanceof ArrayObject) {
+            throw new InvalidArgumentException("Threads is incorrect. See ".get_class($this)." class's documentation for possible values.");
+        }
+
+        $this->addEntry('Threads', $threads->getReference());
+        return $this;
+    } 
+
+    /**
+     * Set open action.
+     *  
+     * @param  mixed  $action
+     * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject' or 'DictionaryObject'.
+     * @return \Papier\Document\DocumentCatalog
+     */
+    public function setOpenAction($action)
+    {
+        if (!$action instanceof ArrayObject && !$action instanceof DictionaryObject) {
+            throw new InvalidArgumentException("Action is incorrect. See ".get_class($this)." class's documentation for possible values.");
+        }
+
+        $this->addEntry('OpenAction', $action->getReference());
+        return $this;
+    } 
+
+    /**
+     * Set AA.
+     *  
+     * @param  \Papier\Object\DictionaryObject  $aa
+     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
+     * @return \Papier\Document\DocumentCatalog
+     */
+    public function setAA($aa)
+    {
+        if (!$aa instanceof DictionaryObject) {
+            throw new InvalidArgumentException("AA is incorrect. See ".get_class($this)." class's documentation for possible values.");
+        }
+
+        $this->addEntry('AA', $aa->getReference());
+        return $this;
+    } 
+
+    /**
+     * Set URI.
+     *  
+     * @param  \Papier\Object\DictionaryObject  $uri
+     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
+     * @return \Papier\Document\DocumentCatalog
+     */
+    public function setURI($uri)
+    {
+        if (!$uri instanceof DictionaryObject) {
+            throw new InvalidArgumentException("URI is incorrect. See ".get_class($this)." class's documentation for possible values.");
+        }
+
+        $this->addEntry('URI', $uri->getReference());
+        return $this;
+    } 
+
+    /**
+     * Set AcroForm.
+     *  
+     * @param  \Papier\Object\DictionaryObject  $form
+     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
+     * @return \Papier\Document\DocumentCatalog
+     */
+    public function setAcroForm($form)
+    {
+        if (!$form instanceof DictionaryObject) {
+            throw new InvalidArgumentException("AcroForm is incorrect. See ".get_class($this)." class's documentation for possible values.");
+        }
+
+        $this->addEntry('AcroForm', $form->getReference());
+        return $this;
+    } 
 
     /**
      * Format catalog's content.
@@ -214,8 +334,13 @@ class DocumentCatalog extends IndirectObject
 
         $dictionary = $this->getDictionary();
 
+        // Set default values
         if (!$dictionary->hasKey('PageLayout')) {
             $this->setPageLayout(self::DEFAULT_PAGE_LAYOUT);
+        }
+
+        if (!$dictionary->hasKey('PageMode')) {
+            $this->setPageMode(self::DEFAULT_PAGE_MODE);
         }
 
         $value = $dictionary->write();
