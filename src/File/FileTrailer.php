@@ -8,6 +8,7 @@ use Papier\Object\DictionaryObject;
 use Papier\Object\ArrayObject;
 
 use InvalidArgumentException;
+use RuntimeException;
 
 class FileTrailer extends Object
 {
@@ -51,26 +52,6 @@ class FileTrailer extends Object
         $this->getDictionary()->setObjectForKey($key, $object);
         return $this;
     } 
-
-    /**
-     * Format trailer's content.
-     *
-     * @return string
-     */
-    public function format()
-    {
-        $dictionary = $this->getDictionary();
-
-        $value = 'trailer' . self::EOL_MARKER;
-        if ($dictionary) {
-            $value .= $dictionary->write();
-        }
-        $value .= 'startxref' . self::EOL_MARKER;
-        $value .= $this->getCrossReferenceOffset() . self::EOL_MARKER;
-        $value .= '%%EOF';
-        
-        return $value;
-    }
 
     /**
      * Get trailer's cross reference offset.
@@ -202,4 +183,30 @@ class FileTrailer extends Object
         $this->addEntry('ID', $ID->write());
         return $this;
     } 
+
+    /**
+     * Format trailer's content.
+     *
+     * @return string
+     */
+    public function format()
+    {
+        $dictionary = $this->getDictionary();
+
+        if (!$dictionary->hasKey('Root')) {
+            throw new RuntimeException("Root is missing. See ".get_class($this)." class's documentation for possible values.");
+        }
+
+        if (!$dictionary->hasKey('Size')) {
+            throw new RuntimeException("Size is missing. See ".get_class($this)." class's documentation for possible values.");
+        }
+
+        $value = 'trailer' . self::EOL_MARKER;
+        $value .= $dictionary->write();
+        $value .= 'startxref' . self::EOL_MARKER;
+        $value .= $this->getCrossReferenceOffset() . self::EOL_MARKER;
+        $value .= '%%EOF';
+        
+        return $value;
+    }
 }
