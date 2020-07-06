@@ -16,7 +16,7 @@ class DictionaryObject extends IndirectObject implements Countable
      */
     public function __construct()
     {
-        $this->value = array();
+        $this->value = [];
         parent::__construct();
     }  
 
