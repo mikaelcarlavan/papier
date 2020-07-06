@@ -15,7 +15,7 @@ class ArrayObject extends DictionaryObject
      */
     public function __construct()
     {
-        $this->value = array();
+        $this->value = [];
         parent::__construct();
     }  
 
@@ -34,11 +34,15 @@ class ArrayObject extends DictionaryObject
     /**
      * Add object to array.
      *  
-     * @param  mixed  $object
+     * @param  \Papier\Base\IndirectObject  $object
      * @return \Papier\Object\ArrayObject
      */
     public function addObject($object)
     {
+        if (!$object instanceof IndirectObject) {
+            throw new InvalidArgumentException("Object is incorrect. See ".get_class($this)." class's documentation for possible values.");
+        }
+
         $objects = $this->getObjects();
 
         $arr = is_array($objects) ? $objects : array($objects);
