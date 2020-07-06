@@ -80,7 +80,7 @@ class StreamObject extends IndirectObject
     {
         $dictionary = $this->getDictionary();
         $stream = $this->getStream();
-        $stream = $stream ? $stream->format() : '';
+        $stream = $stream ? $stream->write() : '';
 
         // Compute length of stream and set it into dictionary
         $length = strlen($stream);
@@ -90,11 +90,9 @@ class StreamObject extends IndirectObject
         $this->addEntry('Length', $length);
 
         $value = '';
-        if ($dictionary) {
-            $value .= $dictionary->write();
-        }
+        $value .= $dictionary->write();
         $value .= 'stream' .self::EOL_MARKER;
-        $value .= $stream ? $stream .self::EOL_MARKER : '';
+        $value .= $stream ?? '';
         $value .= 'endstream';
 
         return $value;
