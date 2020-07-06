@@ -6,14 +6,19 @@ use Papier\Base\IndirectObject;
 use Papier\Object\DictionaryObject;
 use Papier\Object\NameObject;
 use Papier\Object\ArrayObject;
+use Papier\Object\StreamObject;
 
 use Papier\Validator\PageLayoutValidator;
-use Papier\Document\PageLayout;
+use Papier\Validator\StringValidator;
 use Papier\Validator\PageModeValidator;
+use Papier\Validator\BoolValidator;
+
+use Papier\Document\PageLayout;
 use Papier\Document\PageMode;
 
 use InvalidArgumentException;
 use Exception;
+use RuntimeException;
 
 class DocumentCatalog extends IndirectObject
 {
@@ -98,7 +103,7 @@ class DocumentCatalog extends IndirectObject
             throw new InvalidArgumentException("Extensions is incorrect. See ".get_class($this)." class's documentation for possible values.");
         }
 
-        $this->addEntry('Extensions', $extensions->getReference());
+        $this->addEntry('Extensions', $extensions);
         return $this;
     } 
 
@@ -116,7 +121,8 @@ class DocumentCatalog extends IndirectObject
             throw new InvalidArgumentException("Pages is incorrect. See ".get_class($this)." class's documentation for possible values.");
         }
 
-        $this->addEntry('Pages', $pages->getReference());
+        $pages->setIndirect(true);
+        $this->addEntry('Pages', $pages);
         return $this;
     }
     
@@ -133,7 +139,7 @@ class DocumentCatalog extends IndirectObject
             throw new InvalidArgumentException("Names is incorrect. See ".get_class($this)." class's documentation for possible values.");
         }
 
-        $this->addEntry('Names', $names->getReference());
+        $this->addEntry('Names', $names);
         return $this;
     } 
 
@@ -150,7 +156,8 @@ class DocumentCatalog extends IndirectObject
             throw new InvalidArgumentException("Dests is incorrect. See ".get_class($this)." class's documentation for possible values.");
         }
 
-        $this->addEntry('Dests', $dests->getReference());
+        $dests->setIndirect(true);
+        $this->addEntry('Dests', $dests);
         return $this;
     } 
 
@@ -167,7 +174,7 @@ class DocumentCatalog extends IndirectObject
             throw new InvalidArgumentException("ViewPreferences is incorrect. See ".get_class($this)." class's documentation for possible values.");
         }
 
-        $this->addEntry('ViewerPreferences', $preferences->getReference());
+        $this->addEntry('ViewerPreferences', $preferences);
         return $this;
     } 
 
@@ -232,7 +239,8 @@ class DocumentCatalog extends IndirectObject
             throw new InvalidArgumentException("Outlines is incorrect. See ".get_class($this)." class's documentation for possible values.");
         }
 
-        $this->addEntry('Outlines', $outlines->getReference());
+        $outlines->setIndirect(true);
+        $this->addEntry('Outlines', $outlines);
         return $this;
     } 
 
@@ -249,7 +257,8 @@ class DocumentCatalog extends IndirectObject
             throw new InvalidArgumentException("Threads is incorrect. See ".get_class($this)." class's documentation for possible values.");
         }
 
-        $this->addEntry('Threads', $threads->getReference());
+        $threads->setIndirect(true);
+        $this->addEntry('Threads', $threads);
         return $this;
     } 
 
@@ -266,12 +275,12 @@ class DocumentCatalog extends IndirectObject
             throw new InvalidArgumentException("Action is incorrect. See ".get_class($this)." class's documentation for possible values.");
         }
 
-        $this->addEntry('OpenAction', $action->getReference());
+        $this->addEntry('OpenAction', $action);
         return $this;
     } 
 
     /**
-     * Set AA.
+     * Set additional actions.
      *  
      * @param  \Papier\Object\DictionaryObject  $aa
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
@@ -283,7 +292,7 @@ class DocumentCatalog extends IndirectObject
             throw new InvalidArgumentException("AA is incorrect. See ".get_class($this)." class's documentation for possible values.");
         }
 
-        $this->addEntry('AA', $aa->getReference());
+        $this->addEntry('AA', $aa);
         return $this;
     } 
 
@@ -300,12 +309,12 @@ class DocumentCatalog extends IndirectObject
             throw new InvalidArgumentException("URI is incorrect. See ".get_class($this)." class's documentation for possible values.");
         }
 
-        $this->addEntry('URI', $uri->getReference());
+        $this->addEntry('URI', $uri);
         return $this;
     } 
 
     /**
-     * Set AcroForm.
+     * Set interactive form.
      *  
      * @param  \Papier\Object\DictionaryObject  $form
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
@@ -314,12 +323,241 @@ class DocumentCatalog extends IndirectObject
     public function setAcroForm($form)
     {
         if (!$form instanceof DictionaryObject) {
-            throw new InvalidArgumentException("AcroForm is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Form is incorrect. See ".get_class($this)." class's documentation for possible values.");
         }
 
-        $this->addEntry('AcroForm', $form->getReference());
+        $this->addEntry('AcroForm', $form);
         return $this;
     } 
+
+    /**
+     * Set metadata.
+     *  
+     * @param  \Papier\Object\StreamObject  $metadata
+     * @throws InvalidArgumentException if the provided argument is not of type 'StreamObject'.
+     * @return \Papier\Document\DocumentCatalog
+     */
+    public function setMetadata($metadata)
+    {
+        if (!$metadata instanceof StreamObject) {
+            throw new InvalidArgumentException("Metadata is incorrect. See ".get_class($this)." class's documentation for possible values.");
+        }
+
+        $metadata->setIndirect(true);
+        $this->addEntry('Metadata', $metadata);
+        return $this;
+    } 
+
+    /**
+     * Set document's structure tree root.
+     *  
+     * @param  \Papier\Object\DictionaryObject  $structTreeRoot
+     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
+     * @return \Papier\Document\DocumentCatalog
+     */
+    public function setStructTreeRoot($structTreeRoot)
+    {
+        if (!$structTreeRoot instanceof DictionaryObject) {
+            throw new InvalidArgumentException("StructTreeRoot is incorrect. See ".get_class($this)." class's documentation for possible values.");
+        }
+
+        $this->addEntry('StructTreeRoot', $structTreeRoot);
+        return $this;
+    }
+
+
+    /**
+     * Set mark information.
+     *  
+     * @param  \Papier\Object\DictionaryObject  $markInfo
+     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
+     * @return \Papier\Document\DocumentCatalog
+     */
+    public function setMarkInfo($markInfo)
+    {
+        if (!$markInfo instanceof DictionaryObject) {
+            throw new InvalidArgumentException("MarkInfo is incorrect. See ".get_class($this)." class's documentation for possible values.");
+        }
+
+        $this->addEntry('MarkInfo', $markInfo);
+        return $this;
+    }
+
+    /**
+     * Set document's language.
+     *  
+     * @param  string  $lang
+     * @throws InvalidArgumentException if the provided argument is not of type 'string'.
+     * @return \Papier\Document\DocumentCatalog
+     */
+    public function setLang($lang)
+    {
+        if (!StringValidator::isValid($lang)) {
+            throw new InvalidArgumentException("Lang is incorrect. See ".get_class($this)." class's documentation for possible values.");
+        }
+
+        $lan = new StringObject();
+        $lan->setValue($lang);
+
+        $this->addEntry('Lang', $lan);
+        return $this;
+    }
+
+    /**
+     * Set spider info.
+     *  
+     * @param  \Papier\Object\DictionaryObject  $spiderInfo
+     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
+     * @return \Papier\Document\DocumentCatalog
+     */
+    public function setSpiderInfo($spiderInfo)
+    {
+        if (!$spiderInfo instanceof DictionaryObject) {
+            throw new InvalidArgumentException("SpiderInfo is incorrect. See ".get_class($this)." class's documentation for possible values.");
+        }
+
+        $this->addEntry('SpiderInfo', $spiderInfo);
+        return $this;
+    }
+
+    /**
+     * Set output intents.
+     *  
+     * @param  \Papier\Object\ArrayObject  $outputIntents
+     * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
+     * @return \Papier\Document\DocumentCatalog
+     */
+    public function setOutputIntents($outputIntents)
+    {
+        if (!$outputIntents instanceof ArrayObject) {
+            throw new InvalidArgumentException("OutputIntents is incorrect. See ".get_class($this)." class's documentation for possible values.");
+        }
+
+        $this->addEntry('OutputIntents', $outputIntents);
+        return $this;
+    } 
+
+    /**
+     * Set piece info.
+     *  
+     * @param  \Papier\Object\DictionaryObject  $pieceInfo
+     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
+     * @return \Papier\Document\DocumentCatalog
+     */
+    public function setPieceInfo($pieceInfo)
+    {
+        if (!$pieceInfo instanceof DictionaryObject) {
+            throw new InvalidArgumentException("PieceInfo is incorrect. See ".get_class($this)." class's documentation for possible values.");
+        }
+
+        $this->addEntry('PieceInfo', $pieceInfo);
+        return $this;
+    }
+
+    /**
+     * Set OC properties.
+     *  
+     * @param  \Papier\Object\DictionaryObject  $ocProperties
+     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
+     * @return \Papier\Document\DocumentCatalog
+     */
+    public function setOCProperties($ocProperties)
+    {
+        if (!$ocProperties instanceof DictionaryObject) {
+            throw new InvalidArgumentException("OCProperties is incorrect. See ".get_class($this)." class's documentation for possible values.");
+        }
+
+        $this->addEntry('OCProperties', $ocProperties);
+        return $this;
+    }
+
+    /**
+     * Set permissions.
+     *  
+     * @param  \Papier\Object\DictionaryObject  $perms
+     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
+     * @return \Papier\Document\DocumentCatalog
+     */
+    public function setPerms($perms)
+    {
+        if (!$perms instanceof DictionaryObject) {
+            throw new InvalidArgumentException("Perms is incorrect. See ".get_class($this)." class's documentation for possible values.");
+        }
+
+        $this->addEntry('Perms', $perms);
+        return $this;
+    }
+
+    /**
+     * Set legal.
+     *  
+     * @param  \Papier\Object\DictionaryObject  $legal
+     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
+     * @return \Papier\Document\DocumentCatalog
+     */
+    public function setLegal($legal)
+    {
+        if (!$legal instanceof DictionaryObject) {
+            throw new InvalidArgumentException("Legal is incorrect. See ".get_class($this)." class's documentation for possible values.");
+        }
+
+        $this->addEntry('Legal', $legal);
+        return $this;
+    }
+
+    /**
+     * Set requirements.
+     *  
+     * @param  \Papier\Object\ArrayObject  $requirements
+     * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
+     * @return \Papier\Document\DocumentCatalog
+     */
+    public function setRequirements($requirements)
+    {
+        if (!$requirements instanceof ArrayObject) {
+            throw new InvalidArgumentException("Requirements is incorrect. See ".get_class($this)." class's documentation for possible values.");
+        }
+
+        $this->addEntry('Requirements', $requirements);
+        return $this;
+    } 
+
+     /**
+     * Set collection.
+     *  
+     * @param  \Papier\Object\DictionaryObject  $collection
+     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
+     * @return \Papier\Document\DocumentCatalog
+     */
+    public function setCollection($collection)
+    {
+        if (!$collection instanceof DictionaryObject) {
+            throw new InvalidArgumentException("Collection is incorrect. See ".get_class($this)." class's documentation for possible values.");
+        }
+
+        $this->addEntry('Collection', $collection);
+        return $this;
+    }
+
+    /**
+     * Set needs rendering.
+     *  
+     * @param  bool  $needsRendering
+     * @throws InvalidArgumentException if the provided argument is not of type 'bool'.
+     * @return \Papier\Document\DocumentCatalog
+     */
+    public function setNeedsRendering($needsRendering)
+    {
+        if (!BoolValidator::isValid($needsRendering)) {
+            throw new InvalidArgumentException("NeedsRendering is incorrect. See ".get_class($this)." class's documentation for possible values.");
+        }
+
+        $needs = new BooleanObject();
+        $needs->setValue($needsRendering);
+
+        $this->addEntry('NeedsRendering', $needs);
+        return $this;
+    }
 
     /**
      * Format catalog's content.
@@ -328,11 +566,16 @@ class DocumentCatalog extends IndirectObject
      */
     public function format()
     {
+
+        $dictionary = $this->getDictionary();
+
+        if (!$dictionary->hasKey('Pages')) {
+            throw new RuntimeException("Pages is missing. See ".get_class($this)." class's documentation for possible values.");
+        }
+
         $type = new NameObject();
         $type->setValue('Catalog');
         $this->addEntry('Type', $type);
-
-        $dictionary = $this->getDictionary();
 
         // Set default values
         if (!$dictionary->hasKey('PageLayout')) {
@@ -341,6 +584,10 @@ class DocumentCatalog extends IndirectObject
 
         if (!$dictionary->hasKey('PageMode')) {
             $this->setPageMode(self::DEFAULT_PAGE_MODE);
+        }
+
+        if (!$dictionary->hasKey('NeedsRendering')) {
+            $this->setNeedsRendering(false);
         }
 
         $value = $dictionary->write();
