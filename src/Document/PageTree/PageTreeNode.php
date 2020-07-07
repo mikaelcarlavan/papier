@@ -19,21 +19,6 @@ class PageTreeNode extends ArrayObject
     private $parent = null;
 
     /**
-     * Add object to page tree.
-     *  
-     * @param  \Papier\Document\PageTree\PageTreeObject  $object
-     * @return \Papier\Document\PageTree\PageTreeNode
-     */
-    private function addObject($object)
-    {
-        if (!$parent instanceof PageTreeObject) {
-            throw new InvalidArgumentException("Object is incorrect. See ".get_class($this)." class's documentation for possible values.");
-        }
-
-        return parent::addObject($object);
-    }
-
-    /**
      * Set parent.
      *  
      * @param  \Papier\Object\DictionaryObject  $parent
@@ -65,12 +50,12 @@ class PageTreeNode extends ArrayObject
      *  
      * @return \Document\PageTree\PageTreeObject
      */
-    public function addPageTreeObject()
+    public function addObject()
     {
         $object = new PageTreeObject();
         $object->setIndirect(true);
 
-        $this->addObject($object);
+        $this->append($object);
 
         return $object;
     }
