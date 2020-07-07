@@ -32,12 +32,12 @@ class ArrayObject extends DictionaryObject
 
     
     /**
-     * Add object to array.
+     * Append object to array.
      *  
      * @param  \Papier\Base\IndirectObject  $object
      * @return \Papier\Object\ArrayObject
      */
-    public function addObject($object)
+    public function append($object)
     {
         if (!$object instanceof IndirectObject) {
             throw new InvalidArgumentException("Object is incorrect. See ".get_class($this)." class's documentation for possible values.");
