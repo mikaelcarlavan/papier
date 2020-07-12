@@ -2,15 +2,7 @@
 
 namespace Papier\Document;
 
-use Papier\Base\Object;
-use Papier\Object\DictionaryObject;
-use Papier\Object\NameObject;
-use Papier\Validator\StringValidator;
-
-use InvalidArgumentException;
-use Exception;
-
-class PageLayout extends Object
+class PageLayout
 {
     /**
      * Single page layout (display one page at a time)
