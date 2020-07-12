@@ -2,13 +2,13 @@
 
 namespace Papier\File;
 
-use Papier\Base\Object;
+use Papier\Base\BaseObject;
 use Papier\Validator\VersionValidator;
 use Papier\Validator\BoolValidator;
 
 use InvalidArgumentException;
 
-class FileHeader extends Object
+class FileHeader extends BaseObject
 {
     /**
      * Bool which indicates if file has binary data.

@@ -2,9 +2,7 @@
 
 namespace Papier\Base;
 
-use Papier\Base\Comment;
-
-abstract class Object
+abstract class BaseObject
 {
     /**
      * The value of the object.

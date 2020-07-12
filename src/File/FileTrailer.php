@@ -2,7 +2,7 @@
 
 namespace Papier\File;
 
-use Papier\Base\Object;
+use Papier\Base\BaseObject;
 use Papier\Validator\IntValidator;
 use Papier\Object\DictionaryObject;
 use Papier\Object\ArrayObject;
@@ -10,7 +10,7 @@ use Papier\Object\ArrayObject;
 use InvalidArgumentException;
 use RuntimeException;
 
-class FileTrailer extends Object
+class FileTrailer extends BaseObject
 {
      /**
      * Offset in bytes (from the beginning of the file) to the cross reference table.

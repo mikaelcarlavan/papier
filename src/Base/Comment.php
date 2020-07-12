@@ -2,9 +2,9 @@
 
 namespace Papier\Base;
 
-use Papier\Base\Object;
+use Papier\Base\BaseObject;
 
-class Comment extends Object
+class Comment extends BaseObject
 {
     /**
     * Set comment's value.

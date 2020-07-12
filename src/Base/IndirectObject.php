@@ -2,10 +2,10 @@
 
 namespace Papier\Base;
 
-use Papier\Base\Object;
+use Papier\Base\BaseObject;
 use Papier\Validator\BoolValidator;
 
-abstract class IndirectObject extends Object
+abstract class IndirectObject extends BaseObject
 {
     /**
      * Define object as indirect.
