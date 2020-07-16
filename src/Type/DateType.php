@@ -31,7 +31,7 @@ class DateType extends StringType
     protected function getValue()
     {
         $value = parent::getValue();
-        $value = 'D:'.$value->format('YmdHis');
+        $value = 'D:'.$value->format('YmdHis') . substr_replace($now->format('O'), "'", 3, 0);
         return $value;
     }
 }
