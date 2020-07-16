@@ -43,10 +43,11 @@ class StreamObject extends IndirectObject
      */
     private function getStream()
     {
+        $stream = $this->getContent();
+
         // Apply filters
         $dictionary = $this->getDictionary();
 
-        $stream = $this->getContent();
         if ($dictionary->hasKey('Filter')) {
             $filters = $dictionary['Filter'];
             $params = $dictionary['DecodeParms'];
@@ -56,7 +57,7 @@ class StreamObject extends IndirectObject
 
                     if (class_exists($name)) {
                         $param = $params[$i];
-                        $stream = $name::process($stream, $param);
+                        $stream = $name::decode($stream, $param);
                     }
                 }
             }
