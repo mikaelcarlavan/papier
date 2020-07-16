@@ -13,7 +13,7 @@ class StreamObject extends IndirectObject
      *
      * @var mixed
      */
-    protected $stream;
+    protected $content;
     
     /**
      * Create a new StreamObject instance.
@@ -41,20 +41,49 @@ class StreamObject extends IndirectObject
      *
      * @return string
      */
-    protected function getStream()
+    private function getStream()
     {
-        return $this->stream;
+        // Apply filters
+        $dictionary = $this->getDictionary();
+
+        $stream = $this->getContent();
+        if ($dictionary->hasKey('Filter')) {
+            $filters = $dictionary['Filter'];
+            $params = $dictionary['DecodeParms'];
+
+            if ($filters && count($filters) > 0) {
+                foreach ($filters as $i => $name) {
+
+                    if (class_exists($name)) {
+                        $param = $params[$i];
+                        $stream = $name::process($stream, $param);
+                    }
+                }
+            }
+        }
+
+        return $stream;
     }
 
     /**
-     * Set object's stream.
+     * Get object's content.
+     *
+     * @return string
+     */
+    protected function getContent()
+    {
+        return $this->content;
+    }
+
+    /**
+     * Set object's content.
      *  
-     * @param  mixed  $stream
+     * @param  mixed  $content
      * @return \Papier\Object\StreamObject
      */
-    protected function setStream($stream)
+    protected function setContent($content)
     {
-        $this->stream = $stream;
+        $this->content = $content;
         return $this;
     } 
 
