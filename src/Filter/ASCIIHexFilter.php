@@ -14,6 +14,6 @@ class ASCIIHexFilter extends Filter
      */
     public function decode($stream)
     {
-        return $stream;
+        return hex2bin($stream);
     }
 }
