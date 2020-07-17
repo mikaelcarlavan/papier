@@ -3,6 +3,8 @@
 namespace Papier\File;
 
 use Papier\Base\BaseObject;
+use Papier\Base\Comment;
+
 use Papier\Validator\VersionValidator;
 use Papier\Validator\BoolValidator;
 
