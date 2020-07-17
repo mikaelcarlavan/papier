@@ -26,8 +26,8 @@ class FileTrailer extends BaseObject
      */
     public function __construct()
     {
-        $this->value = new DictionaryObject();
         parent::__construct();
+        $this->value = new DictionaryObject();
     } 
 
     /**

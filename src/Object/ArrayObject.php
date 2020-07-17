@@ -15,8 +15,8 @@ class ArrayObject extends DictionaryObject
      */
     public function __construct()
     {
-        $this->value = [];
         parent::__construct();
+        $this->value = [];
     }  
 
     /**

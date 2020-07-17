@@ -22,8 +22,8 @@ class StreamObject extends IndirectObject
      */
     public function __construct()
     {
-        $this->value = new DictionaryObject();
         parent::__construct();
+        $this->value = new DictionaryObject();
     } 
 
     /**
