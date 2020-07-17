@@ -2,7 +2,7 @@
 
 namespace Papier\Object;
 
-use Papier\Object\Base\StringObject;
+use Papier\Object\StringObject;
 
 class HexadecimalStringObject extends StringObject
 {
