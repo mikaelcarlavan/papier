@@ -112,6 +112,16 @@ class DictionaryObject extends IndirectObject implements Countable
     }
 
     /**
+     * Erase objects.
+     *  
+     * @return array
+     */
+    public function clearObjects()
+    {
+        return $this->clearValue();
+    }
+
+    /**
      * Set objects.
      * 
      * @throws InvalidArgumentException if the provided argument is not of type 'array' or if each element of the argument does not inherit 'IndirectObject'.
