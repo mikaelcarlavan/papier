@@ -48,6 +48,18 @@ abstract class BaseObject
         return $this->value;
     }
 
+        
+    /**
+     * Clear object's value.
+     *
+     * @return string
+     */
+    protected function clearValue()
+    {
+        $this->setValue(null);
+        return $this;
+    }
+
     /**
      * Set object's value.
      *  
