@@ -80,11 +80,11 @@ class PageTreeNode extends ArrayObject
             throw new RuntimeException("Parent is missing. See ".get_class($this)." class's documentation for possible values.");
         }
 
-        $dictionary = new Dictionary();
-        $dictionary->addEntry('Type', $type);
-        $dictionary->addEntry('Parent', $parent);
-        $dictionary->addEntry('Kids', $objects);
-        $dictionary->addEntry('Count', $num);
+        $dictionary = new DictionaryObject();
+        $dictionary->setObjectForKey('Type', $type);
+        $dictionary->setObjectForKey('Parent', $parent);
+        $dictionary->setObjectForKey('Kids', $objects);
+        $dictionary->setObjectForKey('Count', $num);
         
         $value = $dictionary->write();
         return $value;
