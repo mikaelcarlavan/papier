@@ -1,7 +1,6 @@
 <?php
 
 use Papier\Factory\Factory;
-use Papier\Filter\ASCII85Filter;
 
 /**
  * Papier - Yet another PHP Framework For PDF
@@ -27,24 +26,45 @@ date_default_timezone_set("UTC");
 
 require __DIR__.'/../vendor/autoload.php';
 
-$val1 = Factory::getInstance()->createObject('Integer');
-$val2 = Factory::getInstance()->createObject('Integer');
-$val3 = Factory::getInstance()->createObject('Integer');
+$val1OfKid1 = Factory::getInstance()->createObject('Integer');
+$val2OfKid1 = Factory::getInstance()->createObject('Integer');
+$val3OfKid1 = Factory::getInstance()->createObject('Integer');
 
-$root = Factory::getInstance()->createType('TreeNode');
-$names = $root->getNames();
+$val1OfKid2 = Factory::getInstance()->createObject('Integer');
+$val2OfKid2 = Factory::getInstance()->createObject('Integer');
 
-$val1->setValue(30)->setIndirect();
-$val2->setValue(40)->setIndirect();
-$val3->setValue(50)->setIndirect();
+$root = Factory::getInstance()->createType('TreeNode')->setRoot();
 
-$names->setObjectForKey('Actinium', $val1);
-$names->setObjectForKey('Argon', $val2);
-$names->setObjectForKey('Arsenic', $val3);
+$kid1 = Factory::getInstance()->createType('TreeNode');
+$kid2 = Factory::getInstance()->createType('TreeNode');
 
-print $root->format();
+$namesOfKid1 = $kid1->setIndirect()->getNames();
+$namesOfKid2 = $kid2->setIndirect()->getNames();
 
-print "\r\n";
-print ASCII85Filter::encode("Cequiseconcoitbiensenonceclairement");
-print "\r\n";
-print ASCII85Filter::decode("6Y17[BldiqDf0''BlmfuASuR#DJsE&ARfObBl[d%ASuS~>");
+$val1OfKid1->setValue(30)->setIndirect();
+$val2OfKid1->setValue(40)->setIndirect();
+$val3OfKid1->setValue(50)->setIndirect();
+
+$val1OfKid2->setValue(80)->setIndirect();
+$val2OfKid2->setValue(90)->setIndirect();
+
+$namesOfKid1->setObjectForKey('Actinium', $val1OfKid1);
+$namesOfKid1->setObjectForKey('Argon', $val2OfKid1);
+$namesOfKid1->setObjectForKey('Arsenic', $val3OfKid1);
+
+$namesOfKid2->setObjectForKey('Zinc', $val1OfKid2);
+$namesOfKid2->setObjectForKey('Xenon', $val2OfKid2);
+
+$kids = $root->getKids();
+$kids->append($kid1);
+$kids->append($kid2);
+
+
+print $root->getObject();
+
+print "\r\n\n";
+print $kid1->getObject();
+
+print "\r\n\n";
+print $kid2->getObject();
+
