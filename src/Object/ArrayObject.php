@@ -5,10 +5,17 @@ namespace Papier\Object;
 use Papier\Object\DictionaryObject;
 use Papier\Base\IndirectObject;
 
+use Iterator;
 use InvalidArgumentException;
 
-class ArrayObject extends DictionaryObject
+class ArrayObject extends DictionaryObject implements Iterator
 {
+    /**
+     * The value of the current position.
+     *
+     * @var int
+     */
+    private $position = 0;
 
     /**
      * Create a new ArrayObject instance.
@@ -19,7 +26,58 @@ class ArrayObject extends DictionaryObject
     {
         parent::__construct();
         $this->value = [];
+        $this->position = 0;
     }  
+
+    /**
+     * Reset current position.
+     *  
+     */
+    public function rewind() 
+    {
+        $this->position = 0;
+    }
+
+    /**
+     * Get object at position.
+     *  
+     * @return int
+     */
+    public function current() 
+    {
+        $objects = $this->getObjects();
+        return $objects[$this->position];
+    }
+
+    /**
+     * Get current position.
+     *  
+     * @return int
+     */
+    public function key() 
+    {
+        return $this->position;
+    }
+
+    /**
+     * Increment current position.
+     *  
+     */
+    public function next() 
+    {
+        ++$this->position;
+    }
+
+    /**
+     * Check if object exist at current position.
+     *  
+     * @return bool
+     */
+    public function valid() 
+    {
+        $objects = $this->getObjects();
+        return isset($objects[$this->position]);
+    }
 
     /**
      * Get number of objects.
