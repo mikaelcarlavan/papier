@@ -35,11 +35,12 @@ $val2OfKid2 = Factory::getInstance()->createObject('Integer');
 
 $root = Factory::getInstance()->createType('TreeNode')->setRoot();
 
-$kid1 = Factory::getInstance()->createType('TreeNode');
-$kid2 = Factory::getInstance()->createType('TreeNode');
+$kid1 = Factory::getInstance()->createType('TreeNode')->setIndirect();
+$kid2 = Factory::getInstance()->createType('TreeNode')->setIndirect();
+$kid0 = Factory::getInstance()->createType('TreeNode')->setIndirect();
 
-$namesOfKid1 = $kid1->setIndirect()->getNames();
-$namesOfKid2 = $kid2->setIndirect()->getNames();
+$namesOfKid1 = $kid1->getNames();
+$namesOfKid2 = $kid2->getNames();
 
 $val1OfKid1->setValue(30)->setIndirect();
 $val2OfKid1->setValue(40)->setIndirect();
@@ -56,15 +57,15 @@ $namesOfKid2->setObjectForKey('Zinc', $val1OfKid2);
 $namesOfKid2->setObjectForKey('Xenon', $val2OfKid2);
 
 $kids = $root->getKids();
-$kids->append($kid1);
-$kids->append($kid2);
+$kids->append($kid0);
 
+$kids2 = $kid0->getKids();
+$kids2->append($kid1);
+$kids2->append($kid2);
 
 print $root->getObject();
 
 print "\r\n\n";
-print $kid1->getObject();
+print $kid0->getObject();
 
-print "\r\n\n";
-print $kid2->getObject();
 
