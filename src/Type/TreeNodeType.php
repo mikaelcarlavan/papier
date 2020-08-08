@@ -8,11 +8,46 @@ use Papier\Object\LiteralStringKeyArrayObject;
 use Papier\Object\LiteralStringObject;
 use Papier\Object\LimitsArrayObject;
 
+use Papier\Validator\BoolValidator;
+
 use InvalidArgumentException;
 use RunTimeException;
 
 class TreeNodeType extends DictionaryObject
 { 
+    /**
+     * Define node as root.
+     *
+     * @var bool
+     */
+    protected $root = false;
+
+    /**
+     * Set node to be root.
+     *  
+     * @param  bool  $root
+     * @return \Papier\Type\TreeNodeType
+     */
+    public function setRoot($root = true)
+    {
+        if (!BoolValidator::isValid($root)) {
+            throw new InvalidArgumentException("Root boolean is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $this->root = $root;
+        return $this;
+    } 
+
+    /**
+     * Returns if node is root.
+     *  
+     * @return bool
+     */
+    public function isRoot()
+    {
+        return $this->root;
+    } 
+
     /**
      * Get kids.
      *  
@@ -114,57 +149,66 @@ class TreeNodeType extends DictionaryObject
 
 
     /**
+     * Get names from node
+     *
+     * @param  \Papier\Type\TreeNodeType  $node
+     * @return array
+     */    
+    private function collectNames($node)
+    {        
+        if (!$node instanceof TreeNodeType) {
+            throw new InvalidArgumentException("Node is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }  
+
+        $objects = array();
+
+        if ($node->hasKey('Names')) {
+            $names = $node->getObjectForKey('Names')->getKeys();
+            $objects = array_merge($objects, $names);
+        } else {
+            $kids = $node->getObjectForKey('Kids');
+            
+            if (count($kids) > 0) {
+                foreach ($kids as $kid) {
+                    $names = $this->collectNames($kid);
+                    $objects = array_merge($objects, $names);
+                }
+            }
+        }
+
+        return $objects;
+    }
+
+    /**
      * Format object's value.
      *
      * @return string
      */
     public function format()
     {
-        // Compute limits
-        $limits = new LimitsArrayObject();
-        $objects = array();
+        if (!$this->isRoot()) {
+            // Compute limits
+            $limits = new LimitsArrayObject();
+            $objects = $this->collectNames($this);
 
-        if ($this->hasKey('Kids')) {
-            //Intermediate nodes
-            $kids = $this->getKids();
+            if (count($objects)) {
+                sort($objects);
 
-            foreach ($kids as $kid) {
-                                
-                while ($kid instanceof TreeNodeType && $kid->hasKey('Kids')) {
-                    $kid = $kid->getKids();
-                }
+                $first = new LiteralStringObject();
+                $last = new LiteralStringObject();
+                            
+                $first->setValue(array_shift($objects));
+                $last->setValue(array_pop($objects));
                 
-                if ($kid->hasKey('Names')) {
-                    $names = $kid['Names'];
-
-                    if (count($names) > 0) {
-                        for ($i=0; $i < count($names); $i+2) {
-                            $objects[] = $names[$i]->format();
-                        }
-                    }
-                }
+                $limits->append($first);
+                $limits->append($last);
+        
+                $this->setLimits($limits);
             }
-        } else if ($this->hasKey('Names')) {
-            $names = $this->getObjectForKey('Names');
-            $objects += $names->getKeys();       
-        }
-
-        if (count($objects)) {
-            sort($objects);
-
-            $first = new LiteralStringObject();
-            $last = new LiteralStringObject();
-                        
-            $first->setValue(array_shift($objects));
-            $last->setValue(array_pop($objects));
-            
-            $limits->append($first);
-            $limits->append($last);
-    
-            $this->setLimits($limits);
         }
 
         $value = $this->getValue();
+        
         asort($value);
         
         $this->setValue($value);
