@@ -13,6 +13,18 @@ abstract class Filter
      */
     public static function decode($stream, $param = array())
     {
-        return $this->stream;
+        return $stream;
+    }
+
+    /**
+     * Encode value.
+     *
+     * @param  string  $value
+     * @param  array  $param
+     * @return string
+     */
+    public static function encode($value, $param = array())
+    {
+        return $value;
     }
 }
