@@ -10,17 +10,6 @@ use InvalidArgumentException;
 class ArrayObject extends DictionaryObject
 {
     /**
-     * Create a new ArrayObject instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->value = [];
-    }  
-
-    /**
      * Get object at position.
      *  
      * @return int
