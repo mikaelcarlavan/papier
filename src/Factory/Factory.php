@@ -41,7 +41,7 @@ class Factory
         }
 
         $object = new $class();
-        $object->setNumber(self::$number);
+        $object->setNumber(self::$number)->setIndirect();
         
         self::$number++;
         
@@ -68,7 +68,7 @@ class Factory
         }
 
         $object = new $class();
-        $object->setNumber(self::$number);
+        $object->setNumber(self::$number)->setIndirect();
         
         self::$number++;
         
