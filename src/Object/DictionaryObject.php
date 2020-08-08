@@ -6,9 +6,17 @@ use Papier\Base\IndirectObject;
 use Papier\Object\NullObject;
 
 use Countable;
+use Iterator;
 
-class DictionaryObject extends IndirectObject implements Countable
+class DictionaryObject extends IndirectObject implements Countable, Iterator
 {
+    /**
+     * The value of the current position.
+     *
+     * @var int
+     */
+    protected $position = 0;
+
     /**
      * Create a new DictionaryObject instance.
      *
@@ -17,7 +25,60 @@ class DictionaryObject extends IndirectObject implements Countable
     public function __construct()
     {
         $this->value = [];
+        $this->position = 0;
     }  
+
+    /**
+     * Reset current position.
+     *  
+     */
+    public function rewind() 
+    {
+        $this->position = 0;
+    }
+
+    /**
+     * Get object at position.
+     *  
+     * @return int
+     */
+    public function current() 
+    {
+        $keys = $this->getKeys();
+        $objects = $this->getObjects();
+        return $objects[$keys[$this->position]];
+    }
+
+    /**
+     * Get current position.
+     *  
+     * @return int
+     */
+    public function key() 
+    {
+        $keys = $this->getKeys();
+        return $keys[$this->position];
+    }
+
+    /**
+     * Increment current position.
+     *  
+     */
+    public function next() 
+    {
+        ++$this->position;
+    }
+
+    /**
+     * Check if object exist at current position.
+     *  
+     * @return bool
+     */
+    public function valid() 
+    {
+        $keys = $this->getKeys();
+        return isset($keys[$this->position]);
+    }
 
     /**
      * Check if object has given key.
