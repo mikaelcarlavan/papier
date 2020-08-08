@@ -81,7 +81,7 @@ class FileHeader extends BaseObject
     protected function setBinaryData($binaryData)
     {
         if (!BoolValidator::isValid($binaryData)) {
-            throw new InvalidArgumentException("BinaryData is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("BinaryData is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $this->binaryData = $binaryData;

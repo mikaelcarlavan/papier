@@ -18,7 +18,7 @@ class CrossReferenceTable extends ArrayObject
     public function __set($key, $object)
     {
         if (!$object instanceof CrossReferenceSection) {
-            throw new InvalidArgumentException("Cross-reference section is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Cross-reference section is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
         $this->setObjectForKey($key, $object);
     }

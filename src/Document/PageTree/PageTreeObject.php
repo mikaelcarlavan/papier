@@ -60,7 +60,7 @@ class PageTreeObject extends IndirectObject
         $dictionary = $this->getDictionary();
 
         if (!$dictionary->hasKey('Parent')) {
-            throw new RuntimeException("Parent is missing. See ".get_class($this)." class's documentation for possible values.");
+            throw new RuntimeException("Parent is missing. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $value = $dictionary->write();

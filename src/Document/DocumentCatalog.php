@@ -17,7 +17,6 @@ use Papier\Document\PageLayout;
 use Papier\Document\PageMode;
 
 use InvalidArgumentException;
-use Exception;
 use RuntimeException;
 
 class DocumentCatalog extends IndirectObject
@@ -79,13 +78,9 @@ class DocumentCatalog extends IndirectObject
      */
     public function setVersion($version)
     {
-        try {
-            $ver = new NameObject();
-            $ver->setValue($version);
-            $this->addEntry('Version', $ver);
-        } catch (Exception $e) {
-            throw $e;
-        }
+        $ver = new NameObject();
+        $ver->setValue($version);
+        $this->addEntry('Version', $ver);
 
         return $this;
     } 
@@ -100,7 +95,7 @@ class DocumentCatalog extends IndirectObject
     public function setExtensions($extensions)
     {
         if (!$extensions instanceof DictionaryObject) {
-            throw new InvalidArgumentException("Extensions is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Extensions is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $this->addEntry('Extensions', $extensions);
@@ -118,7 +113,7 @@ class DocumentCatalog extends IndirectObject
     public function setPages($pages)
     {
         if (!$pages instanceof DictionaryObject) {
-            throw new InvalidArgumentException("Pages is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Pages is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $pages->setIndirect(true);
@@ -136,7 +131,7 @@ class DocumentCatalog extends IndirectObject
     public function setNames($names)
     {
         if (!$names instanceof DictionaryObject) {
-            throw new InvalidArgumentException("Names is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Names is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $this->addEntry('Names', $names);
@@ -153,7 +148,7 @@ class DocumentCatalog extends IndirectObject
     public function setDests($dests)
     {
         if (!$dests instanceof DictionaryObject) {
-            throw new InvalidArgumentException("Dests is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Dests is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $dests->setIndirect(true);
@@ -171,7 +166,7 @@ class DocumentCatalog extends IndirectObject
     public function setViewerPreferences($preferences)
     {
         if (!$preferences instanceof DictionaryObject) {
-            throw new InvalidArgumentException("ViewPreferences is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("ViewPreferences is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $this->addEntry('ViewerPreferences', $preferences);
@@ -188,16 +183,12 @@ class DocumentCatalog extends IndirectObject
     public function setPageLayout($layout)
     {
         if (!PageLayoutValidator::isValid($layout)) {
-            throw new InvalidArgumentException("Layout is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Layout is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        try {
-            $lay = new NameObject();
-            $lay->setValue($layout);
-            $this->addEntry('PageLayout', $lay);
-        } catch (Exception $e) {
-            throw $e;
-        }
+        $lay = new NameObject();
+        $lay->setValue($layout);
+        $this->addEntry('PageLayout', $lay);
 
         return $this;
     } 
@@ -212,16 +203,12 @@ class DocumentCatalog extends IndirectObject
     public function setPageMode($mode)
     {
         if (!PageModeValidator::isValid($mode)) {
-            throw new InvalidArgumentException("Mode is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Mode is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        try {
-            $mod = new NameObject();
-            $mod->setValue($mode);
-            $this->addEntry('PageMode', $mod);
-        } catch (Exception $e) {
-            throw $e;
-        }
+        $mod = new NameObject();
+        $mod->setValue($mode);
+        $this->addEntry('PageMode', $mod);
 
         return $this;
     } 
@@ -236,7 +223,7 @@ class DocumentCatalog extends IndirectObject
     public function setOutlines($outlines)
     {
         if (!$outlines instanceof DictionaryObject) {
-            throw new InvalidArgumentException("Outlines is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Outlines is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $outlines->setIndirect(true);
@@ -254,7 +241,7 @@ class DocumentCatalog extends IndirectObject
     public function setThreads($threads)
     {
         if (!$threads instanceof ArrayObject) {
-            throw new InvalidArgumentException("Threads is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Threads is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $threads->setIndirect(true);
@@ -272,7 +259,7 @@ class DocumentCatalog extends IndirectObject
     public function setOpenAction($action)
     {
         if (!$action instanceof ArrayObject && !$action instanceof DictionaryObject) {
-            throw new InvalidArgumentException("Action is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Action is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $this->addEntry('OpenAction', $action);
@@ -289,7 +276,7 @@ class DocumentCatalog extends IndirectObject
     public function setAA($aa)
     {
         if (!$aa instanceof DictionaryObject) {
-            throw new InvalidArgumentException("AA is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("AA is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $this->addEntry('AA', $aa);
@@ -306,7 +293,7 @@ class DocumentCatalog extends IndirectObject
     public function setURI($uri)
     {
         if (!$uri instanceof DictionaryObject) {
-            throw new InvalidArgumentException("URI is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("URI is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $this->addEntry('URI', $uri);
@@ -323,7 +310,7 @@ class DocumentCatalog extends IndirectObject
     public function setAcroForm($form)
     {
         if (!$form instanceof DictionaryObject) {
-            throw new InvalidArgumentException("Form is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Form is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $this->addEntry('AcroForm', $form);
@@ -340,7 +327,7 @@ class DocumentCatalog extends IndirectObject
     public function setMetadata($metadata)
     {
         if (!$metadata instanceof StreamObject) {
-            throw new InvalidArgumentException("Metadata is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Metadata is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $metadata->setIndirect(true);
@@ -358,7 +345,7 @@ class DocumentCatalog extends IndirectObject
     public function setStructTreeRoot($structTreeRoot)
     {
         if (!$structTreeRoot instanceof DictionaryObject) {
-            throw new InvalidArgumentException("StructTreeRoot is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("StructTreeRoot is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $this->addEntry('StructTreeRoot', $structTreeRoot);
@@ -376,7 +363,7 @@ class DocumentCatalog extends IndirectObject
     public function setMarkInfo($markInfo)
     {
         if (!$markInfo instanceof DictionaryObject) {
-            throw new InvalidArgumentException("MarkInfo is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("MarkInfo is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $this->addEntry('MarkInfo', $markInfo);
@@ -393,7 +380,7 @@ class DocumentCatalog extends IndirectObject
     public function setLang($lang)
     {
         if (!StringValidator::isValid($lang)) {
-            throw new InvalidArgumentException("Lang is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Lang is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $lan = new StringObject();
@@ -413,7 +400,7 @@ class DocumentCatalog extends IndirectObject
     public function setSpiderInfo($spiderInfo)
     {
         if (!$spiderInfo instanceof DictionaryObject) {
-            throw new InvalidArgumentException("SpiderInfo is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("SpiderInfo is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $this->addEntry('SpiderInfo', $spiderInfo);
@@ -430,7 +417,7 @@ class DocumentCatalog extends IndirectObject
     public function setOutputIntents($outputIntents)
     {
         if (!$outputIntents instanceof ArrayObject) {
-            throw new InvalidArgumentException("OutputIntents is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("OutputIntents is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $this->addEntry('OutputIntents', $outputIntents);
@@ -447,7 +434,7 @@ class DocumentCatalog extends IndirectObject
     public function setPieceInfo($pieceInfo)
     {
         if (!$pieceInfo instanceof DictionaryObject) {
-            throw new InvalidArgumentException("PieceInfo is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("PieceInfo is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $this->addEntry('PieceInfo', $pieceInfo);
@@ -464,7 +451,7 @@ class DocumentCatalog extends IndirectObject
     public function setOCProperties($ocProperties)
     {
         if (!$ocProperties instanceof DictionaryObject) {
-            throw new InvalidArgumentException("OCProperties is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("OCProperties is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $this->addEntry('OCProperties', $ocProperties);
@@ -481,7 +468,7 @@ class DocumentCatalog extends IndirectObject
     public function setPerms($perms)
     {
         if (!$perms instanceof DictionaryObject) {
-            throw new InvalidArgumentException("Perms is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Perms is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $this->addEntry('Perms', $perms);
@@ -498,7 +485,7 @@ class DocumentCatalog extends IndirectObject
     public function setLegal($legal)
     {
         if (!$legal instanceof DictionaryObject) {
-            throw new InvalidArgumentException("Legal is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Legal is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $this->addEntry('Legal', $legal);
@@ -515,7 +502,7 @@ class DocumentCatalog extends IndirectObject
     public function setRequirements($requirements)
     {
         if (!$requirements instanceof ArrayObject) {
-            throw new InvalidArgumentException("Requirements is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Requirements is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $this->addEntry('Requirements', $requirements);
@@ -532,7 +519,7 @@ class DocumentCatalog extends IndirectObject
     public function setCollection($collection)
     {
         if (!$collection instanceof DictionaryObject) {
-            throw new InvalidArgumentException("Collection is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Collection is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $this->addEntry('Collection', $collection);
@@ -549,7 +536,7 @@ class DocumentCatalog extends IndirectObject
     public function setNeedsRendering($needsRendering)
     {
         if (!BoolValidator::isValid($needsRendering)) {
-            throw new InvalidArgumentException("NeedsRendering is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("NeedsRendering is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $needs = new BooleanObject();
@@ -570,7 +557,7 @@ class DocumentCatalog extends IndirectObject
         $dictionary = $this->getDictionary();
 
         if (!$dictionary->hasKey('Pages')) {
-            throw new RuntimeException("Pages is missing. See ".get_class($this)." class's documentation for possible values.");
+            throw new RuntimeException("Pages is missing. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $type = new NameObject();

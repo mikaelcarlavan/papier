@@ -33,7 +33,7 @@ class RectangleType extends ArrayType
     public function setLowerLeftX($value)
     {
         if (!RealValidator::isValid($value)) {
-            throw new InvalidArgumentException("Real is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Real is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $objects = $this->getObjects();
@@ -53,7 +53,7 @@ class RectangleType extends ArrayType
     public function setLowerLeftY($value)
     {
         if (!RealValidator::isValid($value)) {
-            throw new InvalidArgumentException("Real is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Real is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $objects = $this->getObjects();
@@ -72,7 +72,7 @@ class RectangleType extends ArrayType
     public function setUpperRightX($value)
     {
         if (!RealValidator::isValid($value)) {
-            throw new InvalidArgumentException("Real is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Real is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $objects = $this->getObjects();
@@ -91,7 +91,7 @@ class RectangleType extends ArrayType
     public function setUpperRightY($value)
     {
         if (!RealValidator::isValid($value)) {
-            throw new InvalidArgumentException("Real is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Real is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $objects = $this->getObjects();
@@ -110,14 +110,14 @@ class RectangleType extends ArrayType
     public function setCoordinates($value)
     {
         if (!ArrayValidator::isValid($value)) {
-            throw new InvalidArgumentException("Array is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Array is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $objects = $this->getObjects();
 
         foreach ($value as $i => $val) {
             if (!RealValidator::isValid($val)) {
-                throw new InvalidArgumentException("Real is incorrect. See ".get_class($this)." class's documentation for possible values.");
+                throw new InvalidArgumentException("Real is incorrect. See ".__CLASS__." class's documentation for possible values.");
             }
 
             $objects[$i] = ObjectFactory::real($val);

@@ -5,6 +5,8 @@ namespace Papier\Object;
 use Papier\Object\DictionaryObject;
 use Papier\Base\IndirectObject;
 
+use InvalidArgumentException;
+
 class ArrayObject extends DictionaryObject
 {
 
@@ -40,7 +42,7 @@ class ArrayObject extends DictionaryObject
     public function append($object)
     {
         if (!$object instanceof IndirectObject) {
-            throw new InvalidArgumentException("Object is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Object is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $objects = $this->getObjects();

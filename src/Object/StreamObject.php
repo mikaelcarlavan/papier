@@ -4,7 +4,7 @@ namespace Papier\Object;
 
 use Papier\Base\IntegerObject;
 use Papier\Object\DictionaryObject;
-use Exception;
+use RunTimeException;
 
 class StreamObject extends IndirectObject
 {
@@ -22,7 +22,6 @@ class StreamObject extends IndirectObject
      */
     public function __construct()
     {
-        parent::__construct();
         $this->value = new DictionaryObject();
     } 
 
@@ -52,12 +51,15 @@ class StreamObject extends IndirectObject
             $filters = $dictionary['Filter'];
             $params = $dictionary['DecodeParms'];
 
-            if ($filters && count($filters) > 0) {
+            if (is_array($filters) && count($filters) > 0) {
                 foreach ($filters as $i => $name) {
 
-                    if (class_exists($name)) {
+                    $class = 'Papier\Filter\\'.$name.'Filter';
+                    if (class_exists($class)) {
                         $param = $params[$i];
-                        $stream = $name::decode($stream, $param);
+                        $stream = $class::encode($stream, $param);
+                    } else {
+                        throw new InvalidArgumentException("Filter $name is not implemented. See ".__CLASS__." class's documentation for possible values.");
                     }
                 }
             }

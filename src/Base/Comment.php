@@ -16,7 +16,7 @@ class Comment extends BaseObject
     public function setValue($value)
     {
         if (!StringValidator::isValid($value)) {
-            throw new InvalidArgumentException("String is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("String is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         return parent::setValue($value);

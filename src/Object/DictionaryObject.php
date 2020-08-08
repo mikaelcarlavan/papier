@@ -16,36 +16,8 @@ class DictionaryObject extends IndirectObject implements Countable
      */
     public function __construct()
     {
-        parent::__construct();
         $this->value = [];
     }  
-
-    /**
-     * Magical method.
-     *  
-     * @param  mixed  $object
-     * @param  string  $key
-     * @throws InvalidArgumentException if the provided argument does not inherit 'IndirectObject'.
-     * @return \Papier\Object\DictionaryObject
-     */
-    public function __set($key, $object)
-    {
-        if (!$object instanceof IndirectObject) {
-            throw new InvalidArgumentException("Object is incorrect. See ".get_class($this)." class's documentation for possible values.");
-        }
-        $this->setObjectForKey($key, $object);
-    }
-
-    /**
-     * Magical method.
-     *  
-     * @param  string  $key
-     * @return \Papier\Base\Object
-     */
-    public function __get($key)
-    {
-        $this->getObjectForKey($key);
-    }
 
     /**
      * Check if object has given key.
@@ -53,7 +25,7 @@ class DictionaryObject extends IndirectObject implements Countable
      * @param  string  $key
      * @return bool
      */
-    protected function hasKey($key)
+    public function hasKey($key)
     {
         $objects = $this->getObjects();
         return isset($objects[$key]);
@@ -66,7 +38,7 @@ class DictionaryObject extends IndirectObject implements Countable
      * @param  string  $key
      * @return \Papier\Object\DictionaryObject
      */
-    protected function setObjectForKey($key, $object)
+    public function setObjectForKey($key, $object)
     {
         $objects = $this->getObjects();
         $objects[$key] = $object;
@@ -80,7 +52,7 @@ class DictionaryObject extends IndirectObject implements Countable
      * @param  string  $key
      * @return \Papier\Base\Object
      */
-    protected function getObjectForKey($key)
+    public function getObjectForKey($key)
     {
         $objects = $this->getObjects();
         $object = $objects[$key] ?? new NullObject();
@@ -112,6 +84,17 @@ class DictionaryObject extends IndirectObject implements Countable
     }
 
     /**
+     * Get keys.
+     *  
+     * @return array
+     */
+    public function getKeys()
+    {
+        $objects = $this->getValue();
+        return array_keys($objects);
+    }
+
+    /**
      * Erase objects.
      *  
      * @return array
@@ -130,12 +113,12 @@ class DictionaryObject extends IndirectObject implements Countable
     protected function setObjects($objects)
     {
         if (!is_array($objects)) {
-            throw new InvalidArgumentException("Object's list is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Object's list is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         foreach ($objects as $object) {
             if (!$object instanceof IndirectObject) {
-                throw new InvalidArgumentException("Object is incorrect. See ".get_class($this)." class's documentation for possible values.");
+                throw new InvalidArgumentException("Object is incorrect. See ".__CLASS__." class's documentation for possible values.");
             }
         }
         
@@ -162,6 +145,6 @@ class DictionaryObject extends IndirectObject implements Countable
             }
         }
 
-        return '<<' .$value. '>>';
+        return '<< ' .$value. '>>';
     }
 }

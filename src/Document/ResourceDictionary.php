@@ -54,7 +54,7 @@ class ResourceDictionary extends IndirectObject
     public function setExtGState($state)
     {
         if (!$state instanceof DictionaryObject) {
-            throw new InvalidArgumentException("ExtGState is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("ExtGState is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $state->setIndirect(true);
@@ -73,7 +73,7 @@ class ResourceDictionary extends IndirectObject
     public function setColourSpace($colour)
     {
         if (!$colour instanceof DictionaryObject) {
-            throw new InvalidArgumentException("Colour is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Colour is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $colour->setIndirect(true);
@@ -91,7 +91,7 @@ class ResourceDictionary extends IndirectObject
     public function setPattern($pattern)
     {
         if (!$pattern instanceof DictionaryObject) {
-            throw new InvalidArgumentException("Pattern is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Pattern is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $pattern->setIndirect(true);
@@ -109,7 +109,7 @@ class ResourceDictionary extends IndirectObject
     public function setShading($shading)
     {
         if (!$shading instanceof DictionaryObject) {
-            throw new InvalidArgumentException("Shading is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Shading is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $shading->setIndirect(true);
@@ -127,7 +127,7 @@ class ResourceDictionary extends IndirectObject
     public function setXObject($xobject)
     {
         if (!$xobject instanceof DictionaryObject) {
-            throw new InvalidArgumentException("XObject is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("XObject is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $xobject->setIndirect(true);
@@ -145,7 +145,7 @@ class ResourceDictionary extends IndirectObject
     public function setFont($font)
     {
         if (!$font instanceof DictionaryObject) {
-            throw new InvalidArgumentException("Font is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Font is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $font->setIndirect(true);
@@ -163,7 +163,7 @@ class ResourceDictionary extends IndirectObject
     public function setProcSet($procset)
     {
         if (!$procset instanceof ArrayObject) {
-            throw new InvalidArgumentException("ProcSet is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("ProcSet is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $this->addEntry('ProcSet', $procset);
@@ -180,7 +180,7 @@ class ResourceDictionary extends IndirectObject
     public function setProperties($properties)
     {
         if (!$properties instanceof DictionaryObject) {
-            throw new InvalidArgumentException("Properties is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Properties is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $this->addEntry('Properties', $properties);

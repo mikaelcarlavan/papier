@@ -28,7 +28,7 @@ class PageTreeNode extends ArrayObject
     public function setParent($parent)
     {
         if (!$parent instanceof DictionaryObject) {
-            throw new InvalidArgumentException("Parent is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Parent is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $this->parent = $parent;
@@ -77,7 +77,7 @@ class PageTreeNode extends ArrayObject
         $num->setValue(count($objects));
 
         if (!$parent) {
-            throw new RuntimeException("Parent is missing. See ".get_class($this)." class's documentation for possible values.");
+            throw new RuntimeException("Parent is missing. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $dictionary = new DictionaryObject();

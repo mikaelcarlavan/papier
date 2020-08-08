@@ -44,7 +44,7 @@ class CrossReferenceEntry extends IndirectObject
     protected function setOffset($offset)
     {
         if (!IntValidator::isValid($offset, 0)) {
-            throw new InvalidArgumentException("Offset is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Offset is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $this->offset = $offset;
@@ -61,7 +61,7 @@ class CrossReferenceEntry extends IndirectObject
     protected function setFree($free = true)
     {
         if (!BoolValidator::isValid($free)) {
-            throw new InvalidArgumentException("Free boolean is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Free boolean is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $this->free = $free;

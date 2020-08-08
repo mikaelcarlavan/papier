@@ -4,6 +4,7 @@ namespace Papier\Base;
 
 use Papier\Base\BaseObject;
 use Papier\Validator\BoolValidator;
+use Papier\Validator\IntValidator;
 
 abstract class IndirectObject extends BaseObject
 {
@@ -34,10 +35,10 @@ abstract class IndirectObject extends BaseObject
      * @param  int  $number
      * @return \Papier\Object\Base\IndirectObject
      */
-    protected function setNumber($number)
+    public function setNumber($number)
     {
         if (!IntValidator::isValid($number, 1)) {
-            throw new InvalidArgumentException("Object number is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Object number is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $this->number = $number;
@@ -50,10 +51,10 @@ abstract class IndirectObject extends BaseObject
      * @param  int  $generation
      * @return \Papier\Object\Base\IndirectObject
      */
-    protected function setGeneration($generation)
+    public function setGeneration($generation)
     {
         if (!IntValidator::isValid($generation)) {
-            throw new InvalidArgumentException("Generation number is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Generation number is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $this->generation = $generation;
@@ -66,10 +67,10 @@ abstract class IndirectObject extends BaseObject
      * @param  bool  $indirect
      * @return \Papier\Object\Base\IndirectObject
      */
-    protected function setIndirect($indirect = true)
+    public function setIndirect($indirect = true)
     {
         if (!BoolValidator::isValid($indirect)) {
-            throw new InvalidArgumentException("Indirect boolean is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Indirect boolean is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $this->indirect = $indirect;
@@ -81,7 +82,7 @@ abstract class IndirectObject extends BaseObject
      *  
      * @return bool
      */
-    protected function isIndirect()
+    public function isIndirect()
     {
         return $this->indirect;
     } 
@@ -92,7 +93,7 @@ abstract class IndirectObject extends BaseObject
      *
      * @return int
      */
-    protected function getNumber()
+    public function getNumber()
     {
         return $this->number;
     }
@@ -102,7 +103,7 @@ abstract class IndirectObject extends BaseObject
      *
      * @return int
      */
-    protected function getGeneration()
+    public function getGeneration()
     {
         return $this->generation;
     }
@@ -112,7 +113,7 @@ abstract class IndirectObject extends BaseObject
      *
      * @return string
      */
-    protected function getReference()
+    public function getReference()
     {
         $value = sprintf('%d %d R', $this->getNumber(), $this->getGeneration());
         return $value;
@@ -120,11 +121,11 @@ abstract class IndirectObject extends BaseObject
 
 
     /**
-     * Get object's content.
+     * Get object.
      *
      * @return string
      */
-    protected function getContent()
+    public function getObject()
     {
         $value = sprintf('%d %d obj', $this->getNumber(), $this->getGeneration()). self::EOL_MARKER;
         $value .= $this->format(). self::EOL_MARKER;
@@ -140,7 +141,7 @@ abstract class IndirectObject extends BaseObject
      */
     public function write()
     {
-        $value = $this->isIndirect() ? $this->getReference() : $this->getContent();
+        $value = $this->isIndirect() ? $this->getReference() : $this->format();
         return $value. self::EOL_MARKER;
     }
 }

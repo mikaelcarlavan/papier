@@ -17,7 +17,7 @@ class DateType extends StringType
     public function setValue($date)
     {
         if (!$date instanceof DateTime) {
-            throw new InvalidArgumentException("Date is incorrect. See ".get_class($this)." class's documentation for possible values.");
+            throw new InvalidArgumentException("Date is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         return parent::setValue($value);
