@@ -35,19 +35,19 @@ $val2OfKid2 = Factory::getInstance()->createObject('Integer');
 
 $root = Factory::getInstance()->createType('TreeNode')->setRoot();
 
-$kid1 = Factory::getInstance()->createType('TreeNode')->setIndirect();
-$kid2 = Factory::getInstance()->createType('TreeNode')->setIndirect();
-$kid0 = Factory::getInstance()->createType('TreeNode')->setIndirect();
+$kid1 = Factory::getInstance()->createType('TreeNode');
+$kid2 = Factory::getInstance()->createType('TreeNode');
+$kid0 = Factory::getInstance()->createType('TreeNode');
 
 $namesOfKid1 = $kid1->getNames();
 $namesOfKid2 = $kid2->getNames();
 
-$val1OfKid1->setValue(30)->setIndirect();
-$val2OfKid1->setValue(40)->setIndirect();
-$val3OfKid1->setValue(50)->setIndirect();
+$val1OfKid1->setValue(30);
+$val2OfKid1->setValue(40);
+$val3OfKid1->setValue(50);
 
-$val1OfKid2->setValue(80)->setIndirect();
-$val2OfKid2->setValue(90)->setIndirect();
+$val1OfKid2->setValue(80);
+$val2OfKid2->setValue(90);
 
 $namesOfKid1->setObjectForKey('Actinium', $val1OfKid1);
 $namesOfKid1->setObjectForKey('Argon', $val2OfKid1);
