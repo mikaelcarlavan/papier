@@ -26,7 +26,7 @@ date_default_timezone_set("UTC");
 
 require __DIR__.'/../vendor/autoload.php';
 
-$tree = Factory::getInstance()->createType('NameTree');
+$tree = Factory::getInstance()->createType('NumberTree');
 
 $val1OfKid1 = Factory::getInstance()->createObject('Integer')->setValue(30);
 $val2OfKid1 = Factory::getInstance()->createObject('Integer')->setValue(40);
@@ -42,9 +42,9 @@ $kid0 = $tree->addKid();
 $kid1 = $kid0->addKid();
 $kid2 = $kid0->addKid();
 
-$kid1->addName('Actinium', $val1OfKid1)->addName('Argon', $val2OfKid1)->addName('Arsenic', $val3OfKid1);
-$kid2->addName('Zinc', $val1OfKid2)->addName('Xenon', $val2OfKid2);
+$kid1->addNum(1, $val1OfKid1)->addNum(2, $val2OfKid1)->addNum(3, $val3OfKid1);
+$kid2->addNum(4, $val1OfKid2)->addNum(5, $val2OfKid2);
 
-print $kid0->format();
+print $tree->format();
 
 
