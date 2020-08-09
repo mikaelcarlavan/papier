@@ -139,13 +139,7 @@ class NumberTreeNodeType extends TreeNodeType
                 $this->setLimits($limits);
             }
         }
-
-        $value = $this->getValue();
-        
-        asort($value);
-        
-        $this->setValue($value);
-        
+                
         return parent::format();
     }
 }

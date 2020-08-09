@@ -202,31 +202,8 @@ class TreeNodeType extends DictionaryObject
      */
     public function format()
     {
-        if (!$this->isRoot()) {
-            // Compute limits
-            $limits = new LimitsArrayObject();
-            $objects = $this->collectNames($this);
-
-            if (count($objects)) {
-                sort($objects);
-
-                $first = new LiteralStringObject();
-                $last = new LiteralStringObject();
-                            
-                $first->setValue(array_shift($objects));
-                $last->setValue(array_pop($objects));
-                
-                $limits->append($first);
-                $limits->append($last);
-        
-                $this->setLimits($limits);
-            }
-        }
-
-        $value = $this->getValue();
-        
+        $value = $this->getValue();    
         asort($value);
-        
         $this->setValue($value);
         
         return parent::format();

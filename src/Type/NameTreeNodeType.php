@@ -39,7 +39,7 @@ class NameTreeNodeType extends TreeNodeType
         $this->getNames()->setObjectForKey($key, $object);
         return $this;
     }
-     
+
     /**
      * Set names.
      *  
@@ -139,12 +139,6 @@ class NameTreeNodeType extends TreeNodeType
                 $this->setLimits($limits);
             }
         }
-
-        $value = $this->getValue();
-        
-        asort($value);
-        
-        $this->setValue($value);
         
         return parent::format();
     }
