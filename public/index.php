@@ -1,7 +1,7 @@
 <?php
 
 use Papier\Factory\Factory;
-
+use Papier\Type\NameTreeType;
 /**
  * Papier - Yet another PHP Framework For PDF
  *
@@ -26,46 +26,25 @@ date_default_timezone_set("UTC");
 
 require __DIR__.'/../vendor/autoload.php';
 
-$val1OfKid1 = Factory::getInstance()->createObject('Integer');
-$val2OfKid1 = Factory::getInstance()->createObject('Integer');
-$val3OfKid1 = Factory::getInstance()->createObject('Integer');
+$tree = Factory::getInstance()->createType('NameTree');
 
-$val1OfKid2 = Factory::getInstance()->createObject('Integer');
-$val2OfKid2 = Factory::getInstance()->createObject('Integer');
+$val1OfKid1 = Factory::getInstance()->createObject('Integer')->setValue(30);
+$val2OfKid1 = Factory::getInstance()->createObject('Integer')->setValue(40);
+$val3OfKid1 = Factory::getInstance()->createObject('Integer')->setValue(50);
 
-$root = Factory::getInstance()->createType('TreeNode')->setRoot();
+$val1OfKid2 = Factory::getInstance()->createObject('Integer')->setValue(80);
+$val2OfKid2 = Factory::getInstance()->createObject('Integer')->setValue(90);
 
-$kid1 = Factory::getInstance()->createType('TreeNode');
-$kid2 = Factory::getInstance()->createType('TreeNode');
-$kid0 = Factory::getInstance()->createType('TreeNode');
+$root = $tree->getRoot();
 
-$namesOfKid1 = $kid1->getNames();
-$namesOfKid2 = $kid2->getNames();
+$kid0 = $tree->addKid();
 
-$val1OfKid1->setValue(30);
-$val2OfKid1->setValue(40);
-$val3OfKid1->setValue(50);
+$kid1 = $kid0->addKid();
+$kid2 = $kid0->addKid();
 
-$val1OfKid2->setValue(80);
-$val2OfKid2->setValue(90);
+$kid1->addName('Actinium', $val1OfKid1)->addName('Argon', $val2OfKid1)->addName('Arsenic', $val3OfKid1);
+$kid2->addName('Zinc', $val1OfKid2)->addName('Xenon', $val2OfKid2);
 
-$namesOfKid1->setObjectForKey('Actinium', $val1OfKid1);
-$namesOfKid1->setObjectForKey('Argon', $val2OfKid1);
-$namesOfKid1->setObjectForKey('Arsenic', $val3OfKid1);
-
-$namesOfKid2->setObjectForKey('Zinc', $val1OfKid2);
-$namesOfKid2->setObjectForKey('Xenon', $val2OfKid2);
-
-$kids = $root->getKids();
-$kids->append($kid0);
-
-$kids2 = $kid0->getKids();
-$kids2->append($kid1);
-$kids2->append($kid2);
-
-print $root->getObject();
-
-print "\r\n\n";
-print $kid0->getObject();
+print $kid0->format();
 
 
