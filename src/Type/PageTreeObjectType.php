@@ -1,6 +1,6 @@
 <?php
 
-namespace Papier\Document\PageTree;
+namespace Papier\Type;
 
 use Papier\Base\IndirectObject;
 use Papier\Object\DictionaryObject;
@@ -14,7 +14,7 @@ use Papier\Validator\BoolValidator;
 
 use InvalidArgumentException;
 
-class PageTreeObject extends IndirectObject
+class PageTreeObjectType extends IndirectObject
 {
     /**
      * Create a new DocumentCatalog instance.
@@ -51,6 +51,24 @@ class PageTreeObject extends IndirectObject
     }
 
     /**
+     * Set graphics state parameter mapping dictionary.
+     *  
+     * @param  \Papier\Object\DictionaryObject  $state
+     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
+     * @return \Papier\Document\ResourceDictionary
+     */
+    public function setExtGState($state)
+    {
+        if (!$state instanceof DictionaryObject) {
+            throw new InvalidArgumentException("ExtGState is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $state->setIndirect(true);
+        $this->addEntry('ExtGState', $state);
+        return $this;
+    } 
+
+    /**
      * Format catalog's content.
      *
      * @return string
@@ -59,9 +77,6 @@ class PageTreeObject extends IndirectObject
     {
         $dictionary = $this->getDictionary();
 
-        if (!$dictionary->hasKey('Parent')) {
-            throw new RuntimeException("Parent is missing. See ".__CLASS__." class's documentation for possible values.");
-        }
 
         $value = $dictionary->write();
         

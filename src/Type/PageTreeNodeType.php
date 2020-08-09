@@ -1,6 +1,6 @@
 <?php
 
-namespace Papier\Document\PageTree;
+namespace Papier\Type;
 
 use Papier\Document\PageTree\PageTreeObject;
 use Papier\Object\DictionaryObject;
@@ -8,7 +8,7 @@ use Papier\Object\DictionaryObject;
 use InvalidArgumentException;
 use RuntimeException;
 
-class PageTreeNode extends ArrayObject
+class PageTreeNodeType extends ArrayObject
 {
 
     /**
