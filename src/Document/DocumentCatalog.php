@@ -16,6 +16,8 @@ use Papier\Validator\BoolValidator;
 use Papier\Document\PageLayout;
 use Papier\Document\PageMode;
 
+use Papier\Type\NumberTreeType;
+
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -120,7 +122,23 @@ class DocumentCatalog extends IndirectObject
         $this->addEntry('Pages', $pages);
         return $this;
     }
-    
+  
+    /**
+     * Set page tree node (root of document's page tree).
+     *  
+     * @param  \Papier\Type\NumberTreeType  $labels
+     * @throws InvalidArgumentException if the provided argument is not of type 'NumberTreeType'.
+     * @return \Papier\Document\DocumentCatalog
+     */
+    public function setPageLabels($labels)
+    {
+        if (!$labels instanceof NumberTreeType) {
+            throw new InvalidArgumentException("Labels is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $this->addEntry('PageLabels', $labels);
+        return $this;
+    }
     /**
      * Set document's name dictionary.
      *  
