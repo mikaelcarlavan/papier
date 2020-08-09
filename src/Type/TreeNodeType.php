@@ -10,6 +10,8 @@ use Papier\Object\LimitsArrayObject;
 
 use Papier\Validator\BoolValidator;
 
+use Papier\Factory\Factory;
+
 use InvalidArgumentException;
 use RunTimeException;
 
@@ -54,7 +56,7 @@ class TreeNodeType extends DictionaryObject
      * @throws RunTimeException if node already contains 'Names' key.
      * @return \Papier\Object\ArrayObject
      */
-    public function getKids()
+    protected function getKids()
     {
         if ($this->hasKey('Names')) {
             throw new RunTimeException("Names is already present. See ".__CLASS__." class's documentation for possible values.");  
@@ -68,6 +70,20 @@ class TreeNodeType extends DictionaryObject
         return $this->getObjectForKey('Kids');
     }
 
+    
+    /**
+     * Add kid to node.
+     *  
+     * @return \Papier\Type\TreeNodeType
+     */
+    public function addKid()
+    {
+        $node = Factory::getInstance()->createType('TreeNode');
+        $this->getKids()->append($node);
+
+        return $node;
+    }
+    
     /**
      * Set kids.
      *  
@@ -76,7 +92,7 @@ class TreeNodeType extends DictionaryObject
      * @throws RunTimeException if node already contains 'Names' key.
      * @return \Papier\Document\DocumentCatalog
      */
-    public function setKids($kids)
+    protected function setKids($kids)
     {
         if (!$kids instanceof ArrayObject) {
             throw new InvalidArgumentException("Kids is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -88,18 +104,18 @@ class TreeNodeType extends DictionaryObject
 
         return $this->setObjectForKey('Kids', $kids);
     }
-    
+
     /**
      * Set names.
      *  
-     * @param  \Papier\Object\StringKeyArrayObject  $names
+     * @param  \Papier\Object\LiteralStringKeyArrayObject  $names
      * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
      * @throws RunTimeException if node already contains 'Names' key.
      * @return \Papier\Document\DocumentCatalog
      */
-    public function setNames($names)
+    protected function setNames($names)
     {
-        if (!$names instanceof StringKeyArrayObject) {
+        if (!$names instanceof LiteralStringKeyArrayObject) {
             throw new InvalidArgumentException("Names is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
@@ -111,12 +127,12 @@ class TreeNodeType extends DictionaryObject
     } 
 
     /**
-     * Get kids.
+     * Get names.
      *  
      * @throws RunTimeException if node already contains 'Names' key.
      * @return \Papier\Object\LiteralStringKeyArrayObject
      */
-    public function getNames()
+    protected function getNames()
     {
         if ($this->hasKey('Kids')) {
             throw new RunTimeException("Kids is already present. See ".__CLASS__." class's documentation for possible values.");  
@@ -138,7 +154,7 @@ class TreeNodeType extends DictionaryObject
      * @throws RunTimeException if node already contains 'Names' key.
      * @return \Papier\Document\DocumentCatalog
      */
-    private function setLimits($limits)
+    protected function setLimits($limits)
     {
         if (!$limits instanceof LimitsArrayObject) {
             throw new InvalidArgumentException("Limits is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -154,7 +170,7 @@ class TreeNodeType extends DictionaryObject
      * @param  \Papier\Type\TreeNodeType  $node
      * @return array
      */    
-    private function collectNames($node)
+    protected function collectNames($node)
     {        
         if (!$node instanceof TreeNodeType) {
             throw new InvalidArgumentException("Node is incorrect. See ".__CLASS__." class's documentation for possible values.");
