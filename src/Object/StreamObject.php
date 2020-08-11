@@ -6,7 +6,7 @@ use Papier\Base\IntegerObject;
 use Papier\Object\DictionaryObject;
 use RunTimeException;
 
-class StreamObject extends IndirectObject
+class StreamObject extends DictionaryObject
 {
     /**
      * The content of the object.
@@ -14,26 +14,6 @@ class StreamObject extends IndirectObject
      * @var mixed
      */
     protected $content;
-    
-    /**
-     * Create a new StreamObject instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->value = new DictionaryObject();
-    } 
-
-    /**
-     * Get object's dictionary.
-     *
-     * @return string
-     */
-    protected function getDictionary()
-    {
-        return $this->getValue();
-    }
 
     /**
      * Get object's stream.
@@ -44,12 +24,9 @@ class StreamObject extends IndirectObject
     {
         $stream = $this->getContent();
 
-        // Apply filters
-        $dictionary = $this->getDictionary();
-
-        if ($dictionary->hasKey('Filter')) {
-            $filters = $dictionary['Filter'];
-            $params = $dictionary['DecodeParms'];
+        if ($this->hasKey('Filter')) {
+            $filters = $this->getObjectForKey('Filter');
+            $params = $this->getObjectForKey('DecodeParms');
 
             if (is_array($filters) && count($filters) > 0) {
                 foreach ($filters as $i => $name) {
@@ -91,26 +68,12 @@ class StreamObject extends IndirectObject
     } 
 
     /**
-     * Add entry to stream's dictionnary.
-     *      
-     * @param  string  $key
-     * @param  mixed  $object
-     * @return \Papier\Object\StreamObject
-     */
-    private function addEntry($key, $object)
-    {
-        $this->getDictionary()->setObjectForKey($key, $object);
-        return $this;
-    } 
-
-    /**
      * Format object's value.
      *
      * @return string
      */
     public function format()
     {
-        $dictionary = $this->getDictionary();
         $stream = $this->getStream();
         $stream = $stream ? $stream->write() : '';
 
@@ -122,7 +85,7 @@ class StreamObject extends IndirectObject
         $this->addEntry('Length', $length);
 
         $value = '';
-        $value .= $dictionary->write();
+        $value .= parent::format() . self::EOL_MARKER;
         $value .= 'stream' .self::EOL_MARKER;
         $value .= $stream ?? '';
         $value .= 'endstream';

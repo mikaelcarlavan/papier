@@ -2,7 +2,6 @@
 
 namespace Papier\Document;
 
-use Papier\Base\IndirectObject;
 use Papier\Object\DictionaryObject;
 use Papier\Object\NameObject;
 use Papier\Object\ArrayObject;
@@ -21,7 +20,7 @@ use Papier\Type\NumberTreeType;
 use InvalidArgumentException;
 use RuntimeException;
 
-class DocumentCatalog extends IndirectObject
+class DocumentCatalog extends DictionaryObject
 {
     /**
      * Default page layout.
@@ -36,40 +35,6 @@ class DocumentCatalog extends IndirectObject
      * @var string
      */
     const DEFAULT_PAGE_MODE = PageMode::USE_NONE_MODE;
-
-    /**
-     * Create a new DocumentCatalog instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->value = new DictionaryObject();
-    } 
-
-    /**
-     * Get catalog's dictionary.
-     *
-     * @return string
-     */
-    private function getDictionary()
-    {
-        return $this->getValue();
-    }
-
-    /**
-     * Add entry to catalog's dictionnary.
-     *      
-     * @param  string  $key
-     * @param  mixed  $object
-     * @return \Papier\Document\DocumentCatalog
-     */
-    private function addEntry($key, $object)
-    {
-        $this->getDictionary()->setObjectForKey($key, $object);
-        return $this;
-    } 
 
     /**
      * Set PDF version.
@@ -118,7 +83,6 @@ class DocumentCatalog extends IndirectObject
             throw new InvalidArgumentException("Pages is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $pages->setIndirect(true);
         $this->addEntry('Pages', $pages);
         return $this;
     }
@@ -169,7 +133,6 @@ class DocumentCatalog extends IndirectObject
             throw new InvalidArgumentException("Dests is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $dests->setIndirect(true);
         $this->addEntry('Dests', $dests);
         return $this;
     } 
@@ -244,7 +207,6 @@ class DocumentCatalog extends IndirectObject
             throw new InvalidArgumentException("Outlines is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $outlines->setIndirect(true);
         $this->addEntry('Outlines', $outlines);
         return $this;
     } 
@@ -262,7 +224,6 @@ class DocumentCatalog extends IndirectObject
             throw new InvalidArgumentException("Threads is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $threads->setIndirect(true);
         $this->addEntry('Threads', $threads);
         return $this;
     } 
@@ -348,7 +309,6 @@ class DocumentCatalog extends IndirectObject
             throw new InvalidArgumentException("Metadata is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $metadata->setIndirect(true);
         $this->addEntry('Metadata', $metadata);
         return $this;
     } 
@@ -571,10 +531,7 @@ class DocumentCatalog extends IndirectObject
      */
     public function format()
     {
-
-        $dictionary = $this->getDictionary();
-
-        if (!$dictionary->hasKey('Pages')) {
+        if (!$this->hasKey('Pages')) {
             throw new RuntimeException("Pages is missing. See ".__CLASS__." class's documentation for possible values.");
         }
 
@@ -583,20 +540,18 @@ class DocumentCatalog extends IndirectObject
         $this->addEntry('Type', $type);
 
         // Set default values
-        if (!$dictionary->hasKey('PageLayout')) {
+        if (!$this->hasKey('PageLayout')) {
             $this->setPageLayout(self::DEFAULT_PAGE_LAYOUT);
         }
 
-        if (!$dictionary->hasKey('PageMode')) {
+        if (!$this->hasKey('PageMode')) {
             $this->setPageMode(self::DEFAULT_PAGE_MODE);
         }
 
-        if (!$dictionary->hasKey('NeedsRendering')) {
+        if (!$this->hasKey('NeedsRendering')) {
             $this->setNeedsRendering(false);
         }
-
-        $value = $dictionary->write();
         
-        return $value;
+        return parent::format();
     }
 }

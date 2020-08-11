@@ -2,48 +2,13 @@
 
 namespace Papier\Document;
 
-use Papier\Base\IndirectObject;
 use Papier\Object\DictionaryObject;
 use Papier\Object\ArrayObject;
 
 use InvalidArgumentException;
 
-class ResourceDictionary extends IndirectObject
+class ResourceDictionary extends DictionaryObject
 {
-    /**
-     * Create a new ResourceDictionary instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->value = new DictionaryObject();
-    } 
-
-    /**
-     * Get resource's dictionary.
-     *
-     * @return string
-     */
-    private function getDictionary()
-    {
-        return $this->getValue();
-    }
-
-    /**
-     * Add entry to resource's dictionnary.
-     *      
-     * @param  string  $key
-     * @param  mixed  $object
-     * @return \Papier\Document\ResourceDictionary
-     */
-    private function addEntry($key, $object)
-    {
-        $this->getDictionary()->setObjectForKey($key, $object);
-        return $this;
-    } 
-
     /**
      * Set graphics state parameter mapping dictionary.
      *  
@@ -57,7 +22,6 @@ class ResourceDictionary extends IndirectObject
             throw new InvalidArgumentException("ExtGState is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $state->setIndirect(true);
         $this->addEntry('ExtGState', $state);
         return $this;
     } 
@@ -76,7 +40,6 @@ class ResourceDictionary extends IndirectObject
             throw new InvalidArgumentException("Colour is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $colour->setIndirect(true);
         $this->addEntry('ColourSpace', $colour);
         return $this;
     }
@@ -94,7 +57,6 @@ class ResourceDictionary extends IndirectObject
             throw new InvalidArgumentException("Pattern is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $pattern->setIndirect(true);
         $this->addEntry('Pattern', $pattern);
         return $this;
     } 
@@ -112,7 +74,6 @@ class ResourceDictionary extends IndirectObject
             throw new InvalidArgumentException("Shading is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $shading->setIndirect(true);
         $this->addEntry('Shading', $shading);
         return $this;
     } 
@@ -130,7 +91,6 @@ class ResourceDictionary extends IndirectObject
             throw new InvalidArgumentException("XObject is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $xobject->setIndirect(true);
         $this->addEntry('XObject', $xobject);
         return $this;
     } 
@@ -148,7 +108,6 @@ class ResourceDictionary extends IndirectObject
             throw new InvalidArgumentException("Font is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $font->setIndirect(true);
         $this->addEntry('Font', $font);
         return $this;
     } 
@@ -185,18 +144,5 @@ class ResourceDictionary extends IndirectObject
 
         $this->addEntry('Properties', $properties);
         return $this;
-    }
-
-    /**
-     * Format resource's content.
-     *
-     * @return string
-     */
-    public function format()
-    {
-        $dictionary = $this->getDictionary();
-        $value = $dictionary->write();
-        
-        return $value;
     }
 }

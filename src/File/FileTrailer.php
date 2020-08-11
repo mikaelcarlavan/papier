@@ -2,7 +2,6 @@
 
 namespace Papier\File;
 
-use Papier\Base\BaseObject;
 use Papier\Validator\IntValidator;
 use Papier\Object\DictionaryObject;
 use Papier\Object\ArrayObject;
@@ -10,7 +9,7 @@ use Papier\Object\ArrayObject;
 use InvalidArgumentException;
 use RuntimeException;
 
-class FileTrailer extends BaseObject
+class FileTrailer extends DictionaryObject
 {
      /**
      * Offset in bytes (from the beginning of the file) to the cross reference table.
@@ -18,40 +17,6 @@ class FileTrailer extends BaseObject
      * @var int
      */
     private $crossReferenceOffset = 0;
-
-    /**
-     * Create a new FileTrailer instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->value = new DictionaryObject();
-    } 
-
-    /**
-     * Get trailer's dictionary.
-     *
-     * @return \Papier\Object\DictionaryObject
-     */
-    private function getDictionary()
-    {
-        return $this->getValue();
-    }
-
-    /**
-     * Add entry to trailer's dictionnary.
-     *      
-     * @param  string  $key
-     * @param  mixed  $object
-     * @return \Papier\File\FileTrailer
-     */
-    private function addEntry($key, $object)
-    {
-        $this->getDictionary()->setObjectForKey($key, $object);
-        return $this;
-    } 
 
     /**
      * Get trailer's cross reference offset.
@@ -202,7 +167,7 @@ class FileTrailer extends BaseObject
         }
 
         $value = 'trailer' . self::EOL_MARKER;
-        $value .= $dictionary->write();
+        $value .= parent::format() . self::EOL_MARKER;
         $value .= 'startxref' . self::EOL_MARKER;
         $value .= $this->getCrossReferenceOffset() . self::EOL_MARKER;
         $value .= '%%EOF';
