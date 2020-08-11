@@ -10,6 +10,28 @@ use InvalidArgumentException;
 class ArrayObject extends DictionaryObject
 {
     /**
+     * Get first object.
+     *  
+     * @return \Papier\Base\IndirectObject
+     */
+    public function first() 
+    {
+        $objects = $this->getObjects();
+        return $objects[0];
+    }
+
+    /**
+     * Get last object.
+     *  
+     * @return \Papier\Base\IndirectObject
+     */
+    public function last() 
+    {
+        $objects = $this->getObjects();
+        return $objects[$this->count()-1];
+    }
+
+    /**
      * Get object at position.
      *  
      * @return int
@@ -66,11 +88,9 @@ class ArrayObject extends DictionaryObject
         }
 
         $objects = $this->getObjects();
+        $objects[] = $object;
 
-        $arr = is_array($objects) ? $objects : array($objects);
-        $arr[] = $object;
-
-        return $this->setObjects($arr);
+        return $this->setObjects($objects);
     }
 
     /**
@@ -80,12 +100,10 @@ class ArrayObject extends DictionaryObject
      */
     public function format()
     {
-        $objects = $this->getObjects() ?? array();
+        $objects = $this->getObjects();
         $value = '';
-        if (is_array($objects)) {
-            foreach ($objects as $object) {
-                $value .= ' '.$object->write();
-            }
+        foreach ($objects as $object) {
+            $value .= ' '.$object->write();
         }
 
         return '[' .$value. ']';
