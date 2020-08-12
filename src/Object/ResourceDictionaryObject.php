@@ -14,7 +14,7 @@ class ResourceDictionaryObject extends DictionaryObject
      *  
      * @param  \Papier\Object\DictionaryObject  $state
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Document\ResourceDictionary
+     * @return \Papier\Object\ResourceDictionary
      */
     public function setExtGState($state)
     {
@@ -22,7 +22,7 @@ class ResourceDictionaryObject extends DictionaryObject
             throw new InvalidArgumentException("ExtGState is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('ExtGState', $state);
+        $this->setEntry('ExtGState', $state);
         return $this;
     } 
 
@@ -32,7 +32,7 @@ class ResourceDictionaryObject extends DictionaryObject
      *  
      * @param  \Papier\Object\DictionaryObject  $colour
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Document\ResourceDictionary
+     * @return \Papier\Object\ResourceDictionary
      */
     public function setColourSpace($colour)
     {
@@ -40,7 +40,7 @@ class ResourceDictionaryObject extends DictionaryObject
             throw new InvalidArgumentException("Colour is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('ColourSpace', $colour);
+        $this->setEntry('ColourSpace', $colour);
         return $this;
     }
     
@@ -49,7 +49,7 @@ class ResourceDictionaryObject extends DictionaryObject
      *  
      * @param  \Papier\Object\DictionaryObject  $pattern
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Document\ResourceDictionary
+     * @return \Papier\Object\ResourceDictionary
      */
     public function setPattern($pattern)
     {
@@ -57,7 +57,7 @@ class ResourceDictionaryObject extends DictionaryObject
             throw new InvalidArgumentException("Pattern is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('Pattern', $pattern);
+        $this->setEntry('Pattern', $pattern);
         return $this;
     } 
 
@@ -66,7 +66,7 @@ class ResourceDictionaryObject extends DictionaryObject
      *  
      * @param  \Papier\Object\DictionaryObject  $shading
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Document\ResourceDictionary
+     * @return \Papier\Object\ResourceDictionary
      */
     public function setShading($shading)
     {
@@ -74,7 +74,7 @@ class ResourceDictionaryObject extends DictionaryObject
             throw new InvalidArgumentException("Shading is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('Shading', $shading);
+        $this->setEntry('Shading', $shading);
         return $this;
     } 
 
@@ -83,7 +83,7 @@ class ResourceDictionaryObject extends DictionaryObject
      *  
      * @param  \Papier\Object\DictionaryObject  $xobject
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Document\ResourceDictionary
+     * @return \Papier\Object\ResourceDictionary
      */
     public function setXObject($xobject)
     {
@@ -91,7 +91,7 @@ class ResourceDictionaryObject extends DictionaryObject
             throw new InvalidArgumentException("XObject is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('XObject', $xobject);
+        $this->setEntry('XObject', $xobject);
         return $this;
     } 
 
@@ -100,7 +100,7 @@ class ResourceDictionaryObject extends DictionaryObject
      *  
      * @param  \Papier\Object\DictionaryObject  $font
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Document\ResourceDictionary
+     * @return \Papier\Object\ResourceDictionary
      */
     public function setFont($font)
     {
@@ -108,7 +108,7 @@ class ResourceDictionaryObject extends DictionaryObject
             throw new InvalidArgumentException("Font is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('Font', $font);
+        $this->setEntry('Font', $font);
         return $this;
     } 
 
@@ -117,7 +117,7 @@ class ResourceDictionaryObject extends DictionaryObject
      *  
      * @param  \Papier\Object\ArrayObject  $procset
      * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
-     * @return \Papier\Document\ResourceDictionary
+     * @return \Papier\Object\ResourceDictionary
      */
     public function setProcSet($procset)
     {
@@ -125,7 +125,7 @@ class ResourceDictionaryObject extends DictionaryObject
             throw new InvalidArgumentException("ProcSet is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('ProcSet', $procset);
+        $this->setEntry('ProcSet', $procset);
         return $this;
     } 
 
@@ -134,7 +134,7 @@ class ResourceDictionaryObject extends DictionaryObject
      *  
      * @param  \Papier\Object\DictionaryObject  $properties
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Document\ResourceDictionary
+     * @return \Papier\Object\ResourceDictionary
      */
     public function setProperties($properties)
     {
@@ -142,7 +142,7 @@ class ResourceDictionaryObject extends DictionaryObject
             throw new InvalidArgumentException("Properties is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('Properties', $properties);
+        $this->setEntry('Properties', $properties);
         return $this;
     }
 }

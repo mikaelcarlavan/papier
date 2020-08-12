@@ -36,7 +36,7 @@ class PageObjectType extends DictionaryObject
             throw new InvalidArgumentException("Parent is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->setObjectForKey('Parent', $parent);
+        $this->setEntry('Parent', $parent);
         return $this;
     } 
 
@@ -47,7 +47,7 @@ class PageObjectType extends DictionaryObject
      */
     public function getParent()
     {
-        return $this->getObjectForKey('Parent');
+        return $this->getEntry('Parent');
     } 
 
     /**
@@ -63,7 +63,7 @@ class PageObjectType extends DictionaryObject
             throw new InvalidArgumentException("ExtGState is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('LastModified', $date);
+        $this->setEntry('LastModified', $date);
         return $this;
     } 
 
@@ -80,7 +80,7 @@ class PageObjectType extends DictionaryObject
             throw new InvalidArgumentException("Resources is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('Resources', $resources);
+        $this->setEntry('Resources', $resources);
         return $this;
     } 
 
@@ -97,7 +97,7 @@ class PageObjectType extends DictionaryObject
             throw new InvalidArgumentException("MediaBox is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('MediaxBox', $mediabox);
+        $this->setEntry('MediaxBox', $mediabox);
         return $this;
     }
 
@@ -114,7 +114,7 @@ class PageObjectType extends DictionaryObject
             throw new InvalidArgumentException("CropBox is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('CropBox', $cropbox);
+        $this->setEntry('CropBox', $cropbox);
         return $this;
     }
 
@@ -131,7 +131,7 @@ class PageObjectType extends DictionaryObject
             throw new InvalidArgumentException("BleedBox is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('BleedBox', $bleedbox);
+        $this->setEntry('BleedBox', $bleedbox);
         return $this;
     }
 
@@ -148,7 +148,7 @@ class PageObjectType extends DictionaryObject
             throw new InvalidArgumentException("TrimBox is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('TrimBox', $trimbox);
+        $this->setEntry('TrimBox', $trimbox);
         return $this;
     }
 
@@ -165,7 +165,7 @@ class PageObjectType extends DictionaryObject
             throw new InvalidArgumentException("ArtBox is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('ArtBox', $artbox);
+        $this->setEntry('ArtBox', $artbox);
         return $this;
     }
 
@@ -182,7 +182,7 @@ class PageObjectType extends DictionaryObject
             throw new InvalidArgumentException("BoxColorInfo is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('BoxColorInfo', $boxcolorinfo);
+        $this->setEntry('BoxColorInfo', $boxcolorinfo);
         return $this;
     }
 
@@ -200,7 +200,7 @@ class PageObjectType extends DictionaryObject
             throw new InvalidArgumentException("Contents is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('Contents', $contents);
+        $this->setEntry('Contents', $contents);
         return $this;
     }
 
@@ -217,7 +217,7 @@ class PageObjectType extends DictionaryObject
             throw new InvalidArgumentException("Rotate is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('Rotate', $rotate);
+        $this->setEntry('Rotate', $rotate);
         return $this;
     }
 
@@ -234,7 +234,7 @@ class PageObjectType extends DictionaryObject
             throw new InvalidArgumentException("Group is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('Group', $group);
+        $this->setEntry('Group', $group);
         return $this;
     }
 
@@ -252,7 +252,7 @@ class PageObjectType extends DictionaryObject
             throw new InvalidArgumentException("Thumb is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('Thumb', $thumb);
+        $this->setEntry('Thumb', $thumb);
         return $this;
     }
 
@@ -269,7 +269,7 @@ class PageObjectType extends DictionaryObject
             throw new InvalidArgumentException("B is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('B', $b);
+        $this->setEntry('B', $b);
         return $this;
     }
 
@@ -286,7 +286,7 @@ class PageObjectType extends DictionaryObject
             throw new InvalidArgumentException("Dur is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('Dur', $dur);
+        $this->setEntry('Dur', $dur);
         return $this;
     }
 
@@ -303,7 +303,7 @@ class PageObjectType extends DictionaryObject
             throw new InvalidArgumentException("Trans is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('Trans', $trans);
+        $this->setEntry('Trans', $trans);
         return $this;
     }
 
@@ -320,7 +320,7 @@ class PageObjectType extends DictionaryObject
             throw new InvalidArgumentException("Annots is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('Annots', $annots);
+        $this->setEntry('Annots', $annots);
         return $this;
     }
 
@@ -337,7 +337,7 @@ class PageObjectType extends DictionaryObject
             throw new InvalidArgumentException("AA is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('AA', $aa);
+        $this->setEntry('AA', $aa);
         return $this;
     }
 
@@ -354,7 +354,7 @@ class PageObjectType extends DictionaryObject
             throw new InvalidArgumentException("Metadata is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('Metadata', $metadata);
+        $this->setEntry('Metadata', $metadata);
         return $this;
     }
 
@@ -371,7 +371,7 @@ class PageObjectType extends DictionaryObject
             throw new InvalidArgumentException("PieceInfo is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('PieceInfo', $pieceinfo);
+        $this->setEntry('PieceInfo', $pieceinfo);
         return $this;
     }
 
@@ -388,7 +388,7 @@ class PageObjectType extends DictionaryObject
             throw new InvalidArgumentException("StructParents is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('StructParents', $struct);
+        $this->setEntry('StructParents', $struct);
         return $this;
     }
 
@@ -405,7 +405,7 @@ class PageObjectType extends DictionaryObject
             throw new InvalidArgumentException("ID is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('ID', $id);
+        $this->setEntry('ID', $id);
         return $this;
     }
 
@@ -422,7 +422,7 @@ class PageObjectType extends DictionaryObject
             throw new InvalidArgumentException("PZ is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('PZ', $pz);
+        $this->setEntry('PZ', $pz);
         return $this;
     }
 
@@ -439,7 +439,7 @@ class PageObjectType extends DictionaryObject
             throw new InvalidArgumentException("SeparationInfo is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('SeparationInfo', $separationinfo);
+        $this->setEntry('SeparationInfo', $separationinfo);
         return $this;
     }
 
@@ -457,7 +457,7 @@ class PageObjectType extends DictionaryObject
         }
 
         $value = Factory::getInstance()->createObject('Name')->setIndirect(false)->setValue($tabs);
-        $this->addEntry('Tabs', $value);
+        $this->setEntry('Tabs', $value);
         return $this;
     }
 
@@ -474,7 +474,7 @@ class PageObjectType extends DictionaryObject
             throw new InvalidArgumentException("TemplateInstantiated is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('TemplateInstantiated', $template);
+        $this->setEntry('TemplateInstantiated', $template);
         return $this;
     }
 
@@ -491,7 +491,7 @@ class PageObjectType extends DictionaryObject
             throw new InvalidArgumentException("PresSteps is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('PresSteps', $pressteps);
+        $this->setEntry('PresSteps', $pressteps);
         return $this;
     }
 
@@ -508,7 +508,7 @@ class PageObjectType extends DictionaryObject
             throw new InvalidArgumentException("UserUnit is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('UserUnit', $userunit);
+        $this->setEntry('UserUnit', $userunit);
         return $this;
     }
 
@@ -525,7 +525,7 @@ class PageObjectType extends DictionaryObject
             throw new InvalidArgumentException("VP is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('VP', $vp);
+        $this->setEntry('VP', $vp);
         return $this;
     }
 
@@ -536,7 +536,7 @@ class PageObjectType extends DictionaryObject
      */
     public function format()
     {
-        if (!$this->hasKey('UserUnit')) {
+        if (!$this->hasEntry('UserUnit')) {
             $userunit = Factory::getInstance()->createType('Number')->setIndirect(false)->setValue(1.0);
             $this->setUserUnit($userunit);
         }

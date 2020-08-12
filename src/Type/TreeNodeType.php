@@ -58,16 +58,16 @@ class TreeNodeType extends DictionaryObject
      */
     protected function getKids()
     {
-        if ($this->hasKey('Names')) {
+        if ($this->hasEntry('Names')) {
             throw new RunTimeException("Names is already present. See ".__CLASS__." class's documentation for possible values.");  
         }
 
-        if (!$this->hasKey('Kids')) {
+        if (!$this->hasEntry('Kids')) {
             $kids = new ArrayObject();
-            $this->setObjectForKey('Kids', $kids);
+            $this->setEntry('Kids', $kids);
         }
 
-        return $this->getObjectForKey('Kids');
+        return $this->getEntry('Kids');
     }
 
     
@@ -98,11 +98,11 @@ class TreeNodeType extends DictionaryObject
             throw new InvalidArgumentException("Kids is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        if ($this->hasKey('Names')) {
+        if ($this->hasEntry('Names')) {
             throw new RunTimeException("Names is already present. See ".__CLASS__." class's documentation for possible values.");  
         }
 
-        return $this->setObjectForKey('Kids', $kids);
+        return $this->setEntry('Kids', $kids);
     }
 
     /**
@@ -119,11 +119,11 @@ class TreeNodeType extends DictionaryObject
             throw new InvalidArgumentException("Names is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        if ($this->hasKey('Kids')) {
+        if ($this->hasEntry('Kids')) {
             throw new RunTimeException("Kids is already present. See ".__CLASS__." class's documentation for possible values.");  
         }
 
-        return $this->setObjectForKey('Names', $names);
+        return $this->setEntry('Names', $names);
     } 
 
     /**
@@ -134,16 +134,16 @@ class TreeNodeType extends DictionaryObject
      */
     protected function getNames()
     {
-        if ($this->hasKey('Kids')) {
+        if ($this->hasEntry('Kids')) {
             throw new RunTimeException("Kids is already present. See ".__CLASS__." class's documentation for possible values.");  
         }
 
-        if (!$this->hasKey('Names')) {
+        if (!$this->hasEntry('Names')) {
             $names = new LiteralStringKeyArrayObject();
-            $this->setObjectForKey('Names', $names);
+            $this->setEntry('Names', $names);
         }
 
-        return $this->getObjectForKey('Names');
+        return $this->getEntry('Names');
     }
 
     /**
@@ -160,7 +160,7 @@ class TreeNodeType extends DictionaryObject
             throw new InvalidArgumentException("Limits is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        return $this->setObjectForKey('Limits', $limits);
+        return $this->setEntry('Limits', $limits);
     } 
 
 
@@ -178,11 +178,11 @@ class TreeNodeType extends DictionaryObject
 
         $objects = array();
 
-        if ($node->hasKey('Names')) {
-            $names = $node->getObjectForKey('Names')->getKeys();
+        if ($node->hasEntry('Names')) {
+            $names = $node->getEntry('Names')->getKeys();
             $objects = array_merge($objects, $names);
         } else {
-            $kids = $node->getObjectForKey('Kids');
+            $kids = $node->getEntry('Kids');
             
             if (count($kids) > 0) {
                 foreach ($kids as $kid) {

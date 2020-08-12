@@ -14,12 +14,12 @@ class TreeType extends DictionaryObject
      */
     public function getRoot()
     {
-        if (!$this->hasKey('Root')) {
+        if (!$this->hasEntry('Root')) {
             $root = Factory::getInstance()->createType('TreeNode')->setRoot();
-            $this->setObjectForKey('Root', $root);
+            $this->setEntry('Root', $root);
         }
 
-        return $this->getObjectForKey('Root');
+        return $this->getEntry('Root');
     }
     
     /**

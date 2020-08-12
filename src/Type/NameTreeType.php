@@ -14,12 +14,12 @@ class NameTreeType extends TreeType
      */
     public function getRoot()
     {
-        if (!$this->hasKey('Root')) {
+        if (!$this->hasEntry('Root')) {
             $root = Factory::getInstance()->createType('NameTreeNode')->setRoot();
-            $this->setObjectForKey('Root', $root);
+            $this->setEntry('Root', $root);
         }
 
-        return $this->getObjectForKey('Root');
+        return $this->getEntry('Root');
     }
     
     /**

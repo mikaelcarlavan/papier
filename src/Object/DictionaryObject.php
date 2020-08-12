@@ -86,7 +86,7 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
      * @param  string  $key
      * @return bool
      */
-    public function hasKey($key)
+    public function hasEntry($key)
     {
         $objects = $this->getObjects();
         return isset($objects[$key]);
@@ -99,7 +99,7 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
      * @param  string  $key
      * @return \Papier\Object\DictionaryObject
      */
-    public function setObjectForKey($key, $object)
+    protected function setObjectForKey($key, $object)
     {
         $objects = $this->getObjects();
         $objects[$key] = $object;
@@ -111,9 +111,9 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
      * Get value for given key.
      *  
      * @param  string  $key
-     * @return \Papier\Object\DictionaryObject
+     * @return mixed
      */
-    public function getObjectForKey($key)
+    protected function getObjectForKey($key)
     {
         $objects = $this->getObjects();
         $object = $objects[$key] ?? new NullObject();
@@ -123,16 +123,27 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
     
 
     /**
-     * Add entry to dictionary.
+     * Set entry for given key.
      *      
      * @param  string  $key
      * @param  mixed  $object
      * @return \Papier\Object\DictionaryObject
      */
-    private function addEntry($key, $object)
+    public function setEntry($key, $object)
     {
         $this->setObjectForKey($key, $object);
         return $this;
+    }
+
+    /**
+     * Get entry from dictionary.
+     *      
+     * @param  string  $key
+     * @return mixed
+     */
+    public function getEntry($key)
+    {
+        return $this->getObjectForKey($key);
     }
 
     /**

@@ -25,7 +25,7 @@ class PageTreeNodeType extends DictionaryObject
             throw new InvalidArgumentException("Parent is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->setObjectForKey('Parent', $parent);
+        $this->setEntry('Parent', $parent);
         return $this;
     } 
 
@@ -36,7 +36,7 @@ class PageTreeNodeType extends DictionaryObject
      */
     public function getParent()
     {
-        return $this->getObjectForKey('Parent');
+        return $this->getEntry('Parent');
     } 
 
     /**
@@ -46,12 +46,12 @@ class PageTreeNodeType extends DictionaryObject
      */
     protected function getKids()
     {
-        if (!$this->hasKey('Kids')) {
+        if (!$this->hasEntry('Kids')) {
             $kids = new ArrayObject();
-            $this->setObjectForKey('Kids', $kids);
+            $this->setEntry('Kids', $kids);
         }
 
-        return $this->getObjectForKey('Kids');
+        return $this->getEntry('Kids');
     }
 
     
@@ -94,7 +94,7 @@ class PageTreeNodeType extends DictionaryObject
             throw new InvalidArgumentException("Kids is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        return $this->setObjectForKey('Kids', $kids);
+        return $this->setEntry('Kids', $kids);
     }
 
     /**
@@ -137,8 +137,8 @@ class PageTreeNodeType extends DictionaryObject
         $count = Factory::getInstance()->createObject('Integer')->setIndirect(false);
         $count->setValue($num);
 
-        $this->setObjectForKey('Type', $type);
-        $this->setObjectForKey('Count', $count);
+        $this->setEntry('Type', $type);
+        $this->setEntry('Count', $count);
         
         return parent::format();
     }

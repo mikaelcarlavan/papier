@@ -24,9 +24,9 @@ class StreamObject extends DictionaryObject
     {
         $stream = $this->getContent();
 
-        if ($this->hasKey('Filter')) {
-            $filters = $this->getObjectForKey('Filter');
-            $params = $this->getObjectForKey('DecodeParms');
+        if ($this->hasEntry('Filter')) {
+            $filters = $this->getEntry('Filter');
+            $params = $this->getEntry('DecodeParms');
 
             if (is_array($filters) && count($filters) > 0) {
                 foreach ($filters as $i => $name) {
@@ -82,13 +82,16 @@ class StreamObject extends DictionaryObject
         $length = new IntegerObject();
         $length->setValue(intval($length));
     
-        $this->addEntry('Length', $length);
+        $this->setEntry('Length', $length);
 
-        $value = '';
-        $value .= parent::format() . self::EOL_MARKER;
-        $value .= 'stream' .self::EOL_MARKER;
-        $value .= $stream ?? '';
-        $value .= 'endstream';
+        $value = parent::format();
+        
+        if (!empty($stream)) {
+            $value .= self::EOL_MARKER;
+            $value .= 'stream' .self::EOL_MARKER;
+            $value .= $stream;
+            $value .= 'endstream';
+        }
 
         return $value;
     }

@@ -14,12 +14,12 @@ class PageTree extends DictionaryObject
      */
     public function getNode()
     {
-        if (!$this->hasKey('Node')) {
+        if (!$this->hasEntry('Node')) {
             $node = Factory::getInstance()->createType('PageTreeNode');
-            $this->setObjectForKey('Node', $node);
+            $this->setEntry('Node', $node);
         }
 
-        return $this->getObjectForKey('Node');
+        return $this->getEntry('Node');
     }
 
     /**

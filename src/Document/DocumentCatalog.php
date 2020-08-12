@@ -50,7 +50,7 @@ class DocumentCatalog extends DictionaryObject
             throw new InvalidArgumentException("Version is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('Version', $version);
+        $this->setEntry('Version', $version);
         return $this;
     } 
 
@@ -67,7 +67,7 @@ class DocumentCatalog extends DictionaryObject
             throw new InvalidArgumentException("Extensions is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('Extensions', $extensions);
+        $this->setEntry('Extensions', $extensions);
         return $this;
     } 
 
@@ -85,7 +85,7 @@ class DocumentCatalog extends DictionaryObject
             throw new InvalidArgumentException("Pages is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('Pages', $pages);
+        $this->setEntry('Pages', $pages);
         return $this;
     }
   
@@ -102,7 +102,7 @@ class DocumentCatalog extends DictionaryObject
             throw new InvalidArgumentException("Labels is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('PageLabels', $labels);
+        $this->setEntry('PageLabels', $labels);
         return $this;
     }
     /**
@@ -118,7 +118,7 @@ class DocumentCatalog extends DictionaryObject
             throw new InvalidArgumentException("Names is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('Names', $names);
+        $this->setEntry('Names', $names);
         return $this;
     } 
 
@@ -135,7 +135,7 @@ class DocumentCatalog extends DictionaryObject
             throw new InvalidArgumentException("Dests is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('Dests', $dests);
+        $this->setEntry('Dests', $dests);
         return $this;
     } 
 
@@ -152,7 +152,7 @@ class DocumentCatalog extends DictionaryObject
             throw new InvalidArgumentException("ViewPreferences is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('ViewerPreferences', $preferences);
+        $this->setEntry('ViewerPreferences', $preferences);
         return $this;
     } 
 
@@ -171,7 +171,7 @@ class DocumentCatalog extends DictionaryObject
 
         $lay = new NameObject();
         $lay->setValue($layout);
-        $this->addEntry('PageLayout', $lay);
+        $this->setEntry('PageLayout', $lay);
 
         return $this;
     } 
@@ -191,7 +191,7 @@ class DocumentCatalog extends DictionaryObject
 
         $mod = new NameObject();
         $mod->setValue($mode);
-        $this->addEntry('PageMode', $mod);
+        $this->setEntry('PageMode', $mod);
 
         return $this;
     } 
@@ -209,7 +209,7 @@ class DocumentCatalog extends DictionaryObject
             throw new InvalidArgumentException("Outlines is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('Outlines', $outlines);
+        $this->setEntry('Outlines', $outlines);
         return $this;
     } 
 
@@ -226,7 +226,7 @@ class DocumentCatalog extends DictionaryObject
             throw new InvalidArgumentException("Threads is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('Threads', $threads);
+        $this->setEntry('Threads', $threads);
         return $this;
     } 
 
@@ -243,7 +243,7 @@ class DocumentCatalog extends DictionaryObject
             throw new InvalidArgumentException("Action is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('OpenAction', $action);
+        $this->setEntry('OpenAction', $action);
         return $this;
     } 
 
@@ -260,7 +260,7 @@ class DocumentCatalog extends DictionaryObject
             throw new InvalidArgumentException("AA is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('AA', $aa);
+        $this->setEntry('AA', $aa);
         return $this;
     } 
 
@@ -277,7 +277,7 @@ class DocumentCatalog extends DictionaryObject
             throw new InvalidArgumentException("URI is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('URI', $uri);
+        $this->setEntry('URI', $uri);
         return $this;
     } 
 
@@ -294,7 +294,7 @@ class DocumentCatalog extends DictionaryObject
             throw new InvalidArgumentException("Form is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('AcroForm', $form);
+        $this->setEntry('AcroForm', $form);
         return $this;
     } 
 
@@ -311,7 +311,7 @@ class DocumentCatalog extends DictionaryObject
             throw new InvalidArgumentException("Metadata is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('Metadata', $metadata);
+        $this->setEntry('Metadata', $metadata);
         return $this;
     } 
 
@@ -328,7 +328,7 @@ class DocumentCatalog extends DictionaryObject
             throw new InvalidArgumentException("StructTreeRoot is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('StructTreeRoot', $structTreeRoot);
+        $this->setEntry('StructTreeRoot', $structTreeRoot);
         return $this;
     }
 
@@ -346,7 +346,7 @@ class DocumentCatalog extends DictionaryObject
             throw new InvalidArgumentException("MarkInfo is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('MarkInfo', $markInfo);
+        $this->setEntry('MarkInfo', $markInfo);
         return $this;
     }
 
@@ -363,7 +363,7 @@ class DocumentCatalog extends DictionaryObject
             throw new InvalidArgumentException("Lang is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('Lang', $lang);
+        $this->setEntry('Lang', $lang);
         return $this;
     }
 
@@ -380,7 +380,7 @@ class DocumentCatalog extends DictionaryObject
             throw new InvalidArgumentException("SpiderInfo is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('SpiderInfo', $spiderInfo);
+        $this->setEntry('SpiderInfo', $spiderInfo);
         return $this;
     }
 
@@ -397,7 +397,7 @@ class DocumentCatalog extends DictionaryObject
             throw new InvalidArgumentException("OutputIntents is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('OutputIntents', $outputIntents);
+        $this->setEntry('OutputIntents', $outputIntents);
         return $this;
     } 
 
@@ -414,7 +414,7 @@ class DocumentCatalog extends DictionaryObject
             throw new InvalidArgumentException("PieceInfo is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('PieceInfo', $pieceInfo);
+        $this->setEntry('PieceInfo', $pieceInfo);
         return $this;
     }
 
@@ -431,7 +431,7 @@ class DocumentCatalog extends DictionaryObject
             throw new InvalidArgumentException("OCProperties is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('OCProperties', $ocProperties);
+        $this->setEntry('OCProperties', $ocProperties);
         return $this;
     }
 
@@ -448,7 +448,7 @@ class DocumentCatalog extends DictionaryObject
             throw new InvalidArgumentException("Perms is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('Perms', $perms);
+        $this->setEntry('Perms', $perms);
         return $this;
     }
 
@@ -465,7 +465,7 @@ class DocumentCatalog extends DictionaryObject
             throw new InvalidArgumentException("Legal is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('Legal', $legal);
+        $this->setEntry('Legal', $legal);
         return $this;
     }
 
@@ -482,7 +482,7 @@ class DocumentCatalog extends DictionaryObject
             throw new InvalidArgumentException("Requirements is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('Requirements', $requirements);
+        $this->setEntry('Requirements', $requirements);
         return $this;
     } 
 
@@ -499,7 +499,7 @@ class DocumentCatalog extends DictionaryObject
             throw new InvalidArgumentException("Collection is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('Collection', $collection);
+        $this->setEntry('Collection', $collection);
         return $this;
     }
 
@@ -516,7 +516,7 @@ class DocumentCatalog extends DictionaryObject
             throw new InvalidArgumentException("NeedsRendering is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('NeedsRendering', $needs);
+        $this->setEntry('NeedsRendering', $needs);
         return $this;
     }
 
@@ -527,24 +527,24 @@ class DocumentCatalog extends DictionaryObject
      */
     public function format()
     {
-        if (!$this->hasKey('Pages')) {
+        if (!$this->hasEntry('Pages')) {
             throw new RuntimeException("Pages is missing. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $type = new NameObject();
         $type->setValue('Catalog');
-        $this->addEntry('Type', $type);
+        $this->setEntry('Type', $type);
 
         // Set default values
-        if (!$this->hasKey('PageLayout')) {
+        if (!$this->hasEntry('PageLayout')) {
             $this->setPageLayout(self::DEFAULT_PAGE_LAYOUT);
         }
 
-        if (!$this->hasKey('PageMode')) {
+        if (!$this->hasEntry('PageMode')) {
             $this->setPageMode(self::DEFAULT_PAGE_MODE);
         }
 
-        if (!$this->hasKey('NeedsRendering')) {
+        if (!$this->hasEntry('NeedsRendering')) {
             $needs = new BooleanObject();
             $needs->setValue(false);
             $this->setNeedsRendering($needs);

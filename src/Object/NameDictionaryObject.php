@@ -22,7 +22,7 @@ class NameDictionaryObject extends DictionaryObject
             throw new InvalidArgumentException("Dests is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('Dests', $dests);
+        $this->setEntry('Dests', $dests);
         return $this;
     }
 
@@ -39,7 +39,7 @@ class NameDictionaryObject extends DictionaryObject
             throw new InvalidArgumentException("AP is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('AP', $ap);
+        $this->setEntry('AP', $ap);
         return $this;
     }
 
@@ -56,7 +56,7 @@ class NameDictionaryObject extends DictionaryObject
             throw new InvalidArgumentException("JavaScript is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('JavaScript', $javascript);
+        $this->setEntry('JavaScript', $javascript);
         return $this;
     }
 
@@ -74,7 +74,7 @@ class NameDictionaryObject extends DictionaryObject
             throw new InvalidArgumentException("Pages is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('Pages', $pages);
+        $this->setEntry('Pages', $pages);
         return $this;
     }
 
@@ -92,7 +92,7 @@ class NameDictionaryObject extends DictionaryObject
             throw new InvalidArgumentException("Templates is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('Templates', $templates);
+        $this->setEntry('Templates', $templates);
         return $this;
     }
 
@@ -109,7 +109,7 @@ class NameDictionaryObject extends DictionaryObject
             throw new InvalidArgumentException("IDS is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('IDS', $ids);
+        $this->setEntry('IDS', $ids);
         return $this;
     }
 
@@ -126,7 +126,7 @@ class NameDictionaryObject extends DictionaryObject
             throw new InvalidArgumentException("URLS is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('URLS', $urls);
+        $this->setEntry('URLS', $urls);
         return $this;
     }
 
@@ -144,7 +144,7 @@ class NameDictionaryObject extends DictionaryObject
             throw new InvalidArgumentException("EmbeddedFiles is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('EmbeddedFiles', $files);
+        $this->setEntry('EmbeddedFiles', $files);
         return $this;
     }
 
@@ -161,7 +161,7 @@ class NameDictionaryObject extends DictionaryObject
             throw new InvalidArgumentException("AlternatePresentations is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('AlternatePresentations', $presentations);
+        $this->setEntry('AlternatePresentations', $presentations);
         return $this;
     }
 
@@ -178,7 +178,7 @@ class NameDictionaryObject extends DictionaryObject
             throw new InvalidArgumentException("Renditions is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->addEntry('Renditions', $renditions);
+        $this->setEntry('Renditions', $renditions);
         return $this;
     }
 }

@@ -36,7 +36,7 @@ class NumberTreeNodeType extends TreeNodeType
      */
     public function addNum($key, $object)
     {
-        $this->getNums()->setObjectForKey($key, $object);
+        $this->getNums()->setEntry($key, $object);
         return $this;
     }
 
@@ -54,11 +54,11 @@ class NumberTreeNodeType extends TreeNodeType
             throw new InvalidArgumentException("Nums is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        if ($this->hasKey('Kids')) {
+        if ($this->hasEntry('Kids')) {
             throw new RunTimeException("Kids is already present. See ".__CLASS__." class's documentation for possible values.");  
         }
 
-        return $this->setObjectForKey('Nums', $nums);
+        return $this->setEntry('Nums', $nums);
     } 
 
     /**
@@ -69,16 +69,16 @@ class NumberTreeNodeType extends TreeNodeType
      */
     protected function getNums()
     {
-        if ($this->hasKey('Kids')) {
+        if ($this->hasEntry('Kids')) {
             throw new RunTimeException("Kids is already present. See ".__CLASS__." class's documentation for possible values.");  
         }
 
-        if (!$this->hasKey('Nums')) {
+        if (!$this->hasEntry('Nums')) {
             $nums = new IntegerKeyArrayObject();
-            $this->setObjectForKey('Nums', $nums);
+            $this->setEntry('Nums', $nums);
         }
 
-        return $this->getObjectForKey('Nums');
+        return $this->getEntry('Nums');
     }
 
     /**
@@ -95,11 +95,11 @@ class NumberTreeNodeType extends TreeNodeType
 
         $objects = array();
 
-        if ($node->hasKey('Nums')) {
-            $nums = $node->getObjectForKey('Nums')->getKeys();
+        if ($node->hasEntry('Nums')) {
+            $nums = $node->getEntry('Nums')->getKeys();
             $objects = array_merge($objects, $nums);
         } else {
-            $kids = $node->getObjectForKey('Kids');
+            $kids = $node->getEntry('Kids');
             
             if (count($kids) > 0) {
                 foreach ($kids as $kid) {

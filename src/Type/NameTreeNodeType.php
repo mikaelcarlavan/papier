@@ -36,7 +36,7 @@ class NameTreeNodeType extends TreeNodeType
      */
     public function addName($key, $object)
     {
-        $this->getNames()->setObjectForKey($key, $object);
+        $this->getNames()->setEntry($key, $object);
         return $this;
     }
 
@@ -54,11 +54,11 @@ class NameTreeNodeType extends TreeNodeType
             throw new InvalidArgumentException("Names is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        if ($this->hasKey('Kids')) {
+        if ($this->hasEntry('Kids')) {
             throw new RunTimeException("Kids is already present. See ".__CLASS__." class's documentation for possible values.");  
         }
 
-        return $this->setObjectForKey('Names', $names);
+        return $this->setEntry('Names', $names);
     } 
 
     /**
@@ -69,16 +69,16 @@ class NameTreeNodeType extends TreeNodeType
      */
     protected function getNames()
     {
-        if ($this->hasKey('Kids')) {
+        if ($this->hasEntry('Kids')) {
             throw new RunTimeException("Kids is already present. See ".__CLASS__." class's documentation for possible values.");  
         }
 
-        if (!$this->hasKey('Names')) {
+        if (!$this->hasEntry('Names')) {
             $names = new LiteralStringKeyArrayObject();
-            $this->setObjectForKey('Names', $names);
+            $this->setEntry('Names', $names);
         }
 
-        return $this->getObjectForKey('Names');
+        return $this->getEntry('Names');
     }
 
     /**
@@ -95,11 +95,11 @@ class NameTreeNodeType extends TreeNodeType
 
         $objects = array();
 
-        if ($node->hasKey('Names')) {
-            $names = $node->getObjectForKey('Names')->getKeys();
+        if ($node->hasEntry('Names')) {
+            $names = $node->getEntry('Names')->getKeys();
             $objects = array_merge($objects, $names);
         } else {
-            $kids = $node->getObjectForKey('Kids');
+            $kids = $node->getEntry('Kids');
             
             if (count($kids) > 0) {
                 foreach ($kids as $kid) {
