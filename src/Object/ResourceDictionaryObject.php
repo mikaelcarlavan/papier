@@ -1,13 +1,13 @@
 <?php
 
-namespace Papier\Document;
+namespace Papier\Object;
 
 use Papier\Object\DictionaryObject;
 use Papier\Object\ArrayObject;
 
 use InvalidArgumentException;
 
-class ResourceDictionary extends DictionaryObject
+class ResourceDictionaryObject extends DictionaryObject
 {
     /**
      * Set graphics state parameter mapping dictionary.
