@@ -9,9 +9,15 @@ use Papier\Object\ArrayObject;
 use Papier\Object\StreamObject;
 
 use Papier\Type\DateType;
+use Papier\Type\ByteStringType;
+use Papier\Type\NumberType;
 
 use Papier\Validator\IntValidator;
 use Papier\Validator\BoolValidator;
+use Papier\Validator\TabOrderValidator;
+
+use Papier\Factory\Factory;
+
 
 use InvalidArgumentException;
 
@@ -236,7 +242,7 @@ class PageObjectType extends DictionaryObject
     /**
      * Set the thumbnail image of the page.
      *  
-     * @param  \Pepier\Object\StreamObject  $contents
+     * @param  \Papier\Object\StreamObject  $contents
      * @throws InvalidArgumentException if the provided argument is not of type 'StreamObject'.
      * @return \Papier\Type\PageObjectType
      */
@@ -253,7 +259,7 @@ class PageObjectType extends DictionaryObject
     /**
      * Set references to articles beads.
      *  
-     * @param  mixed  $b
+     * @param  \Papier\Object\ArrayObject  $b
      * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
      * @return \Papier\Type\PageObjectType
      */
@@ -265,5 +271,276 @@ class PageObjectType extends DictionaryObject
 
         $this->addEntry('B', $b);
         return $this;
+    }
+
+    /**
+     * Set maxium display duration (in seconds).
+     *  
+     * @param  \Papier\Type\NumberType  $b
+     * @throws InvalidArgumentException if the provided argument is not of type 'NumberType'.
+     * @return \Papier\Type\PageObjectType
+     */
+    public function setDur($dur)
+    {
+        if (!$dur instanceof NumberType) {
+            throw new InvalidArgumentException("Dur is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $this->addEntry('Dur', $dur);
+        return $this;
+    }
+
+    /**
+     * Set transition effect.
+     *  
+     * @param  \Papier\Object\DictionaryObject  $trans
+     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
+     * @return \Papier\Type\PageObjectType
+     */
+    public function setTrans($trans)
+    {
+        if (!$trans instanceof DictionaryObject) {
+            throw new InvalidArgumentException("Trans is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $this->addEntry('Trans', $trans);
+        return $this;
+    }
+
+    /**
+     * Set annotations.
+     *  
+     * @param  \Papier\Object\ArrayObject  $annots
+     * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
+     * @return \Papier\Type\PageObjectType
+     */
+    public function setAnnots($annots)
+    {
+        if (!$annots instanceof ArrayObject) {
+            throw new InvalidArgumentException("Annots is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $this->addEntry('Annots', $annots);
+        return $this;
+    }
+
+    /**
+     * Set additional actions.
+     *  
+     * @param  \Papier\Object\DictionaryObject  $aa
+     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
+     * @return \Papier\Type\PageObjectType
+     */
+    public function setAA($aa)
+    {
+        if (!$aa instanceof DictionaryObject) {
+            throw new InvalidArgumentException("AA is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $this->addEntry('AA', $aa);
+        return $this;
+    }
+
+    /**
+     * Set additional actions.
+     *  
+     * @param  \Papier\Object\StreamObject  $aa
+     * @throws InvalidArgumentException if the provided argument is not of type 'StreamObject'.
+     * @return \Papier\Type\PageObjectType
+     */
+    public function setMetadata($metadata)
+    {
+        if (!$metadata instanceof StreamObject) {
+            throw new InvalidArgumentException("Metadata is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $this->addEntry('Metadata', $metadata);
+        return $this;
+    }
+
+    /**
+     * Set page-piece dictionary.
+     *  
+     * @param  \Papier\Object\DictionaryObject  $pieceinfo
+     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
+     * @return \Papier\Type\PageObjectType
+     */
+    public function setPieceInfo($pieceinfo)
+    {
+        if (!$pieceinfo instanceof DictionaryObject) {
+            throw new InvalidArgumentException("PieceInfo is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $this->addEntry('PieceInfo', $pieceinfo);
+        return $this;
+    }
+
+    /**
+     * Set integer key of this page in structural parent tree.
+     *  
+     * @param  \Papier\Object\IntegerObject  $struct
+     * @throws InvalidArgumentException if the provided argument is not of type 'IntegerObject'.
+     * @return \Papier\Type\PageObjectType
+     */
+    public function setStructParents($struct)
+    {
+        if (!$struct instanceof IntegerObject) {
+            throw new InvalidArgumentException("StructParents is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $this->addEntry('StructParents', $struct);
+        return $this;
+    }
+
+    /**
+     * Set digital identifier of the page's parent web capture content set.
+     *  
+     * @param  \Papier\Type\ByteStringType  $id
+     * @throws InvalidArgumentException if the provided argument is not of type 'ByteStringType'.
+     * @return \Papier\Type\PageObjectType
+     */
+    public function setID($id)
+    {
+        if (!$id instanceof ByteStringType) {
+            throw new InvalidArgumentException("ID is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $this->addEntry('ID', $id);
+        return $this;
+    }
+
+    /**
+     * Set preferred zoom.
+     *  
+     * @param  \Papier\Type\NumberType  $pz
+     * @throws InvalidArgumentException if the provided argument is not of type 'NumberType'.
+     * @return \Papier\Type\PageObjectType
+     */
+    public function setPZ($pz)
+    {
+        if (!$pz instanceof NumberType) {
+            throw new InvalidArgumentException("PZ is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $this->addEntry('PZ', $pz);
+        return $this;
+    }
+
+    /**
+     * Set colour separations.
+     *  
+     * @param  \Papier\Object\DictionaryObject  $separationinfo
+     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
+     * @return \Papier\Type\PageObjectType
+     */
+    public function setSeparationInfo($separationinfo)
+    {
+        if (!$separationinfo instanceof DictionaryObject) {
+            throw new InvalidArgumentException("SeparationInfo is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $this->addEntry('SeparationInfo', $separationinfo);
+        return $this;
+    }
+
+    /**
+     * Set tab order.
+     *  
+     * @param  string  $tabs
+     * @throws InvalidArgumentException if the provided argument is not a valid tab order.
+     * @return \Papier\Type\PageObjectType
+     */
+    public function setTabs($tabs)
+    {
+        if (!TabOrderValidator::isValid($tabs)) {
+            throw new InvalidArgumentException("Tabs is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $value = Factory::getInstance()->createObject('Name')->setIndirect(false)->setValue($tabs);
+        $this->addEntry('Tabs', $value);
+        return $this;
+    }
+
+    /**
+     * Set name of the originating page object.
+     *  
+     * @param  \Papier\Object\NameObject  $pressteps
+     * @throws InvalidArgumentException if the provided argument is not of type 'NameObject'.
+     * @return \Papier\Type\PageObjectType
+     */
+    public function setTemplateInstantiated($template)
+    {
+        if (!$template instanceof DictionaryObject) {
+            throw new InvalidArgumentException("TemplateInstantiated is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $this->addEntry('TemplateInstantiated', $template);
+        return $this;
+    }
+
+    /**
+     * Set navigation node dictionary.
+     *  
+     * @param  \Papier\Object\DictionaryObject  $pressteps
+     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
+     * @return \Papier\Type\PageObjectType
+     */
+    public function setPresSteps($pressteps)
+    {
+        if (!$pressteps instanceof DictionaryObject) {
+            throw new InvalidArgumentException("PresSteps is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $this->addEntry('PresSteps', $pressteps);
+        return $this;
+    }
+
+    /**
+     * Set default user space units (in multiple of 1/72 inch).
+     *  
+     * @param  \Papier\Type\NumberType  $pz
+     * @throws InvalidArgumentException if the provided argument is not of type 'NumberType'.
+     * @return \Papier\Type\PageObjectType
+     */
+    public function setUserUnit($userunit)
+    {
+        if (!$userunit instanceof NumberType) {
+            throw new InvalidArgumentException("UserUnit is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $this->addEntry('UserUnit', $userunit);
+        return $this;
+    }
+
+     /**
+     * Set viewport dictionaries.
+     *  
+     * @param  \Papier\Object\DictionaryObject  $vp
+     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
+     * @return \Papier\Type\PageObjectType
+     */
+    public function setVP($vp)
+    {
+        if (!$vp instanceof DictionaryObject) {
+            throw new InvalidArgumentException("VP is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $this->addEntry('VP', $vp);
+        return $this;
+    }
+
+    /**
+     * Format catalog's content.
+     *
+     * @return string
+     */
+    public function format()
+    {
+        if (!$this->hasKey('UserUnit')) {
+            $userunit = Factory::getInstance()->createType('Number')->setIndirect(false)->setValue(1.0);
+            $this->setUserUnit($userunit);
+        }
+        
+        return parent::format();
     }
 }
