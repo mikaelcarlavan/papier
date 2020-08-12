@@ -24,7 +24,7 @@ class PageLayoutValidator implements StringValidator
      /**
      * Test if given parameter is a valid page layout.
      * 
-     * @param  mixed  $value
+     * @param  string  $value
      * @return bool
      */
     public static function isValid($value)
