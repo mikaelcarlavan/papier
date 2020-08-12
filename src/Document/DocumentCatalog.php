@@ -6,6 +6,7 @@ use Papier\Object\DictionaryObject;
 use Papier\Object\NameObject;
 use Papier\Object\ArrayObject;
 use Papier\Object\StreamObject;
+use Papier\Object\BooleanObject;
 
 use Papier\Validator\PageLayoutValidator;
 use Papier\Validator\StringValidator;
@@ -39,16 +40,17 @@ class DocumentCatalog extends DictionaryObject
     /**
      * Set PDF version.
      *  
-     * @param  string  $version
-     * @throws InvalidArgumentException if the provided argument is not of type 'string'.
+     * @param  \Papier\Object\NameObject  $version
+     * @throws InvalidArgumentException if the provided argument is not of type 'NameObject'.
      * @return \Papier\Document\DocumentCatalog
      */
     public function setVersion($version)
     {
-        $ver = new NameObject();
-        $ver->setValue($version);
-        $this->addEntry('Version', $ver);
+        if (!$version instanceof NameObject) {
+            throw new InvalidArgumentException("Version is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
 
+        $this->addEntry('Version', $version);
         return $this;
     } 
 
@@ -351,20 +353,17 @@ class DocumentCatalog extends DictionaryObject
     /**
      * Set document's language.
      *  
-     * @param  string  $lang
-     * @throws InvalidArgumentException if the provided argument is not of type 'string'.
+     * @param  \Papier\Object\StringObject  $lang
+     * @throws InvalidArgumentException if the provided argument is not of type 'StringObject'.
      * @return \Papier\Document\DocumentCatalog
      */
     public function setLang($lang)
     {
-        if (!StringValidator::isValid($lang)) {
+        if (!$lang instanceof StringObject) {
             throw new InvalidArgumentException("Lang is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $lan = new StringObject();
-        $lan->setValue($lang);
-
-        $this->addEntry('Lang', $lan);
+        $this->addEntry('Lang', $lang);
         return $this;
     }
 
@@ -507,18 +506,15 @@ class DocumentCatalog extends DictionaryObject
     /**
      * Set needs rendering.
      *  
-     * @param  bool  $needsRendering
+     * @param  \Papier\Object\BooleanObject  $needs
      * @throws InvalidArgumentException if the provided argument is not of type 'bool'.
      * @return \Papier\Document\DocumentCatalog
      */
-    public function setNeedsRendering($needsRendering)
+    public function setNeedsRendering($needs)
     {
-        if (!BoolValidator::isValid($needsRendering)) {
+        if (!$needs instanceof BooleanObject) {
             throw new InvalidArgumentException("NeedsRendering is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
-
-        $needs = new BooleanObject();
-        $needs->setValue($needsRendering);
 
         $this->addEntry('NeedsRendering', $needs);
         return $this;
@@ -549,7 +545,9 @@ class DocumentCatalog extends DictionaryObject
         }
 
         if (!$this->hasKey('NeedsRendering')) {
-            $this->setNeedsRendering(false);
+            $needs = new BooleanObject();
+            $needs->setValue(false);
+            $this->setNeedsRendering($needs);
         }
         
         return parent::format();
