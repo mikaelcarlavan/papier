@@ -498,7 +498,7 @@ class PageObjectType extends DictionaryObject
     /**
      * Set default user space units (in multiple of 1/72 inch).
      *  
-     * @param  \Papier\Type\NumberType  $pz
+     * @param  \Papier\Type\NumberType  $userunit
      * @throws InvalidArgumentException if the provided argument is not of type 'NumberType'.
      * @return \Papier\Type\PageObjectType
      */
