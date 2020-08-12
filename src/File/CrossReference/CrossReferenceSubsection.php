@@ -8,33 +8,6 @@ use Papier\File\CrossReference\CrossReferenceEntry;
 class CrossReferenceSubsection extends ArrayObject
 {
     /**
-     * Magical method.
-     *  
-     * @param  mixed  $object
-     * @param  string  $key
-     * @throws InvalidArgumentException if the provided argument does not inherit 'CrossReferenceEntry'.
-     * @return \Papier\File\CrossReference\CrossReferenceSubsection
-     */
-    public function __set($key, $object)
-    {
-        if (!$object instanceof CrossReferenceEntry) {
-            throw new InvalidArgumentException("Cross-reference entry is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-        $this->setObjectForKey($key, $object);
-    }
-
-    /**
-     * Magical method.
-     *  
-     * @param  string  $key
-     * @return \Papier\File\CrossReference\CrossReferenceEntry
-     */
-    public function __get($key)
-    {
-        $this->getObjectForKey($key);
-    }
-
-    /**
      * Add new subsection.
      *  
      * @return \Papier\File\CrossReference\CrossReferenceEntry

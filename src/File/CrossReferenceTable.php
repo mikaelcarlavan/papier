@@ -8,34 +8,9 @@ use Papier\File\CrossReference\CrossReferenceSection;
 class CrossReferenceTable extends ArrayObject
 {
     /**
-     * Magical method.
-     *  
-     * @param  mixed  $object
-     * @param  string  $key
-     * @throws InvalidArgumentException if the provided argument does not inherit 'IndirectObject'.
-     * @return \Papier\Object\DictionaryObject
-     */
-    public function __set($key, $object)
-    {
-        if (!$object instanceof CrossReferenceSection) {
-            throw new InvalidArgumentException("Cross-reference section is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-        $this->setObjectForKey($key, $object);
-    }
-
-    /**
-     * Magical method.
-     *  
-     */
-    public function __get($key)
-    {
-        $this->getObjectForKey($key);
-    }
-
-    /**
      * Add new section.
      *  
-     * @return \Papier\Object\CrossReferenceSection
+     * @return \Papier\File\CrossReference\CrossReferenceSection
      */
     public function addSection()
     {
