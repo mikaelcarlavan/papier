@@ -64,15 +64,7 @@ class FunctionObject extends StreamObject
 
         for ($i = 0; $i < $m; $i++) {
             if ($domain->getEntry($i) < $domain->getEntry(2*$i)  || $domain->getEntry($i) > $domain->getEntry(1+2*$i)) {
-                // Clip value
-                $left = abs($domain->getEntry($i) - $domain->getEntry(2*$i));
-                $right = abs($domain->getEntry($i) - $domain->getEntry(1+2*$i));
-
-                if ($left < $right) {
-                    $domain->setEntry($i, $domain->getEntry(2*$i));
-                } else {
-                    $domain->setEntry($i, $domain->getEntry(1+2*$i));
-                }
+                throw new InvalidArgumentException("Domain values are out of boundaries. See ".__CLASS__." class's documentation for possible values.");
             }
         }  
 
@@ -108,15 +100,7 @@ class FunctionObject extends StreamObject
 
         for ($i = 0; $i < $n; $i++) {
             if ($range->getEntry($i) < $range->getEntry(2*$i) || $range->getEntry($i) > $range->getEntry(1+2*$i)) {
-                // Clip value
-                $left = abs($range->getEntry($i) - $range->getEntry(2*$i));
-                $right = abs($range->getEntry($i) - $range->getEntry(1+2*$i));
-
-                if ($left < $right) {
-                    $range->setEntry($i, $range->getEntry(2*$i));
-                } else {
-                    $range->setEntry($i, $range->getEntry(1+2*$i));
-                }
+                throw new InvalidArgumentException("RAnge values are out of boundaries. See ".__CLASS__." class's documentation for possible values.");
             }
         } 
 
