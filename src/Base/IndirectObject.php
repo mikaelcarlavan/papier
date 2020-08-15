@@ -3,6 +3,9 @@
 namespace Papier\Base;
 
 use Papier\Base\BaseObject;
+
+use Papier\File\CrossReference;
+
 use Papier\Validator\BoolValidator;
 use Papier\Validator\IntValidator;
 
@@ -74,6 +77,13 @@ abstract class IndirectObject extends BaseObject
         }
 
         $this->indirect = $indirect;
+
+        if ($indirect) {
+            CrossReference::getInstance()->addObject($this);
+        } else {
+            CrossReference::getInstance()->removeObject($this);
+        }
+
         return $this;
     } 
 
@@ -129,7 +139,7 @@ abstract class IndirectObject extends BaseObject
     {
         $value = sprintf('%d %d obj', $this->getNumber(), $this->getGeneration()). self::EOL_MARKER;
         $value .= $this->format(). self::EOL_MARKER;
-        $value .= 'endobj';
+        $value .= 'endobj'. self::EOL_MARKER;
         
         return $value;
     }
