@@ -17,7 +17,9 @@ class ArrayObject extends DictionaryObject
     public function first() 
     {
         $objects = $this->getObjects();
-        return $objects[0];
+        $keys = $this->getKeys();
+
+        return $objects[$keys[0]];
     }
 
     /**
@@ -28,7 +30,9 @@ class ArrayObject extends DictionaryObject
     public function last() 
     {
         $objects = $this->getObjects();
-        return $objects[$this->count()-1];
+        $keys = $this->getKeys();
+        
+        return $objects[$keys[$this->count()-1]];
     }
 
     /**
@@ -102,9 +106,15 @@ class ArrayObject extends DictionaryObject
     {
         $objects = $this->getObjects();
         $value = '';
+
         foreach ($objects as $object) {
             $value .= ' '.$object->write();
         }
+        
+        if (count($objects) == 1) {
+            $value = str_replace(self::EOL_MARKER, '', trim($value));
+        }
+
 
         return '[' .$value. ']';
     }
