@@ -45,9 +45,16 @@ class CrossReferenceSubsection extends ArrayObject
         $objects = $this->getEntries();
         $firstNumber = 0;
         if (is_array($objects) && count($objects) > 0) {
-            $firstNumber = $objects[0]->getNumber();
+            $firstNumber = $objects[0]->getOffset();
         }
-        $value = sprintf("%d %d", $firstNumber, count($objects));
+        $value = sprintf("%d %d", $firstNumber, count($objects)) . self::EOL_MARKER;
+
+        if (is_array($objects) && count($objects) > 0) {
+            foreach ($objects as $object) {
+                $value .= $object->write();
+            }
+        }
+
         return $value;
     }
 }

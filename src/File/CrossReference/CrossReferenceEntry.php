@@ -2,9 +2,14 @@
 
 namespace Papier\File\CrossReference;
 
-use Papier\Object\IndirectObject;
+use Papier\Base\BaseObject;
 
-class CrossReferenceEntry extends IndirectObject
+use Papier\Validator\IntValidator;
+use Papier\Validator\BoolValidator;
+
+use InvalidArgumentException;
+
+class CrossReferenceEntry extends BaseObject
 {
      /**
      * Define entry as free.
@@ -19,6 +24,13 @@ class CrossReferenceEntry extends IndirectObject
      * @var int
      */
     protected $offset = 0;
+
+    /**
+     * The generation number of the entry.
+     *
+     * @var int
+     */
+    protected $generation = 0;
 
     /**
      * Keyword for free entry.
@@ -41,7 +53,7 @@ class CrossReferenceEntry extends IndirectObject
      * @throws InvalidArgumentException if the provided argument does not inherit 'int'.
      * @return \Papier\File\CrossReference\CrossReferenceEntry
      */
-    protected function setOffset($offset)
+    public function setOffset($offset)
     {
         if (!IntValidator::isValid($offset, 0)) {
             throw new InvalidArgumentException("Offset is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -58,13 +70,29 @@ class CrossReferenceEntry extends IndirectObject
      * @throws InvalidArgumentException if the provided argument does not inherit 'bool'.
      * @return \Papier\File\CrossReference\CrossReferenceEntry
      */
-    protected function setFree($free = true)
+    public function setFree($free = true)
     {
         if (!BoolValidator::isValid($free)) {
             throw new InvalidArgumentException("Free boolean is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $this->free = $free;
+        return $this;
+    } 
+
+    /**
+     * Set entry's generation number.
+     *  
+     * @param  int  $generation
+     * @return \Papier\File\CrossReference\CrossReferenceEntry
+     */
+    public function setGeneration($generation)
+    {
+        if (!IntValidator::isValid($generation)) {
+            throw new InvalidArgumentException("Generation number is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $this->generation = $generation;
         return $this;
     } 
 
@@ -84,9 +112,19 @@ class CrossReferenceEntry extends IndirectObject
      *
      * @return int
      */
-    protected function getOffset()
+    public function getOffset()
     {
         return $this->offset;
+    }
+
+    /**
+     * Get entry's generation number.
+     *
+     * @return int
+     */
+    public function getGeneration()
+    {
+        return $this->generation;
     }
 
     /**
