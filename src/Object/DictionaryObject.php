@@ -3,7 +3,11 @@
 namespace Papier\Object;
 
 use Papier\Base\IndirectObject;
+use Papier\Base\BaseObject;
+
 use Papier\Object\NullObject;
+
+use InvalidArgumentException;
 
 use Countable;
 use Iterator;
@@ -202,7 +206,7 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
         }
 
         foreach ($objects as $object) {
-            if (!$object instanceof IndirectObject) {
+            if (!$object instanceof BaseObject) {
                 throw new InvalidArgumentException("Object is incorrect. See ".__CLASS__." class's documentation for possible values.");
             }
         }
