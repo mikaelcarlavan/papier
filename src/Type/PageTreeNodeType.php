@@ -4,6 +4,7 @@ namespace Papier\Type;
 
 use Papier\Type\PageObjectType;
 use Papier\Object\DictionaryObject;
+use Papier\Object\ArrayObject;
 
 use Papier\Factory\Factory;
 
@@ -104,11 +105,10 @@ class PageTreeNodeType extends DictionaryObject
      */
     public function format()
     {
-        $parent = $this->getParent();
-
-        if (!$parent instanceof PageTreeNodeType) {
+        /*        
+        if (!$this->hasEntry('Parent')) {
             throw new RuntimeException("Parent is missing. See ".__CLASS__." class's documentation for possible values.");
-        }
+        }*/
 
         $kids = $this->getKids();
 
