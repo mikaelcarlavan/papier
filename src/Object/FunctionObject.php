@@ -100,7 +100,7 @@ class FunctionObject extends StreamObject
 
         for ($i = 0; $i < $n; $i++) {
             if ($range->getEntry($i) < $range->getEntry(2*$i) || $range->getEntry($i) > $range->getEntry(1+2*$i)) {
-                throw new InvalidArgumentException("RAnge values are out of boundaries. See ".__CLASS__." class's documentation for possible values.");
+                throw new InvalidArgumentException("Range values are out of boundaries. See ".__CLASS__." class's documentation for possible values.");
             }
         } 
 
