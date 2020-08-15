@@ -3,6 +3,13 @@
 namespace Papier\Type;
 
 use Papier\Object\FunctionObject;
+use Papier\Object\IntegerObject;
+use Papier\Object\ArrayObject;
+
+use Papier\Functions\FunctionType;
+
+use Papier\Validator\BitsPerSampleValidator;
+use Papier\Validator\IntValidator;
 
 use InvalidArgumentException;
 use RuntimeException;
@@ -11,109 +18,94 @@ class SampledFunctionType extends FunctionObject
 {
  
     /**
-     * Set type.
+     * Set size.
      *  
-     * @param  int  $type
+     * @param  \Papier\Object\ArrayObject  $size
      * @throws InvalidArgumentException if the provided argument is not a valid function type.
-     * @return \Papier\Object\FunctionObject
+     * @return \Papier\Type\SampledFunctionType
      */
-    public function setFunctionType($type)
+    public function setSize($size)
     {
-        if (!FunctionTypeValidator::isValid($type)) {
-            throw new InvalidArgumentException("FunctionType is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        if (!$size instanceof ArrayObject) {
+            throw new InvalidArgumentException("Size is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $this->setEntry('Size', $size);
+        return $this;
+    } 
+
+    /**
+     * Set bits per sample.
+     *  
+     * @param  int  $bits
+     * @throws InvalidArgumentException if the provided argument is not of type 'int'.
+     * @return \Papier\Type\SampledFunctionType
+     */
+    public function setBitsPerSample($bits)
+    {
+        if (!BitsPerSampleValidator::isValid($bis)) {
+            throw new InvalidArgumentException("BitsPerSample is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $value = new IntegerObject();
-        $value->setValue($type);
+        $value->setValue($bits);
 
-        $this->setEntry('FunctionType', $value);
+        $this->setEntry('BitsPerSample', $value);
         return $this;
     } 
 
     /**
-     * Set domain.
+     * Set order.
      *  
-     * @param  int  $domain
-     * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
-     * @return \Papier\Object\FunctionObject
+     * @param  int  $order
+     * @throws InvalidArgumentException if the provided argument is not of type 'int'.
+     * @return \Papier\Type\SampledFunctionType
      */
-    public function setDomain($domain)
+    public function setOrder($order)
     {
-        if (!$domain instanceof ArrayObject) {
-            throw new InvalidArgumentException("Domain is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        if (!IntValidator::isValid($order, 1, 3)) {
+            throw new InvalidArgumentException("Order is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        if (count($domain) % 2 != 0) {
-            throw new InvalidArgumentException("Domain should be even length. See ".__CLASS__." class's documentation for possible values.");
+        $value = new IntegerObject();
+        $value->setValue($order);
+
+        $this->setEntry('Order', $value);
+        return $this;
+    } 
+
+
+    /**
+     * Set encode.
+     *  
+     * @param  int  $encode
+     * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
+     * @return \Papier\Type\SampledFunctionType
+     */
+    public function setEncode($encode)
+    {
+        if (!$encode instanceof ArrayObject) {
+            throw new InvalidArgumentException("Encode is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $m = intval(count($domain)/2);
-
-        for ($i = 0; $i < $m; $i++) {
-            if ($domain->getEntry(2*$i) > $domain->getEntry(1+2*$i)) {
-                throw new InvalidArgumentException("Domain values should be increasing. See ".__CLASS__." class's documentation for possible values.");
-            }
-        }
-
-        for ($i = 0; $i < $m; $i++) {
-            if ($domain->getEntry($i) < $domain->getEntry(2*$i)  || $domain->getEntry($i) > $domain->getEntry(1+2*$i)) {
-                // Clip value
-                $left = abs($domain->getEntry($i) - $domain->getEntry(2*$i));
-                $right = abs($domain->getEntry($i) - $domain->getEntry(1+2*$i));
-
-                if ($left < $right) {
-                    $domain->setEntry($i, $domain->getEntry(2*$i));
-                } else {
-                    $domain->setEntry($i, $domain->getEntry(1+2*$i));
-                }
-            }
-        }  
-
-
-        $this->setEntry('Domain', $domain);
+        $this->setEntry('Encode', $encode);
         return $this;
     } 
 
     /**
-     * Set range.
+     * Set decode.
      *  
-     * @param  int  $range
+     * @param  int  $encode
      * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
-     * @return \Papier\Object\FunctionObject
+     * @return \Papier\Type\SampledFunctionType
      */
-    public function setRange($range)
+    public function setDecode($decode)
     {
-        if (!$range instanceof ArrayObject) {
-            throw new InvalidArgumentException("Range is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        if (!$decode instanceof ArrayObject) {
+            throw new InvalidArgumentException("Decode is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        if (count($range) % 2 != 0) {
-            throw new InvalidArgumentException("Range should be even length. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        $n = intval(count($range)/2);
-
-        for ($i = 0; $i < $n; $i++) {
-            if ($range->getEntry(2*$i) > $range->getEntry(1+2*$i)) {
-                throw new InvalidArgumentException("Range values should be increasing. See ".__CLASS__." class's documentation for possible values.");
-            }
-        }
-
-        for ($i = 0; $i < $n; $i++) {
-            if ($range->getEntry($i) < $range->getEntry(2*$i) || $range->getEntry($i) > $range->getEntry(1+2*$i)) {
-                // Clip value
-                $left = abs($range->getEntry($i) - $range->getEntry(2*$i));
-                $right = abs($range->getEntry($i) - $range->getEntry(1+2*$i));
-
-                if ($left < $right) {
-                    $range->setEntry($i, $range->getEntry(2*$i));
-                } else {
-                    $range->setEntry($i, $range->getEntry(1+2*$i));
-                }
-            }
-        } 
-
-        $this->setEntry('Range', $range);
+        $this->setEntry('Decode', $decode);
         return $this;
     } 
 
@@ -124,18 +116,18 @@ class SampledFunctionType extends FunctionObject
      */
     public function format()
     {
-        if (!$this->hasEntry('FunctionType')) {
-            throw new RuntimeException("FunctionType is missing. See ".__CLASS__." class's documentation for possible values.");
+        $this->setFunctionType(FunctionType::SAMPLED);
+
+        if (!$this->hasEntry('BitsPerSample')) {
+            throw new RuntimeException("BitsPerSample is missing. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        if (!$this->hasEntry('Domain')) {
-            throw new RuntimeException("Domain is missing. See ".__CLASS__." class's documentation for possible values.");
+        if ($this->hasEntry('Encode') && count($this->getEntry('Encode')) != count($this->getEntry('Domain')) ) {
+            throw new RuntimeException("Encode size is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $type = $this->getEntry('FunctionType')->getValue();
-
-        if (($type == FunctionType::SAMPLED || $type == FunctionType::POSTSCRIPT_CALCULATOR) && !$this->hasEntry('Range')) {
-            throw new RuntimeException("Range is missing. See ".__CLASS__." class's documentation for possible values.");
+        if ($this->hasEntry('Decode') && count($this->getEntry('Decode')) != count($this->getEntry('Range')) ) {
+            throw new RuntimeException("Decode size is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         return parent::format();
