@@ -1,6 +1,6 @@
 <?php
 
-namespace Papier\Document;
+namespace Papier\Type;
 
 use Papier\Object\DictionaryObject;
 use Papier\Object\NameObject;
@@ -21,7 +21,7 @@ use Papier\Type\NumberTreeType;
 use InvalidArgumentException;
 use RuntimeException;
 
-class DocumentCatalog extends DictionaryObject
+class DocumentCatalogType extends DictionaryObject
 {
     /**
      * Default page layout.
@@ -50,7 +50,10 @@ class DocumentCatalog extends DictionaryObject
             throw new InvalidArgumentException("Version is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->setEntry('Version', $version);
+        $value = new NameObject();
+        $value->setValue($version);
+
+        $this->setEntry('Version', $value);
         return $this;
     } 
 
@@ -169,9 +172,9 @@ class DocumentCatalog extends DictionaryObject
             throw new InvalidArgumentException("Layout is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $lay = new NameObject();
-        $lay->setValue($layout);
-        $this->setEntry('PageLayout', $lay);
+        $value = new NameObject();
+        $value->setValue($layout);
+        $this->setEntry('PageLayout', $value);
 
         return $this;
     } 
@@ -506,17 +509,20 @@ class DocumentCatalog extends DictionaryObject
     /**
      * Set needs rendering.
      *  
-     * @param  \Papier\Object\BooleanObject  $needs
+     * @param  bool  $needs
      * @throws InvalidArgumentException if the provided argument is not of type 'bool'.
      * @return \Papier\Document\DocumentCatalog
      */
     public function setNeedsRendering($needs)
     {
-        if (!$needs instanceof BooleanObject) {
+        if (!BoolValidator::isValid($needs)) {
             throw new InvalidArgumentException("NeedsRendering is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->setEntry('NeedsRendering', $needs);
+        $value = new BooleanObject();
+        $value->setValue($needs);
+
+        $this->setEntry('NeedsRendering', $value);
         return $this;
     }
 
@@ -536,6 +542,7 @@ class DocumentCatalog extends DictionaryObject
         $this->setEntry('Type', $type);
 
         // Set default values
+        /*
         if (!$this->hasEntry('PageLayout')) {
             $this->setPageLayout(self::DEFAULT_PAGE_LAYOUT);
         }
@@ -549,6 +556,7 @@ class DocumentCatalog extends DictionaryObject
             $needs->setValue(false);
             $this->setNeedsRendering($needs);
         }
+        */
         
         return parent::format();
     }

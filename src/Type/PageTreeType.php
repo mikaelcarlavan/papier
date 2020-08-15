@@ -1,11 +1,11 @@
 <?php
 
-namespace Papier\Document;
+namespace Papier\Type;
 
 use Papier\Object\DictionaryObject;
 use Papier\Factory\Factory;
 
-class PageTree extends DictionaryObject
+class PageTreeType extends DictionaryObject
 { 
     /**
      * Get node.
