@@ -6,6 +6,8 @@ use Papier\Validator\IntValidator;
 use Papier\Object\DictionaryObject;
 use Papier\Object\ArrayObject;
 
+use Papier\Object\IntegerObject;
+
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -58,7 +60,10 @@ class FileTrailer extends DictionaryObject
             throw new InvalidArgumentException("Size is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->setEntry('Size', $size);
+        $value = new IntegerObject();
+        $value->setValue($size);
+
+        $this->setEntry('Size', $value);
         return $this;
     } 
 
@@ -75,7 +80,10 @@ class FileTrailer extends DictionaryObject
             throw new InvalidArgumentException("Prev is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->setEntry('Prev', $prev);
+        $value = new IntegerObject();
+        $value->setValue($prev);
+
+        $this->setEntry('Prev', $value);
         return $this;
     } 
 
@@ -92,7 +100,7 @@ class FileTrailer extends DictionaryObject
             throw new InvalidArgumentException("Root is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->setEntry('Root', $root->getReference());
+        $this->setEntry('Root', $root);
         return $this;
     } 
 
@@ -110,7 +118,7 @@ class FileTrailer extends DictionaryObject
             throw new InvalidArgumentException("Encrypt is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->setEntry('Encrypt', $encrypt->getReference());
+        $this->setEntry('Encrypt', $encrypt);
         return $this;
     } 
 
@@ -128,7 +136,7 @@ class FileTrailer extends DictionaryObject
             throw new InvalidArgumentException("Info is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->setEntry('Info', $info->getReference());
+        $this->setEntry('Info', $info);
         return $this;
     } 
 
@@ -145,7 +153,7 @@ class FileTrailer extends DictionaryObject
             throw new InvalidArgumentException("ID is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->setEntry('ID', $ID->write());
+        $this->setEntry('ID', $ID);
         return $this;
     } 
 
@@ -156,13 +164,11 @@ class FileTrailer extends DictionaryObject
      */
     public function format()
     {
-        $dictionary = $this->getDictionary();
-
-        if (!$dictionary->hasEntry('Root')) {
+        if (!$this->hasEntry('Root')) {
             throw new RuntimeException("Root is missing. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        if (!$dictionary->hasEntry('Size')) {
+        if (!$this->hasEntry('Size')) {
             throw new RuntimeException("Size is missing. See ".__CLASS__." class's documentation for possible values.");
         }
 

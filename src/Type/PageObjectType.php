@@ -12,9 +12,10 @@ use Papier\Type\DateType;
 use Papier\Type\ByteStringType;
 use Papier\Type\NumberType;
 
-use Papier\Validator\IntValidator;
 use Papier\Validator\BoolValidator;
 use Papier\Validator\TabOrderValidator;
+use Papier\Validator\IntValidator;
+use Papier\Validator\RealValidator;
 
 use Papier\Factory\Factory;
 
@@ -207,17 +208,20 @@ class PageObjectType extends DictionaryObject
     /**
      * Set the number of degrees by which the page should be rotated before printed or displayed.
      *  
-     * @param  \Papier\Object\IntegerObject  $rotate
-     * @throws InvalidArgumentException if the provided argument is not of type 'IntegerObject'.
+     * @param  int  $rotate
+     * @throws InvalidArgumentException if the provided argument is not of type int.
      * @return \Papier\Type\PageObjectType
      */
     public function setRotate($rotate)
     {
-        if (!$rotate instanceof IntegerObject) {
+        if (!IntValidator::isValid($rotate)) {
             throw new InvalidArgumentException("Rotate is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->setEntry('Rotate', $rotate);
+        $value = new IntegerObject();
+        $value->setValue($rotate);
+
+        $this->setEntry('Rotate', $value);
         return $this;
     }
 
@@ -276,17 +280,20 @@ class PageObjectType extends DictionaryObject
     /**
      * Set maxium display duration (in seconds).
      *  
-     * @param  \Papier\Type\NumberType  $b
-     * @throws InvalidArgumentException if the provided argument is not of type 'NumberType'.
+     * @param  float  $b
+     * @throws InvalidArgumentException if the provided argument is not of type 'float'.
      * @return \Papier\Type\PageObjectType
      */
     public function setDur($dur)
     {
-        if (!$dur instanceof NumberType) {
+        if (!RealValidator::isValid($dur)) {
             throw new InvalidArgumentException("Dur is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->setEntry('Dur', $dur);
+        $value = new RealObject();
+        $value->setValue($dur);
+
+        $this->setEntry('Dur', $value);
         return $this;
     }
 
@@ -378,17 +385,20 @@ class PageObjectType extends DictionaryObject
     /**
      * Set integer key of this page in structural parent tree.
      *  
-     * @param  \Papier\Object\IntegerObject  $struct
-     * @throws InvalidArgumentException if the provided argument is not of type 'IntegerObject'.
+     * @param  int  $struct
+     * @throws InvalidArgumentException if the provided argument is not of type 'int'.
      * @return \Papier\Type\PageObjectType
      */
     public function setStructParents($struct)
     {
-        if (!$struct instanceof IntegerObject) {
+        if (!IntValidator::isValid($struct)) {
             throw new InvalidArgumentException("StructParents is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->setEntry('StructParents', $struct);
+        $value = new IntegerObject();
+        $value->setValue($struct);
+
+        $this->setEntry('StructParents', $value);
         return $this;
     }
 
@@ -412,17 +422,20 @@ class PageObjectType extends DictionaryObject
     /**
      * Set preferred zoom.
      *  
-     * @param  \Papier\Type\NumberType  $pz
-     * @throws InvalidArgumentException if the provided argument is not of type 'NumberType'.
+     * @param  float  $pz
+     * @throws InvalidArgumentException if the provided argument is not of type 'float'.
      * @return \Papier\Type\PageObjectType
      */
     public function setPZ($pz)
     {
-        if (!$pz instanceof NumberType) {
+        if (!RealValidator::isValid($pz)) {
             throw new InvalidArgumentException("PZ is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->setEntry('PZ', $pz);
+        $value = new RealObject();
+        $value->setValue($pz);
+
+        $this->setEntry('PZ', $value);
         return $this;
     }
 
@@ -498,17 +511,20 @@ class PageObjectType extends DictionaryObject
     /**
      * Set default user space units (in multiple of 1/72 inch).
      *  
-     * @param  \Papier\Type\NumberType  $userunit
-     * @throws InvalidArgumentException if the provided argument is not of type 'NumberType'.
+     * @param  float  $userunit
+     * @throws InvalidArgumentException if the provided argument is not of type 'float'.
      * @return \Papier\Type\PageObjectType
      */
     public function setUserUnit($userunit)
     {
-        if (!$userunit instanceof NumberType) {
+        if (!RealValidator::isValid($userunit)) {
             throw new InvalidArgumentException("UserUnit is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->setEntry('UserUnit', $userunit);
+        $value = new RealObject();
+        $value->setValue($userunit);
+
+        $this->setEntry('UserUnit', $value);
         return $this;
     }
 
@@ -536,10 +552,10 @@ class PageObjectType extends DictionaryObject
      */
     public function format()
     {
-        if (!$this->hasEntry('UserUnit')) {
-            $userunit = Factory::getInstance()->createType('Number')->setIndirect(false)->setValue(1.0);
+        /*if (!$this->hasEntry('UserUnit')) {
+            $userunit = Factory::getInstance()->createObject('Real')->setIndirect(false)->setValue(1.0);
             $this->setUserUnit($userunit);
-        }
+        }*/
         
         return parent::format();
     }

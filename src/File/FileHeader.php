@@ -17,7 +17,7 @@ class FileHeader extends BaseObject
      *
      * @var bool
      */
-    private $binaryData = true;  
+    private $binaryData = false;  
 
     /**
      * Format header's content.
@@ -52,13 +52,14 @@ class FileHeader extends BaseObject
      * @throws InvalidArgumentException if the provided argument is not of type 'int' or is outside acceptable values.
      * @return \Papier\File\FileHeader
      */
-    protected function setVersion($version)
+    public function setVersion($version)
     {
         if (!VersionValidator::isValid($version)) {
-            throw new InvalidArgumentException("Version is incorrect. See FileHeader class's documentation for possible values.");
+            throw new InvalidArgumentException("Version is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        return parent::setValue($value);
+        $this->setValue($version);
+        return $this;
     } 
 
     /**
@@ -78,7 +79,7 @@ class FileHeader extends BaseObject
      * @throws InvalidArgumentException if the provided argument is not of type 'bool'.
      * @return \Papier\File\FileHeader
      */
-    protected function setBinaryData($binaryData)
+    public function setBinaryData($binaryData)
     {
         if (!BoolValidator::isValid($binaryData)) {
             throw new InvalidArgumentException("BinaryData is incorrect. See ".__CLASS__." class's documentation for possible values.");
