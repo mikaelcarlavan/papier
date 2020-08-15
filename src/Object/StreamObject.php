@@ -78,9 +78,8 @@ class StreamObject extends DictionaryObject
         $stream = $stream ? $stream->write() : '';
 
         // Compute length of stream and set it into dictionary
-        $length = strlen($stream);
         $length = new IntegerObject();
-        $length->setValue(intval($length));
+        $length->setValue(intval(strlen($stream)));
     
         $this->setEntry('Length', $length);
 
