@@ -5,7 +5,7 @@ namespace Papier\Validator;
 use Papier\Document\TabOrder;
 use Papier\Validator\StringValidator;
 
-class TabOrderValidator implements StringValidator
+class TabOrderValidator extends StringValidator
 {
     /**
      * Tab orders.

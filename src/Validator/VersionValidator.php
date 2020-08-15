@@ -3,21 +3,21 @@
 namespace Papier\Validator;
 use Papier\Validator\IntValidator;
 
-class VersionValidator implements IntValidator
+class VersionValidator
 {
     /**
      * Minimum allowable value of header's version.
      *
      * @var int
      */
-    private $minVersion = 0;
+    const minVersion = 0;
 
     /**
      * Maximal allowable value of header's version.
      *
      * @var int
      */
-    private $maxVersion = 7;
+    const maxVersion = 7;
 
      /**
      * Test if given parameter is a valid bool.
@@ -27,7 +27,7 @@ class VersionValidator implements IntValidator
      */
     public static function isValid($value)
     {
-        $isValid = parent::isValid($value, $minVersion, $maxVersion);
+        $isValid = IntValidator::isValid($value, self::minVersion, self::maxVersion);
         return $isValid;
     }
 }

@@ -5,7 +5,7 @@ namespace Papier\Validator;
 use Papier\Validator\StringValidator;
 use Papier\Document\PageLayout;
 
-class PageLayoutValidator implements StringValidator
+class PageLayoutValidator extends StringValidator
 {
     /**
      * Page layouts.

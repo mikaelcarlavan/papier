@@ -5,7 +5,7 @@ namespace Papier\Validator;
 use Papier\Document\PageMode;
 use Papier\Validator\StringValidator;
 
-class PageModeValidator implements StringValidator
+class PageModeValidator extends StringValidator
 {
     /**
      * Page modes.
