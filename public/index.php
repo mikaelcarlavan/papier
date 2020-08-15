@@ -1,7 +1,6 @@
 <?php
 
-use Papier\Factory\Factory;
-use Papier\Type\NameTreeType;
+use Papier\Papier;
 /**
  * Papier - Yet another PHP Framework For PDF
  *
@@ -26,25 +25,9 @@ date_default_timezone_set("UTC");
 
 require __DIR__.'/../vendor/autoload.php';
 
-$tree = Factory::getInstance()->createType('NumberTree');
+$pdf = new Papier();
+$pdf->addPage();
 
-$val1OfKid1 = Factory::getInstance()->createObject('Integer')->setValue(30);
-$val2OfKid1 = Factory::getInstance()->createObject('Integer')->setValue(40);
-$val3OfKid1 = Factory::getInstance()->createObject('Integer')->setValue(50);
-
-$val1OfKid2 = Factory::getInstance()->createObject('Integer')->setValue(80);
-$val2OfKid2 = Factory::getInstance()->createObject('Integer')->setValue(90);
-
-$root = $tree->getRoot();
-
-$kid0 = $tree->addKid();
-
-$kid1 = $kid0->addKid();
-$kid2 = $kid0->addKid();
-
-$kid1->addNum(1, $val1OfKid1)->addNum(2, $val2OfKid1)->addNum(3, $val3OfKid1);
-$kid2->addNum(4, $val1OfKid2)->addNum(5, $val2OfKid2);
-
-print $tree->format();
+print $pdf->build();
 
 
