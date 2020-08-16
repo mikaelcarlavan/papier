@@ -25,10 +25,12 @@ class Factory
     * Create a new instance of object
     *
     * @param  string  $type
+    * @param  mixed  $value
+    * @param  bool  $isIndirect
     * @throws InvalidArgumentException if the provided type's object does not exist.
     * @return mixed
     */   
-    public static function createObject($type)
+    public static function createObject($type, $value = null, $isIndirect = true)
     {
         if (!StringValidator::isValid($type)) {
             throw new InvalidArgumentException("$type is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -41,9 +43,17 @@ class Factory
         }
 
         $object = new $class();
-        $object->setNumber(self::$number)->setIndirect();
-                
-        self::$number++;
+        
+        if ($isIndirect) {
+            $object->setNumber(self::$number);
+            $object->setIndirect();
+            self::$number++;
+        }
+                          
+        if (!is_null($value)) {
+            $object->setValue($value);
+        }
+
         
         return $object;
     }
@@ -52,10 +62,12 @@ class Factory
     * Create a new instance of type
     *
     * @param  string  $type
+    * @param  mixed  $value
+    * @param  bool  $isIndirect
     * @throws InvalidArgumentException if the provided type's object does not exist.
     * @return mixed
     */   
-    public static function createType($type)
+    public static function createType($type, $value = null, $isIndirect = true)
     {
         if (!StringValidator::isValid($type)) {
             throw new InvalidArgumentException("$type is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -68,9 +80,17 @@ class Factory
         }
 
         $object = new $class();
-        $object->setNumber(self::$number)->setIndirect();
         
-        self::$number++;
+        if ($isIndirect) {
+            $object->setNumber(self::$number);
+            $object->setIndirect();
+            self::$number++;
+        }
+               
+        if (!is_null($value)) {
+            $object->setValue($value);
+        }
+
         
         return $object;
     }
