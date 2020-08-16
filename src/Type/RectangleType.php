@@ -5,39 +5,30 @@ namespace Papier\Type;
 use Papier\Type\ArrayType;
 use Papier\Object\RealObject;
 use Papier\Validator\RealValidator;
+use Papier\Validator\ArrayValidator;
+
+use InvalidArgumentException;
 
 class RectangleType extends ArrayType
 {
     /**
-     * Create a new RectangleType instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->value[] = ObjectFactory::real(0);
-        $this->value[] = ObjectFactory::real(0);
-        $this->value[] = ObjectFactory::real(0);
-        $this->value[] = ObjectFactory::real(0);
-    } 
-
-    /**
     * Set object's lower left X coordinate.
     *
-    * @param  float  $value
+    * @param  float  $coordinate
     * @throws InvalidArgumentException if the provided argument is not of type 'float'.
     * @return \Papier\Type\RectangleType
     */
-    public function setLowerLeftX($value)
+    public function setLowerLeftX($coordinate)
     {
-        if (!RealValidator::isValid($value)) {
+        if (!RealValidator::isValid($coordinate)) {
             throw new InvalidArgumentException("Real is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
+        $value = new RealObject();
+        $value->setValue($coordinate);
+
         $objects = $this->getObjects();
-        $objects[0] = ObjectFactory::real($value);
+        $objects[0] = $value;
 
         return $this->setObjects($objects);
     } 
@@ -46,18 +37,21 @@ class RectangleType extends ArrayType
     /**
     * Set object's lower left Y coordinate.
     *
-    * @param  float  $value
+    * @param  float  $coordinate
     * @throws InvalidArgumentException if the provided argument is not of type 'float'.
     * @return \Papier\Type\RectangleType
     */
-    public function setLowerLeftY($value)
+    public function setLowerLeftY($coordinate)
     {
-        if (!RealValidator::isValid($value)) {
+        if (!RealValidator::isValid($coordinate)) {
             throw new InvalidArgumentException("Real is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
+        $value = new RealObject();
+        $value->setValue($coordinate);
+
         $objects = $this->getObjects();
-        $objects[1] = ObjectFactory::real($value);
+        $objects[1] = $value;
 
         return $this->setObjects($objects);
     } 
@@ -65,18 +59,21 @@ class RectangleType extends ArrayType
     /**
     * Set object's upper right X coordinate.
     *
-    * @param  float  $value
+    * @param  float  $coordinate
     * @throws InvalidArgumentException if the provided argument is not of type 'float'.
     * @return \Papier\Type\RectangleType
     */
-    public function setUpperRightX($value)
+    public function setUpperRightX($coordinate)
     {
-        if (!RealValidator::isValid($value)) {
+        if (!RealValidator::isValid($coordinate)) {
             throw new InvalidArgumentException("Real is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
+        $value = new RealObject();
+        $value->setValue($coordinate);
+
         $objects = $this->getObjects();
-        $objects[2] = ObjectFactory::real($value);
+        $objects[2] = $value;
 
         return $this->setObjects($objects);
     } 
@@ -88,14 +85,17 @@ class RectangleType extends ArrayType
     * @throws InvalidArgumentException if the provided argument is not of type 'float'.
     * @return \Papier\Type\RectangleType
     */
-    public function setUpperRightY($value)
+    public function setUpperRightY($coordinate)
     {
-        if (!RealValidator::isValid($value)) {
+        if (!RealValidator::isValid($coordinate)) {
             throw new InvalidArgumentException("Real is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
+        $value = new RealObject();
+        $value->setValue($coordinate);
+
         $objects = $this->getObjects();
-        $objects[3] = ObjectFactory::real($value);
+        $objects[3] = $value;
 
         return $this->setObjects($objects);
     } 
@@ -103,24 +103,27 @@ class RectangleType extends ArrayType
     /**
     * Set object's coordinates.
     *
-    * @param  array  $value
+    * @param  array  $coordinates
     * @throws InvalidArgumentException if the provided argument is not of type 'array' or if each element of the array is not of type 'float.
     * @return \Papier\Type\RectangleType
     */
-    public function setCoordinates($value)
+    public function setCoordinates($coordinates)
     {
-        if (!ArrayValidator::isValid($value)) {
+        if (!ArrayValidator::isValid($coordinates)) {
             throw new InvalidArgumentException("Array is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $objects = $this->getObjects();
 
-        foreach ($value as $i => $val) {
-            if (!RealValidator::isValid($val)) {
+        foreach ($coordinates as $i => $coordinate) {
+            if (!RealValidator::isValid($coordinate)) {
                 throw new InvalidArgumentException("Real is incorrect. See ".__CLASS__." class's documentation for possible values.");
             }
 
-            $objects[$i] = ObjectFactory::real($val);
+            $value = new RealObject();
+            $value->setValue($coordinate);
+
+            $objects[$i] = $value;
         }
 
         return $this->setObjects($objects);
