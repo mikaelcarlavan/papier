@@ -2,10 +2,10 @@
 
 namespace Papier\Type;
 
-use Papier\Object\DictionaryObject;
+use Papier\Type\DictionaryType;
 use Papier\Factory\Factory;
 
-class PageTreeType extends DictionaryObject
+class PageTreeType extends DictionaryType
 { 
     /**
      * Get node.

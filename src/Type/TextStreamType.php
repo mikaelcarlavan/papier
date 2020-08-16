@@ -2,10 +2,9 @@
 
 namespace Papier\Type;
 
-use Papier\Type\StringType;
-use Papier\Object\StreamObject;
+use Papier\Type\StreamType;
 
-class TextStreamType extends StreamObject
+class TextStreamType extends StreamType
 {
      /**
      * Get object's content.

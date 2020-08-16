@@ -5,7 +5,9 @@ namespace Papier\Type;
 use Papier\Object\DictionaryObject;
 use Papier\Factory\Factory;
 
-class TreeType extends DictionaryObject
+use Papier\Type\DictionaryType;
+
+class TreeType extends DictionaryType
 { 
     /**
      * Get root.

@@ -17,11 +17,12 @@ use Papier\Document\PageLayout;
 use Papier\Document\PageMode;
 
 use Papier\Type\NumberTreeType;
+use Papier\Type\DictionaryType;
 
 use InvalidArgumentException;
 use RuntimeException;
 
-class DocumentCatalogType extends DictionaryObject
+class DocumentCatalogType extends DictionaryType
 {
     /**
      * Default page layout.

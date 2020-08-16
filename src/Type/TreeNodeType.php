@@ -12,10 +12,13 @@ use Papier\Validator\BoolValidator;
 
 use Papier\Factory\Factory;
 
+use Papier\Type\DictionaryType;
+
+
 use InvalidArgumentException;
 use RunTimeException;
 
-class TreeNodeType extends DictionaryObject
+class TreeNodeType extends DictionaryType
 { 
     /**
      * Define node as root.

@@ -3,6 +3,8 @@
 namespace Papier\Type;
 
 use Papier\Type\PageObjectType;
+use Papier\Type\DictionaryType;
+
 use Papier\Object\DictionaryObject;
 use Papier\Object\ArrayObject;
 
@@ -11,7 +13,7 @@ use Papier\Factory\Factory;
 use InvalidArgumentException;
 use RuntimeException;
 
-class PageTreeNodeType extends DictionaryObject
+class PageTreeNodeType extends DictionaryType
 {
     /**
      * Set parent.
