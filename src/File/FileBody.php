@@ -64,7 +64,6 @@ class FileBody extends BaseObject
 
         $this->documentCatalog->setOutlines($outlines);
         $this->documentCatalog->setPages($this->pageTree);
-
     }
 
     /**
@@ -145,20 +144,14 @@ class FileBody extends BaseObject
      */
     public function format()
     {
-        $crossreference = CrossReference::getInstance();
-
-        $offset = $this->getOffset();
-
-        $objects = $crossreference->getObjects();
-        
+        $objects = CrossReference::getInstance()->getObjects();
+                
         $content = '';
         if (count($objects) > 0) {
             foreach ($objects as $object) {
                 $content .= $object->getObject() . self::EOL_MARKER;
             }
         }
-
-        $content .= $crossreference->setOffset($offset)->write();
 
         return $content;
     }
