@@ -2,9 +2,11 @@
 
 namespace Papier\Object;
 
-use Papier\Base\IntegerObject;
+use Papier\Object\IntegerObject;
 use Papier\Object\DictionaryObject;
+
 use RunTimeException;
+use InvalidArgumentException;
 
 class StreamObject extends DictionaryObject
 {
@@ -61,7 +63,7 @@ class StreamObject extends DictionaryObject
      * @param  mixed  $content
      * @return \Papier\Object\StreamObject
      */
-    protected function setContent($content)
+    public function setContent($content)
     {
         $this->content = $content;
         return $this;
@@ -75,7 +77,7 @@ class StreamObject extends DictionaryObject
     public function format()
     {
         $stream = $this->getStream();
-        $stream = $stream ? $stream->write() : '';
+        //$stream = $stream ? $stream->write() : '';
 
         // Compute length of stream and set it into dictionary
         $length = new IntegerObject();
@@ -88,7 +90,7 @@ class StreamObject extends DictionaryObject
         if (!empty($stream)) {
             $value .= self::EOL_MARKER;
             $value .= 'stream' .self::EOL_MARKER;
-            $value .= $stream;
+            $value .= $stream .self::EOL_MARKER;
             $value .= 'endstream';
         }
 
