@@ -26,7 +26,9 @@ date_default_timezone_set("UTC");
 require __DIR__.'/../vendor/autoload.php';
 
 $pdf = new Papier();
-$pdf->addPage();
+
+$page = $pdf->addPage();
+$page->getMediaBox()->setCoordinates([0, 0, 612, 792]);
 
 print $pdf->build();
 
