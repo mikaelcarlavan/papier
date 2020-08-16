@@ -115,26 +115,15 @@ class FileBody extends BaseObject
 
         $contents = Factory::getInstance()->createObject('Stream');
         $contents->setContent('...Page-marking operators...');
-        
-        $resources = new DictionaryObject();
-        $resources->setIndirect(false);
-
-        $procset = Factory::getInstance()->createObject('Array');
 
         $pdf = new NameObject();
         $pdf->setValue('PDF');
 
-        $procset->append($pdf);
-
-        $resources->setEntry('ProcSet', $procset);
-
-        $mediabox = new RectangleType();
-        $mediabox->setCoordinates([0.0, 0.0, 612.0, 792.0]);
+        $procset = Factory::getInstance()->createObject('Array')->append($pdf);
 
         $page->setParent($this->getPageTree());
-        $page->setContents($contents);
-        $page->setMediaBox($mediabox);
-        $page->setResources($resources);
+        $page->setContents($contents);    
+        $page->getResources()->setEntry('ProcSet', $procset);
 
         return $page;
     } 
