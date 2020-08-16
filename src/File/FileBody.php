@@ -6,9 +6,13 @@ use Papier\Base\BaseObject;
 
 use Papier\Object\IntegerObject;
 use Papier\Object\NameObject;
+use Papier\Object\DictionaryObject;
 
 use Papier\File\CrossReference;
 use Papier\Factory\Factory;
+
+use Papier\Type\PageTreeType;
+use Papier\Type\RectangleType;
 
 use Papier\Validator\IntValidator;
 
@@ -45,6 +49,7 @@ class FileBody extends BaseObject
         $this->documentCatalog = Factory::getInstance()->createType('DocumentCatalog');
 
         $outlines = Factory::getInstance()->createType('Dictionary');
+        
         $name = new NameObject();
         $name->setValue('Outlines');
 
@@ -54,7 +59,8 @@ class FileBody extends BaseObject
         $outlines->setEntry('Type', $name);
         $outlines->setEntry('Count', $count);
 
-        $this->pageTree = Factory::getInstance()->createType('PageTree');
+        $pageTree = new PageTreeType();
+        $this->pageTree = $pageTree->getNode();
 
         $this->documentCatalog->setOutlines($outlines);
         $this->documentCatalog->setPages($this->pageTree);
@@ -105,7 +111,31 @@ class FileBody extends BaseObject
      */
     public function addPage()
     {
-        $page = $this->getPageTree()->getNode()->addObject();
+        $page = $this->getPageTree()->addObject();
+
+        $contents = Factory::getInstance()->createObject('Stream');
+        $contents->setContent('...Page-marking operators...');
+        
+        $resources = new DictionaryObject();
+        $resources->setIndirect(false);
+
+        $procset = Factory::getInstance()->createObject('Array');
+
+        $pdf = new NameObject();
+        $pdf->setValue('PDF');
+
+        $procset->append($pdf);
+
+        $resources->setEntry('ProcSet', $procset);
+
+        $mediabox = new RectangleType();
+        $mediabox->setCoordinates([0.0, 0.0, 612.0, 792.0]);
+
+        $page->setParent($this->getPageTree());
+        $page->setContents($contents);
+        $page->setMediaBox($mediabox);
+        $page->setResources($resources);
+
         return $page;
     } 
 
