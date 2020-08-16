@@ -30,4 +30,4 @@ $pdf = new Papier();
 $page = $pdf->addPage();
 $page->getMediaBox()->setCoordinates([0, 0, 612, 792]);
 
-print $pdf->save('test.pdf');
+$pdf->save('test.pdf');
