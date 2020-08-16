@@ -99,6 +99,16 @@ class StitchingFunctionType extends FunctionObject
             throw new RuntimeException("Encode size is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
+        if (count($this->getEntry('Domain')) != 2) {
+            throw new RuntimeException("Domain size is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $domains = $this->getEntry('Domain')->getValue();
+
+        if ($domains->first() > min($this->getEntry('Bounds')->getValue()) || $domains->last() < max($this->getEntry('Bounds')->getValue())) {
+            throw new RuntimeException("Domain is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
         return parent::format();
     }
 }
