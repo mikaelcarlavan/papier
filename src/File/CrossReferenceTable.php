@@ -51,6 +51,6 @@ class CrossReferenceTable extends ArrayObject
             }
         }
 
-        return $value;
+        return rtrim($value);
     }
 }
