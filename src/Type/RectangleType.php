@@ -8,6 +8,8 @@ use Papier\Type\NumberType;
 use Papier\Validator\NumberValidator;
 use Papier\Validator\ArrayValidator;
 
+use Papier\Factory\Factory;
+
 use InvalidArgumentException;
 
 class RectangleType extends ArrayType
@@ -25,8 +27,7 @@ class RectangleType extends ArrayType
             throw new InvalidArgumentException("Number is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = new NumberType();
-        $value->setValue($coordinate);
+        $value = Factory::getInstance()->createType('Number', $coordinate, false);
 
         $objects = $this->getObjects();
         $objects[0] = $value;
@@ -48,8 +49,7 @@ class RectangleType extends ArrayType
             throw new InvalidArgumentException("Number is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = new NumberType();
-        $value->setValue($coordinate);
+        $value = Factory::getInstance()->createType('Number', $coordinate, false);
 
         $objects = $this->getObjects();
         $objects[1] = $value;
@@ -70,8 +70,7 @@ class RectangleType extends ArrayType
             throw new InvalidArgumentException("Number is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = new NumberType();
-        $value->setValue($coordinate);
+        $value = Factory::getInstance()->createType('Number', $coordinate, false);
 
         $objects = $this->getObjects();
         $objects[2] = $value;
@@ -92,8 +91,7 @@ class RectangleType extends ArrayType
             throw new InvalidArgumentException("Number is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = new NumberType();
-        $value->setValue($coordinate);
+        $value = Factory::getInstance()->createType('Number', $coordinate, false);
 
         $objects = $this->getObjects();
         $objects[3] = $value;
@@ -121,8 +119,7 @@ class RectangleType extends ArrayType
                 throw new InvalidArgumentException("Number is incorrect. See ".__CLASS__." class's documentation for possible values.");
             }
 
-            $value = new NumberType();
-            $value->setValue($coordinate);
+            $value = Factory::getInstance()->createType('Number', $coordinate, false);
 
             $objects[$i] = $value;
         }

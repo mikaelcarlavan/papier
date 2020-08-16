@@ -6,13 +6,13 @@ use Papier\Object\DictionaryObject;
 use Papier\Object\ArrayObject;
 use Papier\Object\LiteralStringKeyArrayObject;
 use Papier\Object\LiteralStringObject;
-use Papier\Object\LimitsArrayObject;
 
 use Papier\Validator\BoolValidator;
 
 use Papier\Factory\Factory;
 
 use Papier\Type\DictionaryType;
+use Papier\Type\LimitsArrayType;
 
 
 use InvalidArgumentException;
@@ -66,7 +66,7 @@ class TreeNodeType extends DictionaryType
         }
 
         if (!$this->hasEntry('Kids')) {
-            $kids = new ArrayObject();
+            $kids = Factory::getInstance()->createObject('Array', null, false);
             $this->setEntry('Kids', $kids);
         }
 
@@ -142,7 +142,7 @@ class TreeNodeType extends DictionaryType
         }
 
         if (!$this->hasEntry('Names')) {
-            $names = new LiteralStringKeyArrayObject();
+            $names = Factory::getInstance()->createObject('LiteralStringKeyArray', null, false);
             $this->setEntry('Names', $names);
         }
 
@@ -152,14 +152,14 @@ class TreeNodeType extends DictionaryType
     /**
      * Set limits.
      *  
-     * @param  \Papier\Object\LimitsArrayObject  $limits
+     * @param  \Papier\Type\LimitsArrayType  $limits
      * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
      * @throws RunTimeException if node already contains 'Names' key.
      * @return \Papier\Document\DocumentCatalog
      */
     protected function setLimits($limits)
     {
-        if (!$limits instanceof LimitsArrayObject) {
+        if (!$limits instanceof LimitsArrayType) {
             throw new InvalidArgumentException("Limits is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 

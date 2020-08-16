@@ -8,6 +8,8 @@ use Papier\Object\ArrayObject;
 
 use Papier\Object\IntegerObject;
 
+use Papier\Factory\Factory;
+
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -60,8 +62,7 @@ class FileTrailer extends DictionaryObject
             throw new InvalidArgumentException("Size is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = new IntegerObject();
-        $value->setValue($size);
+        $value = Factory::getInstance()->createObject('Integer', $size, false);
 
         $this->setEntry('Size', $value);
         return $this;
@@ -80,8 +81,7 @@ class FileTrailer extends DictionaryObject
             throw new InvalidArgumentException("Prev is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = new IntegerObject();
-        $value->setValue($prev);
+        $value = Factory::getInstance()->createObject('Integer', $prev, false);
 
         $this->setEntry('Prev', $value);
         return $this;

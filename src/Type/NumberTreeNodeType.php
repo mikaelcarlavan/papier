@@ -5,7 +5,6 @@ namespace Papier\Type;
 use Papier\Type\TreeNodeType;
 use Papier\Object\IntegerKeyArrayObject;
 use Papier\Object\IntegerObject;
-use Papier\Object\LimitsArrayObject;
 
 use Papier\Factory\Factory;
 
@@ -74,7 +73,7 @@ class NumberTreeNodeType extends TreeNodeType
         }
 
         if (!$this->hasEntry('Nums')) {
-            $nums = new IntegerKeyArrayObject();
+            $nums = Factory::getInstance()->createObject('IntegerKeyArray', null, false);
             $this->setEntry('Nums', $nums);
         }
 
@@ -121,17 +120,15 @@ class NumberTreeNodeType extends TreeNodeType
     {
         if (!$this->isRoot()) {
             // Compute limits
-            $limits = new LimitsArrayObject();
+            $limits = Factory::getInstance()->createType('LimitsArray', null, false);
+
             $objects = $this->collectNums($this);
 
             if (count($objects)) {
                 sort($objects);
 
-                $first = new IntegerObject();
-                $last = new IntegerObject();
-                            
-                $first->setValue(array_shift($objects));
-                $last->setValue(array_pop($objects));
+                $first = Factory::getInstance()->createObject('Integer', array_shift($objects), false);
+                $last = Factory::getInstance()->createObject('Integer', array_pop($objects), false);
                 
                 $limits->append($first);
                 $limits->append($last);

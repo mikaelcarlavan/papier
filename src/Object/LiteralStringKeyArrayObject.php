@@ -6,6 +6,8 @@ use Papier\Object\DictionaryObject;
 use Papier\Object\LiteralStringObject;
 use Papier\Base\IndirectObject;
 
+use Papier\Factory\Factory;
+
 use InvalidArgumentException;
 
 class LiteralStringKeyArrayObject extends DictionaryObject
@@ -23,9 +25,7 @@ class LiteralStringKeyArrayObject extends DictionaryObject
         $value = '';
         if (is_array($objects)) {
             foreach ($objects as $key => $object) {
-                $name = new LiteralStringObject();
-                $name->setValue($key);
-
+                $name = Factory::getInstance()->createObject('LiteralString', $key, false);
                 $value .= $name->format() .' '. $object->write();
             }
         }

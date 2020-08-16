@@ -6,6 +6,8 @@ use Papier\Object\DictionaryObject;
 use Papier\Object\IntegerObject;
 use Papier\Base\IndirectObject;
 
+use Papier\Factory\Factory;
+
 use InvalidArgumentException;
 
 class IntegerKeyArrayObject extends DictionaryObject
@@ -23,9 +25,7 @@ class IntegerKeyArrayObject extends DictionaryObject
         $value = '';
         if (is_array($objects)) {
             foreach ($objects as $key => $object) {
-                $name = new IntegerObject();
-                $name->setValue($key);
-
+                $name = Factory::getInstance()->createObject('Integer', $key, false);
                 $value .= $name->format() .' '. $object->write();
             }
         }

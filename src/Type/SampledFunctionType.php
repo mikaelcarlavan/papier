@@ -8,6 +8,8 @@ use Papier\Object\ArrayObject;
 
 use Papier\Functions\FunctionType;
 
+use Papier\Factory\Factory;
+
 use Papier\Validator\BitsPerSampleValidator;
 use Papier\Validator\IntValidator;
 
@@ -47,8 +49,7 @@ class SampledFunctionType extends FunctionObject
             throw new InvalidArgumentException("BitsPerSample is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = new IntegerObject();
-        $value->setValue($bits);
+        $value = Factory::getInstance()->createObject('Integer', $bits, false);
 
         $this->setEntry('BitsPerSample', $value);
         return $this;
@@ -67,8 +68,7 @@ class SampledFunctionType extends FunctionObject
             throw new InvalidArgumentException("Order is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = new IntegerObject();
-        $value->setValue($order);
+        $value = Factory::getInstance()->createObject('Integer', $order, false);
 
         $this->setEntry('Order', $value);
         return $this;

@@ -5,6 +5,8 @@ namespace Papier\Object;
 use Papier\Object\IntegerObject;
 use Papier\Object\DictionaryObject;
 
+use Papier\Factory\Factory;
+
 use RunTimeException;
 use InvalidArgumentException;
 
@@ -80,8 +82,7 @@ class StreamObject extends DictionaryObject
         //$stream = $stream ? $stream->write() : '';
 
         // Compute length of stream and set it into dictionary
-        $length = new IntegerObject();
-        $length->setValue(intval(strlen($stream)));
+        $length = Factory::getInstance()->createObject('Integer', intval(strlen($stream)), false);
     
         $this->setEntry('Length', $length);
 

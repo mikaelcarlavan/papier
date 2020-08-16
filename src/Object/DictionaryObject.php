@@ -7,6 +7,8 @@ use Papier\Base\BaseObject;
 
 use Papier\Object\NullObject;
 
+use Papier\Factory\Factory;
+
 use InvalidArgumentException;
 
 use Countable;
@@ -226,9 +228,7 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
 
         $value = '';
         foreach ($objects as $key => $object) {
-            $name = new NameObject();
-            $name->setValue($key);
-
+            $name = Factory::getInstance()->createObject('Name', $key, false);
             $value .= $name->format() .' '. $object->write();
         }      
 

@@ -16,8 +16,11 @@ use Papier\Validator\BoolValidator;
 use Papier\Document\PageLayout;
 use Papier\Document\PageMode;
 
+use Papier\Factory\Factory;
+
 use Papier\Type\NumberTreeType;
 use Papier\Type\DictionaryType;
+use Papier\Type\ExtensionsDictionaryType;
 
 use InvalidArgumentException;
 use RuntimeException;
@@ -25,25 +28,11 @@ use RuntimeException;
 class DocumentCatalogType extends DictionaryType
 {
     /**
-     * Default page layout.
-     *
-     * @var string
-     */
-    const DEFAULT_PAGE_LAYOUT = PageLayout::SINGLE_PAGE_LAYOUT;
-
-    /**
-     * Default page mode.
-     *
-     * @var string
-     */
-    const DEFAULT_PAGE_MODE = PageMode::USE_NONE_MODE;
-
-    /**
      * Set PDF version.
      *  
      * @param  \Papier\Object\NameObject  $version
      * @throws InvalidArgumentException if the provided argument is not of type 'NameObject'.
-     * @return \Papier\Document\DocumentCatalog
+     * @return \Papier\Type\DocumentCatalogType
      */
     public function setVersion($version)
     {
@@ -51,23 +40,20 @@ class DocumentCatalogType extends DictionaryType
             throw new InvalidArgumentException("Version is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = new NameObject();
-        $value->setValue($version);
-
-        $this->setEntry('Version', $value);
+        $this->setEntry('Version', $version);
         return $this;
     } 
 
     /**
      * Set extensions.
      *  
-     * @param  \Papier\Object\DictionaryObject  $extensions
-     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Document\DocumentCatalog
+     * @param  \Papier\Type\ExtensionsDictionaryType  $extensions
+     * @throws InvalidArgumentException if the provided argument is not of type 'ExtensionsDictionaryType'.
+     * @return \Papier\Type\DocumentCatalogType
      */
     public function setExtensions($extensions)
     {
-        if (!$extensions instanceof DictionaryObject) {
+        if (!$extensions instanceof ExtensionsDictionaryType) {
             throw new InvalidArgumentException("Extensions is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
@@ -75,13 +61,26 @@ class DocumentCatalogType extends DictionaryType
         return $this;
     } 
 
+    /**
+     * Get extensions.
+     *  
+     * @return \Papier\Type\ExtensionsDictionaryType
+     */
+    public function getExtensions()
+    {
+        if (!$this->hasEntry('Extensions')) {
+            $value = Factory::getInstance()->createType('ExtensionsDictionary');
+            $this->setExtensions('Extensions', $value);
+        }
 
+        return $this->getEntry('Extensions');
+    } 
     /**
      * Set page tree node (root of document's page tree).
      *  
      * @param  \Papier\Object\DictionaryObject  $pages
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Document\DocumentCatalog
+     * @return \Papier\Type\DocumentCatalogType
      */
     public function setPages($pages)
     {
@@ -98,7 +97,7 @@ class DocumentCatalogType extends DictionaryType
      *  
      * @param  \Papier\Type\NumberTreeType  $labels
      * @throws InvalidArgumentException if the provided argument is not of type 'NumberTreeType'.
-     * @return \Papier\Document\DocumentCatalog
+     * @return \Papier\Type\DocumentCatalogType
      */
     public function setPageLabels($labels)
     {
@@ -114,7 +113,7 @@ class DocumentCatalogType extends DictionaryType
      *  
      * @param  \Papier\Object\DictionaryObject  $names
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Document\DocumentCatalog
+     * @return \Papier\Type\DocumentCatalogType
      */
     public function setNames($names)
     {
@@ -131,7 +130,7 @@ class DocumentCatalogType extends DictionaryType
      *  
      * @param  \Papier\Object\DictionaryObject  $dests
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Document\DocumentCatalog
+     * @return \Papier\Type\DocumentCatalogType
      */
     public function setDests($dests)
     {
@@ -148,7 +147,7 @@ class DocumentCatalogType extends DictionaryType
      *  
      * @param  \Papier\Object\DictionaryObject  $preferences
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Document\DocumentCatalog
+     * @return \Papier\Type\DocumentCatalogType
      */
     public function setViewerPreferences($preferences)
     {
@@ -165,7 +164,7 @@ class DocumentCatalogType extends DictionaryType
      *  
      * @param  string  $layout
      * @throws InvalidArgumentException if the provided argument is not a valid layout.
-     * @return \Papier\Document\DocumentCatalog
+     * @return \Papier\Type\DocumentCatalogType
      */
     public function setPageLayout($layout)
     {
@@ -173,8 +172,7 @@ class DocumentCatalogType extends DictionaryType
             throw new InvalidArgumentException("Layout is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = new NameObject();
-        $value->setValue($layout);
+        $value = Factory::getInstance()->createObject('Name', $layout, false);
         $this->setEntry('PageLayout', $value);
 
         return $this;
@@ -185,7 +183,7 @@ class DocumentCatalogType extends DictionaryType
      *  
      * @param  string  $mode
      * @throws InvalidArgumentException if the provided argument is not a valid mode.
-     * @return \Papier\Document\DocumentCatalog
+     * @return \Papier\Type\DocumentCatalogType
      */
     public function setPageMode($mode)
     {
@@ -193,9 +191,8 @@ class DocumentCatalogType extends DictionaryType
             throw new InvalidArgumentException("Mode is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $mod = new NameObject();
-        $mod->setValue($mode);
-        $this->setEntry('PageMode', $mod);
+        $value = Factory::getInstance()->createObject('Name', $mode, false);
+        $this->setEntry('PageMode', $value);
 
         return $this;
     } 
@@ -205,7 +202,7 @@ class DocumentCatalogType extends DictionaryType
      *  
      * @param  \Papier\Object\DictionaryObject  $outlines
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Document\DocumentCatalog
+     * @return \Papier\Type\DocumentCatalogType
      */
     public function setOutlines($outlines)
     {
@@ -222,7 +219,7 @@ class DocumentCatalogType extends DictionaryType
      *  
      * @param  \Papier\Object\ArrayObject  $threads
      * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
-     * @return \Papier\Document\DocumentCatalog
+     * @return \Papier\Type\DocumentCatalogType
      */
     public function setThreads($threads)
     {
@@ -239,7 +236,7 @@ class DocumentCatalogType extends DictionaryType
      *  
      * @param  mixed  $action
      * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject' or 'DictionaryObject'.
-     * @return \Papier\Document\DocumentCatalog
+     * @return \Papier\Type\DocumentCatalogType
      */
     public function setOpenAction($action)
     {
@@ -256,7 +253,7 @@ class DocumentCatalogType extends DictionaryType
      *  
      * @param  \Papier\Object\DictionaryObject  $aa
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Document\DocumentCatalog
+     * @return \Papier\Type\DocumentCatalogType
      */
     public function setAA($aa)
     {
@@ -273,7 +270,7 @@ class DocumentCatalogType extends DictionaryType
      *  
      * @param  \Papier\Object\DictionaryObject  $uri
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Document\DocumentCatalog
+     * @return \Papier\Type\DocumentCatalogType
      */
     public function setURI($uri)
     {
@@ -290,7 +287,7 @@ class DocumentCatalogType extends DictionaryType
      *  
      * @param  \Papier\Object\DictionaryObject  $form
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Document\DocumentCatalog
+     * @return \Papier\Type\DocumentCatalogType
      */
     public function setAcroForm($form)
     {
@@ -307,7 +304,7 @@ class DocumentCatalogType extends DictionaryType
      *  
      * @param  \Papier\Object\StreamObject  $metadata
      * @throws InvalidArgumentException if the provided argument is not of type 'StreamObject'.
-     * @return \Papier\Document\DocumentCatalog
+     * @return \Papier\Type\DocumentCatalogType
      */
     public function setMetadata($metadata)
     {
@@ -324,7 +321,7 @@ class DocumentCatalogType extends DictionaryType
      *  
      * @param  \Papier\Object\DictionaryObject  $structTreeRoot
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Document\DocumentCatalog
+     * @return \Papier\Type\DocumentCatalogType
      */
     public function setStructTreeRoot($structTreeRoot)
     {
@@ -342,7 +339,7 @@ class DocumentCatalogType extends DictionaryType
      *  
      * @param  \Papier\Object\DictionaryObject  $markInfo
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Document\DocumentCatalog
+     * @return \Papier\Type\DocumentCatalogType
      */
     public function setMarkInfo($markInfo)
     {
@@ -359,7 +356,7 @@ class DocumentCatalogType extends DictionaryType
      *  
      * @param  \Papier\Object\StringObject  $lang
      * @throws InvalidArgumentException if the provided argument is not of type 'StringObject'.
-     * @return \Papier\Document\DocumentCatalog
+     * @return \Papier\Type\DocumentCatalogType
      */
     public function setLang($lang)
     {
@@ -376,7 +373,7 @@ class DocumentCatalogType extends DictionaryType
      *  
      * @param  \Papier\Object\DictionaryObject  $spiderInfo
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Document\DocumentCatalog
+     * @return \Papier\Type\DocumentCatalogType
      */
     public function setSpiderInfo($spiderInfo)
     {
@@ -393,7 +390,7 @@ class DocumentCatalogType extends DictionaryType
      *  
      * @param  \Papier\Object\ArrayObject  $outputIntents
      * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
-     * @return \Papier\Document\DocumentCatalog
+     * @return \Papier\Type\DocumentCatalogType
      */
     public function setOutputIntents($outputIntents)
     {
@@ -410,7 +407,7 @@ class DocumentCatalogType extends DictionaryType
      *  
      * @param  \Papier\Object\DictionaryObject  $pieceInfo
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Document\DocumentCatalog
+     * @return \Papier\Type\DocumentCatalogType
      */
     public function setPieceInfo($pieceInfo)
     {
@@ -427,7 +424,7 @@ class DocumentCatalogType extends DictionaryType
      *  
      * @param  \Papier\Object\DictionaryObject  $ocProperties
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Document\DocumentCatalog
+     * @return \Papier\Type\DocumentCatalogType
      */
     public function setOCProperties($ocProperties)
     {
@@ -444,7 +441,7 @@ class DocumentCatalogType extends DictionaryType
      *  
      * @param  \Papier\Object\DictionaryObject  $perms
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Document\DocumentCatalog
+     * @return \Papier\Type\DocumentCatalogType
      */
     public function setPerms($perms)
     {
@@ -461,7 +458,7 @@ class DocumentCatalogType extends DictionaryType
      *  
      * @param  \Papier\Object\DictionaryObject  $legal
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Document\DocumentCatalog
+     * @return \Papier\Type\DocumentCatalogType
      */
     public function setLegal($legal)
     {
@@ -478,7 +475,7 @@ class DocumentCatalogType extends DictionaryType
      *  
      * @param  \Papier\Object\ArrayObject  $requirements
      * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
-     * @return \Papier\Document\DocumentCatalog
+     * @return \Papier\Type\DocumentCatalogType
      */
     public function setRequirements($requirements)
     {
@@ -495,7 +492,7 @@ class DocumentCatalogType extends DictionaryType
      *  
      * @param  \Papier\Object\DictionaryObject  $collection
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Document\DocumentCatalog
+     * @return \Papier\Type\DocumentCatalogType
      */
     public function setCollection($collection)
     {
@@ -512,7 +509,7 @@ class DocumentCatalogType extends DictionaryType
      *  
      * @param  bool  $needs
      * @throws InvalidArgumentException if the provided argument is not of type 'bool'.
-     * @return \Papier\Document\DocumentCatalog
+     * @return \Papier\Type\DocumentCatalogType
      */
     public function setNeedsRendering($needs)
     {
@@ -520,9 +517,7 @@ class DocumentCatalogType extends DictionaryType
             throw new InvalidArgumentException("NeedsRendering is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = new BooleanObject();
-        $value->setValue($needs);
-
+        $value = Factory::getInstance()->createObject('Boolean', $needs, false);
         $this->setEntry('NeedsRendering', $value);
         return $this;
     }
@@ -538,26 +533,8 @@ class DocumentCatalogType extends DictionaryType
             throw new RuntimeException("Pages is missing. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $type = new NameObject();
-        $type->setValue('Catalog');
+        $type = Factory::getInstance()->createObject('Name', 'Catalog', false);
         $this->setEntry('Type', $type);
-
-        // Set default values
-        /*
-        if (!$this->hasEntry('PageLayout')) {
-            $this->setPageLayout(self::DEFAULT_PAGE_LAYOUT);
-        }
-
-        if (!$this->hasEntry('PageMode')) {
-            $this->setPageMode(self::DEFAULT_PAGE_MODE);
-        }
-
-        if (!$this->hasEntry('NeedsRendering')) {
-            $needs = new BooleanObject();
-            $needs->setValue(false);
-            $this->setNeedsRendering($needs);
-        }
-        */
         
         return parent::format();
     }

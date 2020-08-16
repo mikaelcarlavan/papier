@@ -95,7 +95,7 @@ class PageObjectType extends DictionaryType
     public function getResources()
     {
         if (!$this->hasEntry('Resources')) {
-            $resources = new DictionaryObject();
+            $resources = Factory::getInstance()->createObject('Dictionary', null, false);
             $this->setResources($resources);
         }
 
@@ -126,7 +126,7 @@ class PageObjectType extends DictionaryType
     public function getMediaBox()
     {
         if (!$this->hasEntry('MediaBox')) {
-            $mediabox = new RectangleType();
+            $mediabox = Factory::getInstance()->createType('Rectangle', null, false);
             $this->setMediaBox($mediabox);
         }
 
@@ -158,7 +158,7 @@ class PageObjectType extends DictionaryType
     public function getCropBox()
     {
         if (!$this->hasEntry('CropBox')) {
-            $cropbox = new RectangleType();
+            $cropbox = Factory::getInstance()->createType('Rectangle', null, false);
             $this->setCropBox($cropbox);
         }
 
@@ -190,7 +190,7 @@ class PageObjectType extends DictionaryType
     public function getBleedBox()
     {
         if (!$this->hasEntry('BleedBox')) {
-            $bleedbox = new RectangleType();
+            $bleedbox = Factory::getInstance()->createType('Rectangle', null, false);
             $this->setBleedBox($bleedbox);
         }
 
@@ -222,7 +222,7 @@ class PageObjectType extends DictionaryType
     public function getTrimBox()
     {
         if (!$this->hasEntry('TrimBox')) {
-            $trimbox = new RectangleType();
+            $trimbox = Factory::getInstance()->createType('Rectangle', null, false);
             $this->setTrimBox($trimbox);
         }
 
@@ -254,7 +254,7 @@ class PageObjectType extends DictionaryType
     public function getArtBox()
     {
         if (!$this->hasEntry('ArtBox')) {
-            $artbox = new RectangleType();
+            $artbox = Factory::getInstance()->createType('Rectangle', null, false);
             $this->setArtBox($artbox);
         }
 
@@ -309,8 +309,7 @@ class PageObjectType extends DictionaryType
             throw new InvalidArgumentException("Rotate is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = new IntegerObject();
-        $value->setValue($rotate);
+        $value = Factory::getInstance()->createObject('Integer', $rotate, false);
 
         $this->setEntry('Rotate', $value);
         return $this;
@@ -381,8 +380,7 @@ class PageObjectType extends DictionaryType
             throw new InvalidArgumentException("Dur is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = new RealObject();
-        $value->setValue($dur);
+        $value = Factory::getInstance()->createObject('Real', $dur, false);
 
         $this->setEntry('Dur', $value);
         return $this;
@@ -486,8 +484,7 @@ class PageObjectType extends DictionaryType
             throw new InvalidArgumentException("StructParents is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = new IntegerObject();
-        $value->setValue($struct);
+        $value = Factory::getInstance()->createObject('Integer', $struct, false);
 
         $this->setEntry('StructParents', $value);
         return $this;
@@ -523,8 +520,7 @@ class PageObjectType extends DictionaryType
             throw new InvalidArgumentException("PZ is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = new RealObject();
-        $value->setValue($pz);
+        $value = Factory::getInstance()->createObject('Real', $pz, false);
 
         $this->setEntry('PZ', $value);
         return $this;
@@ -560,7 +556,7 @@ class PageObjectType extends DictionaryType
             throw new InvalidArgumentException("Tabs is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::getInstance()->createObject('Name')->setIndirect(false)->setValue($tabs);
+        $value = Factory::getInstance()->createObject('Name', $tabs, false);
         $this->setEntry('Tabs', $value);
         return $this;
     }
@@ -612,8 +608,7 @@ class PageObjectType extends DictionaryType
             throw new InvalidArgumentException("UserUnit is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = new RealObject();
-        $value->setValue($userunit);
+        $value = Factory::getInstance()->createObject('Real', $userunit, false);
 
         $this->setEntry('UserUnit', $value);
         return $this;
@@ -634,20 +629,5 @@ class PageObjectType extends DictionaryType
 
         $this->setEntry('VP', $vp);
         return $this;
-    }
-
-    /**
-     * Format catalog's content.
-     *
-     * @return string
-     */
-    public function format()
-    {
-        /*if (!$this->hasEntry('UserUnit')) {
-            $userunit = Factory::getInstance()->createObject('Real')->setIndirect(false)->setValue(1.0);
-            $this->setUserUnit($userunit);
-        }*/
-        
-        return parent::format();
     }
 }

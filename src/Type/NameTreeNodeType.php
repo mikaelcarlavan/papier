@@ -5,7 +5,6 @@ namespace Papier\Type;
 use Papier\Type\TreeNodeType;
 use Papier\Object\LiteralStringKeyArrayObject;
 use Papier\Object\LiteralStringObject;
-use Papier\Object\LimitsArrayObject;
 
 use Papier\Factory\Factory;
 
@@ -74,7 +73,7 @@ class NameTreeNodeType extends TreeNodeType
         }
 
         if (!$this->hasEntry('Names')) {
-            $names = new LiteralStringKeyArrayObject();
+            $names = Factory::getInstance()->createObject('LiteralStringKeyArray', null, false);
             $this->setEntry('Names', $names);
         }
 
@@ -121,17 +120,14 @@ class NameTreeNodeType extends TreeNodeType
     {
         if (!$this->isRoot()) {
             // Compute limits
-            $limits = new LimitsArrayObject();
+            $limits = Factory::getInstance()->createType('LimitsArray', null, false);
             $objects = $this->collectNames($this);
 
             if (count($objects)) {
                 sort($objects);
 
-                $first = new LiteralStringObject();
-                $last = new LiteralStringObject();
-                            
-                $first->setValue(array_shift($objects));
-                $last->setValue(array_pop($objects));
+                $first = Factory::getInstance()->createObject('LiteralString', array_shift($objects), false);
+                $last = Factory::getInstance()->createObject('LiteralString', array_pop($objects), false);
                 
                 $limits->append($first);
                 $limits->append($last);

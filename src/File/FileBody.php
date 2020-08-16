@@ -50,16 +50,14 @@ class FileBody extends BaseObject
 
         $outlines = Factory::getInstance()->createType('Dictionary');
         
-        $name = new NameObject();
-        $name->setValue('Outlines');
+        $pageTree = Factory::getInstance()->createType('PageTree', null, false);
 
-        $count = new IntegerObject();
-        $count->setValue(0);
+        $name = Factory::getInstance()->createObject('Name', 'Outlines', false);
+        $count = Factory::getInstance()->createObject('Integer', 0, false);
 
         $outlines->setEntry('Type', $name);
         $outlines->setEntry('Count', $count);
 
-        $pageTree = new PageTreeType();
         $this->pageTree = $pageTree->getNode();
 
         $this->documentCatalog->setOutlines($outlines);
@@ -115,9 +113,7 @@ class FileBody extends BaseObject
         $contents = Factory::getInstance()->createObject('Stream');
         $contents->setContent('...Page-marking operators...');
 
-        $pdf = new NameObject();
-        $pdf->setValue('PDF');
-
+        $pdf = Factory::getInstance()->createObject('Name', 'PDF', false);
         $procset = Factory::getInstance()->createObject('Array')->append($pdf);
 
         $page->setParent($this->getPageTree());

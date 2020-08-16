@@ -10,6 +10,8 @@ use Papier\Functions\FunctionType;
 
 use Papier\Validator\RealValidator;
 
+use Papier\Factory\Factory;
+
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -63,8 +65,7 @@ class ExponentialInterpolationFunctionType extends FunctionObject
             throw new InvalidArgumentException("N is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = new RealObject();
-        $value->setValue($N);
+        $value = Factory::getInstance()->createObject('Real', $N, false);
 
         $this->setEntry('N', $value);
         return $this;
