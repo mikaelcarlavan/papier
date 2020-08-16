@@ -110,10 +110,6 @@ class ArrayObject extends DictionaryObject
         foreach ($objects as $object) {
             $value .= ' '.$object->write();
         }
-        
-        if (count($objects) == 1) {
-            $value = str_replace(self::EOL_MARKER, '', trim($value));
-        }
 
 
         return '[' .$value. ']';
