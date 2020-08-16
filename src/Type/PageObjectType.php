@@ -11,6 +11,8 @@ use Papier\Object\StreamObject;
 use Papier\Type\DateType;
 use Papier\Type\ByteStringType;
 use Papier\Type\NumberType;
+use Papier\Type\RectangleType;
+use Papier\Type\DictionaryType;
 
 use Papier\Validator\BoolValidator;
 use Papier\Validator\TabOrderValidator;
@@ -22,7 +24,7 @@ use Papier\Factory\Factory;
 
 use InvalidArgumentException;
 
-class PageObjectType extends DictionaryObject
+class PageObjectType extends DictionaryType
 {
     /**
      * Set parent.
@@ -86,6 +88,22 @@ class PageObjectType extends DictionaryObject
     } 
 
     /**
+     * Get resources.
+     *  
+     * @return \Papier\Object\DictionaryObject
+     */
+    public function getResources()
+    {
+        if (!$this->hasEntry('Resources')) {
+            $resources = new DictionaryObject();
+            $resources->setIndirect(false);
+
+            $this->setResources($resources);
+        }
+
+        return $this->getEntry('Resources');
+    }
+    /**
      * Set boundaries of the physical medium on which the page shall be displayed or printed.
      *  
      * @param  \Papier\Type\RectangleType  $mediabox
@@ -100,6 +118,21 @@ class PageObjectType extends DictionaryObject
 
         $this->setEntry('MediaxBox', $mediabox);
         return $this;
+    }
+
+    /**
+     * Get mediabox.
+     *  
+     * @return \Papier\Type\RectangleType
+     */
+    public function getMediaBox()
+    {
+        if (!$this->hasEntry('MediaBox')) {
+            $mediabox = new RectangleType();
+            $this->setMediaBox($mediabox);
+        }
+
+        return $this->getEntry('MediaxBox');
     }
 
     /**
@@ -120,6 +153,21 @@ class PageObjectType extends DictionaryObject
     }
 
     /**
+     * Get cropbox.
+     *  
+     * @return \Papier\Type\RectangleType
+     */
+    public function getCropBox()
+    {
+        if (!$this->hasEntry('CropBox')) {
+            $cropbox = new RectangleType();
+            $this->setCropBox($cropbox);
+        }
+
+        return $this->getEntry('CropBox');
+    }
+
+    /**
      * Set region to which the contents of the page shall be clipped when output in a production enviroment.
      *  
      * @param  \Papier\Type\RectangleType  $bleedbox
@@ -134,6 +182,21 @@ class PageObjectType extends DictionaryObject
 
         $this->setEntry('BleedBox', $bleedbox);
         return $this;
+    }
+
+    /**
+     * Get bleedbox.
+     *  
+     * @return \Papier\Type\RectangleType
+     */
+    public function getBleedBox()
+    {
+        if (!$this->hasEntry('BleedBox')) {
+            $bleedbox = new RectangleType();
+            $this->setBleedBox($bleedbox);
+        }
+
+        return $this->getEntry('BleedBox');
     }
 
     /**
@@ -154,6 +217,21 @@ class PageObjectType extends DictionaryObject
     }
 
     /**
+     * Get trimbox.
+     *  
+     * @return \Papier\Type\RectangleType
+     */
+    public function getTrimBox()
+    {
+        if (!$this->hasEntry('TrimBox')) {
+            $trimbox = new RectangleType();
+            $this->setTrimBox($trimbox);
+        }
+
+        return $this->getEntry('TrimBox');
+    }
+
+    /**
      * Set extend of the page's meaningful content.
      *  
      * @param  \Papier\Type\RectangleType  $artbox
@@ -168,6 +246,21 @@ class PageObjectType extends DictionaryObject
 
         $this->setEntry('ArtBox', $artbox);
         return $this;
+    }
+
+    /**
+     * Get artbox.
+     *  
+     * @return \Papier\Type\RectangleType
+     */
+    public function getArtBox()
+    {
+        if (!$this->hasEntry('ArtBox')) {
+            $artbox = new RectangleType();
+            $this->setArtBox($artbox);
+        }
+
+        return $this->getEntry('ArtBox');
     }
 
     /**
