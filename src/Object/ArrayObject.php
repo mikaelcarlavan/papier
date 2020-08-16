@@ -107,10 +107,11 @@ class ArrayObject extends DictionaryObject
         $objects = $this->getObjects();
         $value = '';
 
-        foreach ($objects as $object) {
-            $value .= ' '.$object->write();
+        if (is_array($objects) && count($objects) > 0) {
+            foreach ($objects as $object) {
+                $value .= ' '.$object->write();
+            }         
         }
-
 
         return '[' .$value. ']';
     }
