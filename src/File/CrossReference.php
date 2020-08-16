@@ -79,7 +79,7 @@ class CrossReference extends DictionaryObject
         if (!$object instanceof IndirectObject) {
             throw new InvalidArgumentException("Object is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
-
+        
         $objects = $this->getObjects();
         $objects[$object->getNumber()] = $object;
 
@@ -122,7 +122,7 @@ class CrossReference extends DictionaryObject
         if (count($objects) > 0) {
             foreach ($objects as $object) {
                 $subsection->addEntry()->setFree(false)->setOffset($offset);
-                $offset += strlen($object->getObject());
+                $offset += strlen($object->getObject()) + 1;
             }
         }
 
