@@ -119,11 +119,20 @@ class Papier
         $body = $this->getBody();
         $trailer = $this->getTrailer();
         
+        $crossreference = CrossReference::getInstance();
+
         $trailer->setRoot($body->getDocumentCatalog());
-        $trailer->setSize(count(CrossReference::getInstance()->getObjects()));
+        $trailer->setSize(count($crossreference->getObjects()));
 
         $content  = $header->write();
-        $content .= $body->setOffset(strlen($content))->write();
+
+        $crossreference->setOffset(strlen($content));
+
+        $content .= $body->setOffset(strlen($content))->format();
+
+        $trailer->setCrossReferenceOffset(strlen($content));
+
+        $content .= $crossreference->write();
         $content .= $trailer->write();
 
         return $content;
@@ -138,7 +147,7 @@ class Papier
     {
         $content = $this->build();
            
-        return \file_put_contents($filename, $content);
+        return file_put_contents($filename, trim($content)) !== false;
     } 
 
     /**
