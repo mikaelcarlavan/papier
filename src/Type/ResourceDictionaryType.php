@@ -1,20 +1,20 @@
 <?php
 
-namespace Papier\Object;
+namespace Papier\Type;
 
 use Papier\Object\DictionaryObject;
 use Papier\Object\ArrayObject;
 
 use InvalidArgumentException;
 
-class ResourceDictionaryObject extends DictionaryObject
+class ResourceDictionaryType extends DictionaryObject
 {
     /**
      * Set graphics state parameter mapping dictionary.
      *  
      * @param  \Papier\Object\DictionaryObject  $state
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Object\ResourceDictionary
+     * @return \Papier\Type\ResourceDictionaryType
      */
     public function setExtGState($state)
     {
@@ -32,7 +32,7 @@ class ResourceDictionaryObject extends DictionaryObject
      *  
      * @param  \Papier\Object\DictionaryObject  $colour
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Object\ResourceDictionary
+     * @return \Papier\Type\ResourceDictionaryType
      */
     public function setColourSpace($colour)
     {
@@ -49,7 +49,7 @@ class ResourceDictionaryObject extends DictionaryObject
      *  
      * @param  \Papier\Object\DictionaryObject  $pattern
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Object\ResourceDictionary
+     * @return \Papier\Type\ResourceDictionaryType
      */
     public function setPattern($pattern)
     {
@@ -66,7 +66,7 @@ class ResourceDictionaryObject extends DictionaryObject
      *  
      * @param  \Papier\Object\DictionaryObject  $shading
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Object\ResourceDictionary
+     * @return \Papier\Type\ResourceDictionaryType
      */
     public function setShading($shading)
     {
@@ -83,7 +83,7 @@ class ResourceDictionaryObject extends DictionaryObject
      *  
      * @param  \Papier\Object\DictionaryObject  $xobject
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Object\ResourceDictionary
+     * @return \Papier\Type\ResourceDictionaryType
      */
     public function setXObject($xobject)
     {
@@ -100,7 +100,7 @@ class ResourceDictionaryObject extends DictionaryObject
      *  
      * @param  \Papier\Object\DictionaryObject  $font
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Object\ResourceDictionary
+     * @return \Papier\Type\ResourceDictionaryType
      */
     public function setFont($font)
     {
@@ -117,7 +117,7 @@ class ResourceDictionaryObject extends DictionaryObject
      *  
      * @param  \Papier\Object\ArrayObject  $procset
      * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
-     * @return \Papier\Object\ResourceDictionary
+     * @return \Papier\Type\ResourceDictionaryType
      */
     public function setProcSet($procset)
     {
@@ -134,7 +134,7 @@ class ResourceDictionaryObject extends DictionaryObject
      *  
      * @param  \Papier\Object\DictionaryObject  $properties
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Object\ResourceDictionary
+     * @return \Papier\Type\ResourceDictionaryType
      */
     public function setProperties($properties)
     {

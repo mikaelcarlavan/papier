@@ -1,20 +1,20 @@
 <?php
 
-namespace Papier\Object;
+namespace Papier\Type;
 
 use Papier\Object\DictionaryObject;
 use Papier\Type\NameTreeType;
 
 use InvalidArgumentException;
 
-class NameDictionaryObject extends DictionaryObject
+class NameDictionaryType extends DictionaryObject
 {
     /**
      * Set mapping to destinations.
      *  
      * @param  \Papier\Type\NameTreeType  $dests
      * @throws InvalidArgumentException if the provided argument is not of type 'NameTreeType'.
-     * @return \Papier\Object\NameDictionaryObject
+     * @return \Papier\Type\NameDictionaryType
      */
     public function setDests($dests)
     {
@@ -31,7 +31,7 @@ class NameDictionaryObject extends DictionaryObject
      *  
      * @param  \Papier\Type\NameTreeType  $ap
      * @throws InvalidArgumentException if the provided argument is not of type 'NameTreeType'.
-     * @return \Papier\Object\NameDictionaryObject
+     * @return \Papier\Type\NameDictionaryType
      */
     public function setAP($ap)
     {
@@ -48,7 +48,7 @@ class NameDictionaryObject extends DictionaryObject
      *  
      * @param  \Papier\Type\NameTreeType  $javascript
      * @throws InvalidArgumentException if the provided argument is not of type 'NameTreeType'.
-     * @return \Papier\Object\NameDictionaryObject
+     * @return \Papier\Type\NameDictionaryType
      */
     public function setJavaScript($javascript)
     {
@@ -66,7 +66,7 @@ class NameDictionaryObject extends DictionaryObject
      *  
      * @param  \Papier\Type\NameTreeType  $pages
      * @throws InvalidArgumentException if the provided argument is not of type 'NameTreeType'.
-     * @return \Papier\Object\NameDictionaryObject
+     * @return \Papier\Type\NameDictionaryType
      */
     public function setPages($pages)
     {
@@ -84,7 +84,7 @@ class NameDictionaryObject extends DictionaryObject
      *  
      * @param  \Papier\Type\NameTreeType  $templates
      * @throws InvalidArgumentException if the provided argument is not of type 'NameTreeType'.
-     * @return \Papier\Object\NameDictionaryObject
+     * @return \Papier\Type\NameDictionaryType
      */
     public function setTemplates($templates)
     {
@@ -101,7 +101,7 @@ class NameDictionaryObject extends DictionaryObject
      *  
      * @param  \Papier\Type\NameTreeType  $ids
      * @throws InvalidArgumentException if the provided argument is not of type 'NameTreeType'.
-     * @return \Papier\Object\NameDictionaryObject
+     * @return \Papier\Type\NameDictionaryType
      */
     public function setIDS($ids)
     {
@@ -118,7 +118,7 @@ class NameDictionaryObject extends DictionaryObject
      *  
      * @param  \Papier\Type\NameTreeType  $urls
      * @throws InvalidArgumentException if the provided argument is not of type 'NameTreeType'.
-     * @return \Papier\Object\NameDictionaryObject
+     * @return \Papier\Type\NameDictionaryType
      */
     public function setURLS($urls)
     {
@@ -136,7 +136,7 @@ class NameDictionaryObject extends DictionaryObject
      *  
      * @param  \Papier\Type\NameTreeType  $files
      * @throws InvalidArgumentException if the provided argument is not of type 'NameTreeType'.
-     * @return \Papier\Object\NameDictionaryObject
+     * @return \Papier\Type\NameDictionaryType
      */
     public function setEmbeddedFiles($files)
     {
@@ -153,7 +153,7 @@ class NameDictionaryObject extends DictionaryObject
      *  
      * @param  \Papier\Type\NameTreeType  $presentations
      * @throws InvalidArgumentException if the provided argument is not of type 'NameTreeType'.
-     * @return \Papier\Object\NameDictionaryObject
+     * @return \Papier\Type\NameDictionaryType
      */
     public function setAlternatePresentations($presentations)
     {
@@ -170,7 +170,7 @@ class NameDictionaryObject extends DictionaryObject
      *  
      * @param  \Papier\Type\NameTreeType  $renditions
      * @throws InvalidArgumentException if the provided argument is not of type 'NameTreeType'.
-     * @return \Papier\Object\NameDictionaryObject
+     * @return \Papier\Type\NameDictionaryType
      */
     public function setRenditions($renditions)
     {
