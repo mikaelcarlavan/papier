@@ -96,8 +96,6 @@ class PageObjectType extends DictionaryType
     {
         if (!$this->hasEntry('Resources')) {
             $resources = new DictionaryObject();
-            $resources->setIndirect(false);
-
             $this->setResources($resources);
         }
 
