@@ -45,7 +45,7 @@ class CrossReferenceSection extends ArrayObject
         $objects = $this->getSubsections();
 
         $value = 'xref'. self::EOL_MARKER;
-        if (is_array($objects)) {
+        if (is_array($objects) && count($objects) > 0) {
             foreach ($objects as $key => $object) {
                 $value .= $object->write();
             }
