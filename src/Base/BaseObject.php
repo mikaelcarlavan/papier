@@ -16,7 +16,7 @@ abstract class BaseObject
      *
      * @var string
      */
-    const EOL_MARKER = "\r\n"; 
+    const EOL_MARKER = "\n"; 
 
     /**
      * Magical method.
