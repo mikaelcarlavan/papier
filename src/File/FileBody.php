@@ -149,7 +149,7 @@ class FileBody extends BaseObject
         $content = '';
         if (count($objects) > 0) {
             foreach ($objects as $object) {
-                $content .= $object->getObject() . self::EOL_MARKER;
+                $content .= $object->getObject();
             }
         }
 
