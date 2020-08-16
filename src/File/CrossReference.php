@@ -121,11 +121,11 @@ class CrossReference extends DictionaryObject
         $objects = $this->getObjects();
         if (count($objects) > 0) {
             foreach ($objects as $object) {
-                $subsection->addEntry()->setFree(false)->setOffset($offset);
-                $offset += strlen($object->getObject()) + 1;
+                $subsection->addEntry()->setOffset($offset);
+                $offset += strlen($object->getObject());
             }
         }
 
-        return $table->write();
+        return $table->format();
     }
 }
