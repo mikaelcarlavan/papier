@@ -16,7 +16,7 @@ use RuntimeException;
 
 class SampledFunctionType extends FunctionObject
 {
- 
+    
     /**
      * Set size.
      *  
