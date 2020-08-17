@@ -2,9 +2,9 @@
 
 namespace Papier\Type;
 
-use Papier\Object\LiteralStringObject;
+use Papier\Object\StringObject;
 
-class StringType extends LiteralStringObject
+class StringType extends StringObject
 {
  
 }

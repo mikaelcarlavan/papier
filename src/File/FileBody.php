@@ -46,14 +46,14 @@ class FileBody extends BaseObject
      */
     public function __construct()
     {
-        $this->documentCatalog = Factory::getInstance()->createType('DocumentCatalog');
+        $this->documentCatalog = Factory::create('DocumentCatalog');
 
-        $outlines = Factory::getInstance()->createType('Dictionary');
+        $outlines = Factory::create('Dictionary');
         
-        $pageTree = Factory::getInstance()->createType('PageTree', null, false);
+        $pageTree = Factory::create('PageTree', null, false);
 
-        $name = Factory::getInstance()->createObject('Name', 'Outlines', false);
-        $count = Factory::getInstance()->createObject('Integer', 0, false);
+        $name = Factory::create('Name', 'Outlines', false);
+        $count = Factory::create('Integer', 0, false);
 
         $outlines->setEntry('Type', $name);
         $outlines->setEntry('Count', $count);
@@ -110,11 +110,11 @@ class FileBody extends BaseObject
     {
         $page = $this->getPageTree()->addObject();
 
-        $contents = Factory::getInstance()->createObject('Stream');
+        $contents = Factory::create('Stream');
         $contents->setContent('...Page-marking operators...');
 
-        $pdf = Factory::getInstance()->createObject('Name', 'PDF', false);
-        $procset = Factory::getInstance()->createObject('Array')->append($pdf);
+        $pdf = Factory::create('Name', 'PDF', false);
+        $procset = Factory::create('Array')->append($pdf);
 
         $page->setParent($this->getPageTree());
         $page->setContents($contents);    

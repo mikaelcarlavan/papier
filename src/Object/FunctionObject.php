@@ -31,7 +31,7 @@ class FunctionObject extends StreamObject
             throw new InvalidArgumentException("FunctionType is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::getInstance()->createObject('Integer', $type, false);
+        $value = Factory::create('Integer', $type, false);
 
         $this->setEntry('FunctionType', $value);
         return $this;

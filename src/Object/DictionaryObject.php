@@ -228,7 +228,7 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
 
         $value = '';
         foreach ($objects as $key => $object) {
-            $name = Factory::getInstance()->createObject('Name', $key, false);
+            $name = Factory::create('Name', $key, false);
             $value .= $name->format() .' '. $object->write();
         }      
 

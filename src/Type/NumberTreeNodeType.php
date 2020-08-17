@@ -3,7 +3,7 @@
 namespace Papier\Type;
 
 use Papier\Type\TreeNodeType;
-use Papier\Object\IntegerKeyArrayObject;
+use Papier\TYpe\IntegerKeyArrayType;
 use Papier\Object\IntegerObject;
 
 use Papier\Factory\Factory;
@@ -20,7 +20,7 @@ class NumberTreeNodeType extends TreeNodeType
      */
     public function addKid()
     {
-        $node = Factory::getInstance()->createType('NumberTreeNode');
+        $node = Factory::create('NumberTreeNode');
         $this->getKids()->append($node);
 
         return $node;
@@ -42,14 +42,14 @@ class NumberTreeNodeType extends TreeNodeType
     /**
      * Set nums.
      *  
-     * @param  \Papier\Object\IntegerKeyArrayObject  $nums
+     * @param  \Papier\Type\IntegerKeyArrayType  $nums
      * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
      * @throws RunTimeException if node already contains 'Names' key.
      * @return \Papier\Document\DocumentCatalog
      */
     protected function setNums($nums)
     {
-        if (!$nums instanceof IntegerKeyArrayObject) {
+        if (!$nums instanceof IntegerKeyArrayType) {
             throw new InvalidArgumentException("Nums is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
@@ -64,7 +64,7 @@ class NumberTreeNodeType extends TreeNodeType
      * Get nums.
      *  
      * @throws RunTimeException if node already contains 'Kids' key.
-     * @return \Papier\Object\IntegerKeyArrayObject
+     * @return \Papier\Type\IntegerKeyArrayType
      */
     protected function getNums()
     {
@@ -73,7 +73,7 @@ class NumberTreeNodeType extends TreeNodeType
         }
 
         if (!$this->hasEntry('Nums')) {
-            $nums = Factory::getInstance()->createObject('IntegerKeyArray', null, false);
+            $nums = Factory::create('IntegerKeyArray', null, false);
             $this->setEntry('Nums', $nums);
         }
 
@@ -120,15 +120,15 @@ class NumberTreeNodeType extends TreeNodeType
     {
         if (!$this->isRoot()) {
             // Compute limits
-            $limits = Factory::getInstance()->createType('LimitsArray', null, false);
+            $limits = Factory::create('LimitsArray', null, false);
 
             $objects = $this->collectNums($this);
 
             if (count($objects)) {
                 sort($objects);
 
-                $first = Factory::getInstance()->createObject('Integer', array_shift($objects), false);
-                $last = Factory::getInstance()->createObject('Integer', array_pop($objects), false);
+                $first = Factory::create('Integer', array_shift($objects), false);
+                $last = Factory::create('Integer', array_pop($objects), false);
                 
                 $limits->append($first);
                 $limits->append($last);

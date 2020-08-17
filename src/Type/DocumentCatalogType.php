@@ -69,7 +69,7 @@ class DocumentCatalogType extends DictionaryType
     public function getExtensions()
     {
         if (!$this->hasEntry('Extensions')) {
-            $value = Factory::getInstance()->createType('ExtensionsDictionary');
+            $value = Factory::create('ExtensionsDictionary');
             $this->setExtensions('Extensions', $value);
         }
 
@@ -172,7 +172,7 @@ class DocumentCatalogType extends DictionaryType
             throw new InvalidArgumentException("Layout is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::getInstance()->createObject('Name', $layout, false);
+        $value = Factory::create('Name', $layout, false);
         $this->setEntry('PageLayout', $value);
 
         return $this;
@@ -191,7 +191,7 @@ class DocumentCatalogType extends DictionaryType
             throw new InvalidArgumentException("Mode is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::getInstance()->createObject('Name', $mode, false);
+        $value = Factory::create('Name', $mode, false);
         $this->setEntry('PageMode', $value);
 
         return $this;
@@ -517,7 +517,7 @@ class DocumentCatalogType extends DictionaryType
             throw new InvalidArgumentException("NeedsRendering is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::getInstance()->createObject('Boolean', $needs, false);
+        $value = Factory::create('Boolean', $needs, false);
         $this->setEntry('NeedsRendering', $value);
         return $this;
     }
@@ -533,7 +533,7 @@ class DocumentCatalogType extends DictionaryType
             throw new RuntimeException("Pages is missing. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $type = Factory::getInstance()->createObject('Name', 'Catalog', false);
+        $type = Factory::create('Name', 'Catalog', false);
         $this->setEntry('Type', $type);
         
         return parent::format();

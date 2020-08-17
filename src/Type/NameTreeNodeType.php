@@ -3,8 +3,8 @@
 namespace Papier\Type;
 
 use Papier\Type\TreeNodeType;
-use Papier\Object\LiteralStringKeyArrayObject;
-use Papier\Object\LiteralStringObject;
+use Papier\Type\LiteralStringKeyArrayType;
+use Papier\Type\LiteralStringType;
 
 use Papier\Factory\Factory;
 
@@ -20,7 +20,7 @@ class NameTreeNodeType extends TreeNodeType
      */
     public function addKid()
     {
-        $node = Factory::getInstance()->createType('NameTreeNode');
+        $node = Factory::create('NameTreeNode');
         $this->getKids()->append($node);
 
         return $node;
@@ -42,14 +42,14 @@ class NameTreeNodeType extends TreeNodeType
     /**
      * Set names.
      *  
-     * @param  \Papier\Object\LiteralStringKeyArrayObject  $names
+     * @param  \Papier\Type\LiteralStringKeyArrayType  $names
      * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
      * @throws RunTimeException if node already contains 'Names' key.
      * @return \Papier\Document\DocumentCatalog
      */
     protected function setNames($names)
     {
-        if (!$names instanceof LiteralStringKeyArrayObject) {
+        if (!$names instanceof LiteralStringKeyArrayType) {
             throw new InvalidArgumentException("Names is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
@@ -64,7 +64,7 @@ class NameTreeNodeType extends TreeNodeType
      * Get kids.
      *  
      * @throws RunTimeException if node already contains 'Kids' key.
-     * @return \Papier\Object\LiteralStringKeyArrayObject
+     * @return \Papier\Type\LiteralStringKeyArrayType
      */
     protected function getNames()
     {
@@ -73,7 +73,7 @@ class NameTreeNodeType extends TreeNodeType
         }
 
         if (!$this->hasEntry('Names')) {
-            $names = Factory::getInstance()->createObject('LiteralStringKeyArray', null, false);
+            $names = Factory::create('LiteralStringKeyArray', null, false);
             $this->setEntry('Names', $names);
         }
 
@@ -120,14 +120,14 @@ class NameTreeNodeType extends TreeNodeType
     {
         if (!$this->isRoot()) {
             // Compute limits
-            $limits = Factory::getInstance()->createType('LimitsArray', null, false);
+            $limits = Factory::create('LimitsArray', null, false);
             $objects = $this->collectNames($this);
 
             if (count($objects)) {
                 sort($objects);
 
-                $first = Factory::getInstance()->createObject('LiteralString', array_shift($objects), false);
-                $last = Factory::getInstance()->createObject('LiteralString', array_pop($objects), false);
+                $first = Factory::create('LiteralString', array_shift($objects), false);
+                $last = Factory::create('LiteralString', array_pop($objects), false);
                 
                 $limits->append($first);
                 $limits->append($last);

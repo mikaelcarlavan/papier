@@ -82,7 +82,7 @@ class StreamObject extends DictionaryObject
         //$stream = $stream ? $stream->write() : '';
 
         // Compute length of stream and set it into dictionary
-        $length = Factory::getInstance()->createObject('Integer', intval(strlen($stream)), false);
+        $length = Factory::create('Integer', intval(strlen($stream)), false);
     
         $this->setEntry('Length', $length);
 

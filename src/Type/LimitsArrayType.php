@@ -3,7 +3,7 @@
 namespace Papier\Type;
 
 use Papier\Object\DictionaryObject;
-use Papier\Object\LiteralStringObject;
+use Papier\Type\LiteralStringType;
 use Papier\Base\IndirectObject;
 
 use InvalidArgumentException;

@@ -42,7 +42,7 @@ class DeveloperExtensionDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("ExtensionLevel is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::getInstance()->createObject('Integer', $level, false);
+        $value = Factory::create('Integer', $level, false);
 
         $this->setEntry('ExtensionLevel', $value);
         return $this;

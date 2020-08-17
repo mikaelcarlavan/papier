@@ -4,8 +4,8 @@ namespace Papier\Type;
 
 use Papier\Object\DictionaryObject;
 use Papier\Object\ArrayObject;
-use Papier\Object\LiteralStringKeyArrayObject;
-use Papier\Object\LiteralStringObject;
+use Papier\Type\LiteralStringKeyArrayType;
+use Papier\Type\LiteralStringType;
 
 use Papier\Validator\BoolValidator;
 
@@ -66,7 +66,7 @@ class TreeNodeType extends DictionaryType
         }
 
         if (!$this->hasEntry('Kids')) {
-            $kids = Factory::getInstance()->createObject('Array', null, false);
+            $kids = Factory::create('Array', null, false);
             $this->setEntry('Kids', $kids);
         }
 
@@ -81,7 +81,7 @@ class TreeNodeType extends DictionaryType
      */
     public function addKid()
     {
-        $node = Factory::getInstance()->createType('TreeNode');
+        $node = Factory::create('TreeNode');
         $this->getKids()->append($node);
 
         return $node;
@@ -111,14 +111,14 @@ class TreeNodeType extends DictionaryType
     /**
      * Set names.
      *  
-     * @param  \Papier\Object\LiteralStringKeyArrayObject  $names
+     * @param  \Papier\Type\LiteralStringKeyArrayType  $names
      * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
      * @throws RunTimeException if node already contains 'Names' key.
      * @return \Papier\Document\DocumentCatalog
      */
     protected function setNames($names)
     {
-        if (!$names instanceof LiteralStringKeyArrayObject) {
+        if (!$names instanceof LiteralStringKeyArrayType) {
             throw new InvalidArgumentException("Names is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
@@ -133,7 +133,7 @@ class TreeNodeType extends DictionaryType
      * Get names.
      *  
      * @throws RunTimeException if node already contains 'Names' key.
-     * @return \Papier\Object\LiteralStringKeyArrayObject
+     * @return \Papier\Type\LiteralStringKeyArrayType
      */
     protected function getNames()
     {
@@ -142,7 +142,7 @@ class TreeNodeType extends DictionaryType
         }
 
         if (!$this->hasEntry('Names')) {
-            $names = Factory::getInstance()->createObject('LiteralStringKeyArray', null, false);
+            $names = Factory::create('LiteralStringKeyArray', null, false);
             $this->setEntry('Names', $names);
         }
 
