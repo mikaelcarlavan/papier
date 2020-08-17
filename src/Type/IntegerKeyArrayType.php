@@ -1,16 +1,16 @@
 <?php
 
-namespace Papier\Object;
+namespace Papier\Type;
 
 use Papier\Object\DictionaryObject;
-use Papier\Object\LiteralStringObject;
+use Papier\Object\IntegerObject;
 use Papier\Base\IndirectObject;
 
 use Papier\Factory\Factory;
 
 use InvalidArgumentException;
 
-class LiteralStringKeyArrayObject extends DictionaryObject
+class IntegerKeyArrayType extends DictionaryObject
 {
 
     /**
@@ -25,7 +25,7 @@ class LiteralStringKeyArrayObject extends DictionaryObject
         $value = '';
         if (is_array($objects)) {
             foreach ($objects as $key => $object) {
-                $name = Factory::getInstance()->createObject('LiteralString', $key, false);
+                $name = Factory::create('Integer', $key, false);
                 $value .= $name->format() .' '. $object->write();
             }
         }

@@ -1,11 +1,11 @@
 <?php
 
-namespace Papier\Object;
+namespace Papier\Type;
 
 use Papier\Object\StringObject;
 
 
-class LiteralStringObject extends StringObject
+class LiteralStringType extends StringObject
 {
     /**
      * Format object's value.

@@ -1,10 +1,10 @@
 <?php
 
-namespace Papier\Object;
+namespace Papier\Type;
 
 use Papier\Object\StringObject;
 
-class HexadecimalStringObject extends StringObject
+class HexadecimalStringType extends StringObject
 {
 
     /**
