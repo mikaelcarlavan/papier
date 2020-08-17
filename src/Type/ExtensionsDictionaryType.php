@@ -17,7 +17,7 @@ class ExtensionsDictionaryType extends DictionaryObject
      * Add extension.
      * 
      * @param string $name
-     * @return \Papier\Object\DeveloperExtensionDictionaryType
+     * @return \Papier\Type\DeveloperExtensionDictionaryType
      */
     public function addExtension($name)
     {

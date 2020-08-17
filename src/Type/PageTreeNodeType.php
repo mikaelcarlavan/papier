@@ -45,7 +45,7 @@ class PageTreeNodeType extends DictionaryType
     /**
      * Get kids.
      *  
-     * @return \Papier\Object\ArrayObject
+     * @return \Papier\Type\ArrayType
      */
     protected function getKids()
     {

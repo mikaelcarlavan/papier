@@ -14,7 +14,7 @@ class Comment extends BaseObject
     *
     * @param  mixed  $value
     * @throws InvalidArgumentException if the provided argument is not of type 'string'.
-    * @return \Papier\Object\StringObject
+    * @return \Papier\Base\Comment
     */
     public function setValue($value)
     {

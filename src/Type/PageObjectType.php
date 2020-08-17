@@ -90,7 +90,7 @@ class PageObjectType extends DictionaryType
     /**
      * Get resources.
      *  
-     * @return \Papier\Object\DictionaryObject
+     * @return \Papier\Type\DictionaryType
      */
     public function getResources()
     {

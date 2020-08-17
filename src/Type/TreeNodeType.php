@@ -57,7 +57,7 @@ class TreeNodeType extends DictionaryType
      * Get kids.
      *  
      * @throws RunTimeException if node already contains 'Names' key.
-     * @return \Papier\Object\ArrayObject
+     * @return \Papier\Type\ArrayType
      */
     protected function getKids()
     {

@@ -17,7 +17,7 @@ class DeveloperExtensionDictionaryType extends DictionaryObject
      *  
      * @param  \Papier\Object\NameObject  $version
      * @throws InvalidArgumentException if the provided argument is not of type 'NameObject'.
-     * @return \Papier\Object\DeveloperExtensionDictionaryType
+     * @return \Papier\Type\DeveloperExtensionDictionaryType
      */
     public function setBaseVersion($version)
     {
@@ -34,7 +34,7 @@ class DeveloperExtensionDictionaryType extends DictionaryObject
      *  
      * @param  int  $renditions
      * @throws InvalidArgumentException if the provided argument is not of type 'int'.
-     * @return \Papier\Object\DeveloperExtensionDictionaryType
+     * @return \Papier\Type\DeveloperExtensionDictionaryType
      */
     public function setExtensionLevel($level)
     {
