@@ -20,43 +20,6 @@ class Factory
     * @var \Papier\Factory\Factory
     */
     protected static $instance = null;
-  
-    /**
-    * Create a new instance of object
-    *
-    * @param  string  $type
-    * @param  mixed  $value
-    * @param  bool  $isIndirect
-    * @throws InvalidArgumentException if the provided type's object does not exist.
-    * @return mixed
-    */   
-    public static function createObject($type, $value = null, $isIndirect = true)
-    {
-        if (!StringValidator::isValid($type)) {
-            throw new InvalidArgumentException("$type is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-        
-        $class = 'Papier\Object\\'.ucfirst($type).'Object';
-        
-        if (!class_exists($class)) {
-            throw new InvalidArgumentException("$class does not exist. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        $object = new $class();
-        
-        if ($isIndirect) {
-            $object->setNumber(self::$number);
-            $object->setIndirect();
-            self::$number++;
-        }
-                          
-        if (!is_null($value)) {
-            $object->setValue($value);
-        }
-
-        
-        return $object;
-    }
  
     /**
     * Create a new instance of type
@@ -67,8 +30,10 @@ class Factory
     * @throws InvalidArgumentException if the provided type's object does not exist.
     * @return mixed
     */   
-    public static function createType($type, $value = null, $isIndirect = true)
+    public static function create($type, $value = null, $isIndirect = true)
     {
+        $instance = self::getInstance();
+
         if (!StringValidator::isValid($type)) {
             throw new InvalidArgumentException("$type is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
@@ -80,11 +45,11 @@ class Factory
         }
 
         $object = new $class();
-        
+
         if ($isIndirect) {
-            $object->setNumber(self::$number);
+            $object->setNumber($instance::$number);
             $object->setIndirect();
-            self::$number++;
+            $instance::$number++;
         }
                
         if (!is_null($value)) {
