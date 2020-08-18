@@ -112,7 +112,7 @@ class TreeNodeType extends DictionaryType
      * Set names.
      *  
      * @param  \Papier\Type\LiteralStringKeyArrayType  $names
-     * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
+     * @throws InvalidArgumentException if the provided argument is not of type 'LiteralStringKeyArrayType'.
      * @throws RunTimeException if node already contains 'Names' key.
      * @return \Papier\Document\DocumentCatalog
      */
@@ -153,7 +153,7 @@ class TreeNodeType extends DictionaryType
      * Set limits.
      *  
      * @param  \Papier\Type\LimitsArrayType  $limits
-     * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
+     * @throws InvalidArgumentException if the provided argument is not of type 'LimitsArrayType'.
      * @throws RunTimeException if node already contains 'Names' key.
      * @return \Papier\Document\DocumentCatalog
      */
