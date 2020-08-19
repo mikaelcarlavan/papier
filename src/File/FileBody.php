@@ -8,7 +8,7 @@ use Papier\Object\IntegerObject;
 use Papier\Object\NameObject;
 use Papier\Object\DictionaryObject;
 
-use Papier\File\CrossReference;
+use Papier\Repository\Repository;
 use Papier\Factory\Factory;
 
 use Papier\Type\PageTreeType;
@@ -18,13 +18,6 @@ use Papier\Validator\IntValidator;
 
 class FileBody extends BaseObject
 {
-    /**
-     * The offset of the body.
-     *
-     * @var int
-     */
-    private $offset = 0;
-
      /**
      * Page tree
      *
@@ -85,23 +78,6 @@ class FileBody extends BaseObject
     }
 
     /**
-     * Set body's offset.
-     *  
-     * @param  int  $offset
-     * @throws InvalidArgumentException if the provided argument is not of type 'int'.
-     * @return \Papier\File\FileBody
-     */
-    public function setOffset($offset)
-    {
-        if (!IntValidator::isValid($offset, 0)) {
-            throw new InvalidArgumentException("Offset is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        $this->offset = $offset;
-        return $this;
-    } 
-
-    /**
      * Add page to body.
      *
      * @return \Papier\Type\PageObjectType
@@ -124,23 +100,13 @@ class FileBody extends BaseObject
     } 
 
     /**
-     * Get body's offset.
-     *
-     * @return int
-     */
-    protected function getOffset()
-    {
-        return $this->offset;
-    }
-
-    /**
      * Format object's value.
      *
      * @return string
      */
     public function format()
     {
-        $objects = CrossReference::getInstance()->getObjects();
+        $objects = Repository::getInstance()->getObjects();
                 
         $content = '';
         if (count($objects) > 0) {
