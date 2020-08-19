@@ -23,5 +23,5 @@ class LineJoinStyle
      *
      * @var int
      */
-    const BEVEL_JOIN = 1;
+    const BEVEL_JOIN = 2;
 }
