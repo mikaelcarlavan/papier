@@ -14,6 +14,7 @@ use Papier\Validator\NumberValidator;
 use Papier\Validator\LineCapStyleValidator;
 use Papier\Validator\LineJoinStyleValidator;
 use Papier\Validator\OverprintModeValidator;
+use Papier\Validator\RenderingIntentValidator;
 
 use InvalidArgumentException;
 
@@ -111,17 +112,18 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
     /**
      * Set name of rendering intent.
      *  
-     * @param  \Papier\Object\NameObject  $ri
-     * @throws InvalidArgumentException if the provided argument is not of type 'NameObject'.
+     * @param  string  $ri
+     * @throws InvalidArgumentException if the provided argument is not a valid rendering intent.
      * @return \Papier\Type\GraphicsStateParameterDictionaryType
      */
     public function setRI($ri)
     {
-        if (!$ri instanceof NameObject) {
+        if (!RenderingIntentValidator::isValid($ri)) {
             throw new InvalidArgumentException("RI is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $this->setEntry('RI', $ri);
+        $value = Factory::create('Name', $ri, false);
+        $this->setEntry('RI', $value);
         return $this;
     }
 
