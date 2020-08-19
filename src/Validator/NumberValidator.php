@@ -12,11 +12,13 @@ class NumberValidator implements Validator
      * Test if given parameter is a valid real.
      * 
      * @param  mixed  $value
+     * @param  mixed  $min
+     * @param  mixed  $max
      * @return bool
      */
-    public static function isValid($value)
+    public static function isValid($value, $min = null, $max = null)
     {
-        $isValid = RealValidator::isValid($value) || IntValidator::isValid($value);
+        $isValid = RealValidator::isValid($value, $min, $max) || IntValidator::isValid($value, $min, $max);
         return $isValid;
     }
 }
