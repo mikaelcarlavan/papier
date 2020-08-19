@@ -6,6 +6,7 @@ use Papier\Object\DictionaryObject;
 use Papier\Base\IndirectObject;
 
 use Papier\File\CrossReferenceTable;
+use Papier\Repository\Repository;
 
 use Papier\Validator\IntValidator;
 
@@ -69,42 +70,6 @@ class CrossReference extends DictionaryObject
     }
 
     /**
-     * Add object to crossreference.
-     *  
-     * @param  \Papier\Base\IndirectObject  $object
-     * @return \Papier\File\CrossReference
-     */
-    public function addObject($object)
-    {        
-        if (!$object instanceof IndirectObject) {
-            throw new InvalidArgumentException("Object is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-        
-        $objects = $this->getObjects();
-        $objects[$object->getNumber()] = $object;
-
-        return $this->setObjects($objects);
-    }
-
-    /**
-     * Remove object from crossreference.
-     *  
-     * @param  \Papier\Base\IndirectObject  $object
-     * @return \Papier\File\CrossReference
-     */
-    public function removeObject($object)
-    {
-        if (!$object instanceof IndirectObject) {
-            throw new InvalidArgumentException("Object is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        $objects = $this->getObjects();
-        unset($objects[$object->getNumber()]);
-
-        return $this->setObjects($objects);
-    }
-
-    /**
      * Format object's value.
      *
      * @return string
@@ -118,7 +83,7 @@ class CrossReference extends DictionaryObject
 
         $offset = $this->getOffset();
 
-        $objects = $this->getObjects();
+        $objects = Repository::getInstance()->getObjects();
         if (count($objects) > 0) {
             foreach ($objects as $object) {
                 $subsection->addEntry()->setOffset($offset);
