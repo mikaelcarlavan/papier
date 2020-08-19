@@ -4,7 +4,7 @@ namespace Papier\Base;
 
 use Papier\Base\BaseObject;
 
-use Papier\File\CrossReference;
+use Papier\Repository\Repository;
 
 use Papier\Validator\BoolValidator;
 use Papier\Validator\IntValidator;
@@ -79,9 +79,9 @@ abstract class IndirectObject extends BaseObject
         $this->indirect = $indirect;
 
         if ($indirect) {
-            CrossReference::getInstance()->addObject($this);
+            Repository::getInstance()->addObject($this);
         } else {
-            CrossReference::getInstance()->removeObject($this);
+            Repository::getInstance()->removeObject($this);
         }
 
         return $this;
