@@ -2,93 +2,39 @@
 
 namespace Papier\Graphics;
 
-use Papier\Base\BaseObject;
+use Papier\StreamObject;
 
 use Papier\Validator\NumberValidator;
 use Papier\Validator\LineCapStyleValidator;
 use Papier\Validator\LineJoinStyleValidator;
 use Papier\Validator\OverprintModeValidator;
+use Papier\Validator\StringValidator;
+use Papier\Validator\RenderingIntentValidator;
 
 use InvalidArgumentException;
 
-class GraphicsState extends BaseObject
+trait GraphicsState
 {
-    /**
-     * Create a new GraphicsState instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->value = [];
-    }  
-
-    /**
-     * Add state to stack
-     *  
-     * @param  string  $state
-     * @return \Papier\Graphics\GraphicsState
-     */
-    protected function addToStack($state)
-    {
-        $stack = $this->getStack();
-        $stack[] = $state;
-
-        return $this->setStack($stack);
-    } 
-    
-    /**
-     * Get stack.
-     *  
-     * @return array
-     */
-    protected function getStack()
-    {
-        return $this->getValue();
-    }
-
-    /**
-     * Set stack.
-     *  
-     * @param array $stack
-     * @return \Papier\Graphics\GraphicsState
-     */
-    protected function setStack($stack)
-    {
-        return $this->setValue($stack);
-    }
-
-    /**
-     * Erase stack.
-     *  
-     * @return array
-     */
-    public function clearStack()
-    {
-        $stack = [];
-        return $this->setStack($stack);
-    }
-
     /**
      * Save stack.
      *  
-     * @return \Papier\Graphics\GraphicsState
+     * @return mixed
      */
     public function save()
     {
         $state = 'q';
-        return $this->addToStack($state);
+        return $this->addToContent($state);
     }
 
     /**
      * Restore stack.
      *  
-     * @return \Papier\Graphics\GraphicsState
+     * @return mixed
      */
     public function restore()
     {
         $state = 'Q';
-        return $this->addToStack($state);
+        return $this->addToContent($state);
     }
 
     /**
@@ -101,7 +47,7 @@ class GraphicsState extends BaseObject
      * @param   mixed   $e
      * @param   mixed   $f
      * @throws InvalidArgumentException if the provided arguments are not of type 'float' or 'int'.
-     * @return \Papier\Graphics\GraphicsState
+     * @return mixed
      */
     public function setCTM($a, $b , $c, $d, $e, $f)
     {
@@ -131,7 +77,7 @@ class GraphicsState extends BaseObject
         
         $state = sprintf('%f %f %f %f %f cm', $a, $b, $c, $d, $e, $f);
 
-        return $this->addToStack($state);
+        return $this->addToContent($state);
     }
 
     /**
@@ -139,7 +85,7 @@ class GraphicsState extends BaseObject
      *  
      * @param   mixed   $lw
      * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
-     * @return \Papier\Graphics\GraphicsState
+     * @return mixed
      */
     public function setLineWidth($lw)
     {
@@ -148,7 +94,7 @@ class GraphicsState extends BaseObject
         }
         
         $state = sprintf('%f w', $lw);
-        return $this->addToStack($state);
+        return $this->addToContent($state);
     }
 
     /**
@@ -156,7 +102,7 @@ class GraphicsState extends BaseObject
      *  
      * @param  mixed  $lc
      * @throws InvalidArgumentException if the provided argument is not a valid line cap style.
-     * @return \Papier\Graphics\GraphicsState
+     * @return mixed
      */
     public function setLineCapStyle($lc)
     {
@@ -165,7 +111,7 @@ class GraphicsState extends BaseObject
         }
 
         $state = sprintf('%d J', $lc);
-        return $this->addToStack($state);
+        return $this->addToContent($state);
     }
 
 
@@ -174,7 +120,7 @@ class GraphicsState extends BaseObject
      *  
      * @param  mixed  $lj
      * @throws InvalidArgumentException if the provided argument is not a valid line join style.
-     * @return \Papier\Graphics\GraphicsState
+     * @return mixed
      */
     public function setLineJoinStyle($lj)
     {
@@ -183,7 +129,7 @@ class GraphicsState extends BaseObject
         }
 
         $state = sprintf('%d j', $lj);
-        return $this->addToStack($state);
+        return $this->addToContent($state);
     }
 
     /**
@@ -191,7 +137,7 @@ class GraphicsState extends BaseObject
      *  
      * @param  mixed  $ml
      * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
-     * @return \Papier\Graphics\GraphicsState
+     * @return mixed
      */
     public function setMiterLimit($ml)
     {
@@ -200,7 +146,7 @@ class GraphicsState extends BaseObject
         }
 
         $state = sprintf('%f M', $ml);
-        return $this->addToStack($state);
+        return $this->addToContent($state);
     }
 
     /**
@@ -210,7 +156,7 @@ class GraphicsState extends BaseObject
      * @param  mixed  $dp
      * @throws InvalidArgumentException if the $da argument is not an array of 'float' or 'int' elements.
      * @throws InvalidArgumentException if the $dp argument is not of type 'float' or 'int'.
-     * @return \Papier\Graphics\GraphicsState
+     * @return mixed
      */
     public function setLineDashPattern($da, $dp)
     {
@@ -229,7 +175,7 @@ class GraphicsState extends BaseObject
         }
 
         $state = sprintf('[%s] %f d', implode(' ', $da), $dp);
-        return $this->addToStack($state);
+        return $this->addToContent($state);
     }
 
     /**
@@ -237,7 +183,7 @@ class GraphicsState extends BaseObject
      *  
      * @param  mixed  $fl
      * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int' between 0 and 100.
-     * @return \Papier\Graphics\GraphicsState
+     * @return mixed
      */
     public function setFlatness($fl)
     {
@@ -246,23 +192,40 @@ class GraphicsState extends BaseObject
         }
 
         $state = sprintf('%f i', $fl);
-        return $this->addToStack($state);
-    }
+        return $this->addToContent($state);
+    } 
     
     /**
-     * Format object's value.
-     *
-     * @return string
+     * Set colour rendering intent.
+     *  
+     * @param  string  $ri
+     * @throws InvalidArgumentException if the provided argument is not a valid colour rendering intent.
+     * @return mixed
      */
-    public function format()
+    public function setColourRenderingIntent($ri)
     {
-        $stack = $this->getStack();
+        if (!RenderingIntentValidator::isValid($ri)) {
+            throw new InvalidArgumentException("RI is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
 
-        $value = '';
-        foreach ($stack as $state) {
-            $value .= $state . self::EOL_MARKER;
-        }      
+        $state = sprintf('%s ri', $ri);
+        return $this->addToContent($state);
+    } 
 
-        return trim($value);
-    }    
+    /**
+     * Set dictionary.
+     *  
+     * @param  string  $dn
+     * @throws InvalidArgumentException if the provided argument is not of type 'string'.
+     * @return mixed
+     */
+    public function setDictionary($dn)
+    {
+        if (!StringValidator::isValid($dn)) {
+            throw new InvalidArgumentException("DN is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $state = sprintf('%s gs', $dn);
+        return $this->addToContent($state);
+    } 
 }
