@@ -1,13 +1,13 @@
 <?php
 
-namespace Papier\Base;
+namespace Papier\Object;
 
 use Papier\Base\BaseObject;
 use Papier\Validator\StringValidator;
 
 use InvalidArgumentException;
 
-class Comment extends BaseObject
+class CommentObject extends BaseObject
 {
     /**
     * Set comment's value.
