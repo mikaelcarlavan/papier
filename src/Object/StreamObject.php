@@ -72,6 +72,21 @@ class StreamObject extends DictionaryObject
     } 
 
     /**
+     * Add data to content.
+     *  
+     * @param  string  $data
+     * @param  bool  $withEndOfLine
+     * @return \Papier\Object\StreamObject
+     */
+    protected function addToContent($data, $withEndOfLine = true)
+    {
+        $content = $this->getContent();
+        $content.= $data;
+        $content.= $withEndOfLine ? self::EOL_MARKER : '';
+
+        return $this->setContent($content);
+    } 
+    /**
      * Format object's value.
      *
      * @return string
@@ -82,7 +97,7 @@ class StreamObject extends DictionaryObject
         //$stream = $stream ? $stream->write() : '';
 
         // Compute length of stream and set it into dictionary
-        $length = Factory::create('Integer', intval(strlen($stream)), false);
+        $length = Factory::create('Integer', intval(strlen($stream)));
     
         $this->setEntry('Length', $length);
 
