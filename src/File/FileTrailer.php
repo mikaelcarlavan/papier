@@ -9,6 +9,7 @@ use Papier\Object\ArrayObject;
 use Papier\Object\IntegerObject;
 
 use Papier\Factory\Factory;
+use Papier\Repository\Repository;
 
 use InvalidArgumentException;
 use RuntimeException;
@@ -164,6 +165,9 @@ class FileTrailer extends DictionaryObject
      */
     public function format()
     {
+        $repository = Repository::getInstance();
+        $this->setSize(count($repository->getObjects()));
+
         if (!$this->hasEntry('Root')) {
             throw new RuntimeException("Root is missing. See ".__CLASS__." class's documentation for possible values.");
         }
