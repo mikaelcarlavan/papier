@@ -30,7 +30,7 @@ class Factory
     * @throws InvalidArgumentException if the provided type's object does not exist.
     * @return mixed
     */   
-    public static function create($type, $value = null, $isIndirect = true)
+    public static function create($type, $value = null, $isIndirect = false)
     {
         $instance = self::getInstance();
 
