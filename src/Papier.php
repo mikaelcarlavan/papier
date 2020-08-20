@@ -8,9 +8,6 @@ use Papier\File\FileBody;
 
 use Papier\File\CrossReference;
 
-use Papier\Factory\Factory;
-use Papier\Repository\Repository;
-
 
 use RuntimeException;
 use InvalidArgumentException;
@@ -120,11 +117,9 @@ class Papier
         $body = $this->getBody();
         $trailer = $this->getTrailer();
         
-        $crossreference = CrossReference::getInstance();
-        $repository = Repository::getInstance();
-
         $trailer->setRoot($body->getDocumentCatalog());
-        $trailer->setSize(count($repository->getObjects()));
+
+        $crossreference = CrossReference::getInstance();
 
         $content  = $header->write();
 
