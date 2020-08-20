@@ -73,7 +73,7 @@ class NameTreeNodeType extends TreeNodeType
         }
 
         if (!$this->hasEntry('Names')) {
-            $names = Factory::create('LiteralStringKeyArray', null, false);
+            $names = Factory::create('LiteralStringKeyArray');
             $this->setEntry('Names', $names);
         }
 
@@ -120,14 +120,14 @@ class NameTreeNodeType extends TreeNodeType
     {
         if (!$this->isRoot()) {
             // Compute limits
-            $limits = Factory::create('LimitsArray', null, false);
+            $limits = Factory::create('LimitsArray');
             $objects = $this->collectNames($this);
 
             if (count($objects)) {
                 sort($objects);
 
-                $first = Factory::create('LiteralString', array_shift($objects), false);
-                $last = Factory::create('LiteralString', array_pop($objects), false);
+                $first = Factory::create('LiteralString', array_shift($objects));
+                $last = Factory::create('LiteralString', array_pop($objects));
                 
                 $limits->append($first);
                 $limits->append($last);

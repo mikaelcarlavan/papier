@@ -39,14 +39,14 @@ class FileBody extends BaseObject
      */
     public function __construct()
     {
-        $this->documentCatalog = Factory::create('DocumentCatalog');
+        $this->documentCatalog = Factory::create('DocumentCatalog', null, true);
 
         $outlines = Factory::create('Dictionary');
         
-        $pageTree = Factory::create('PageTree', null, false);
+        $pageTree = Factory::create('PageTree');
 
-        $name = Factory::create('Name', 'Outlines', false);
-        $count = Factory::create('Integer', 0, false);
+        $name = Factory::create('Name', 'Outlines');
+        $count = Factory::create('Integer', 0);
 
         $outlines->setEntry('Type', $name);
         $outlines->setEntry('Count', $count);
@@ -86,14 +86,10 @@ class FileBody extends BaseObject
     {
         $page = $this->getPageTree()->addObject();
 
-        $contents = Factory::create('Stream');
-        $contents->setContent('...Page-marking operators...');
-
-        $pdf = Factory::create('Name', 'PDF', false);
-        $procset = Factory::create('Array')->append($pdf);
+        $pdf = Factory::create('Name', 'PDF');
+        $procset = Factory::create('Array', null, true)->append($pdf);
 
         $page->setParent($this->getPageTree());
-        $page->setContents($contents);    
         $page->getResources()->setEntry('ProcSet', $procset);
 
         return $page;

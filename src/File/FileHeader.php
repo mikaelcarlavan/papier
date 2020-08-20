@@ -3,7 +3,8 @@
 namespace Papier\File;
 
 use Papier\Base\BaseObject;
-use Papier\Base\Comment;
+
+use Papier\Factory\Factory;
 
 use Papier\Validator\VersionValidator;
 use Papier\Validator\BoolValidator;
@@ -28,9 +29,9 @@ class FileHeader extends BaseObject
     {
         $value = sprintf("%%PDF-1.%d", $this->getVersion());
         if ($this->hasBinaryData()) {
-            $comment = new Comment();
             $chars = array_map('chr', range(128, 131));
-            $value .= $comment->setValue(implode('', $chars))->format();
+            $comment = Factory::create('Comment', implode('', $chars));
+            $value .= $comment->format();
         }
         return $value;
     }

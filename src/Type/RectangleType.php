@@ -27,7 +27,7 @@ class RectangleType extends ArrayType
             throw new InvalidArgumentException("Number is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Number', $coordinate, false);
+        $value = Factory::create('Number', $coordinate);
 
         $objects = $this->getObjects();
         $objects[0] = $value;
@@ -49,7 +49,7 @@ class RectangleType extends ArrayType
             throw new InvalidArgumentException("Number is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Number', $coordinate, false);
+        $value = Factory::create('Number', $coordinate);
 
         $objects = $this->getObjects();
         $objects[1] = $value;
@@ -70,7 +70,7 @@ class RectangleType extends ArrayType
             throw new InvalidArgumentException("Number is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Number', $coordinate, false);
+        $value = Factory::create('Number', $coordinate);
 
         $objects = $this->getObjects();
         $objects[2] = $value;
@@ -91,7 +91,7 @@ class RectangleType extends ArrayType
             throw new InvalidArgumentException("Number is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Number', $coordinate, false);
+        $value = Factory::create('Number', $coordinate);
 
         $objects = $this->getObjects();
         $objects[3] = $value;
@@ -119,7 +119,7 @@ class RectangleType extends ArrayType
                 throw new InvalidArgumentException("Number is incorrect. See ".__CLASS__." class's documentation for possible values.");
             }
 
-            $value = Factory::create('Number', $coordinate, false);
+            $value = Factory::create('Number', $coordinate);
 
             $objects[$i] = $value;
         }

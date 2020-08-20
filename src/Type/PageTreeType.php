@@ -15,7 +15,7 @@ class PageTreeType extends DictionaryType
     public function getNode()
     {
         if (!$this->hasEntry('Node')) {
-            $node = Factory::create('PageTreeNode');
+            $node = Factory::create('PageTreeNode', null, true);
             $this->setEntry('Node', $node);
         }
 

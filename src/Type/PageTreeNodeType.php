@@ -50,7 +50,7 @@ class PageTreeNodeType extends DictionaryType
     protected function getKids()
     {
         if (!$this->hasEntry('Kids')) {
-            $kids = Factory::create('Array', null, false);
+            $kids = Factory::create('Array');
             $this->setEntry('Kids', $kids);
         }
 
@@ -65,7 +65,7 @@ class PageTreeNodeType extends DictionaryType
      */
     public function addNode()
     {
-        $node = Factory::create('PageTreeNode');
+        $node = Factory::create('PageTreeNode', null, true);
         $this->getKids()->append($node);
 
         return $node;
@@ -78,7 +78,7 @@ class PageTreeNodeType extends DictionaryType
      */
     public function addObject()
     {
-        $node = Factory::create('PageObject');
+        $node = Factory::create('PageObject', null, true);
         $this->getKids()->append($node);
 
         return $node;
@@ -133,8 +133,8 @@ class PageTreeNodeType extends DictionaryType
             }
         }
         
-        $type = Factory::create('Name', 'Pages', false);
-        $count = Factory::create('Integer', $num, false);
+        $type = Factory::create('Name', 'Pages');
+        $count = Factory::create('Integer', $num);
 
         $this->setEntry('Type', $type);
         $this->setEntry('Count', $count);

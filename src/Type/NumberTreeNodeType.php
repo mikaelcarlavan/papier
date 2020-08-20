@@ -20,7 +20,7 @@ class NumberTreeNodeType extends TreeNodeType
      */
     public function addKid()
     {
-        $node = Factory::create('NumberTreeNode');
+        $node = Factory::create('NumberTreeNode', null, true);
         $this->getKids()->append($node);
 
         return $node;
@@ -73,7 +73,7 @@ class NumberTreeNodeType extends TreeNodeType
         }
 
         if (!$this->hasEntry('Nums')) {
-            $nums = Factory::create('IntegerKeyArray', null, false);
+            $nums = Factory::create('IntegerKeyArray');
             $this->setEntry('Nums', $nums);
         }
 
@@ -120,15 +120,15 @@ class NumberTreeNodeType extends TreeNodeType
     {
         if (!$this->isRoot()) {
             // Compute limits
-            $limits = Factory::create('LimitsArray', null, false);
+            $limits = Factory::create('LimitsArray');
 
             $objects = $this->collectNums($this);
 
             if (count($objects)) {
                 sort($objects);
 
-                $first = Factory::create('Integer', array_shift($objects), false);
-                $last = Factory::create('Integer', array_pop($objects), false);
+                $first = Factory::create('Integer', array_shift($objects));
+                $last = Factory::create('Integer', array_pop($objects));
                 
                 $limits->append($first);
                 $limits->append($last);

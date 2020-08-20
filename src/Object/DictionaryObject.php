@@ -9,6 +9,8 @@ use Papier\Object\NullObject;
 
 use Papier\Factory\Factory;
 
+use Papier\Validator\ArrayValidator;
+
 use InvalidArgumentException;
 
 use Countable;
@@ -198,12 +200,13 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
     /**
      * Set objects.
      * 
+     * @param   array   $objects
      * @throws InvalidArgumentException if the provided argument is not of type 'array' or if each element of the argument does not inherit 'IndirectObject'.
      * @return \Papier\Object\DictionaryObject
      */
     protected function setObjects($objects)
     {
-        if (!is_array($objects)) {
+        if (!ArrayValidator::isValid($objects)) {
             throw new InvalidArgumentException("Object's list is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
@@ -228,7 +231,7 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
 
         $value = '';
         foreach ($objects as $key => $object) {
-            $name = Factory::create('Name', $key, false);
+            $name = Factory::create('Name', $key);
             $value .= $name->format() .' '. $object->write();
         }      
 

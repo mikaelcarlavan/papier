@@ -66,7 +66,7 @@ class TreeNodeType extends DictionaryType
         }
 
         if (!$this->hasEntry('Kids')) {
-            $kids = Factory::create('Array', null, false);
+            $kids = Factory::create('Array');
             $this->setEntry('Kids', $kids);
         }
 
@@ -81,7 +81,7 @@ class TreeNodeType extends DictionaryType
      */
     public function addKid()
     {
-        $node = Factory::create('TreeNode');
+        $node = Factory::create('TreeNode', null, true);
         $this->getKids()->append($node);
 
         return $node;
@@ -142,7 +142,7 @@ class TreeNodeType extends DictionaryType
         }
 
         if (!$this->hasEntry('Names')) {
-            $names = Factory::create('LiteralStringKeyArray', null, false);
+            $names = Factory::create('LiteralStringKeyArray');
             $this->setEntry('Names', $names);
         }
 

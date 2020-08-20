@@ -25,7 +25,7 @@ class IntegerKeyArrayType extends DictionaryObject
         $value = '';
         if (is_array($objects)) {
             foreach ($objects as $key => $object) {
-                $name = Factory::create('Integer', $key, false);
+                $name = Factory::create('Integer', $key);
                 $value .= $name->format() .' '. $object->write();
             }
         }

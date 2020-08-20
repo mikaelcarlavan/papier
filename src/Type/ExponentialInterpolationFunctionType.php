@@ -65,7 +65,7 @@ class ExponentialInterpolationFunctionType extends FunctionObject
             throw new InvalidArgumentException("N is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Real', $N, false);
+        $value = Factory::create('Real', $N);
 
         $this->setEntry('N', $value);
         return $this;
