@@ -30,7 +30,7 @@ class FileTrailer extends DictionaryObject
      */
     public function getCrossReferenceOffset()
     {
-        return $this->crossReferenceOffset ?? 0;
+        return $this->crossReferenceOffset;
     }
 
     /**
