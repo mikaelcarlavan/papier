@@ -17,6 +17,13 @@ use RuntimeException;
 class FileTrailer extends DictionaryObject
 {
      /**
+     * End-of-file marker.
+     *
+     * @var string
+     */
+    const EOF_MARKER = "%%EOF";
+
+     /**
      * Offset in bytes (from the beginning of the file) to the cross reference table.
      *
      * @var int
@@ -180,7 +187,7 @@ class FileTrailer extends DictionaryObject
         $value .= parent::format() . self::EOL_MARKER;
         $value .= 'startxref' . self::EOL_MARKER;
         $value .= $this->getCrossReferenceOffset() . self::EOL_MARKER;
-        $value .= '%%EOF';
+        $value .= self::EOF_MARKER;
         
         return $value;
     }
