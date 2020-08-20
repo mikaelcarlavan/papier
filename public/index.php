@@ -29,6 +29,10 @@ $pdf = new Papier();
 
 $page = $pdf->addPage();
 $page->getMediaBox()->setCoordinates([0, 0, 612, 792]);
+$contents = $page->getContents();
+
+$contents->appendRectangle(150, 350, 200, 200);
+$contents->fillAndStroke();
 
 print $pdf->build();
 
