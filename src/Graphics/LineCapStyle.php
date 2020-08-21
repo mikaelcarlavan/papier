@@ -23,5 +23,5 @@ class LineCapStyle
      *
      * @var int
      */
-    const PROJECTING_SQUARE_CAP = 1;
+    const PROJECTING_SQUARE_CAP = 2;
 }
