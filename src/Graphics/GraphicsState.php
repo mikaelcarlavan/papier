@@ -2,14 +2,14 @@
 
 namespace Papier\Graphics;
 
-use Papier\StreamObject;
-
 use Papier\Validator\NumberValidator;
 use Papier\Validator\LineCapStyleValidator;
 use Papier\Validator\LineJoinStyleValidator;
 use Papier\Validator\OverprintModeValidator;
 use Papier\Validator\StringValidator;
 use Papier\Validator\RenderingIntentValidator;
+
+use Papier\Factory\Factory;
 
 use InvalidArgumentException;
 
@@ -208,7 +208,7 @@ trait GraphicsState
             throw new InvalidArgumentException("RI is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $state = sprintf('%s ri', $ri);
+        $state = sprintf('%s ri', Factory::create('Name', $ri)->format());
         return $this->addToContent($state);
     } 
 
