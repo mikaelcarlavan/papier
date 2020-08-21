@@ -2,14 +2,8 @@
 
 namespace Papier\Graphics;
 
-use Papier\StreamObject;
-
 use Papier\Validator\NumberValidator;
-use Papier\Validator\LineCapStyleValidator;
-use Papier\Validator\LineJoinStyleValidator;
-use Papier\Validator\OverprintModeValidator;
 use Papier\Validator\StringValidator;
-use Papier\Validator\RenderingIntentValidator;
 
 use InvalidArgumentException;
 
