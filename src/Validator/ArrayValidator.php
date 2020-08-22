@@ -6,14 +6,20 @@ use Papier\Validator\Base\Validator;
 class ArrayValidator implements Validator
 {
      /**
-     * Test if given parameter is a valid string.
+     * Test if given parameter is a valid array.
      * 
      * @param  mixed  $value
+     * @param  int  $size
      * @return bool
      */
-    public static function isValid($value)
+    public static function isValid($value, $size = -1)
     {
         $isValid = is_array($value);
+
+        if ($size > 0) {
+            $isValid = $isValid & (count($value) == $size);
+        }
+
         return $isValid;
     }
 }
