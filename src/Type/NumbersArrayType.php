@@ -3,10 +3,6 @@
 namespace Papier\Type;
 
 use Papier\Type\ArrayType;
-use Papier\Type\NumberType;
-
-use Papier\Validator\NumberValidator;
-use Papier\Validator\ArrayValidator;
 use Papier\Validator\NumbersArrayValidator;
 
 use Papier\Factory\Factory;
