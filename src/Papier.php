@@ -155,7 +155,7 @@ class Papier
     } 
 
     /**
-     * Check if component can be build.
+     * Check if PDF can be build.
      *
      * @return bool
      */
