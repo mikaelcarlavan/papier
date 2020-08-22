@@ -8,6 +8,7 @@ use Papier\Validator\LineJoinStyleValidator;
 use Papier\Validator\OverprintModeValidator;
 use Papier\Validator\StringValidator;
 use Papier\Validator\RenderingIntentValidator;
+use Papier\Validator\IntegersArrayValidator;
 
 use Papier\Factory\Factory;
 
@@ -160,21 +161,15 @@ trait GraphicsState
      */
     public function setLineDashPattern($da, $dp)
     {
-        if (!ArrayValidator::isValid($da)) {
+        if (!IntegersArrayValidator::isValid($da)) {
             throw new InvalidArgumentException("DA is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        foreach ($da as $d) {
-            if (!NumberValidator::isValid($d)) {
-                throw new InvalidArgumentException("DA is incorrect. See ".__CLASS__." class's documentation for possible values.");
-            }         
         }
 
         if (!NumberValidator::isValid($dp)) {
             throw new InvalidArgumentException("DP is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $state = sprintf('[%s] %f d', implode(' ', $da), $dp);
+        $state = sprintf('%s %f d', Factory::create('IntegersArray', $da)->format(), $dp);
         return $this->addToContent($state);
     }
 
