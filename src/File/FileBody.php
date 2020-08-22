@@ -14,6 +14,8 @@ use Papier\Factory\Factory;
 use Papier\Type\PageTreeType;
 use Papier\Type\RectangleType;
 
+use Papier\Document\ProcSet;
+
 use Papier\Validator\IntegerValidator;
 
 class FileBody extends BaseObject
@@ -86,8 +88,8 @@ class FileBody extends BaseObject
     {
         $page = $this->getPageTree()->addObject();
 
-        $pdf = Factory::create('Name', 'PDF');
-        $text = Factory::create('Name', 'Text');
+        $pdf = Factory::create('Name', ProcSet::GRAPHICS);
+        $text = Factory::create('Name', ProcSet::TEXT);
 
         $procset = Factory::create('Array', null, true)
             ->append($pdf)
