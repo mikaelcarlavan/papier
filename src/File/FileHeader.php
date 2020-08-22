@@ -7,7 +7,7 @@ use Papier\Base\BaseObject;
 use Papier\Factory\Factory;
 
 use Papier\Validator\VersionValidator;
-use Papier\Validator\BoolValidator;
+use Papier\Validator\BooleanValidator;
 
 use InvalidArgumentException;
 
@@ -82,7 +82,7 @@ class FileHeader extends BaseObject
      */
     public function setBinaryData($binaryData)
     {
-        if (!BoolValidator::isValid($binaryData)) {
+        if (!BooleanValidator::isValid($binaryData)) {
             throw new InvalidArgumentException("BinaryData is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 

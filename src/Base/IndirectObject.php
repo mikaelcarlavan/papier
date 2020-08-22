@@ -6,7 +6,7 @@ use Papier\Base\BaseObject;
 
 use Papier\Repository\Repository;
 
-use Papier\Validator\BoolValidator;
+use Papier\Validator\BooleanValidator;
 use Papier\Validator\IntValidator;
 
 abstract class IndirectObject extends BaseObject
@@ -72,7 +72,7 @@ abstract class IndirectObject extends BaseObject
      */
     public function setIndirect($indirect = true)
     {
-        if (!BoolValidator::isValid($indirect)) {
+        if (!BooleanValidator::isValid($indirect)) {
             throw new InvalidArgumentException("Indirect boolean is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 

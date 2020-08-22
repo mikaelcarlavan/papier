@@ -5,7 +5,7 @@ namespace Papier\File\CrossReference;
 use Papier\Base\BaseObject;
 
 use Papier\Validator\IntValidator;
-use Papier\Validator\BoolValidator;
+use Papier\Validator\BooleanValidator;
 
 use InvalidArgumentException;
 
@@ -72,7 +72,7 @@ class CrossReferenceEntry extends BaseObject
      */
     public function setFree($free = true)
     {
-        if (!BoolValidator::isValid($free)) {
+        if (!BooleanValidator::isValid($free)) {
             throw new InvalidArgumentException("Free boolean is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 

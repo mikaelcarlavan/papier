@@ -3,7 +3,7 @@
 namespace Papier\Validator;
 use Papier\Validator\Base\Validator;
 
-class BoolValidator implements Validator
+class BooleanValidator implements Validator
 {
      /**
      * Test if given parameter is a valid bool.
