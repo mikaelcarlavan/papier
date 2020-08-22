@@ -8,7 +8,6 @@ use Papier\Object\ArrayObject;
 
 use Papier\Functions\FunctionType;
 
-use Papier\Validator\BitsPerSampleValidator;
 use Papier\Validator\IntValidator;
 
 use InvalidArgumentException;
