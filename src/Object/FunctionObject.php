@@ -76,7 +76,7 @@ class FunctionObject extends StreamObject
     /**
      * Set range.
      *  
-     * @param  int  $range
+     * @param  \Papier\Object\ArrayObject  $range
      * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
      * @return \Papier\Object\FunctionObject
      */
