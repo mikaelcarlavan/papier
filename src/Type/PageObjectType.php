@@ -316,7 +316,7 @@ class PageObjectType extends DictionaryType
     public function getContents($stream = true)
     {
         if (!$this->hasEntry('Contents')) {
-            $conents = $stream ? Factory::create('Stream', null, true) : Factory::create('Array', null, true);
+            $conents = $stream ? Factory::create('ContentStream', null, true) : Factory::create('Array', null, true);
             $this->setContents($conents);
         }
 
