@@ -9,7 +9,7 @@ trait TextObject
      *  
      * @return mixed
      */
-    public function begin()
+    public function beginText()
     {
         $state = 'BT';
         return $this->addToContent($state);
@@ -20,7 +20,7 @@ trait TextObject
      *  
      * @return mixed
      */
-    public function end()
+    public function endText()
     {
         $state = 'ET';
         return $this->addToContent($state);
