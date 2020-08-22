@@ -20,7 +20,7 @@ use InvalidArgumentException;
 class RadialShadingDictionaryType extends ShadingDictionaryType
 {
     /**
-     * Set centers and radii of the starting and ending circlees.
+     * Set centers and radii of the starting and ending circles.
      *  
      * @param  array  $coords
      * @throws InvalidArgumentException if the provided argument is not of type 'array'.
