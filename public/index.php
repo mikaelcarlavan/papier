@@ -31,9 +31,11 @@ $page = $pdf->addPage();
 $page->setMediaBox([0, 0, 612, 792]);
 $contents = $page->getContents();
 
+$contents->setNonStrokingRGBColour(0.1, 0.3, 0.8);
+
 $contents->beginText();
 $contents->setFont('F1', 24);
-$contents->moveToNextLineStartWithOffset(100, 100);
+$contents->moveToNextLineStartWithOffset(100, 500);
 $contents->showText('Hello World !');
 $contents->endText();
 
