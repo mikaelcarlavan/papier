@@ -28,7 +28,7 @@ require __DIR__.'/../vendor/autoload.php';
 $pdf = new Papier();
 
 $page = $pdf->addPage();
-$page->getMediaBox()->setCoordinates([0, 0, 612, 792]);
+$page->setMediaBox([0, 0, 612, 792]);
 $contents = $page->getContents();
 
 $contents->appendRectangle(150, 350, 200, 200);
