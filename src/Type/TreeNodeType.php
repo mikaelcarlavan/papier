@@ -7,7 +7,7 @@ use Papier\Object\ArrayObject;
 use Papier\Type\LiteralStringKeyArrayType;
 use Papier\Type\LiteralStringType;
 
-use Papier\Validator\BoolValidator;
+use Papier\Validator\BooleanValidator;
 
 use Papier\Factory\Factory;
 
@@ -35,7 +35,7 @@ class TreeNodeType extends DictionaryType
      */
     public function setRoot($root = true)
     {
-        if (!BoolValidator::isValid($root)) {
+        if (!BooleanValidator::isValid($root)) {
             throw new InvalidArgumentException("Root boolean is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
