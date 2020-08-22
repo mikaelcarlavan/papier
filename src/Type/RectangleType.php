@@ -2,17 +2,18 @@
 
 namespace Papier\Type;
 
-use Papier\Type\ArrayType;
+use Papier\Type\NumbersArrayType;
 use Papier\Type\NumberType;
 
 use Papier\Validator\NumberValidator;
 use Papier\Validator\ArrayValidator;
+use Papier\Validator\NumbersArrayValidator;
 
 use Papier\Factory\Factory;
 
 use InvalidArgumentException;
 
-class RectangleType extends ArrayType
+class RectangleType extends NumbersArrayType
 {
     /**
     * Set object's lower left X coordinate.
@@ -97,33 +98,5 @@ class RectangleType extends ArrayType
         $objects[3] = $value;
 
         return $this->setObjects($objects);
-    } 
-
-    /**
-    * Set object's coordinates.
-    *
-    * @param  array  $coordinates
-    * @throws InvalidArgumentException if the provided argument is not of type 'array' or if each element of the array is not of type 'float' or 'int'.
-    * @return \Papier\Type\RectangleType
-    */
-    public function setCoordinates($coordinates)
-    {
-        if (!ArrayValidator::isValid($coordinates)) {
-            throw new InvalidArgumentException("Array is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        $objects = $this->getObjects();
-
-        foreach ($coordinates as $i => $coordinate) {
-            if (!NumberValidator::isValid($coordinate)) {
-                throw new InvalidArgumentException("Number is incorrect. See ".__CLASS__." class's documentation for possible values.");
-            }
-
-            $value = Factory::create('Number', $coordinate);
-
-            $objects[$i] = $value;
-        }
-
-        return $this->setObjects($objects);
-    } 
+    }
 }
