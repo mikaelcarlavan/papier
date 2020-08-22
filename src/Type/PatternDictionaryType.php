@@ -37,6 +37,10 @@ class PatternDictionaryType extends DictionaryObject
      */
     public function format()
     {
+        if (!$this->hasEntry('PatternType')) {
+            throw new RuntimeException("PatternType is missing. See ".__CLASS__." class's documentation for possible values.");
+        }
+
         $type = Factory::create('Name', 'Pattern');
         $this->setEntry('Type', $type);
 
