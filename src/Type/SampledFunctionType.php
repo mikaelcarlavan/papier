@@ -95,7 +95,7 @@ class SampledFunctionType extends FunctionObject
     /**
      * Set decode.
      *  
-     * @param  int  $encode
+     * @param  \Papier\Object\ArrayObject  $encode
      * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
      * @return \Papier\Type\SampledFunctionType
      */
