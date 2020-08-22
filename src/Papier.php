@@ -14,6 +14,13 @@ use InvalidArgumentException;
 
 class Papier
 {
+    /**
+     * NUmber of decimals for real numbers
+     *
+     * @var int
+     */
+    const MAX_DECIMALS = 5;
+
      /**
      * Header
      *
