@@ -73,7 +73,12 @@ trait TextShowing
             throw new InvalidArgumentException("Character spacing is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $state = sprintf('%f %f %s "', Factory::create('LiteralString', $text)->format(), $aw, $ac);
+        $state = sprintf('%s %s %s "', 
+            Factory::create('Number', $aw)->format(),
+            Factory::create('Number', $ac)->format(),
+            Factory::create('LiteralString', $text)->format()
+        );
+
         return $this->addToContent($state);
     }
 

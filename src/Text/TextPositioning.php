@@ -30,8 +30,8 @@ trait TextPositioning
         if (!NumberValidator::isValid($ty)) {
             throw new InvalidArgumentException("TY is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
-
-        $state = sprintf('%f %f Td', $tx, $ty);
+        
+        $state = sprintf('%s %s Td', Factory::create('Number', $tx)->format(), Factory::create('Number', $ty)->format());
         return $this->addToContent($state);
     }
 
@@ -53,7 +53,7 @@ trait TextPositioning
             throw new InvalidArgumentException("TY is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $state = sprintf('%f %f TD', $tx, $ty);
+        $state = sprintf('%s %s TD', Factory::create('Number', $tx)->format(), Factory::create('Number', $ty)->format());
         return $this->addToContent($state);
     }
 
@@ -95,7 +95,15 @@ trait TextPositioning
             throw new InvalidArgumentException("F is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $state = sprintf('%f %f %f %f %f %f Tm', $a, $b, $c, $d, $e, $f);
+        $state = sprintf('%s %s %s %s %s %s Tm', 
+            Factory::create('Number', $a)->format(), 
+            Factory::create('Number', $b)->format(),
+            Factory::create('Number', $c)->format(),
+            Factory::create('Number', $d)->format(),
+            Factory::create('Number', $e)->format(),
+            Factory::create('Number', $f)->format()
+        );
+        
         return $this->addToContent($state);
     }
 

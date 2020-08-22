@@ -76,7 +76,14 @@ trait GraphicsState
             throw new InvalidArgumentException("F is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
         
-        $state = sprintf('%f %f %f %f %f cm', $a, $b, $c, $d, $e, $f);
+        $state = sprintf('%s %s %s %s %s %s cm', 
+            Factory::create('Number', $a)->format(), 
+            Factory::create('Number', $b)->format(), 
+            Factory::create('Number', $c)->format(), 
+            Factory::create('Number', $d)->format(), 
+            Factory::create('Number', $e)->format(),  
+            Factory::create('Number', $f)->format(), 
+        );
 
         return $this->addToContent($state);
     }
@@ -94,7 +101,7 @@ trait GraphicsState
             throw new InvalidArgumentException("LW is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
         
-        $state = sprintf('%f w', $lw);
+        $state = sprintf('%s w', Factory::create('Number', $lw)->format());
         return $this->addToContent($state);
     }
 
@@ -146,7 +153,7 @@ trait GraphicsState
             throw new InvalidArgumentException("ML is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $state = sprintf('%f M', $ml);
+        $state = sprintf('%s M', Factory::create('Number', $ml)->format());
         return $this->addToContent($state);
     }
 
@@ -169,7 +176,7 @@ trait GraphicsState
             throw new InvalidArgumentException("DP is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $state = sprintf('%s %f d', Factory::create('IntegersArray', $da)->format(), $dp);
+        $state = sprintf('%s %s d', Factory::create('IntegersArray', $da)->format(), Factory::create('Number', $dp)->format());
         return $this->addToContent($state);
     }
 
@@ -186,7 +193,7 @@ trait GraphicsState
             throw new InvalidArgumentException("FL is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $state = sprintf('%f i', $fl);
+        $state = sprintf('%s i', Factory::create('Number', $fl)->format());
         return $this->addToContent($state);
     } 
     

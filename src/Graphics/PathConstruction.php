@@ -16,7 +16,7 @@ trait PathConstruction
      * @param   mixed   $y
      * @return mixed
      */
-    public function begin($x, $y)
+    public function beginPath($x, $y)
     {
         if (!NumberValidator::isValid($x)) {
             throw new InvalidArgumentException("X is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -26,7 +26,11 @@ trait PathConstruction
             throw new InvalidArgumentException("Y is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $state = sprintf('%f %f m', $x, $y);
+        $state = sprintf('%s %s m', 
+            Factory::create('Number', $x)->format(),
+            Factory::create('Number', $y)->format()
+        );
+
         return $this->addToContent($state);
     }
 
@@ -47,7 +51,11 @@ trait PathConstruction
             throw new InvalidArgumentException("Y is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $state = sprintf('%f %f l', $x, $y);
+        $state = sprintf('%s %s l', 
+            Factory::create('Number', $x)->format(),
+            Factory::create('Number', $y)->format()
+        );
+
         return $this->addToContent($state);
     }
 
@@ -89,7 +97,14 @@ trait PathConstruction
             throw new InvalidArgumentException("Y3 is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
         
-        $state = sprintf('%f %f %f %f %f %f c', $x1, $y1, $x2, $y2, $x3, $y3);
+        $state = sprintf('%s %s %s %s %s %s c', 
+            Factory::create('Number', $x1)->format(), 
+            Factory::create('Number', $y1)->format(),
+            Factory::create('Number', $x2)->format(),
+            Factory::create('Number', $y2)->format(),
+            Factory::create('Number', $x3)->format(),
+            Factory::create('Number', $y3)->format()
+        );
 
         return $this->addToContent($state);
     }
@@ -122,7 +137,12 @@ trait PathConstruction
             throw new InvalidArgumentException("Y3 is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
         
-        $state = sprintf('%f %f %f %f v', $x2, $y2, $x3, $y3);
+        $state = sprintf('%s %s %s %s v', 
+            Factory::create('Number', $x2)->format(),
+            Factory::create('Number', $y2)->format(),
+            Factory::create('Number', $x3)->format(),
+            Factory::create('Number', $y3)->format()
+        );
 
         return $this->addToContent($state);
     }
@@ -155,7 +175,12 @@ trait PathConstruction
             throw new InvalidArgumentException("Y3 is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
         
-        $state = sprintf('%f %f %f %f y', $x1, $y1, $x3, $y3);
+        $state = sprintf('%s %s %s %s y', 
+            Factory::create('Number', $x1)->format(), 
+            Factory::create('Number', $y1)->format(), 
+            Factory::create('Number', $x3)->format(), 
+            Factory::create('Number', $y3)->format(), 
+        );
 
         return $this->addToContent($state);
     }
@@ -165,7 +190,7 @@ trait PathConstruction
      *  
      * @return mixed
      */
-    public function close()
+    public function closePath()
     {
         $state = 'h';
         return $this->addToContent($state);
@@ -198,7 +223,13 @@ trait PathConstruction
             throw new InvalidArgumentException("Height is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $state = sprintf('%f %f %f %f re', $x, $y, $width, $height);
+        $state = sprintf('%s %s %s %s re', 
+            Factory::create('Number', $x)->format(), 
+            Factory::create('Number', $y)->format(), 
+            Factory::create('Number', $width)->format(), 
+            Factory::create('Number', $height)->format(), 
+        );
+
         return $this->addToContent($state);
     }
 }

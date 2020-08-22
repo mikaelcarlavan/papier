@@ -26,7 +26,7 @@ trait TextState
             throw new InvalidArgumentException("Character spacing is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
         
-        $state = sprintf('%f Tc', $cs);
+        $state = sprintf('%s Tc', Factory::create('Number', $cs)->format());
         return $this->addToContent($state);
     }
 
@@ -43,7 +43,7 @@ trait TextState
             throw new InvalidArgumentException("Word spacing is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
         
-        $state = sprintf('%f Tw', $ws);
+        $state = sprintf('%s Tw', Factory::create('Number', $ws)->format());
         return $this->addToContent($state);
     }
 
@@ -60,7 +60,7 @@ trait TextState
             throw new InvalidArgumentException("Horizontal scale is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
         
-        $state = sprintf('%f Tz', $hs);
+        $state = sprintf('%s Tz', Factory::create('Number', $hs)->format());
         return $this->addToContent($state);
     }
 
@@ -78,7 +78,7 @@ trait TextState
             throw new InvalidArgumentException("Leading is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
         
-        $state = sprintf('%f TL', $tl);
+        $state = sprintf('%s TL', Factory::create('Number', $tl)->format());
         return $this->addToContent($state);
     }
 
@@ -100,7 +100,7 @@ trait TextState
             throw new InvalidArgumentException("Size is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
         
-        $state = sprintf('%s %f Tf', Factory::create('Name', $font)->format(), $size);
+        $state = sprintf('%s %s Tf', Factory::create('Name', $font)->format(), Factory::create('Number', $size)->format());
         return $this->addToContent($state);
     }
 
@@ -134,7 +134,7 @@ trait TextState
             throw new InvalidArgumentException("Rise is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
         
-        $state = sprintf('%f Ts', $tr);
+        $state = sprintf('%s Ts', Factory::create('Number', $tr)->format());
         return $this->addToContent($state);
     }
 }

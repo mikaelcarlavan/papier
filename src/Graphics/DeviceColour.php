@@ -92,7 +92,7 @@ trait DeviceColour
             throw new InvalidArgumentException("Colour is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $state = sprintf('%f G', $colour);
+        $state = sprintf('%s G', Factory::create('Number', $colour)->format());
         return $this->addToContent($state);
     }
 
@@ -108,7 +108,7 @@ trait DeviceColour
             throw new InvalidArgumentException("Colour is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $state = sprintf('%f g', $colour);
+        $state = sprintf('%s g', Factory::create('Number', $colour)->format());
         return $this->addToContent($state);
     }
 
@@ -134,7 +134,12 @@ trait DeviceColour
             throw new InvalidArgumentException("Blue is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $state = sprintf('%f %f %f RG', $r, $g, $b);
+        $state = sprintf('%s %s %s RG', 
+            Factory::create('Number', $r)->format(), 
+            Factory::create('Number', $g)->format(),
+            Factory::create('Number', $b)->format(),
+        );        
+        
         return $this->addToContent($state);
     }
 
@@ -160,7 +165,12 @@ trait DeviceColour
             throw new InvalidArgumentException("Blue is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $state = sprintf('%f %f %f rg', $r, $g, $b);
+        $state = sprintf('%s %s %s rg', 
+            Factory::create('Number', $r)->format(), 
+            Factory::create('Number', $g)->format(),
+            Factory::create('Number', $b)->format(),
+        );
+
         return $this->addToContent($state);
     }
 
@@ -191,7 +201,13 @@ trait DeviceColour
             throw new InvalidArgumentException("Black is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $state = sprintf('%f %f %f %f K', $c, $m, $y, $k);
+        $state = sprintf('%s %s %s %s K', 
+            Factory::create('Number', $c)->format(), 
+            Factory::create('Number', $m)->format(),
+            Factory::create('Number', $y)->format(),
+            Factory::create('Number', $k)->format(),
+        );
+
         return $this->addToContent($state);
     }
 
@@ -222,7 +238,13 @@ trait DeviceColour
             throw new InvalidArgumentException("Black is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $state = sprintf('%f %f %f %f k', $c, $m, $y, $k);
+        $state = sprintf('%s %s %s %s k', 
+            Factory::create('Number', $c)->format(), 
+            Factory::create('Number', $m)->format(),
+            Factory::create('Number', $y)->format(),
+            Factory::create('Number', $k)->format(),
+        );
+
         return $this->addToContent($state);
     }
 }
