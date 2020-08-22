@@ -3,7 +3,7 @@
 namespace Papier\Object;
 
 use Papier\Base\IndirectObject;
-use Papier\Validator\IntValidator;
+use Papier\Validator\IntegerValidator;
 
 use InvalidArgumentException;
 
@@ -18,7 +18,7 @@ class IntegerObject extends IndirectObject
     */
     public function setValue($value)
     {
-        if (!IntValidator::isValid($value)) {
+        if (!IntegerValidator::isValid($value)) {
             throw new InvalidArgumentException("Integer is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 

@@ -14,7 +14,7 @@ use Papier\Factory\Factory;
 use Papier\Type\PageTreeType;
 use Papier\Type\RectangleType;
 
-use Papier\Validator\IntValidator;
+use Papier\Validator\IntegerValidator;
 
 class FileBody extends BaseObject
 {

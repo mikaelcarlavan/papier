@@ -3,9 +3,9 @@
 namespace Papier\Validator;
 
 use Papier\Graphics\LineJoinStyle;
-use Papier\Validator\IntValidator;
+use Papier\Validator\IntegerValidator;
 
-class LineJoinStyleValidator extends IntValidator
+class LineJoinStyleValidator extends IntegerValidator
 {
     /**
      * Line join styles.

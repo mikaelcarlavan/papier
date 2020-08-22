@@ -3,9 +3,9 @@
 namespace Papier\Validator;
 
 use Papier\Graphics\TilingType;
-use Papier\Validator\IntValidator;
+use Papier\Validator\IntegerValidator;
 
-class TilingTypeValidator extends IntValidator
+class TilingTypeValidator extends IntegerValidator
 {
     /**
      * Tiling types.

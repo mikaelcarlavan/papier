@@ -3,7 +3,7 @@
 namespace Papier\Validator;
 use Papier\Validator\Base\Validator;
 
-class IntValidator implements Validator
+class IntegerValidator implements Validator
 {
      /**
      * Test if given parameter is a valid integer.

@@ -3,9 +3,9 @@
 namespace Papier\Validator;
 
 use Papier\Graphics\PatternType;
-use Papier\Validator\IntValidator;
+use Papier\Validator\IntegerValidator;
 
-class PatternTypeValidator extends IntValidator
+class PatternTypeValidator extends IntegerValidator
 {
     /**
      * Pattern types.

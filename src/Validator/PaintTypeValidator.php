@@ -3,9 +3,9 @@
 namespace Papier\Validator;
 
 use Papier\Graphics\PaintType;
-use Papier\Validator\IntValidator;
+use Papier\Validator\IntegerValidator;
 
-class PaintTypeValidator extends IntValidator
+class PaintTypeValidator extends IntegerValidator
 {
     /**
      * Paint types.

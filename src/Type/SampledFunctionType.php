@@ -11,7 +11,7 @@ use Papier\Functions\FunctionType;
 use Papier\Factory\Factory;
 
 use Papier\Validator\BitsPerSampleValidator;
-use Papier\Validator\IntValidator;
+use Papier\Validator\IntegerValidator;
 
 use InvalidArgumentException;
 use RuntimeException;
@@ -64,7 +64,7 @@ class SampledFunctionType extends FunctionObject
      */
     public function setOrder($order)
     {
-        if (!IntValidator::isValid($order, 1, 3)) {
+        if (!IntegerValidator::isValid($order, 1, 3)) {
             throw new InvalidArgumentException("Order is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 

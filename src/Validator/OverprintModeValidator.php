@@ -3,9 +3,9 @@
 namespace Papier\Validator;
 
 use Papier\Graphics\OverprintMode;
-use Papier\Validator\IntValidator;
+use Papier\Validator\IntegerValidator;
 
-class OverprintModeValidator extends IntValidator
+class OverprintModeValidator extends IntegerValidator
 {
     /**
      * Overprint modes.

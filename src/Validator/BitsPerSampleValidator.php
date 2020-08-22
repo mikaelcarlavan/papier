@@ -2,9 +2,9 @@
 
 namespace Papier\Validator;
 
-use Papier\Validator\IntValidator;
+use Papier\Validator\IntegerValidator;
 
-class BitsPerSampleValidator extends IntValidator
+class BitsPerSampleValidator extends IntegerValidator
 {
     /**
      * Bits per sample allowed values.

@@ -69,7 +69,7 @@ class LatticeFormTriangleMeshShadingDictionaryType extends ShadingDictionaryType
      */
     public function setVerticesPerRow($vertices)
     {
-        if (!IntValidator::isValid($vertices, 2)) {
+        if (!IntegerValidator::isValid($vertices, 2)) {
             throw new InvalidArgumentException("VerticesPerRow is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 

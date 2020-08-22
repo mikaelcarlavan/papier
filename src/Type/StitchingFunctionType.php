@@ -8,7 +8,7 @@ use Papier\Object\ArrayObject;
 
 use Papier\Functions\FunctionType;
 
-use Papier\Validator\IntValidator;
+use Papier\Validator\IntegerValidator;
 
 use InvalidArgumentException;
 use RuntimeException;

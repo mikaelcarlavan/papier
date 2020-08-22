@@ -4,7 +4,7 @@ namespace Papier\File\CrossReference;
 
 use Papier\Base\BaseObject;
 
-use Papier\Validator\IntValidator;
+use Papier\Validator\IntegerValidator;
 use Papier\Validator\BooleanValidator;
 
 use InvalidArgumentException;
@@ -55,7 +55,7 @@ class CrossReferenceEntry extends BaseObject
      */
     public function setOffset($offset)
     {
-        if (!IntValidator::isValid($offset, 0)) {
+        if (!IntegerValidator::isValid($offset, 0)) {
             throw new InvalidArgumentException("Offset is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
@@ -88,7 +88,7 @@ class CrossReferenceEntry extends BaseObject
      */
     public function setGeneration($generation)
     {
-        if (!IntValidator::isValid($generation)) {
+        if (!IntegerValidator::isValid($generation)) {
             throw new InvalidArgumentException("Generation number is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 

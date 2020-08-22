@@ -2,7 +2,7 @@
 
 namespace Papier\File;
 
-use Papier\Validator\IntValidator;
+use Papier\Validator\IntegerValidator;
 use Papier\Object\DictionaryObject;
 use Papier\Object\ArrayObject;
 
@@ -49,7 +49,7 @@ class FileTrailer extends DictionaryObject
      */
     public function setCrossReferenceOffset($crossReferenceOffset)
     {
-        if (!IntValidator::isValid($crossReferenceOffset)) {
+        if (!IntegerValidator::isValid($crossReferenceOffset)) {
             throw new InvalidArgumentException("Cross reference offset is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
@@ -66,7 +66,7 @@ class FileTrailer extends DictionaryObject
      */
     public function setSize($size)
     {
-        if (!IntValidator::isValid($size)) {
+        if (!IntegerValidator::isValid($size)) {
             throw new InvalidArgumentException("Size is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
@@ -85,7 +85,7 @@ class FileTrailer extends DictionaryObject
      */
     public function setPrev($prev)
     {
-        if (!IntValidator::isValid($prev)) {
+        if (!IntegerValidator::isValid($prev)) {
             throw new InvalidArgumentException("Prev is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 

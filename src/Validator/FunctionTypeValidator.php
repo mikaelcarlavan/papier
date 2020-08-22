@@ -3,9 +3,9 @@
 namespace Papier\Validator;
 
 use Papier\Functions\FunctionType;
-use Papier\Validator\IntValidator;
+use Papier\Validator\IntegerValidator;
 
-class FunctionTypeValidator extends IntValidator
+class FunctionTypeValidator extends IntegerValidator
 {
     /**
      * Function types.

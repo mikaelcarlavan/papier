@@ -2,9 +2,9 @@
 
 namespace Papier\Validator;
 
-use Papier\Validator\IntValidator;
+use Papier\Validator\IntegerValidator;
 
-class BitsPerFlagValidator extends IntValidator
+class BitsPerFlagValidator extends IntegerValidator
 {
     /**
      * Bits per flag allowed values.

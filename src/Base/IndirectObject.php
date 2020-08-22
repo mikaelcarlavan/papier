@@ -7,7 +7,7 @@ use Papier\Base\BaseObject;
 use Papier\Repository\Repository;
 
 use Papier\Validator\BooleanValidator;
-use Papier\Validator\IntValidator;
+use Papier\Validator\IntegerValidator;
 
 abstract class IndirectObject extends BaseObject
 {
@@ -40,7 +40,7 @@ abstract class IndirectObject extends BaseObject
      */
     public function setNumber($number)
     {
-        if (!IntValidator::isValid($number, 1)) {
+        if (!IntegerValidator::isValid($number, 1)) {
             throw new InvalidArgumentException("Object number is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
@@ -56,7 +56,7 @@ abstract class IndirectObject extends BaseObject
      */
     public function setGeneration($generation)
     {
-        if (!IntValidator::isValid($generation)) {
+        if (!IntegerValidator::isValid($generation)) {
             throw new InvalidArgumentException("Generation number is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 

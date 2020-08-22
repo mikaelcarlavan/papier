@@ -3,9 +3,9 @@
 namespace Papier\Validator;
 
 use Papier\Graphics\LineCapStyle;
-use Papier\Validator\IntValidator;
+use Papier\Validator\IntegerValidator;
 
-class LineCapStyleValidator extends IntValidator
+class LineCapStyleValidator extends IntegerValidator
 {
     /**
      * Line cap styles.

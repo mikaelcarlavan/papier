@@ -1,7 +1,7 @@
 <?php
 
 namespace Papier\Validator;
-use Papier\Validator\IntValidator;
+use Papier\Validator\IntegerValidator;
 
 class VersionValidator
 {
@@ -27,7 +27,7 @@ class VersionValidator
      */
     public static function isValid($value)
     {
-        $isValid = IntValidator::isValid($value, self::minVersion, self::maxVersion);
+        $isValid = IntegerValidator::isValid($value, self::minVersion, self::maxVersion);
         return $isValid;
     }
 }

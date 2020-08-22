@@ -4,7 +4,7 @@ namespace Papier\Type;
 
 use Papier\Object\DictionaryObject;
 use Papier\Object\NameObject;
-use Papier\Validator\IntValidator;
+use Papier\Validator\IntegerValidator;
 
 use Papier\Factory\Factory;
 
@@ -38,7 +38,7 @@ class DeveloperExtensionDictionaryType extends DictionaryObject
      */
     public function setExtensionLevel($level)
     {
-        if (!IntValidator::isValid($level)) {
+        if (!IntegerValidator::isValid($level)) {
             throw new InvalidArgumentException("ExtensionLevel is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 

@@ -3,9 +3,9 @@
 namespace Papier\Validator;
 
 use Papier\Graphics\ShadingType;
-use Papier\Validator\IntValidator;
+use Papier\Validator\IntegerValidator;
 
-class ShadingTypeValidator extends IntValidator
+class ShadingTypeValidator extends IntegerValidator
 {
     /**
      * Shading types.

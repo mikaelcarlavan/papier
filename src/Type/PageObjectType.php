@@ -16,7 +16,7 @@ use Papier\Type\DictionaryType;
 
 use Papier\Validator\BooleanValidator;
 use Papier\Validator\TabOrderValidator;
-use Papier\Validator\IntValidator;
+use Papier\Validator\IntegerValidator;
 use Papier\Validator\RealValidator;
 use Papier\Validator\NumbersArrayValidator;
 
@@ -332,7 +332,7 @@ class PageObjectType extends DictionaryType
      */
     public function setRotate($rotate)
     {
-        if (!IntValidator::isValid($rotate)) {
+        if (!IntegerValidator::isValid($rotate)) {
             throw new InvalidArgumentException("Rotate is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
@@ -507,7 +507,7 @@ class PageObjectType extends DictionaryType
      */
     public function setStructParents($struct)
     {
-        if (!IntValidator::isValid($struct)) {
+        if (!IntegerValidator::isValid($struct)) {
             throw new InvalidArgumentException("StructParents is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
