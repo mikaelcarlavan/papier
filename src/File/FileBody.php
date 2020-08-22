@@ -41,7 +41,7 @@ class FileBody extends BaseObject
     {
         $this->documentCatalog = Factory::create('DocumentCatalog', null, true);
 
-        $outlines = Factory::create('Dictionary');
+        $outlines = Factory::create('Dictionary', null, true);
         
         $pageTree = Factory::create('PageTree');
 
@@ -87,10 +87,21 @@ class FileBody extends BaseObject
         $page = $this->getPageTree()->addObject();
 
         $pdf = Factory::create('Name', 'PDF');
-        $procset = Factory::create('Array', null, true)->append($pdf);
+        $text = Factory::create('Name', 'Text');
+
+        $procset = Factory::create('Array', null, true)
+            ->append($pdf)
+            ->append($text);
+
+        $helvetica = Factory::create('Type1Font', null, true)
+            ->setName('F1')
+            ->setBaseFont('Helvetica');
+
+        $font = Factory::create('Dictionary')->setEntry('F1', $helvetica);
 
         $page->setParent($this->getPageTree());
         $page->getResources()->setEntry('ProcSet', $procset);
+        $page->getResources()->setEntry('Font', $font);
 
         return $page;
     } 

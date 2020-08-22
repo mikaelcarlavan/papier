@@ -31,8 +31,11 @@ $page = $pdf->addPage();
 $page->setMediaBox([0, 0, 612, 792]);
 $contents = $page->getContents();
 
-$contents->appendRectangle(150, 350, 200, 200);
-$contents->fillAndStroke();
+$contents->beginText();
+$contents->setFont('F1', 24);
+$contents->moveToNextLineStartWithOffset(100, 100);
+$contents->showText('Hello World !');
+$contents->endText();
 
 print $pdf->build();
 
