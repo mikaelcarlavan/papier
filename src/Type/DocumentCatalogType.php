@@ -11,7 +11,7 @@ use Papier\Object\BooleanObject;
 use Papier\Validator\PageLayoutValidator;
 use Papier\Validator\StringValidator;
 use Papier\Validator\PageModeValidator;
-use Papier\Validator\BoolValidator;
+use Papier\Validator\BooleanValidator;
 
 use Papier\Document\PageLayout;
 use Papier\Document\PageMode;
@@ -513,7 +513,7 @@ class DocumentCatalogType extends DictionaryType
      */
     public function setNeedsRendering($needs)
     {
-        if (!BoolValidator::isValid($needs)) {
+        if (!BooleanValidator::isValid($needs)) {
             throw new InvalidArgumentException("NeedsRendering is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
