@@ -136,7 +136,7 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
      */
     public function setOP($op)
     {
-        if (!BoolValidator::isValid($op)) {
+        if (!BooleanValidator::isValid($op)) {
             throw new InvalidArgumentException("OP is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
@@ -362,7 +362,7 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
      */
     public function setSA($sa)
     {
-        if (!BoolValidator::isValid($sa)) {
+        if (!BooleanValidator::isValid($sa)) {
             throw new InvalidArgumentException("SA is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
@@ -435,7 +435,7 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
      */
     public function setAIS($ais)
     {
-        if (!BoolValidator::isValid($ais)) {
+        if (!BooleanValidator::isValid($ais)) {
             throw new InvalidArgumentException("AIS is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
@@ -454,7 +454,7 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
      */
     public function setTK($tk)
     {
-        if (!BoolValidator::isValid($tk)) {
+        if (!BooleanValidator::isValid($tk)) {
             throw new InvalidArgumentException("TK is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
