@@ -149,6 +149,21 @@ class FileTrailer extends DictionaryObject
     } 
 
     /**
+     * Get info.
+     *  
+     * @return \Papier\Type\DocumentInformationDictionaryType
+     */
+    public function getInfo()
+    {
+        if (!$this->hasEntry('Info')) {
+            $value = Factory::create('DocumentInformationDictionary', null, true);
+            $this->setInfo($value);
+        }
+
+        return $this->getEntry('Info');
+    } 
+
+    /**
      * Set ID (array of two byte-strings constituting a file identifier).
      *  
      * @param  \Papier\Object\ArrayObject  $ID
