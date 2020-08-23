@@ -17,6 +17,7 @@ class ExtensionsDictionaryType extends DictionaryObject
      * Add extension.
      * 
      * @param string $name
+     * @throws InvalidArgumentException if the provided argument is not of type 'string'.
      * @return \Papier\Type\DeveloperExtensionDictionaryType
      */
     public function addExtension($name)
