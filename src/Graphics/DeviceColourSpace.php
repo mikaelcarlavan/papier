@@ -12,7 +12,7 @@ class DeviceColourSpace
     const GRAY = 'DeviceGray';
   
     /**
-     * RDB colour space
+     * RGB colour space
      *
      * @var string
      */
