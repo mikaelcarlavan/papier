@@ -61,7 +61,7 @@ class Papier
      *
      * @return \Papier\File\FileHeader
      */
-    protected function getHeader()
+    public function getHeader()
     {
         return $this->header;
     }
@@ -71,7 +71,7 @@ class Papier
      *
      * @return \Papier\File\FileBody
      */
-    protected function getBody()
+    public function getBody()
     {
         return $this->body;
     }
@@ -81,7 +81,7 @@ class Papier
      *
      * @return \Papier\File\FileTrailer
      */
-    protected function getTrailer()
+    public function getTrailer()
     {
         return $this->trailer;
     }
