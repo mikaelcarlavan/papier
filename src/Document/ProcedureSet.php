@@ -2,7 +2,7 @@
 
 namespace Papier\Document;
 
-class ProcSet
+class ProcedureSet
 {
     /**
      * Painting and graphics state
