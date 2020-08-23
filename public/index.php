@@ -39,6 +39,9 @@ $contents->moveToNextLineStartWithOffset(100, 500);
 $contents->showText('Hello World !');
 $contents->endText();
 
+$pdf->getTrailer()->getInfo()->setTitle('Test');
+$pdf->getTrailer()->getInfo()->setAuthor('Mikael Carlavan');
+
 print $pdf->build();
 
 $pdf->save('test.pdf');
