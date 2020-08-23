@@ -2,9 +2,9 @@
 
 namespace Papier\Type;
 
-use Papier\Type\StringType;
+use Papier\Type\LiteralStringType;
 
-class TextStringType extends StringType
+class TextStringType extends LiteralStringType
 {
     /**
      * Get object's value.
