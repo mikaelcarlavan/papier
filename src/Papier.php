@@ -87,6 +87,16 @@ class Papier
     }
 
     /**
+     * Get info.
+     *
+     * @return \Papier\Type\DocumentInformationDictionaryType
+     */
+    public function getInfo()
+    {
+        return $this->getTrailer()->getInfo();
+    }
+
+    /**
      * Set PDF version.
      *  
      * @param  int  $version
