@@ -1,6 +1,7 @@
 <?php
 
 use Papier\Papier;
+
 /**
  * Papier - Yet another PHP Framework For PDF
  *
@@ -25,6 +26,8 @@ date_default_timezone_set("UTC");
 
 require __DIR__.'/../vendor/autoload.php';
 
+$now = new DateTime("now");
+
 $pdf = new Papier();
 
 $page = $pdf->addPage();
@@ -39,8 +42,10 @@ $contents->moveToNextLineStartWithOffset(100, 500);
 $contents->showText('Hello World !');
 $contents->endText();
 
-$pdf->getTrailer()->getInfo()->setTitle('Test');
-$pdf->getTrailer()->getInfo()->setAuthor('Mikael Carlavan');
+$info = $pdf->getInfo();
+$info->setTitle('Test');
+$info->setAuthor('Mikael Carlavan');
+$info->setCreationDate($now);
 
 print $pdf->build();
 
