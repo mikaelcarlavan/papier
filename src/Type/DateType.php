@@ -2,10 +2,13 @@
 
 namespace Papier\Type;
 
-use Papier\Type\StringType;
+use Papier\Object\IntegerObject;
+
+use Papier\Validator\DateValidator;
+
 use DateTime;
 
-class DateType extends StringType
+class DateType extends IntegerObject
 {
     /**
     * Set object's value.
@@ -16,11 +19,13 @@ class DateType extends StringType
     */
     public function setValue($date)
     {
-        if (!$date instanceof DateTime) {
+        if (!DateValidator::isValid($date)) {
             throw new InvalidArgumentException("Date is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        return parent::setValue($value);
+        $timestamp = $date instanceof DateTime ? $date->format('U') : strtotime($date);
+
+        return parent::setValue(intval($timestamp));
     } 
 
      /**
@@ -31,7 +36,11 @@ class DateType extends StringType
     protected function getValue()
     {
         $value = parent::getValue();
-        $value = 'D:'.$value->format('YmdHis') . substr_replace($now->format('O'), "'", 3, 0);
-        return $value;
+
+        $date = new DateTime();
+        $date->setTimestamp($value);
+
+        $value = 'D:'.$date->format('YmdHis') . substr_replace($date->format('O'), "'", 3, 0);
+        return '('.$value.')';
     }
 }
