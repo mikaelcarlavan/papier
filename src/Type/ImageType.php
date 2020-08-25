@@ -159,7 +159,7 @@ class ImageType extends StreamObject
      */
     public function setAlternates($alternates)
     {
-        if ($alternates instanceof ArrayObject) {
+        if (!$alternates instanceof ArrayObject) {
             throw new InvalidArgumentException("Alternates is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
