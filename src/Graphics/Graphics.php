@@ -10,5 +10,5 @@ use Papier\Graphics\DeviceColour;
 
 trait Graphics
 {
-    use GraphicsState, PathConstruction, PathPainting, ClippingPath, DeviceColour;
+    use ClippingPath, Colour, GraphicsState, PathConstruction, PathPainting, Shading, XObject;
 }
