@@ -42,6 +42,20 @@ $contents->moveToNextLineStartWithOffset(100, 500);
 $contents->showText('Hello World !');
 $contents->endText();
 
+
+$page = $pdf->addPage();
+$page->setMediaBox([0, 0, 612, 792]);
+$contents = $page->getContents();
+
+$contents->setNonStrokingRGBColour(0.8, 0.3, 0.1);
+
+$contents->beginText();
+$contents->setFont('F1', 24);
+$contents->moveToNextLineStartWithOffset(100, 500);
+$contents->showText('Good morning !');
+$contents->endText();
+
+
 $info = $pdf->getInfo();
 $info->setTitle('Test');
 $info->setAuthor('Mikael Carlavan');
