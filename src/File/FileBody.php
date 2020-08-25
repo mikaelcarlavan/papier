@@ -62,7 +62,7 @@ class FileBody extends BaseObject
     /**
      * Get page tree.
      *
-     * @return \Papier\Document\DocumentCatalog
+     * @return \Papier\Type\PageTreeNodeType
      */
     public function getPageTree()
     {
