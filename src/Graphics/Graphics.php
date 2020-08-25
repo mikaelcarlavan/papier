@@ -3,12 +3,12 @@
 namespace Papier\Graphics;
 
 use Papier\Graphics\GraphicsState;
-use Papier\Graphics\PathConstruction;
-use Papier\Graphics\PathPainting;
-use Papier\Graphics\ClippingPath;
-use Papier\Graphics\DeviceColour;
+use Papier\Graphics\Colour;
+use Papier\Graphics\Path;
+use Papier\Graphics\Shading;
+use Papier\Graphics\XObject;
 
 trait Graphics
 {
-    use ClippingPath, Colour, GraphicsState, PathConstruction, PathPainting, Shading, XObject;
+    use Path, Colour, GraphicsState, Shading, XObject;
 }
