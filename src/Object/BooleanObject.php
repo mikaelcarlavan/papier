@@ -4,8 +4,28 @@ namespace Papier\Object;
 
 use Papier\Base\IndirectObject;
 
+use Papier\Validator\BooleanValidator;
+
+use InvalidArgumentException;
+
 class BooleanObject extends IndirectObject
 {
+    /**
+    * Set object's value.
+    *
+    * @param  mixed  $value
+    * @throws InvalidArgumentException if the provided argument is not of type 'inboolt'.
+    * @return \Papier\Object\BooleanObject
+    */
+    public function setValue($value)
+    {
+        if (!BooleanValidator::isValid($value)) {
+            throw new InvalidArgumentException("Boolean is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        return parent::setValue($value);
+    }   
+
     /**
     * Set value to true.
     *
