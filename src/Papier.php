@@ -121,6 +121,18 @@ class Papier
         return $page;
     } 
 
+
+    /**
+     * Get viewer preferences.
+     *  
+     * @return \Papier\Type\ViewerPreferencesDictionaryType
+     */
+    public function getViewerPreferences()
+    {
+        $body = $this->getBody();
+        return $body->getDocumentCatalog()->getViewerPreferences();
+    } 
+
     /**
      * Build PDF's content.
      *
