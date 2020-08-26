@@ -36,6 +36,26 @@ class ArrayObject extends DictionaryObject
     }
 
     /**
+     * Check if object has given value.
+     *  
+     * @param  string  $value
+     * @return bool
+     */
+    public function has($value)
+    {
+        $objects = $this->getObjects();
+        if (count($objects)) {
+            foreach ($objects as $object) {
+                if ($object->getValue() == $value) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Get object at position.
      *  
      * @return int
