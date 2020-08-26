@@ -61,6 +61,11 @@ $info->setTitle('Test');
 $info->setAuthor('Mikael Carlavan');
 $info->setCreationDate($now);
 
+$viewer = $pdf->getViewerPreferences();
+$viewer->setDisplayDocTitle(true);
+$viewer->setHideToolbar(true);
+$viewer->setHideMenubar(true);
+
 print $pdf->build();
 
 $pdf->save('test.pdf');
