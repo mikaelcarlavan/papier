@@ -13,6 +13,7 @@ use Papier\Validator\StringValidator;
 use Papier\Validator\PageModeValidator;
 use Papier\Validator\BooleanValidator;
 use Papier\Validator\IntegersArrayValidator;
+use Papier\Validator\PageBoundariesValidator;
 
 use Papier\Factory\Factory;
 
@@ -128,4 +129,113 @@ class ViewerPreferencesDictionaryType extends DictionaryType
         $this->setEntry('DisplayDocTitle', $value);
         return $this;
     }
+
+    /**
+     * Set document's page mode.
+     *  
+     * @param  string  $mode
+     * @throws InvalidArgumentException if the provided argument is not a valid page mode.
+     * @return \Papier\Type\ViewerPreferencesDictionaryType
+     */
+    public function setNonFullScreenPageMode($mode)
+    {
+        if (!PageModeValidator::isValid($mode)) {
+            throw new InvalidArgumentException("NonFullScreenPageMode is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $value = Factory::create('Name', $mode);
+        $this->setEntry('NonFullScreenPageMode', $value);
+        return $this;
+    }
+
+    /**
+     * Set ordering order for text.
+     *  
+     * @param  string  $direction
+     * @throws InvalidArgumentException if the provided argument is not a valid direction.
+     * @return \Papier\Type\ViewerPreferencesDictionaryType
+     */
+    public function setDirection($direction)
+    {
+        if (!DirectionValidator::isValid($direction)) {
+            throw new InvalidArgumentException("Direction is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $value = Factory::create('Name', $direction);
+        $this->setEntry('Direction', $value);
+        return $this;
+    }
+
+    /**
+     * Set view area.
+     *  
+     * @param  string  $area
+     * @throws InvalidArgumentException if the provided argument is not a valid view area.
+     * @return \Papier\Type\ViewerPreferencesDictionaryType
+     */
+    public function setViewArea($area)
+    {
+        if (!PageBoundariesValidator::isValid($area)) {
+            throw new InvalidArgumentException("ViewArea is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $value = Factory::create('Name', $area);
+        $this->setEntry('ViewArea', $value);
+        return $this;
+    }
+
+    /**
+     * Set view clip.
+     *  
+     * @param  string  $clip
+     * @throws InvalidArgumentException if the provided argument is not a valid view clip.
+     * @return \Papier\Type\ViewerPreferencesDictionaryType
+     */
+    public function setViewClip($clip)
+    {
+        if (!PageBoundariesValidator::isValid($clip)) {
+            throw new InvalidArgumentException("ViewClip is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $value = Factory::create('Name', $clip);
+        $this->setEntry('ViewClip', $value);
+        return $this;
+    }
+
+    /**
+     * Set print area.
+     *  
+     * @param  string  $area
+     * @throws InvalidArgumentException if the provided argument is not a valid print area.
+     * @return \Papier\Type\ViewerPreferencesDictionaryType
+     */
+    public function setPrintArea($area)
+    {
+        if (!PageBoundariesValidator::isValid($area)) {
+            throw new InvalidArgumentException("PrintArea is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $value = Factory::create('Name', $area);
+        $this->setEntry('PrintArea', $value);
+        return $this;
+    }
+
+    /**
+     * Set print clip.
+     *  
+     * @param  string  $clip
+     * @throws InvalidArgumentException if the provided argument is not a valid print clip.
+     * @return \Papier\Type\ViewerPreferencesDictionaryType
+     */
+    public function setPrintClip($clip)
+    {
+        if (!PageBoundariesValidator::isValid($clip)) {
+            throw new InvalidArgumentException("PrintClip is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $value = Factory::create('Name', $clip);
+        $this->setEntry('PrintClip', $value);
+        return $this;
+    }
+
 }
