@@ -160,6 +160,21 @@ class DocumentCatalogType extends DictionaryType
     } 
 
     /**
+     * Get viewer preferences.
+     *  
+     * @return \Papier\Type\ViewerPreferencesDictionaryType
+     */
+    public function getViewerPreferences()
+    {
+        if (!$this->hasEntry('ViewerPreferences')) {
+            $value = Factory::create('ViewerPreferencesDictionary', null, true);
+            $this->setViewerPreferences($value);
+        }
+
+        return $this->getEntry('ViewerPreferences');
+    } 
+
+    /**
      * Set page layout.
      *  
      * @param  string  $layout
