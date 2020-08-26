@@ -144,6 +144,20 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
     }
 
     /**
+     * Unset entry for given key.
+     *      
+     * @param  string  $key
+     * @return \Papier\Object\DictionaryObject
+     */
+    public function unsetEntry($key)
+    {
+        $objects = $this->getObjects();
+        unset($objects[$key]);
+
+        return $this->setObjects($objects);
+    }
+
+    /**
      * Get entry from dictionary.
      *      
      * @param  string  $key
