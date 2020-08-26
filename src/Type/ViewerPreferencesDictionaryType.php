@@ -14,6 +14,8 @@ use Papier\Validator\PageModeValidator;
 use Papier\Validator\BooleanValidator;
 use Papier\Validator\IntegersArrayValidator;
 use Papier\Validator\PageBoundariesValidator;
+use Papier\Validator\PrintScalingValidator;
+use Papier\Validator\DuplexValidator;
 
 use Papier\Factory\Factory;
 
@@ -238,4 +240,93 @@ class ViewerPreferencesDictionaryType extends DictionaryType
         return $this;
     }
 
+    /**
+     * Set print scaling.
+     *  
+     * @param  string  $scaling
+     * @throws InvalidArgumentException if the provided argument is not a valid print scaling.
+     * @return \Papier\Type\ViewerPreferencesDictionaryType
+     */
+    public function setPrintScaling($scaling)
+    {
+        if (!PrintScalingValidator::isValid($scaling)) {
+            throw new InvalidArgumentException("PrintScaling is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $value = Factory::create('Name', $scaling);
+        $this->setEntry('PrintScaling', $value);
+        return $this;
+    }
+
+    /**
+     * Set paper handling option.
+     *  
+     * @param  string  $duplex
+     * @throws InvalidArgumentException if the provided argument is not a valid print scaling.
+     * @return \Papier\Type\ViewerPreferencesDictionaryType
+     */
+    public function setDuplex($duplex)
+    {
+        if (!DuplexValidator::isValid($duplex)) {
+            throw new InvalidArgumentException("Duplex is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $value = Factory::create('Name', $duplex);
+        $this->setEntry('Duplex', $value);
+        return $this;
+    }
+
+    /**
+     * Set input paper tray based on PDF page size.
+     *  
+     * @param  bool  $pick
+     * @throws InvalidArgumentException if the provided argument is not of type 'bool'.
+     * @return \Papier\Type\ViewerPreferencesDictionaryType
+     */
+    public function setPickTrayByPDFSize($pick)
+    {
+        if (!BooleanValidator::isValid($pick)) {
+            throw new InvalidArgumentException("PickTrayByPDFSize is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $value = Factory::create('Boolean', $pick);
+        $this->setEntry('PickTrayByPDFSize', $value);
+        return $this;
+    }
+
+    /**
+     * Set print page range.
+     *  
+     * @param  array  $range
+     * @throws InvalidArgumentException if the provided argument is not of type 'array' and if element of the array is not of type 'int'.
+     * @return \Papier\Type\ViewerPreferencesDictionaryType
+     */
+    public function setPrintPageRange($range)
+    {
+        if (!IntegersArrayValidator::isValid($range)) {
+            throw new InvalidArgumentException("PrintPageRange is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $value = Factory::create('IntegersArray', $range);
+        $this->setEntry('PrintPageRange', $value);
+        return $this;
+    }
+    
+    /**
+     * Set number of copies.
+     *  
+     * @param  int  $num
+     * @throws InvalidArgumentException if the provided argument is not of type 'int'.
+     * @return \Papier\Type\ViewerPreferencesDictionaryType
+     */
+    public function setNumCopies($num)
+    {
+        if (!IntegerValidator::isValid($num)) {
+            throw new InvalidArgumentException("NumCopies is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $value = Factory::create('Integer', $num);
+        $this->setEntry('NumCopies', $value);
+        return $this;
+    }
 }
