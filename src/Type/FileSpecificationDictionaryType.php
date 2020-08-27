@@ -2,18 +2,15 @@
 
 namespace Papier\Type;
 
-use Papier\Filter\FilterType;
-
-use Papier\Object\StreamObject;
+use Papier\Object\DictionaryObject;
 use Papier\Object\ArrayObject;
 use Papier\Object\IntegerObject;
 use Papier\Object\NameObject;
+use Papier\Object\StreamObject;
 
 use Papier\Validator\IntegerValidator;
 use Papier\Validator\BooleanValidator;
 use Papier\Validator\StringValidator;
-use Papier\Validator\BitsPerComponentValidator;
-use Papier\Validator\RenderingIntentValidator;
 use Papier\Validator\ByteStringsArrayValidator;
 
 use Papier\Factory\Factory;
@@ -21,7 +18,7 @@ use Papier\Factory\Factory;
 use InvalidArgumentException;
 use RuntimeException;
 
-class FileSpecificationDictionaryType extends StreamObject
+class FileSpecificationDictionaryType extends DictionaryObject
 {
     /**
      * Set file system.
@@ -196,42 +193,13 @@ class FileSpecificationDictionaryType extends StreamObject
         $type = Factory::create('Name', 'Filespec');
         $this->setEntry('Type', $type);
 
-        $subtype = Factory::create('Name', 'Image');
-        $this->setEntry('Subtype', $subtype);
-
-        if (!$this->hasEntry('Width')) {
-            throw new RuntimeException("Width is missing. See ".__CLASS__." class's documentation for possible values.");
+        if (!$this->hasEntry('F') && !$this->hasEntry('UF')) {
+            throw new RuntimeException("UF and F are missing. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        if (!$this->hasEntry('Height')) {
-            throw new RuntimeException("Height is missing. See ".__CLASS__." class's documentation for possible values.");
+        if ($this->hasEntry('RF') && !$this->hasEntry('EF')) {
+            throw new RuntimeException("EF is missing. See ".__CLASS__." class's documentation for possible values.");
         }
-
-        if ($this->hasEntry('ColorSpace') && $this->getEntry('ColorSpace')->getValue() == 'Pattern') {
-            throw new RuntimeException("ColorSpace is incompatible. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        if ($this->hasEntry('ImageMask') && $this->getEntry('ImageMask')->isTrue() && $this->hasEntry('Mask')) {
-            throw new RuntimeException("Mask is not allowed. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        if ($this->hasEntry('ImageMask') && $this->getEntry('ImageMask')->isTrue() && $this->hasEntry('BitsPerComponent') && $this->getEntry('BitsPerComponent')->getValue() == 1) {
-            throw new RuntimeException("BitsPerComponent is incompatible. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        /*
-        if ($this->hasEntry('Filter') && $this->getEntry('Filter')->has(FilterType::JPX_DECODE)) {
-            $this->unsetEntry('BitsPerComponent');
-        }
-
-        if ($this->hasEntry('Filter') && ($this->getEntry('Filter')->has(FilterType::CCITT_FAX_DECODE) || $this->getEntry('Filter')->has(FilterType::JBIG2_DECODE)) && $this->getEntry('BitsPerComponent')->getValue() == 1) {
-            throw new RuntimeException("BitsPerComponent is incompatible. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        if ($this->hasEntry('Filter') && ($this->getEntry('Filter')->has(FilterType::RUN_LENGTH_DECODE) || $this->getEntry('Filter')->has(FilterType::DCT_DECODE)) && $this->getEntry('BitsPerComponent')->getValue() == 8) {
-            throw new RuntimeException("BitsPerComponent is incompatible. See ".__CLASS__." class's documentation for possible values.");
-        }
-        */
 
         return parent::format();
     }
