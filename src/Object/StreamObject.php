@@ -126,6 +126,23 @@ class StreamObject extends DictionaryObject
     } 
 
     /**
+     * Set file specification.
+     *  
+     * @param  \Papier\Type\FileSpecificationType  $f
+     * @throws InvalidArgumentException if the provided argument is not of type 'FileSpecificationType'.
+     * @return \Papier\Object\StreamObject
+     */
+    public function setF($f)
+    {
+        if (!$f instanceof FileSpecificationType) {
+            throw new InvalidArgumentException("F is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $this->setEntry('F', $f);
+        return $this;
+    } 
+
+    /**
      * Set file filter.
      *  
      * @param  mixed  $ffilter
