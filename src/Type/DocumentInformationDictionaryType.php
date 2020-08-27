@@ -131,8 +131,8 @@ class DocumentInformationDictionaryType extends DictionaryObject
 
     /**
      * Set creation date.
-     * 
-     * @param   string  $producer
+     *
+     * @param   string  $date
      * @throws InvalidArgumentException if the provided argument is not a valid date.
      * @return \Papier\Type\DocumentInformationDictionaryType
      */
@@ -151,7 +151,7 @@ class DocumentInformationDictionaryType extends DictionaryObject
     /**
      * Set modification date.
      * 
-     * @param   string  $producer
+     * @param   string  $date
      * @throws InvalidArgumentException if the provided argument is not a valid date.
      * @return \Papier\Type\DocumentInformationDictionaryType
      */
