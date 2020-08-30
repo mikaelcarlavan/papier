@@ -14,6 +14,8 @@ use Papier\Factory\Factory;
 use Papier\Type\PageTreeType;
 use Papier\Type\RectangleType;
 
+use Papier\Graphics\DeviceColourSpace;
+
 use Papier\Document\ProcedureSet;
 
 use Papier\Validator\IntegerValidator;
@@ -90,10 +92,12 @@ class FileBody extends BaseObject
 
         $pdf = Factory::create('Name', ProcedureSet::GRAPHICS);
         $text = Factory::create('Name', ProcedureSet::TEXT);
+        $imageb = Factory::create('Name', ProcedureSet::GRAYSCALE_IMAGES);
 
         $procset = Factory::create('Array', null, true)
             ->append($pdf)
-            ->append($text);
+            ->append($text)
+            ->append($imageb);
 
         $helvetica = Factory::create('Type1Font', null, true)
             ->setName('F1')
@@ -101,9 +105,22 @@ class FileBody extends BaseObject
 
         $font = Factory::create('Dictionary')->setEntry('F1', $helvetica);
 
+        
+        $image = Factory::create('Image', null, true);
+        $image->setWidth(256);
+        $image->setHeight(320);
+        $image->setColorSpace(DeviceColourSpace::GRAY);
+        $image->setBitsPerComponent(8);
+        $image->setContent(\file_get_contents('image.bmp'));
+
+        $xobject = Factory::create('Dictionary')->setEntry('Im1', $image);
+
         $page->setParent($this->getPageTree());
-        $page->getResources()->setEntry('ProcSet', $procset);
-        $page->getResources()->setEntry('Font', $font);
+
+        $resources = $page->getResources();
+        $resources->setEntry('ProcSet', $procset);
+        $resources->setEntry('Font', $font);
+        $resources->setEntry('XObject', $xobject);
 
         return $page;
     } 
