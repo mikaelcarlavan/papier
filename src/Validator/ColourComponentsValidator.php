@@ -3,9 +3,11 @@
 namespace Papier\Validator;
 
 use Papier\Graphics\ColourComponents;
+
+use Papier\Validator\Base\Validator;
 use Papier\Validator\IntegerValidator;
 
-class ColourComponentsValidator extends IntegerValidator
+class ColourComponentsValidator implements Validator
 {
     /**
      * Number of components allowed values.
@@ -27,7 +29,7 @@ class ColourComponentsValidator extends IntegerValidator
      */
     public static function isValid($value)
     {
-        $isValid = parent::isValid($value) && in_array($value, self::COMPONENTS_VALUES);
+        $isValid = IntegerValidator::isValid($value) && in_array($value, self::COMPONENTS_VALUES);
         return $isValid;
     }
 }

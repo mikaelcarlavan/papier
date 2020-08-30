@@ -3,9 +3,11 @@
 namespace Papier\Validator;
 
 use Papier\Graphics\PaintType;
+
+use Papier\Validator\Base\Validator;
 use Papier\Validator\IntegerValidator;
 
-class PaintTypeValidator extends IntegerValidator
+class PaintTypeValidator implements Validator
 {
     /**
      * Paint types.
@@ -26,7 +28,7 @@ class PaintTypeValidator extends IntegerValidator
      */
     public static function isValid($value)
     {
-        $isValid = parent::isValid($value) && in_array($value, self::PAINT_TYPES);
+        $isValid = IntegerValidator::isValid($value) && in_array($value, self::PAINT_TYPES);
         return $isValid;
     }
 }

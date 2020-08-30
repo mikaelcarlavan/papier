@@ -3,9 +3,11 @@
 namespace Papier\Validator;
 
 use Papier\Functions\FunctionType;
+
+use Papier\Validator\Base\Validator;
 use Papier\Validator\IntegerValidator;
 
-class FunctionTypeValidator extends IntegerValidator
+class FunctionTypeValidator implements Validator
 {
     /**
      * Function types.
@@ -28,7 +30,7 @@ class FunctionTypeValidator extends IntegerValidator
      */
     public static function isValid($value)
     {
-        $isValid = parent::isValid($value) && in_array($value, self::FUNCTION_TYPES);
+        $isValid = IntegerValidator::isValid($value) && in_array($value, self::FUNCTION_TYPES);
         return $isValid;
     }
 }

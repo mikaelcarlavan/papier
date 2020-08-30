@@ -3,9 +3,11 @@
 namespace Papier\Validator;
 
 use Papier\Graphics\PatternType;
+
+use Papier\Validator\Base\Validator;
 use Papier\Validator\IntegerValidator;
 
-class PatternTypeValidator extends IntegerValidator
+class PatternTypeValidator implements Validator
 {
     /**
      * Pattern types.
@@ -26,7 +28,7 @@ class PatternTypeValidator extends IntegerValidator
      */
     public static function isValid($value)
     {
-        $isValid = parent::isValid($value) && in_array($value, self::PATTERN_TYPES);
+        $isValid = IntegerValidator::isValid($value) && in_array($value, self::PATTERN_TYPES);
         return $isValid;
     }
 }

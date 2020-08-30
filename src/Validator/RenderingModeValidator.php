@@ -3,9 +3,11 @@
 namespace Papier\Validator;
 
 use Papier\Text\RenderingMode;
+
+use Papier\Validator\Base\Validator;
 use Papier\Validator\IntegerValidator;
 
-class RenderingModeValidator extends IntegerValidator
+class RenderingModeValidator implements Validator
 {
     /**
      * Rendering modes.
@@ -32,7 +34,7 @@ class RenderingModeValidator extends IntegerValidator
      */
     public static function isValid($value)
     {
-        $isValid = parent::isValid($value) && in_array($value, self::RENDERING_MODES);
+        $isValid = IntegerValidator::isValid($value) && in_array($value, self::RENDERING_MODES);
         return $isValid;
     }
 }

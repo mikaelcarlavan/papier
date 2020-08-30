@@ -1,9 +1,11 @@
 <?php
 
 namespace Papier\Validator;
+
+use Papier\Validator\Base\Validator;
 use Papier\Validator\IntegerValidator;
 
-class VersionValidator
+class VersionValidator implements Validator
 {
     /**
      * Minimum allowable value of header's version.

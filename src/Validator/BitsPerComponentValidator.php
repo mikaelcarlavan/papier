@@ -2,9 +2,10 @@
 
 namespace Papier\Validator;
 
+use Papier\Validator\Base\Validator;
 use Papier\Validator\IntegerValidator;
 
-class BitsPerComponentValidator extends IntegerValidator
+class BitsPerComponentValidator implements Validator
 {
     /**
      * Bits per component allowed values.
@@ -24,7 +25,7 @@ class BitsPerComponentValidator extends IntegerValidator
      */
     public static function isValid($value)
     {
-        $isValid = parent::isValid($value) && in_array($value, self::BITS_PER_COMPONENT);
+        $isValid = IntegerValidator::isValid($value) && in_array($value, self::BITS_PER_COMPONENT);
         return $isValid;
     }
 }

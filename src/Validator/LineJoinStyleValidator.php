@@ -3,9 +3,11 @@
 namespace Papier\Validator;
 
 use Papier\Graphics\LineJoinStyle;
+
+use Papier\Validator\Base\Validator;
 use Papier\Validator\IntegerValidator;
 
-class LineJoinStyleValidator extends IntegerValidator
+class LineJoinStyleValidator implements Validator
 {
     /**
      * Line join styles.
@@ -27,7 +29,7 @@ class LineJoinStyleValidator extends IntegerValidator
      */
     public static function isValid($value)
     {
-        $isValid = parent::isValid($value) && in_array($value, self::LINE_JOIN_STYLES);
+        $isValid = IntegerValidator::isValid($value) && in_array($value, self::LINE_JOIN_STYLES);
         return $isValid;
     }
 }

@@ -3,9 +3,11 @@
 namespace Papier\Validator;
 
 use Papier\Graphics\ShadingType;
+
+use Papier\Validator\Base\Validator;
 use Papier\Validator\IntegerValidator;
 
-class ShadingTypeValidator extends IntegerValidator
+class ShadingTypeValidator implements Validator
 {
     /**
      * Shading types.
@@ -31,7 +33,7 @@ class ShadingTypeValidator extends IntegerValidator
      */
     public static function isValid($value)
     {
-        $isValid = parent::isValid($value) && in_array($value, self::SHADING_TYPES);
+        $isValid = IntegerValidator::isValid($value) && in_array($value, self::SHADING_TYPES);
         return $isValid;
     }
 }

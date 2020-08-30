@@ -3,9 +3,11 @@
 namespace Papier\Validator;
 
 use Papier\Graphics\LineCapStyle;
+
+use Papier\Validator\Base\Validator;
 use Papier\Validator\IntegerValidator;
 
-class LineCapStyleValidator extends IntegerValidator
+class LineCapStyleValidator implements Validator
 {
     /**
      * Line cap styles.
@@ -27,7 +29,7 @@ class LineCapStyleValidator extends IntegerValidator
      */
     public static function isValid($value)
     {
-        $isValid = parent::isValid($value) && in_array($value, self::LINE_CAP_STYLES);
+        $isValid = IntegerValidator::isValid($value) && in_array($value, self::LINE_CAP_STYLES);
         return $isValid;
     }
 }

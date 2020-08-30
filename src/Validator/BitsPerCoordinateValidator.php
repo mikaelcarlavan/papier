@@ -3,8 +3,9 @@
 namespace Papier\Validator;
 
 use Papier\Validator\IntegerValidator;
+use Papier\Validator\Base\Validator;
 
-class BitsPerCoordinateValidator extends IntegerValidator
+class BitsPerCoordinateValidator implements Validator
 {
     /**
      * Bits per coordinate allowed values.
@@ -24,7 +25,7 @@ class BitsPerCoordinateValidator extends IntegerValidator
      */
     public static function isValid($value)
     {
-        $isValid = parent::isValid($value) && in_array($value, self::BITS_PER_COORDINATEE);
+        $isValid = IntegerValidator::isValid($value) && in_array($value, self::BITS_PER_COORDINATEE);
         return $isValid;
     }
 }
