@@ -42,19 +42,10 @@ $contents->moveToNextLineStartWithOffset(100, 500);
 $contents->showText('Hello World !');
 $contents->endText();
 
-
-$page = $pdf->addPage();
-$page->setMediaBox([0, 0, 612, 792]);
-$contents = $page->getContents();
-
-$contents->setNonStrokingRGBColour(0.8, 0.3, 0.1);
-
-$contents->beginText();
-$contents->setFont('F1', 24);
-$contents->moveToNextLineStartWithOffset(100, 500);
-$contents->showText('Good morning !');
-$contents->endText();
-
+$contents->save();
+$contents->setCTM(132, 0, 0, 132, 45, 140);
+$contents->paintXObject('Im1');
+$contents->restore();
 
 $info = $pdf->getInfo();
 $info->setTitle('Test');
