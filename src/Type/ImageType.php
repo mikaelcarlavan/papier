@@ -172,23 +172,6 @@ class ImageType extends StreamObject
     }
 
     /**
-     * Set alternates.
-     *  
-     * @param  \Papier\Object\ArrayObject  $alternates
-     * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
-     * @return \Papier\Type\ImageType
-     */
-    public function setAlternates($alternates)
-    {
-        if (!$alternates instanceof ArrayObject) {
-            throw new InvalidArgumentException("Alternates is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        $this->setEntry('Alternates', $alternates);
-        return $this;
-    }
-
-    /**
      * Set interpolation.
      *  
      * @param  bool  $interpolate
@@ -204,6 +187,23 @@ class ImageType extends StreamObject
         $value = Factory::create('Boolean', $interpolate);
 
         $this->setEntry('Interpolate', $value);
+        return $this;
+    }
+    
+    /**
+     * Set alternates.
+     *  
+     * @param  \Papier\Object\ArrayObject  $alternates
+     * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
+     * @return \Papier\Type\ImageType
+     */
+    public function setAlternates($alternates)
+    {
+        if (!$alternates instanceof ArrayObject) {
+            throw new InvalidArgumentException("Alternates is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $this->setEntry('Alternates', $alternates);
         return $this;
     }
 
