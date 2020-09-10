@@ -43,7 +43,7 @@ $contents->showText('Hello World !');
 $contents->endText();
 
 $contents->save();
-$contents->setCTM(132, 0, 0, 132, 45, 140);
+$contents->setCTM(150, 0, 0, 150, 50, 140);
 $contents->paintXObject('Im1');
 $contents->restore();
 
