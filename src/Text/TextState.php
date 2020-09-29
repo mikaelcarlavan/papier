@@ -17,8 +17,8 @@ trait TextState
      * Set character spacing.
      *  
      * @param   mixed   $cs
-     * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
      * @return mixed
+     * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
      */
     public function setCharacterSpacing($cs)
     {
@@ -34,8 +34,8 @@ trait TextState
      * Set word spacing.
      *  
      * @param   mixed   $ws
-     * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
      * @return mixed
+     * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
      */
     public function setWordSpacing($ws)
     {
@@ -51,8 +51,8 @@ trait TextState
      * Set horizontal scale.
      *  
      * @param   mixed   $hs
-     * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
      * @return mixed
+     * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
      */
     public function setHorizontalScale($hs)
     {
@@ -69,8 +69,8 @@ trait TextState
      * Set text leading.
      *  
      * @param   mixed   $tl
-     * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
      * @return mixed
+     * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
      */
     public function setTextLeading($tl)
     {
@@ -87,8 +87,9 @@ trait TextState
      *  
      * @param   mixed   $font
      * @param   mixed   $size
-     * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
      * @return mixed
+     * @throws InvalidArgumentException if the $font argument is not of type 'string'.
+     * @throws InvalidArgumentException if the $size argument is not of type 'float' or 'int'.
      */
     public function setFont($font, $size)
     {
@@ -108,10 +109,10 @@ trait TextState
      * Set text rendering mode.
      *  
      * @param   int   $rm
-     * @throws InvalidArgumentException if the provided argument is not of type 'int'.
      * @return mixed
+     * @throws InvalidArgumentException if the provided argument is not a valid rendering mode.
      */
-    public function setTextRenderingMode($rm)
+    public function setTextRenderingMode(int $rm)
     {
         if (!RenderingModeValidator::isValid($rm)) {
             throw new InvalidArgumentException("Rendering mode is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -125,8 +126,8 @@ trait TextState
      * Set text rise.
      *  
      * @param   mixed   $tr
-     * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
      * @return mixed
+     * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
      */
     public function setTextRise($tr)
     {

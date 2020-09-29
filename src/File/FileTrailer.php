@@ -2,11 +2,10 @@
 
 namespace Papier\File;
 
+use Papier\Type\DocumentInformationDictionaryType;
 use Papier\Validator\IntegerValidator;
 use Papier\Object\DictionaryObject;
 use Papier\Object\ArrayObject;
-
-use Papier\Object\IntegerObject;
 
 use Papier\Factory\Factory;
 use Papier\Repository\Repository;
@@ -44,10 +43,10 @@ class FileTrailer extends DictionaryObject
      * Set cross reference offset.
      *  
      * @param  int  $crossReferenceOffset
+     * @return FileTrailer
      * @throws InvalidArgumentException if the provided argument is not of type 'int'.
-     * @return \Papier\File\FileTrailer
      */
-    public function setCrossReferenceOffset($crossReferenceOffset)
+    public function setCrossReferenceOffset(int $crossReferenceOffset)
     {
         if (!IntegerValidator::isValid($crossReferenceOffset)) {
             throw new InvalidArgumentException("Cross reference offset is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -61,10 +60,10 @@ class FileTrailer extends DictionaryObject
      * Set size (total number of entries in the file's cross-reference table).
      *  
      * @param  int  $size
+     * @return FileTrailer
      * @throws InvalidArgumentException if the provided argument is not of type 'int'.
-     * @return \Papier\File\FileTrailer
      */
-    public function setSize($size)
+    public function setSize(int $size)
     {
         if (!IntegerValidator::isValid($size)) {
             throw new InvalidArgumentException("Size is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -80,10 +79,10 @@ class FileTrailer extends DictionaryObject
      * Set prev (byte offset in the decoded stream from the beginning of the file to the beginning of the previous cross-reference section).
      *  
      * @param  int  $prev
+     * @return FileTrailer
      * @throws InvalidArgumentException if the provided argument is not of type 'int'.
-     * @return \Papier\File\FileTrailer
      */
-    public function setPrev($prev)
+    public function setPrev(int $prev)
     {
         if (!IntegerValidator::isValid($prev)) {
             throw new InvalidArgumentException("Prev is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -93,21 +92,17 @@ class FileTrailer extends DictionaryObject
 
         $this->setEntry('Prev', $value);
         return $this;
-    } 
+    }
 
     /**
      * Set root (catalog dictionary for the PDF document contained in the file).
-     *  
-     * @param  \Papier\Object\DictionaryObject  $root
+     *
+     * @param DictionaryObject $root
+     * @return FileTrailer
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\File\FileTrailer
      */
-    public function setRoot($root)
+    public function setRoot(DictionaryObject $root)
     {
-        if (!$root instanceof DictionaryObject) {
-            throw new InvalidArgumentException("Root is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('Root', $root);
         return $this;
     } 
@@ -116,16 +111,12 @@ class FileTrailer extends DictionaryObject
     /**
      * Set encrypt (document’s encryption dictionary).
      *  
-     * @param  \Papier\Object\DictionaryObject  $encrypt
-     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\File\FileTrailer
+     * @param DictionaryObject $encrypt
+     * @return FileTrailer
+     *@throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
      */
-    public function setEncrypt($encrypt)
+    public function setEncrypt(DictionaryObject $encrypt)
     {
-        if (!$encrypt instanceof DictionaryObject) {
-            throw new InvalidArgumentException("Encrypt is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('Encrypt', $encrypt);
         return $this;
     } 
@@ -134,16 +125,12 @@ class FileTrailer extends DictionaryObject
     /**
      * Set info (document’s information dictionary).
      *  
-     * @param  \Papier\Object\DictionaryObject  $info
-     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\File\FileTrailer
+     * @param DictionaryObject $info
+     * @return FileTrailer
+     *@throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
      */
-    public function setInfo($info)
+    public function setInfo(DictionaryObject $info)
     {
-        if (!$info instanceof DictionaryObject) {
-            throw new InvalidArgumentException("Info is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('Info', $info);
         return $this;
     } 
@@ -151,7 +138,7 @@ class FileTrailer extends DictionaryObject
     /**
      * Get info.
      *  
-     * @return \Papier\Type\DocumentInformationDictionaryType
+     * @return DocumentInformationDictionaryType
      */
     public function getInfo()
     {
@@ -166,16 +153,12 @@ class FileTrailer extends DictionaryObject
     /**
      * Set ID (array of two byte-strings constituting a file identifier).
      *  
-     * @param  \Papier\Object\ArrayObject  $ID
+     * @param ArrayObject $ID
+     * @return FileTrailer
      * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
-     * @return \Papier\File\FileTrailer
      */
-    public function setID($ID)
+    public function setID(ArrayObject $ID)
     {
-        if (!$ID instanceof ArrayObject) {
-            throw new InvalidArgumentException("ID is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('ID', $ID);
         return $this;
     } 

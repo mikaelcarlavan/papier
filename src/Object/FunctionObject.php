@@ -2,10 +2,6 @@
 
 namespace Papier\Object;
 
-use Papier\Object\StreamObject;
-use Papier\Object\ArrayObject;
-use Papier\Object\IntegerObject;
-
 use Papier\Validator\FunctionTypeValidator;
 
 use Papier\Functions\FunctionType;
@@ -22,10 +18,10 @@ class FunctionObject extends StreamObject
      * Set type.
      *  
      * @param  int  $type
+     * @return FunctionObject
      * @throws InvalidArgumentException if the provided argument is not a valid function type.
-     * @return \Papier\Object\FunctionObject
      */
-    public function setFunctionType($type)
+    public function setFunctionType(int $type)
     {
         if (!FunctionTypeValidator::isValid($type)) {
             throw new InvalidArgumentException("FunctionType is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -40,16 +36,14 @@ class FunctionObject extends StreamObject
     /**
      * Set domain.
      *  
-     * @param  int  $domain
-     * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
-     * @return \Papier\Object\FunctionObject
+     * @param  ArrayObject  $domain
+     * @return FunctionObject
+     * @throws InvalidArgumentException if the provided argument is not an even length 'ArrayObject'.
+     * @throws InvalidArgumentException if values of provided argument are not increasing.
+     * @throws InvalidArgumentException if values of provided argument are out of boundaries.
      */
-    public function setDomain($domain)
+    public function setDomain(ArrayObject $domain)
     {
-        if (!$domain instanceof ArrayObject) {
-            throw new InvalidArgumentException("Domain is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         if (count($domain) % 2 != 0) {
             throw new InvalidArgumentException("Domain should be even length. See ".__CLASS__." class's documentation for possible values.");
         }
@@ -76,16 +70,14 @@ class FunctionObject extends StreamObject
     /**
      * Set range.
      *  
-     * @param  \Papier\Object\ArrayObject  $range
-     * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
-     * @return \Papier\Object\FunctionObject
+     * @param  ArrayObject  $range
+     * @return FunctionObject
+     * @throws InvalidArgumentException if the provided argument is not an even length 'ArrayObject'.
+     * @throws InvalidArgumentException if values of provided argument are not increasing.
+     * @throws InvalidArgumentException if values of provided argument are out of boundaries.
      */
-    public function setRange($range)
+    public function setRange(ArrayObject $range)
     {
-        if (!$range instanceof ArrayObject) {
-            throw new InvalidArgumentException("Range is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         if (count($range) % 2 != 0) {
             throw new InvalidArgumentException("Range should be even length. See ".__CLASS__." class's documentation for possible values.");
         }
@@ -112,6 +104,9 @@ class FunctionObject extends StreamObject
      * Format object's value.
      *
      * @return string
+     * @throws RuntimeException if function type is not defined.
+     * @throws RuntimeException if domain is not defined.
+     * @throws RuntimeException if function type is set to 'Sampled' or 'PostScript Calculator' and if range is not defined.
      */
     public function format()
     {

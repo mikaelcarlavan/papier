@@ -10,12 +10,12 @@ use InvalidArgumentException;
 class NameObject extends IndirectObject
 {
     /**
-    * Set object's value.
-    *
-    * @param  mixed  $value
-    * @throws InvalidArgumentException if the provided argument is not of type 'string'.
-    * @return \Papier\Base\NameObject
-    */
+     * Set object's value.
+     *
+     * @param mixed $value
+     * @return NameObject
+     * @throws InvalidArgumentException if the provided argument is not of type 'string'.
+     */
     public function setValue($value)
     {
         if (!StringValidator::isValid($value)) {

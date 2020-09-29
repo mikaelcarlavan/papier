@@ -7,7 +7,7 @@ use Papier\Validator\NumberValidator;
 class NumbersArrayValidator extends ArrayValidator
 {
      /**
-     * Test if given parameter is a valid array of numbers.
+     * Test if given parameter is a valid array of 'float' or 'int'.
      * 
      * @param  mixed  $value
      * @param  int  $size

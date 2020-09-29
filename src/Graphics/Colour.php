@@ -33,7 +33,7 @@ trait Colour
     }
 
     /**
-     * Set colour for nonstroking operations.
+     * Set colour for non-stroking operations.
      *  
      * @param   mixed   $values
      * @return mixed

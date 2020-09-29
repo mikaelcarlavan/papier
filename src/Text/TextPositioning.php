@@ -3,9 +3,6 @@
 namespace Papier\Text;
 
 use Papier\Validator\NumberValidator;
-use Papier\Validator\StringValidator;
-use Papier\Validator\IntegerValidator;
-use Papier\Validator\RenderingModeValidator;
 
 use Papier\Factory\Factory;
 
@@ -18,8 +15,8 @@ trait TextPositioning
      *  
      * @param   mixed   $tx
      * @param   mixed   $ty
-     * @throws InvalidArgumentException if the provided arguments are not of type 'float' or 'int'.
      * @return mixed
+     * @throws InvalidArgumentException if one of the provided arguments are not of type 'float' or 'int'.
      */
     public function moveToNextLineStartWithOffset($tx, $ty)
     {
@@ -40,8 +37,8 @@ trait TextPositioning
      *  
      * @param   mixed   $tx
      * @param   mixed   $ty
-     * @throws InvalidArgumentException if the provided arguments are not of type 'float' or 'int'.
      * @return mixed
+     * @throws InvalidArgumentException if one of the provided arguments are not of type 'float' or 'int'.
      */
     public function moveToNextLineStartWithOffsetAndSetLeading($tx, $ty)
     {
@@ -66,8 +63,8 @@ trait TextPositioning
      * @param   mixed   $d
      * @param   mixed   $e
      * @param   mixed   $f
-     * @throws InvalidArgumentException if the provided arguments are not of type 'float' or 'int'.
      * @return mixed
+     * @throws InvalidArgumentException if one of the provided arguments are not of type 'float' or 'int'.
      */
     public function setTextMatrix($a, $b, $c, $d, $e, $f)
     {

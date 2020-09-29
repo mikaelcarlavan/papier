@@ -3,7 +3,6 @@
 namespace Papier\Graphics;
 
 use Papier\Validator\NumberValidator;
-use Papier\Validator\StringValidator;
 use Papier\Validator\DeviceColourSpaceValidator;
 
 use Papier\Factory\Factory;
@@ -17,30 +16,32 @@ trait DeviceColour
      *  
      * @param   string   $space
      * @return mixed
+     * @throws InvalidArgumentException if the provided argument is not a valid colour space.
      */
-    public function setStrokingSpace($space)
+    public function setStrokingSpace(string $space)
     {
         if (!DeviceColourSpaceValidator::isValid($space)) {
             throw new InvalidArgumentException("Space is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $state = sprintf('%s CS', Factory::create('Name', $string)->format());
+        $state = sprintf('%s CS', Factory::create('Name', $space)->format());
         return $this->addToContent($state);
     }
 
     /**
-     * Set colour space for nonstroking operations.
+     * Set colour space for non-stroking operations.
      *  
      * @param   string   $space
      * @return mixed
+     * @throws InvalidArgumentException if the provided argument is not a valid colour space.
      */
-    public function setNonStrokingSpace($space)
+    public function setNonStrokingSpace(string $space)
     {
         if (!DeviceColourSpaceValidator::isValid($space)) {
             throw new InvalidArgumentException("Space is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $state = sprintf('%s cs', Factory::create('Name', $string)->format());
+        $state = sprintf('%s cs', Factory::create('Name', $space)->format());
         return $this->addToContent($state);
     }
 
@@ -49,6 +50,7 @@ trait DeviceColour
      *  
      * @param   mixed   $values
      * @return mixed
+     * @throws InvalidArgumentException if the provided argument is not an array of 'float' or 'int'.
      */
     public function setStrokingColor(...$values)
     {
@@ -63,10 +65,11 @@ trait DeviceColour
     }
 
     /**
-     * Set colour for nonstroking operations.
+     * Set colour for non-stroking operations.
      *  
      * @param   mixed   $values
      * @return mixed
+     * @throws InvalidArgumentException if the provided argument is not an array of 'float' or 'int'.
      */
     public function setNonStrokingColor(...$values)
     {
@@ -85,6 +88,7 @@ trait DeviceColour
      *  
      * @param   mixed   $colour
      * @return mixed
+     * @throws InvalidArgumentException if the provided argument is not 'float' or 'int'.
      */
     public function setStrokingGrayColour($colour)
     {
@@ -101,6 +105,7 @@ trait DeviceColour
      *  
      * @param   mixed   $colour
      * @return mixed
+     * @throws InvalidArgumentException if the provided argument is not 'float' or 'int'.
      */
     public function setNonStrokingGrayColour($colour)
     {
@@ -119,6 +124,7 @@ trait DeviceColour
      * @param   mixed   $g
      * @param   mixed   $b
      * @return mixed
+     * @throws InvalidArgumentException if one of the provided argument is not 'float' or 'int'.
      */
     public function setStrokingRGBColour($r, $g, $b)
     {
@@ -137,19 +143,20 @@ trait DeviceColour
         $state = sprintf('%s %s %s RG', 
             Factory::create('Number', $r)->format(), 
             Factory::create('Number', $g)->format(),
-            Factory::create('Number', $b)->format(),
+            Factory::create('Number', $b)->format()
         );        
         
         return $this->addToContent($state);
     }
 
     /**
-     * Set RGB colour for nonstroking operations.
+     * Set RGB colour for non-stroking operations.
      *  
      * @param   mixed   $r
      * @param   mixed   $g
      * @param   mixed   $b
      * @return mixed
+     * @throws InvalidArgumentException if one of the provided argument is not 'float' or 'int'.
      */
     public function setNonStrokingRGBColour($r, $g, $b)
     {
@@ -168,7 +175,7 @@ trait DeviceColour
         $state = sprintf('%s %s %s rg', 
             Factory::create('Number', $r)->format(), 
             Factory::create('Number', $g)->format(),
-            Factory::create('Number', $b)->format(),
+            Factory::create('Number', $b)->format()
         );
 
         return $this->addToContent($state);
@@ -182,6 +189,7 @@ trait DeviceColour
      * @param   mixed   $y
      * @param   mixed   $k
      * @return mixed
+     * @throws InvalidArgumentException if one of the provided argument is not 'float' or 'int'.
      */
     public function setCMYKColour($c, $m, $y, $k)
     {
@@ -205,20 +213,21 @@ trait DeviceColour
             Factory::create('Number', $c)->format(), 
             Factory::create('Number', $m)->format(),
             Factory::create('Number', $y)->format(),
-            Factory::create('Number', $k)->format(),
+            Factory::create('Number', $k)->format()
         );
 
         return $this->addToContent($state);
     }
 
     /**
-     * Set CMYK colour for nonstroking operations.
+     * Set CMYK colour for non-stroking operations.
      *  
      * @param   mixed   $c
      * @param   mixed   $m
      * @param   mixed   $y
      * @param   mixed   $k
      * @return mixed
+     * @throws InvalidArgumentException if one of the provided argument is not 'float' or 'int'.
      */
     public function setNonStrokingCMYKColour($c, $m, $y, $k)
     {
@@ -242,7 +251,7 @@ trait DeviceColour
             Factory::create('Number', $c)->format(), 
             Factory::create('Number', $m)->format(),
             Factory::create('Number', $y)->format(),
-            Factory::create('Number', $k)->format(),
+            Factory::create('Number', $k)->format()
         );
 
         return $this->addToContent($state);

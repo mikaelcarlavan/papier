@@ -9,33 +9,33 @@ class PageBoundaries
      *
      * @var string
      */
-    const MEDIABOX = 'MediaBox';
+    const MEDIA_BOX = 'MediaBox';
   
     /**
      * Cropbox.
      *
      * @var string
      */
-    const CROPBOX = 'CropBox';
+    const CROP_BOX = 'CropBox';
 
     /**
      * Bleedbox.
      *
      * @var string
      */
-    const BLEEDBOX = 'BleedBox';
+    const BLEED_BOX = 'BleedBox';
 
     /**
      * Trimbox.
      *
      * @var string
      */
-    const TRIMBOX = 'TrimBox';
+    const TRIM_BOX = 'TrimBox';
 
     /**
      * Artbox.
      *
      * @var string
      */
-    const ARTBOX = 'ArtBox';
+    const ART_BOX = 'ArtBox';
 }

@@ -2,14 +2,12 @@
 
 namespace Papier\Object;
 
-use Papier\Object\IntegerObject;
-use Papier\Object\DictionaryObject;
-
 use Papier\Factory\Factory;
+
+use Papier\Type\FileSpecificationStringType;
 
 use Papier\Validator\StringValidator;
 
-use RunTimeException;
 use InvalidArgumentException;
 
 class StreamObject extends DictionaryObject
@@ -65,7 +63,7 @@ class StreamObject extends DictionaryObject
      * Set object's content.
      *  
      * @param  mixed  $content
-     * @return \Papier\Object\StreamObject
+     * @return StreamObject
      */
     public function setContent($content)
     {
@@ -78,7 +76,7 @@ class StreamObject extends DictionaryObject
      *  
      * @param  string  $data
      * @param  bool  $withEndOfLine
-     * @return \Papier\Object\StreamObject
+     * @return StreamObject
      */
     protected function addToContent($data, $withEndOfLine = true)
     {
@@ -93,8 +91,8 @@ class StreamObject extends DictionaryObject
      * Set filter.
      *  
      * @param  mixed  $filter
-     * @throws InvalidArgumentException if the provided argument is not of type 'string' or 'ArrayObject'.
-     * @return \Papier\Object\StreamObject
+     * @return StreamObject
+     *@throws InvalidArgumentException if the provided argument is not of type 'string' or 'ArrayObject'.
      */
     public function setFilter($filter)
     {
@@ -112,8 +110,8 @@ class StreamObject extends DictionaryObject
      * Set decode parameters.
      *  
      * @param  mixed  $parms
-     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject' or 'ArrayObject'.
-     * @return \Papier\Object\StreamObject
+     * @return StreamObject
+     *@throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject' or 'ArrayObject'.
      */
     public function setDecodeParms($parms)
     {
@@ -127,17 +125,12 @@ class StreamObject extends DictionaryObject
 
     /**
      * Set file specification.
-     *  
-     * @param  \Papier\Type\FileSpecificationType  $f
-     * @throws InvalidArgumentException if the provided argument is not of type 'FileSpecificationType'.
-     * @return \Papier\Object\StreamObject
+     *
+     * @param  FileSpecificationStringType $f
+     * @return StreamObject
      */
-    public function setF($f)
+    public function setF(FileSpecificationStringType $f)
     {
-        if (!$f instanceof FileSpecificationType) {
-            throw new InvalidArgumentException("F is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('F', $f);
         return $this;
     } 
@@ -146,8 +139,8 @@ class StreamObject extends DictionaryObject
      * Set file filter.
      *  
      * @param  mixed  $ffilter
+     * @return StreamObject
      * @throws InvalidArgumentException if the provided argument is not of type 'string' or 'ArrayObject'.
-     * @return \Papier\Object\StreamObject
      */
     public function setFFilter($ffilter)
     {
@@ -165,8 +158,8 @@ class StreamObject extends DictionaryObject
      * Set file decode parameters.
      *  
      * @param  mixed  $parms
+     * @return StreamObject
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject' or 'ArrayObject'.
-     * @return \Papier\Object\StreamObject
      */
     public function setFDecodeParms($parms)
     {
@@ -182,10 +175,10 @@ class StreamObject extends DictionaryObject
      * Set length of decoded stream.
      *  
      * @param  int  $dl
+     * @return StreamObject
      * @throws InvalidArgumentException if the provided argument is not of type 'int'.
-     * @return \Papier\Object\StreamObject
      */
-    public function setDL($dl)
+    public function setDL(int $dl)
     {
         if (!IntegerValidator::isValid($dl)) {
             throw new InvalidArgumentException("DL is incorrect. See ".__CLASS__." class's documentation for possible values.");

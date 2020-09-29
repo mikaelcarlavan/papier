@@ -3,7 +3,8 @@
 namespace Papier\Graphics;
 
 use Papier\Validator\NumberValidator;
-use Papier\Validator\StringValidator;
+
+use Papier\Factory\Factory;
 
 use InvalidArgumentException;
 
@@ -15,6 +16,7 @@ trait PathConstruction
      * @param   mixed   $x
      * @param   mixed   $y
      * @return mixed
+     * @throws InvalidArgumentException if one of the provided argument is not of type 'float' or 'int'.
      */
     public function beginPath($x, $y)
     {
@@ -40,6 +42,7 @@ trait PathConstruction
      * @param   mixed   $x
      * @param   mixed   $y
      * @return mixed
+     * @throws InvalidArgumentException if one of the provided argument is not of type 'float' or 'int'.
      */
     public function appendSegment($x, $y)
     {
@@ -68,8 +71,8 @@ trait PathConstruction
      * @param   mixed   $y2
      * @param   mixed   $x3
      * @param   mixed   $y3
-     * @throws InvalidArgumentException if the provided arguments are not of type 'float' or 'int'.
      * @return mixed
+     * @throws InvalidArgumentException if one of the provided argument is not of type 'float' or 'int'.
      */
     public function appendCubicBezier($x1, $y1, $x2, $y2, $x3, $y3)
     {
@@ -116,8 +119,8 @@ trait PathConstruction
      * @param   mixed   $y2
      * @param   mixed   $x3
      * @param   mixed   $y3
-     * @throws InvalidArgumentException if the provided arguments are not of type 'float' or 'int'.
      * @return mixed
+     * @throws InvalidArgumentException if one of the provided argument is not of type 'float' or 'int'.
      */
     public function appendCubicBezier2a($x2, $y2, $x3, $y3)
     {
@@ -154,8 +157,8 @@ trait PathConstruction
      * @param   mixed   $y1
      * @param   mixed   $x3
      * @param   mixed   $y3
-     * @throws InvalidArgumentException if the provided arguments are not of type 'float' or 'int'.
      * @return mixed
+     * @throws InvalidArgumentException if one of the provided argument is not of type 'float' or 'int'.
      */
     public function appendCubicBezier2b($x1, $y1, $x3, $y3)
     {
@@ -179,7 +182,7 @@ trait PathConstruction
             Factory::create('Number', $x1)->format(), 
             Factory::create('Number', $y1)->format(), 
             Factory::create('Number', $x3)->format(), 
-            Factory::create('Number', $y3)->format(), 
+            Factory::create('Number', $y3)->format()
         );
 
         return $this->addToContent($state);
@@ -204,6 +207,7 @@ trait PathConstruction
      * @param   mixed   $width
      * @param   mixed   $height
      * @return mixed
+     * @throws InvalidArgumentException if one of the provided argument is not of type 'float' or 'int'.
      */
     public function appendRectangle($x, $y, $width, $height)
     {
@@ -227,7 +231,7 @@ trait PathConstruction
             Factory::create('Number', $x)->format(), 
             Factory::create('Number', $y)->format(), 
             Factory::create('Number', $width)->format(), 
-            Factory::create('Number', $height)->format(), 
+            Factory::create('Number', $height)->format()
         );
 
         return $this->addToContent($state);

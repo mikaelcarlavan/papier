@@ -3,14 +3,13 @@
 namespace Papier\File\CrossReference;
 
 use Papier\Object\ArrayObject;
-use Papier\File\CrossReference\CrossReferenceSubsection;
 
 class CrossReferenceSection extends ArrayObject
 {
     /**
      * Add new subsection.
      *  
-     * @return \Papier\File\CrossReference\CrossReferenceSubsection
+     * @return CrossReferenceSubsection
      */
     public function addSubsection()
     {
@@ -31,8 +30,7 @@ class CrossReferenceSection extends ArrayObject
      */
     public function getSubsections()
     {
-        $objects = $this->getObjects();
-        return $objects;
+        return $this->getObjects();
     }  
 
     /**

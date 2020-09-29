@@ -111,7 +111,7 @@ class FileBody extends BaseObject
         $image->setHeight(320);
         $image->setColorSpace(DeviceColourSpace::GRAY);
         $image->setBitsPerComponent(8);
-        $image->setContent(\file_get_contents('image.bmp'));
+        $image->setContent(\substr(\file_get_contents('image.bmp'), 14));
 
         $xobject = Factory::create('Dictionary')->setEntry('Im1', $image);
 

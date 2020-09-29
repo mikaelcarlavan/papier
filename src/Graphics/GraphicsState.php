@@ -5,7 +5,6 @@ namespace Papier\Graphics;
 use Papier\Validator\NumberValidator;
 use Papier\Validator\LineCapStyleValidator;
 use Papier\Validator\LineJoinStyleValidator;
-use Papier\Validator\OverprintModeValidator;
 use Papier\Validator\StringValidator;
 use Papier\Validator\RenderingIntentValidator;
 use Papier\Validator\IntegersArrayValidator;
@@ -47,8 +46,8 @@ trait GraphicsState
      * @param   mixed   $d
      * @param   mixed   $e
      * @param   mixed   $f
-     * @throws InvalidArgumentException if the provided arguments are not of type 'float' or 'int'.
      * @return mixed
+     * @throws InvalidArgumentException if one of the provided arguments are not of type 'float' or 'int'.
      */
     public function setCTM($a, $b , $c, $d, $e, $f)
     {
@@ -82,7 +81,7 @@ trait GraphicsState
             Factory::create('Number', $c)->format(), 
             Factory::create('Number', $d)->format(), 
             Factory::create('Number', $e)->format(),  
-            Factory::create('Number', $f)->format(), 
+            Factory::create('Number', $f)->format()
         );
 
         return $this->addToContent($state);
@@ -92,8 +91,8 @@ trait GraphicsState
      * Set line width.
      *  
      * @param   mixed   $lw
-     * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
      * @return mixed
+     * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
      */
     public function setLineWidth($lw)
     {
@@ -109,8 +108,8 @@ trait GraphicsState
      * Set line cap style.
      *  
      * @param  mixed  $lc
-     * @throws InvalidArgumentException if the provided argument is not a valid line cap style.
      * @return mixed
+     * @throws InvalidArgumentException if the provided argument is not a valid line cap style.
      */
     public function setLineCapStyle($lc)
     {
@@ -127,8 +126,8 @@ trait GraphicsState
      * Set line join style.
      *  
      * @param  mixed  $lj
-     * @throws InvalidArgumentException if the provided argument is not a valid line join style.
      * @return mixed
+     * @throws InvalidArgumentException if the provided argument is not a valid line join style.
      */
     public function setLineJoinStyle($lj)
     {
@@ -144,8 +143,8 @@ trait GraphicsState
      * Set miter limit.
      *  
      * @param  mixed  $ml
-     * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
      * @return mixed
+     * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
      */
     public function setMiterLimit($ml)
     {
@@ -159,14 +158,14 @@ trait GraphicsState
 
     /**
      * Set line dash pattern.
-     *  
-     * @param  array  $da
-     * @param  mixed  $dp
-     * @throws InvalidArgumentException if the $da argument is not an array of 'float' or 'int' elements.
-     * @throws InvalidArgumentException if the $dp argument is not of type 'float' or 'int'.
+     *
+     * @param array $da
+     * @param mixed $dp
      * @return mixed
+     * @throws InvalidArgumentException if the $da argument is not an array of 'int'.
+     * @throws InvalidArgumentException if the $dp argument is not of type 'float' or 'int'.
      */
-    public function setLineDashPattern($da, $dp)
+    public function setLineDashPattern(array $da, $dp)
     {
         if (!IntegersArrayValidator::isValid($da)) {
             throw new InvalidArgumentException("DA is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -184,8 +183,8 @@ trait GraphicsState
      * Set flatness tolerance.
      *  
      * @param  mixed  $fl
-     * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int' between 0 and 100.
      * @return mixed
+     * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int' between 0 and 100.
      */
     public function setFlatness($fl)
     {
@@ -201,10 +200,10 @@ trait GraphicsState
      * Set colour rendering intent.
      *  
      * @param  string  $ri
-     * @throws InvalidArgumentException if the provided argument is not a valid colour rendering intent.
      * @return mixed
+     * @throws InvalidArgumentException if the provided argument is not a valid colour rendering intent.
      */
-    public function setColourRenderingIntent($ri)
+    public function setColourRenderingIntent(string $ri)
     {
         if (!RenderingIntentValidator::isValid($ri)) {
             throw new InvalidArgumentException("RI is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -218,10 +217,10 @@ trait GraphicsState
      * Set dictionary.
      *  
      * @param  string  $dn
-     * @throws InvalidArgumentException if the provided argument is not of type 'string'.
      * @return mixed
+     * @throws InvalidArgumentException if the provided argument is not of type 'string'.
      */
-    public function setDictionary($dn)
+    public function setDictionary(string $dn)
     {
         if (!StringValidator::isValid($dn)) {
             throw new InvalidArgumentException("DN is incorrect. See ".__CLASS__." class's documentation for possible values.");

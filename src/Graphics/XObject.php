@@ -14,10 +14,10 @@ trait XObject
      * Paint external object.
      *  
      * @param  string  $xobject
-     * @throws InvalidArgumentException if the provided argument is not of type 'string'.
      * @return mixed
+     * @throws InvalidArgumentException if the provided argument is not of type 'string'.
      */
-    public function paintXObject($xobject)
+    public function paintXObject(string $xobject)
     {
         if (!StringValidator::isValid($xobject)) {
             throw new InvalidArgumentException("XObject is incorrect. See ".__CLASS__." class's documentation for possible values.");

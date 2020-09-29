@@ -2,17 +2,14 @@
 
 namespace Papier\Object;
 
-use Papier\Object\DictionaryObject;
 use Papier\Base\IndirectObject;
-
-use InvalidArgumentException;
 
 class ArrayObject extends DictionaryObject
 {
     /**
      * Get first object.
      *  
-     * @return \Papier\Base\IndirectObject
+     * @return IndirectObject
      */
     public function first() 
     {
@@ -25,7 +22,7 @@ class ArrayObject extends DictionaryObject
     /**
      * Get last object.
      *  
-     * @return \Papier\Base\IndirectObject
+     * @return IndirectObject
      */
     public function last() 
     {
@@ -41,7 +38,7 @@ class ArrayObject extends DictionaryObject
      * @param  string  $value
      * @return bool
      */
-    public function has($value)
+    public function has(string $value)
     {
         $objects = $this->getObjects();
         if (count($objects)) {
@@ -102,15 +99,11 @@ class ArrayObject extends DictionaryObject
     /**
      * Append object to array.
      *  
-     * @param  \Papier\Base\IndirectObject  $object
-     * @return \Papier\Object\ArrayObject
+     * @param IndirectObject $object
+     * @return ArrayObject
      */
-    public function append($object)
+    public function append(IndirectObject $object)
     {
-        if (!$object instanceof IndirectObject) {
-            throw new InvalidArgumentException("Object is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $objects = $this->getObjects();
         $objects[] = $object;
 

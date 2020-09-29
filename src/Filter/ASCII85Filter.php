@@ -23,8 +23,10 @@ class ASCII85Filter extends Filter
      * @param  string  $stream
      * @param  array  $param
      * @return string
+     * @throws InvalidArgumentException if stream does not end with the end-of-data marker.
+     * @throws RuntimeException if stream is empty.
      */
-    public static function decode($stream, $param = array())
+    public static function decode(string $stream, $param = array())
     {
         $stream = trim($stream);
         $marker = substr($stream, -strlen(self::EOD_MARKER));
@@ -77,8 +79,9 @@ class ASCII85Filter extends Filter
      * @param  string  $value
      * @param  array  $param
      * @return string
+     * @throws InvalidArgumentException if the provided argument is not a string.
      */
-    public static function encode($value, $param = array())
+    public static function encode(string $value, $param = array())
     {
         // Clean white-spaces
         $value = preg_replace('/\s+/', '', $value);
@@ -112,8 +115,6 @@ class ASCII85Filter extends Filter
                     }
                 }
             }
-        } else {
-            throw new RuntimeException("Value is empty. See ".__CLASS__." class's documentation for possible values.");         
         }
 
         $result = $pad > 0 ? substr($result, 0, -$pad) : $result;

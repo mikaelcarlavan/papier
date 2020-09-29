@@ -15,7 +15,7 @@ use InvalidArgumentException;
 class Papier
 {
     /**
-     * NUmber of decimals for real numbers
+     * Number of decimals for real numbers
      *
      * @var int
      */

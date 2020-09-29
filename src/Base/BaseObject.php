@@ -64,7 +64,7 @@ abstract class BaseObject
      * Set object's value.
      *  
      * @param  mixed  $value
-     * @return \Papier\Object\Base\Object
+     * @return BaseObject
      */
     protected function setValue($value)
     {
@@ -79,7 +79,6 @@ abstract class BaseObject
      */
     public function write()
     {
-        $value = $this->format(). self::EOL_MARKER;
-        return $value;
+        return $this->format(). self::EOL_MARKER;
     }
 }

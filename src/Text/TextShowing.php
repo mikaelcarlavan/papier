@@ -19,10 +19,10 @@ trait TextShowing
      * Show a text string.
      *  
      * @param   string   $text
-     * @throws InvalidArgumentException if the provided arguments are not of type 'string'.
      * @return mixed
+     * @throws InvalidArgumentException if the provided arguments are not of type 'string'.
      */
-    public function showText($text)
+    public function showText(string $text)
     {
         if (!StringValidator::isValid($text)) {
             throw new InvalidArgumentException("Text is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -36,8 +36,8 @@ trait TextShowing
      * Move to next line and show a text string.
      *  
      * @param   string   $text
-     * @throws InvalidArgumentException if the provided argument is not of type 'string'.
      * @return mixed
+     * @throws InvalidArgumentException if the provided arguments are not of type 'string'.
      */
     public function moveToNextLineAndShowText($text)
     {
@@ -55,11 +55,11 @@ trait TextShowing
      * @param   string   $text
      * @param   mixed   $aw
      * @param   mixed   $ac
-     * @throws InvalidArgumentException if the provided argument is not of type 'string'.
-     * @throws InvalidArgumentException if the provided arguments are not of type 'int' or 'float'.
+     * @throws InvalidArgumentException if the $text argument is not of type 'string'.
+     * @throws InvalidArgumentException if the $aw and $ac arguments are not of type 'int' or 'float'.
      * @return mixed
      */
-    public function moveToNextLineAndShowWTextWithSpacing($text, $aw, $ac)
+    public function moveToNextLineAndShowWTextWithSpacing(string $text, $aw, $ac)
     {
         if (!StringValidator::isValid($text)) {
             throw new InvalidArgumentException("Text is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -85,11 +85,10 @@ trait TextShowing
     /**
      * Show one or more texts.
      *  
-     * @param   \Papier\Object\ArrayObject   $texts
-     * @throws InvalidArgumentException if the provided arguments are not of type 'ArrayObject'.
+     * @param  ArrayObject   $texts
      * @return mixed
      */
-    public function showTexts($texts)
+    public function showTexts(ArrayObject $texts)
     {
         if (!$texts instanceof ArrayObject) {
             throw new InvalidArgumentException("Texts is incorrect. See ".__CLASS__." class's documentation for possible values.");

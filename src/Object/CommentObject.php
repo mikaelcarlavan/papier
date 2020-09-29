@@ -13,8 +13,8 @@ class CommentObject extends BaseObject
     * Set comment's value.
     *
     * @param  mixed  $value
+    * @return CommentObject
     * @throws InvalidArgumentException if the provided argument is not of type 'string'.
-    * @return \Papier\Base\Comment
     */
     public function setValue($value)
     {
@@ -23,7 +23,7 @@ class CommentObject extends BaseObject
         }
 
         return parent::setValue($value);
-    } 
+    }
 
     /**
      * Format comment's value.

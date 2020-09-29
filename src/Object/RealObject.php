@@ -15,8 +15,8 @@ class RealObject extends IndirectObject
     * Set object's value.
     *
     * @param  mixed  $value
+    * @return RealObject
     * @throws InvalidArgumentException if the provided argument is not of type 'float'.
-    * @return \Papier\Object\RealObject
     */
     public function setValue($value)
     {

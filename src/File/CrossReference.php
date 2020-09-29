@@ -3,9 +3,7 @@
 namespace Papier\File;
 
 use Papier\Object\DictionaryObject;
-use Papier\Base\IndirectObject;
 
-use Papier\File\CrossReferenceTable;
 use Papier\Repository\Repository;
 
 use Papier\Validator\IntegerValidator;
@@ -15,7 +13,7 @@ use InvalidArgumentException;
 class CrossReference extends DictionaryObject
 {
     /**
-     * Offset of the crossreference.
+     * Offset of the cross-reference.
      *
      * @var int
      */
@@ -24,14 +22,14 @@ class CrossReference extends DictionaryObject
     /**
     * Instance of the object.
     *
-    * @var \Papier\File\CrossReference
+    * @var CrossReference
     */
     protected static $instance = null;
    
     /**
-    * Get instance of crossreference.
+    * Get instance of cross-reference.
     *
-    * @return \Papier\File\CrossReference
+    * @return CrossReference
     */
     public static function getInstance() 
     {
@@ -43,13 +41,13 @@ class CrossReference extends DictionaryObject
     }
 
     /**
-     * Set crossreference's offset.
+     * Set cross-reference's offset.
      *  
      * @param  int  $offset
+     * @return CrossReference
      * @throws InvalidArgumentException if the provided argument is not of type 'int'.
-     * @return \Papier\File\CrossReference
      */
-    public function setOffset($offset)
+    public function setOffset(int $offset)
     {
         if (!IntegerValidator::isValid($offset, 0)) {
             throw new InvalidArgumentException("Offset is incorrect. See ".__CLASS__." class's documentation for possible values.");

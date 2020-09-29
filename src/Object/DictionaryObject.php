@@ -5,8 +5,6 @@ namespace Papier\Object;
 use Papier\Base\IndirectObject;
 use Papier\Base\BaseObject;
 
-use Papier\Object\NullObject;
-
 use Papier\Factory\Factory;
 
 use Papier\Validator\ArrayValidator;
@@ -94,7 +92,7 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
      * @param  string  $key
      * @return bool
      */
-    public function hasEntry($key)
+    public function hasEntry(string $key)
     {
         $objects = $this->getObjects();
         return isset($objects[$key]);
@@ -102,12 +100,12 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
 
     /**
      * Set object for given key.
-     *  
-     * @param  mixed  $object
+     *
      * @param  string  $key
-     * @return \Papier\Object\DictionaryObject
+     * @param  mixed  $object
+     * @return DictionaryObject
      */
-    protected function setObjectForKey($key, $object)
+    protected function setObjectForKey(string $key, $object)
     {
         $objects = $this->getObjects();
         $objects[$key] = $object;
@@ -121,12 +119,10 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
      * @param  string  $key
      * @return mixed
      */
-    protected function getObjectForKey($key)
+    protected function getObjectForKey(string $key)
     {
         $objects = $this->getObjects();
-        $object = $objects[$key] ?? new NullObject();
-
-        return $object;
+        return $objects[$key] ?? new NullObject();
     }  
     
 
@@ -135,9 +131,9 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
      *      
      * @param  string  $key
      * @param  mixed  $object
-     * @return \Papier\Object\DictionaryObject
+     * @return DictionaryObject
      */
-    public function setEntry($key, $object)
+    public function setEntry(string $key, $object)
     {
         $this->setObjectForKey($key, $object);
         return $this;
@@ -147,9 +143,9 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
      * Unset entry for given key.
      *      
      * @param  string  $key
-     * @return \Papier\Object\DictionaryObject
+     * @return DictionaryObject
      */
-    public function unsetEntry($key)
+    public function unsetEntry(string $key)
     {
         $objects = $this->getObjects();
         unset($objects[$key]);
@@ -163,7 +159,7 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
      * @param  string  $key
      * @return mixed
      */
-    public function getEntry($key)
+    public function getEntry(string $key)
     {
         return $this->getObjectForKey($key);
     }
@@ -203,8 +199,8 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
 
     /**
      * Erase objects.
-     *  
-     * @return array
+     *
+     * @return DictionaryObject
      */
     public function clearObjects()
     {
@@ -215,10 +211,10 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
      * Set objects.
      * 
      * @param   array   $objects
-     * @throws InvalidArgumentException if the provided argument is not of type 'array' or if each element of the argument does not inherit 'IndirectObject'.
-     * @return \Papier\Object\DictionaryObject
+     * @return DictionaryObject
+     * @throws InvalidArgumentException if the provided argument is not an array of 'IndirectObject'.
      */
-    protected function setObjects($objects)
+    protected function setObjects(array $objects)
     {
         if (!ArrayValidator::isValid($objects)) {
             throw new InvalidArgumentException("Object's list is incorrect. See ".__CLASS__." class's documentation for possible values.");

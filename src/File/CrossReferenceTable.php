@@ -10,7 +10,7 @@ class CrossReferenceTable extends ArrayObject
     /**
      * Add new section.
      *  
-     * @return \Papier\File\CrossReference\CrossReferenceSection
+     * @return CrossReferenceSection
      */
     public function addSection()
     {
@@ -31,8 +31,7 @@ class CrossReferenceTable extends ArrayObject
      */
     public function getSections()
     {
-        $objects = $this->getObjects();
-        return $objects;
+        return $this->getObjects();
     }  
 
     /**

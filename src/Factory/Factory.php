@@ -17,20 +17,20 @@ class Factory
     /**
     * Instance of the object.
     *
-    * @var \Papier\Factory\Factory
+    * @var Factory
     */
     protected static $instance = null;
- 
+
     /**
-    * Create a new instance of type
-    *
-    * @param  string  $type
-    * @param  mixed  $value
-    * @param  bool  $isIndirect
-    * @throws InvalidArgumentException if the provided type's object does not exist.
-    * @return mixed
-    */   
-    public static function create($type, $value = null, $isIndirect = false)
+     * Create a new instance of type
+     *
+     * @param string $type
+     * @param mixed $value
+     * @param bool $isIndirect
+     * @return mixed
+     * @throws InvalidArgumentException if the provided type's object does not exist.
+     */
+    public static function create(string $type, $value = null, $isIndirect = false)
     {
         $instance = self::getInstance();
 
@@ -63,7 +63,7 @@ class Factory
     /**
     * Get instance of factory.
     *
-    * @return \Papier\Factory\Factory
+    * @return Factory
     */
     public static function getInstance() 
     {

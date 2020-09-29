@@ -50,10 +50,10 @@ class FileHeader extends BaseObject
      * Set header's version.
      *  
      * @param  int  $version
+     * @return FileHeader
      * @throws InvalidArgumentException if the provided argument is not of type 'int' or is outside acceptable values.
-     * @return \Papier\File\FileHeader
      */
-    public function setVersion($version)
+    public function setVersion(int $version)
     {
         if (!VersionValidator::isValid($version)) {
             throw new InvalidArgumentException("Version is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -77,10 +77,10 @@ class FileHeader extends BaseObject
      * Set if file has binary data.
      *  
      * @param  bool  $binaryData
+     * @return FileHeader
      * @throws InvalidArgumentException if the provided argument is not of type 'bool'.
-     * @return \Papier\File\FileHeader
      */
-    public function setBinaryData($binaryData)
+    public function setBinaryData(bool $binaryData)
     {
         if (!BooleanValidator::isValid($binaryData)) {
             throw new InvalidArgumentException("BinaryData is incorrect. See ".__CLASS__." class's documentation for possible values.");

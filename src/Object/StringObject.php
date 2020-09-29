@@ -14,7 +14,7 @@ class StringObject extends IndirectObject
     *
     * @param  mixed  $value
     * @throws InvalidArgumentException if the provided argument is not of type 'string'.
-    * @return \Papier\Object\StringObject
+    * @return StringObject
     */
     public function setValue($value)
     {

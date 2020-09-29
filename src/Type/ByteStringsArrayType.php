@@ -2,7 +2,6 @@
 
 namespace Papier\Type;
 
-use Papier\Type\ArrayType;
 use Papier\Validator\ByteStringsArrayValidator;
 
 use Papier\Factory\Factory;
@@ -14,9 +13,9 @@ class ByteStringsArrayType extends ArrayType
     /**
     * Set object's byte strings.
     *
-    * @param  array  $values
-    * @throws InvalidArgumentException if the provided argument is not of type 'array' or if each element of the array is not of type 'string'.
-    * @return \Papier\Type\ByteStringsArrayType
+    * @param  mixed  $strings
+    * @throws InvalidArgumentException if the provided argument is not an array of 'string'.
+    * @return ByteStringsArrayType
     */
     public function setValue($strings)
     {

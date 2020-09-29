@@ -12,14 +12,14 @@ class Repository extends ArrayObject
     /**
     * Instance of the object.
     *
-    * @var \Papier\Repository
+    * @var Repository
     */
     protected static $instance = null;
    
     /**
     * Get instance of repository.
     *
-    * @return \Papier\Repository
+    * @return Repository
     */
     public static function getInstance() 
     {
@@ -32,16 +32,12 @@ class Repository extends ArrayObject
 
     /**
      * Add object to repository.
-     *  
-     * @param  \Papier\Base\IndirectObject  $object
-     * @return \Papier\Repository
+     *
+     * @param IndirectObject $object
+     * @return Repository
      */
-    public function addObject($object)
-    {        
-        if (!$object instanceof IndirectObject) {
-            throw new InvalidArgumentException("Object is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-        
+    public function addObject(IndirectObject $object)
+    {
         $objects = $this->getObjects();
         $objects[$object->getNumber()] = $object;
 
@@ -50,16 +46,12 @@ class Repository extends ArrayObject
 
     /**
      * Remove object from repository.
-     *  
-     * @param  \Papier\Base\IndirectObject  $object
-     * @return \Papier\Repository
+     *
+     * @param IndirectObject $object
+     * @return Repository
      */
-    public function removeObject($object)
+    public function removeObject(IndirectObject $object)
     {
-        if (!$object instanceof IndirectObject) {
-            throw new InvalidArgumentException("Object is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $objects = $this->getObjects();
         unset($objects[$object->getNumber()]);
 

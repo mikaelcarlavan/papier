@@ -2,11 +2,6 @@
 
 namespace Papier\Type;
 
-use Papier\Type\ArrayType;
-use Papier\Type\BooleanType;
-
-use Papier\Validator\BooleanValidator;
-use Papier\Validator\ArrayValidator;
 use Papier\Validator\BooleansArrayValidator;
 
 use Papier\Factory\Factory;
@@ -16,12 +11,12 @@ use InvalidArgumentException;
 class BooleansArrayType extends ArrayType
 {
     /**
-    * Set object's numbers.
-    *
-    * @param  array  $values
-    * @throws InvalidArgumentException if the provided argument is not of type 'array' or if each element of the array is not of type 'float' or 'int'.
-    * @return \Papier\Type\NumbersArrayType
-    */
+     * Set object's numbers.
+     *
+     * @param mixed $booleans
+     * @return BooleansArrayType
+     * @throws InvalidArgumentException if the provided argument is not an array of 'float' or 'int'.
+     */
     public function setValue($booleans)
     {
         if (!BooleansArrayValidator::isValid($booleans)) {
@@ -36,5 +31,5 @@ class BooleansArrayType extends ArrayType
         }
 
         return parent::setValue($objects);
-    } 
+    }
 }

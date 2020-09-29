@@ -50,10 +50,10 @@ class CrossReferenceEntry extends BaseObject
      * Set entry's offset.
      *  
      * @param  int  $offset
+     * @return CrossReferenceEntry
      * @throws InvalidArgumentException if the provided argument does not inherit 'int'.
-     * @return \Papier\File\CrossReference\CrossReferenceEntry
      */
-    public function setOffset($offset)
+    public function setOffset(int $offset)
     {
         if (!IntegerValidator::isValid($offset, 0)) {
             throw new InvalidArgumentException("Offset is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -67,8 +67,8 @@ class CrossReferenceEntry extends BaseObject
      * Set entry to be free.
      *  
      * @param  bool  $free
+     * @return CrossReferenceEntry
      * @throws InvalidArgumentException if the provided argument does not inherit 'bool'.
-     * @return \Papier\File\CrossReference\CrossReferenceEntry
      */
     public function setFree($free = true)
     {
@@ -84,9 +84,9 @@ class CrossReferenceEntry extends BaseObject
      * Set entry's generation number.
      *  
      * @param  int  $generation
-     * @return \Papier\File\CrossReference\CrossReferenceEntry
+     * @return CrossReferenceEntry
      */
-    public function setGeneration($generation)
+    public function setGeneration(int $generation)
     {
         if (!IntegerValidator::isValid($generation)) {
             throw new InvalidArgumentException("Generation number is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -135,7 +135,6 @@ class CrossReferenceEntry extends BaseObject
     public function format()
     {
         $keyword = $this->isFree() ? self::FREE_ENTRY : self::IN_USE_ENTRY;
-        $value = sprintf("%010d %05d %s", $this->getOffset(), $this->getGeneration(), $keyword);
-        return $value;
+        return sprintf("%010d %05d %s", $this->getOffset(), $this->getGeneration(), $keyword);
     }
 }

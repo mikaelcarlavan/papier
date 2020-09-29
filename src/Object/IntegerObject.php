@@ -13,8 +13,8 @@ class IntegerObject extends IndirectObject
     * Set object's value.
     *
     * @param  mixed  $value
+    * @return IntegerObject
     * @throws InvalidArgumentException if the provided argument is not of type 'int'.
-    * @return \Papier\Object\IntegerObject
     */
     public function setValue($value)
     {

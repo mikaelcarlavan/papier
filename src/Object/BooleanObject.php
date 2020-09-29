@@ -14,8 +14,8 @@ class BooleanObject extends IndirectObject
     * Set object's value.
     *
     * @param  mixed  $value
-    * @throws InvalidArgumentException if the provided argument is not of type 'inboolt'.
-    * @return \Papier\Object\BooleanObject
+    * @return BooleanObject
+    * @throws InvalidArgumentException if the provided argument is not of type 'bool'.
     */
     public function setValue($value)
     {
@@ -29,8 +29,8 @@ class BooleanObject extends IndirectObject
     /**
     * Set value to true.
     *
-    * @return \Papier\Object\BooleanObject
-    */
+    * @return BooleanObject
+     */
     public function setTrue()
     {
         return $this->setValue(true);
@@ -39,7 +39,7 @@ class BooleanObject extends IndirectObject
     /**
      * Set value to false.
      *  
-     * @return \Papier\Object\BooleanObject
+     * @return BooleanObject
      */
     public function setFalse()
     {
