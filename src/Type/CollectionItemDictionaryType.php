@@ -23,7 +23,7 @@ class CollectionItemDictionaryType extends DictionaryObject
      * @throws InvalidArgumentException if the provided argument is not of type 'IndirectObject'.
      * @return \Papier\Type\CollectionItemDictionaryType
      */
-    public function setObject($key, $object)
+    public function setObject(string $key, $object)
     {
         if (!StringValidator::isValid($key)) {
             throw new InvalidArgumentException("Key is incorrect. See ".__CLASS__." class's documentation for possible values.");
