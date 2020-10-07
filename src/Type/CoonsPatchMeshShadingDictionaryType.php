@@ -2,17 +2,10 @@
 
 namespace Papier\Type;
 
-use Papier\Object\DictionaryObject;
-use Papier\Object\ArrayObject;
 use Papier\Object\FunctionObject;
 
 use Papier\Factory\Factory;
 
-use Papier\Type\ShadingDictionaryType;
-
-use Papier\Validator\ShadingTypeValidator;
-use Papier\Validator\StringValidator;
-use Papier\Validator\IntegerValidator;
 use Papier\Validator\NumbersArrayValidator;
 use Papier\Validator\BitsPerCoordinateValidator;
 use Papier\Validator\BitsPerComponentValidator;
@@ -25,11 +18,11 @@ class CoonsPatchMeshShadingDictionaryType extends ShadingDictionaryType
     /**
      * Set the number of bits used to represent each vertex coordinate.
      *  
-     * @param  array  $bits
+     * @param  int  $bits
+     * @return CoonsPatchMeshShadingDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'int'.
-     * @return \Papier\Type\CoonsPatchMeshShadingDictionaryType
      */
-    public function setBitsPerCoordinate($bits)
+    public function setBitsPerCoordinate(int $bits)
     {
         if (!BitsPerCoordinateValidator::isValid($bits)) {
             throw new InvalidArgumentException("BitsPerCoordinate is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -44,11 +37,11 @@ class CoonsPatchMeshShadingDictionaryType extends ShadingDictionaryType
      /**
      * Set the number of bits used to represent each colour component.
      *  
-     * @param  array  $bits
+     * @param  int  $bits
+     * @return CoonsPatchMeshShadingDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'int'.
-     * @return \Papier\Type\CoonsPatchMeshShadingDictionaryType
-     */
-    public function setBitsPerComponent($bits)
+      */
+    public function setBitsPerComponent(int $bits)
     {
         if (!BitsPerComponentValidator::isValid($bits)) {
             throw new InvalidArgumentException("BitsPerComponent is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -63,11 +56,11 @@ class CoonsPatchMeshShadingDictionaryType extends ShadingDictionaryType
      /**
      * Set the number of bits used to represent the edge flag of each vertex.
      *  
-     * @param  array  $bits
+     * @param  int  $bits
+     * @return CoonsPatchMeshShadingDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'int'.
-     * @return \Papier\Type\CoonsPatchMeshShadingDictionaryType
-     */
-    public function setBitsPerFlag($bits)
+      */
+    public function setBitsPerFlag(int $bits)
     {
         if (!BitsPerFlagValidator::isValid($bits)) {
             throw new InvalidArgumentException("BitsPerFlag is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -83,10 +76,10 @@ class CoonsPatchMeshShadingDictionaryType extends ShadingDictionaryType
      * Set map from vertex coordinates and colour components to the appropriate ranges of values.
      *  
      * @param  array  $decode
+     * @return CoonsPatchMeshShadingDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'array' and if each element of the provided argument is not of type 'int' or 'float.
-     * @return \Papier\Type\CoonsPatchMeshShadingDictionaryType
      */
-    public function setDecode($decode)
+    public function setDecode(array $decode)
     {
         if (!NumbersArrayValidator::isValid($decode)) {
             throw new InvalidArgumentException("Decode is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -101,16 +94,12 @@ class CoonsPatchMeshShadingDictionaryType extends ShadingDictionaryType
     /**
      * Set function.
      *  
-     * @param  \Papier\Object\FunctionObject  $function
+     * @param FunctionObject $function
+     * @return CoonsPatchMeshShadingDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'FunctionObject'.
-     * @return \Papier\Type\CoonsPatchMeshShadingDictionaryType
      */
-    public function setFunction($function)
+    public function setFunction(FunctionObject $function)
     {
-        if (!$function instanceof FunctionObject) {
-            throw new InvalidArgumentException("Function is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('Function', $function);
         return $this;
     }

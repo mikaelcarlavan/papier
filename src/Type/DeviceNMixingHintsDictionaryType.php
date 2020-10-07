@@ -2,6 +2,7 @@
 
 namespace Papier\Type;
 
+use Papier\Object\ArrayObject;
 use Papier\Object\DictionaryObject;
 use Papier\Object\NameObject;
 
@@ -17,16 +18,11 @@ class DeviceNMixingHintsDictionaryType extends DictionaryObject
     /**
      * Set solidities.
      *  
-     * @param  \Papier\Object\DictionaryObject  $solidities
-     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Type\DeviceNMixingHintsDictionaryType
+     * @param DictionaryObject $solidities
+     * @return DeviceNMixingHintsDictionaryType
      */
-    public function setSolidities($solidities)
+    public function setSolidities(DictionaryObject $solidities)
     {
-        if (!$solidities instanceof DictionaryObject) {
-            throw new InvalidArgumentException("Solidities is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('Solidities', $solidities);
         return $this;
     } 
@@ -34,16 +30,11 @@ class DeviceNMixingHintsDictionaryType extends DictionaryObject
     /**
      * Set printing order.
      *  
-     * @param  \Papier\Object\ArrayObject  $order
-     * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
-     * @return \Papier\Type\DeviceNMixingHintsDictionaryType
+     * @param  ArrayObject  $order
+     * @return DeviceNMixingHintsDictionaryType
      */
-    public function setPrintingOrder($order)
+    public function setPrintingOrder(ArrayObject $order)
     {
-        if (!$order instanceof ArrayObject) {
-            throw new InvalidArgumentException("PrintingOrder is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('PrintingOrder', $order);
         return $this;
     }
@@ -51,16 +42,11 @@ class DeviceNMixingHintsDictionaryType extends DictionaryObject
     /**
      * Set dot gain.
      *  
-     * @param  \Papier\Object\DictionaryObject  $dotgain
-     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Type\DeviceNMixingHintsDictionaryType
+     * @param DictionaryObject $dotgain
+     * @return DeviceNMixingHintsDictionaryType
      */
-    public function setDotGain($dotgain)
+    public function setDotGain(DictionaryObject $dotgain)
     {
-        if (!$dotgain instanceof DictionaryObject) {
-            throw new InvalidArgumentException("DotGain is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('DotGain', $dotgain);
         return $this;
     }

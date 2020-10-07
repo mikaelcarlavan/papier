@@ -10,6 +10,7 @@ use Papier\Validator\NumbersArrayValidator;
 use Papier\Validator\NumberValidator;
 
 use InvalidArgumentException;
+use RuntimeException;
 
 class CalGrayColourSpaceDictionaryType extends DictionaryObject
 {

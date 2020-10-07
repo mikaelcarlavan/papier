@@ -15,16 +15,11 @@ class DeveloperExtensionDictionaryType extends DictionaryObject
     /**
      * Set base version.
      *  
-     * @param  \Papier\Object\NameObject  $version
-     * @throws InvalidArgumentException if the provided argument is not of type 'NameObject'.
-     * @return \Papier\Type\DeveloperExtensionDictionaryType
+     * @param NameObject $version
+     * @return DeveloperExtensionDictionaryType
      */
-    public function setBaseVersion($version)
+    public function setBaseVersion(NameObject $version)
     {
-        if (!$version instanceof NameObject) {
-            throw new InvalidArgumentException("BaseVersion is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('BaseVersion', $version);
         return $this;
     } 
@@ -32,11 +27,11 @@ class DeveloperExtensionDictionaryType extends DictionaryObject
     /**
      * Set extension level.
      *  
-     * @param  int  $renditions
+     * @param  int $level
+     * @return DeveloperExtensionDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'int'.
-     * @return \Papier\Type\DeveloperExtensionDictionaryType
      */
-    public function setExtensionLevel($level)
+    public function setExtensionLevel(int $level)
     {
         if (!IntegerValidator::isValid($level)) {
             throw new InvalidArgumentException("ExtensionLevel is incorrect. See ".__CLASS__." class's documentation for possible values.");

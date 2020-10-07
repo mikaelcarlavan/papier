@@ -14,8 +14,8 @@ class DateType extends IntegerObject
     * Set object's value.
     *
     * @param  mixed  $date
+    * @return DateType
     * @throws InvalidArgumentException if the provided argument is not of type 'DateTime'.
-    * @return \Papier\Type\DateType
     */
     public function setValue($date)
     {

@@ -3,15 +3,13 @@
 namespace Papier\Type;
 
 use Papier\Object\DictionaryObject;
-use Papier\Object\IndirectObject;
-
+use Papier\Base\IndirectObject;
 
 use Papier\Validator\StringValidator;
 
 use Papier\Factory\Factory;
 
 use InvalidArgumentException;
-use RuntimeException;
 
 class CollectionItemDictionaryType extends DictionaryObject
 {
@@ -21,7 +19,7 @@ class CollectionItemDictionaryType extends DictionaryObject
      * @param  string  $key
      * @param  mixed  $object
      * @throws InvalidArgumentException if the provided argument is not of type 'IndirectObject'.
-     * @return \Papier\Type\CollectionItemDictionaryType
+     * @return CollectionItemDictionaryType
      */
     public function setObject(string $key, $object)
     {
@@ -33,9 +31,7 @@ class CollectionItemDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("FS is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Name', $fs);
-
-        $this->setEntry($key, $$object);
+        $this->setEntry($key, $object);
         return $this;
     } 
 

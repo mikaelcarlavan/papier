@@ -12,7 +12,6 @@ use Papier\Validator\StringValidator;
 use Papier\Factory\Factory;
 
 use InvalidArgumentException;
-use RuntimeException;
 
 class CollectionSubitemDictionaryType extends DictionaryObject
 {
@@ -20,8 +19,8 @@ class CollectionSubitemDictionaryType extends DictionaryObject
      * Set data.
      *  
      * @param  mixed  $d
+     * @return CollectionSubitemDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'int', 'float', 'date' or 'string'.
-     * @return \Papier\Type\CollectionSubitemDictionaryType
      */
     public function setD($d)
     {
@@ -45,8 +44,8 @@ class CollectionSubitemDictionaryType extends DictionaryObject
      * Set prefix.
      *  
      * @param  string  $p
+     * @return CollectionSubitemDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'string'.
-     * @return \Papier\Type\CollectionSubitemDictionaryType
      */
     public function setP($p)
     {
