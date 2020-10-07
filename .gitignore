@@ -1,5 +1,6 @@
 /vendor/
-.DS_Store
+*.DS_Store
 composer.json
 composer.lock
 *.pdf
+.idea
