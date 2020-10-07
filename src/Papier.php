@@ -8,9 +8,9 @@ use Papier\File\FileBody;
 
 use Papier\File\CrossReference;
 
-
-use RuntimeException;
-use InvalidArgumentException;
+use Papier\Type\DocumentInformationDictionaryType;
+use Papier\Type\PageObjectType;
+use Papier\Type\ViewerPreferencesDictionaryType;
 
 class Papier
 {
@@ -24,21 +24,21 @@ class Papier
      /**
      * Header
      *
-     * @var \Papier\File\FileHeader
+     * @var FileHeader
      */
     private $header;
 
      /**
      * Body
      *
-     * @var \Papier\File\FileBody
+     * @var FileBody
      */
     private $body;
 
      /**
      * Trailer
      *
-     * @var \Papier\File\FileTrailer
+     * @var FileTrailer
      */
     private $trailer;
 
@@ -59,7 +59,7 @@ class Papier
     /**
      * Get header.
      *
-     * @return \Papier\File\FileHeader
+     * @return FileHeader
      */
     public function getHeader()
     {
@@ -69,7 +69,7 @@ class Papier
     /**
      * Get body.
      *
-     * @return \Papier\File\FileBody
+     * @return FileBody
      */
     public function getBody()
     {
@@ -79,7 +79,7 @@ class Papier
     /**
      * Get trailer.
      *
-     * @return \Papier\File\FileTrailer
+     * @return FileTrailer
      */
     public function getTrailer()
     {
@@ -89,7 +89,7 @@ class Papier
     /**
      * Get info.
      *
-     * @return \Papier\Type\DocumentInformationDictionaryType
+     * @return DocumentInformationDictionaryType
      */
     public function getInfo()
     {
@@ -100,10 +100,9 @@ class Papier
      * Set PDF version.
      *  
      * @param  int  $version
-     * @throws InvalidArgumentException if the provided argument is not a valid version.
-     * @return \Papier\Papier
+     * @return Papier
      */
-    public function setVersion($version)
+    public function setVersion(int $version)
     {
         $this->getHeader()->setVersion($version);
         return $this;
@@ -113,19 +112,18 @@ class Papier
     /**
      * Add page to PDF's content.
      *
-     * @return \Papier\Type\PageObjectType
+     * @return PageObjectType
      */
     public function addPage()
     {
-        $page = $this->getBody()->addPage();
-        return $page;
+        return $this->getBody()->addPage();
     } 
 
 
     /**
      * Get viewer preferences.
      *  
-     * @return \Papier\Type\ViewerPreferencesDictionaryType
+     * @return ViewerPreferencesDictionaryType
      */
     public function getViewerPreferences()
     {
@@ -164,12 +162,13 @@ class Papier
         return $content;
     }
 
-     /**
+    /**
      * Save PDF's content.
      *
+     * @param string $filename
      * @return string
      */
-    public function save($filename)
+    public function save(string $filename)
     {
         $content = $this->build();
            
