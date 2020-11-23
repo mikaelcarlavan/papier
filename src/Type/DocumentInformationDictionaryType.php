@@ -3,7 +3,6 @@
 namespace Papier\Type;
 
 use Papier\Object\DictionaryObject;
-use Papier\Object\ArrayObject;
 
 use Papier\Factory\Factory;
 
@@ -19,10 +18,10 @@ class DocumentInformationDictionaryType extends DictionaryObject
      * Set title.
      * 
      * @param   string  $title
+     * @return DocumentInformationDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'string'.
-     * @return \Papier\Type\DocumentInformationDictionaryType
      */
-    public function setTitle($title)
+    public function setTitle(string $title)
     {
         if (!StringValidator::isValid($title)) {
             throw new InvalidArgumentException("Title is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -38,10 +37,10 @@ class DocumentInformationDictionaryType extends DictionaryObject
      * Set author.
      * 
      * @param   string  $author
+     * @return DocumentInformationDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'string'.
-     * @return \Papier\Type\DocumentInformationDictionaryType
      */
-    public function setAuthor($author)
+    public function setAuthor(string $author)
     {
         if (!StringValidator::isValid($author)) {
             throw new InvalidArgumentException("Author is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -57,10 +56,10 @@ class DocumentInformationDictionaryType extends DictionaryObject
      * Set subject.
      * 
      * @param   string  $subject
+     * @return DocumentInformationDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'string'.
-     * @return \Papier\Type\DocumentInformationDictionaryType
      */
-    public function setSubject($subject)
+    public function setSubject(string $subject)
     {
         if (!StringValidator::isValid($subject)) {
             throw new InvalidArgumentException("Subject is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -76,10 +75,10 @@ class DocumentInformationDictionaryType extends DictionaryObject
      * Set keywords.
      * 
      * @param   string  $keywords
+     * @return DocumentInformationDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'string'.
-     * @return \Papier\Type\DocumentInformationDictionaryType
      */
-    public function setKeywords($keywords)
+    public function setKeywords(string $keywords)
     {
         if (!StringValidator::isValid($keywords)) {
             throw new InvalidArgumentException("Keywords is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -95,10 +94,10 @@ class DocumentInformationDictionaryType extends DictionaryObject
      * Set creator.
      * 
      * @param   string  $creator
+     * @return DocumentInformationDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'string'.
-     * @return \Papier\Type\DocumentInformationDictionaryType
      */
-    public function setCreator($creator)
+    public function setCreator(string $creator)
     {
         if (!StringValidator::isValid($creator)) {
             throw new InvalidArgumentException("Creator is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -114,10 +113,10 @@ class DocumentInformationDictionaryType extends DictionaryObject
      * Set producer.
      * 
      * @param   string  $producer
+     * @return DocumentInformationDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'string'.
-     * @return \Papier\Type\DocumentInformationDictionaryType
      */
-    public function setProducer($producer)
+    public function setProducer(string $producer)
     {
         if (!StringValidator::isValid($producer)) {
             throw new InvalidArgumentException("Producer is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -132,9 +131,9 @@ class DocumentInformationDictionaryType extends DictionaryObject
     /**
      * Set creation date.
      *
-     * @param   string  $date
+     * @param  mixed  $date
+     * @return DocumentInformationDictionaryType
      * @throws InvalidArgumentException if the provided argument is not a valid date.
-     * @return \Papier\Type\DocumentInformationDictionaryType
      */
     public function setCreationDate($date)
     {
@@ -151,9 +150,9 @@ class DocumentInformationDictionaryType extends DictionaryObject
     /**
      * Set modification date.
      * 
-     * @param   string  $date
-     * @throws InvalidArgumentException if the provided argument is not a valid date.
-     * @return \Papier\Type\DocumentInformationDictionaryType
+     * @param   mixed  $date
+     * @return DocumentInformationDictionaryType
+     *@throws InvalidArgumentException if the provided argument is not a valid date.
      */
     public function setModDate($date)
     {
@@ -171,10 +170,10 @@ class DocumentInformationDictionaryType extends DictionaryObject
      * Set trapped.
      * 
      * @param   string  $trapped
+     * @return DocumentInformationDictionaryType
      * @throws InvalidArgumentException if the provided argument is not a valid trapped.
-     * @return \Papier\Type\DocumentInformationDictionaryType
      */
-    public function setTrapped($trapped)
+    public function setTrapped(string $trapped)
     {
         if (!TrappedValidator::isValid($trapped)) {
             throw new InvalidArgumentException("Trapped is incorrect. See ".__CLASS__." class's documentation for possible values.");
