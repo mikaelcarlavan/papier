@@ -11,7 +11,7 @@ class CrossReferenceSubsection extends ArrayObject
      *  
      * @return CrossReferenceEntry
      */
-    public function addEntry()
+    public function addEntry(): CrossReferenceEntry
     {
         $objects = $this->getEntries();
 
@@ -28,7 +28,7 @@ class CrossReferenceSubsection extends ArrayObject
      *  
      * @return array
      */
-    public function getEntries()
+    public function getEntries(): array
     {
         return $this->getObjects();
     }  
@@ -38,7 +38,7 @@ class CrossReferenceSubsection extends ArrayObject
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         $objects = $this->getEntries();
         $firstNumber = 0;

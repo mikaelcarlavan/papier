@@ -16,7 +16,7 @@ abstract class BaseObject
      *
      * @var string
      */
-    const EOL_MARKER = "\r\n"; 
+    const EOL_MARKER = "\n";
 
     /**
      * Magical method.
@@ -33,7 +33,7 @@ abstract class BaseObject
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         return $this->getValue();
     }
@@ -41,7 +41,7 @@ abstract class BaseObject
     /**
      * Get object's value.
      *
-     * @return string
+     * @return mixed
      */
     protected function getValue()
     {
@@ -52,12 +52,11 @@ abstract class BaseObject
     /**
      * Clear object's value.
      *
-     * @return string
+     * @return BaseObject
      */
-    protected function clearValue()
+    protected function clearValue(): BaseObject
     {
-        $this->setValue(null);
-        return $this;
+        return $this->setValue(null);
     }
 
     /**
@@ -66,18 +65,18 @@ abstract class BaseObject
      * @param  mixed  $value
      * @return BaseObject
      */
-    protected function setValue($value)
+    protected function setValue($value): BaseObject
     {
         $this->value = $value;
         return $this;
-    } 
+    }
 
     /**
      * Write object's value.
      *
      * @return string
      */
-    public function write()
+    public function write(): string
     {
         return $this->format(). self::EOL_MARKER;
     }

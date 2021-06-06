@@ -166,12 +166,11 @@ class Papier
      * Save PDF's content.
      *
      * @param string $filename
-     * @return string
+     * @return bool
      */
-    public function save(string $filename)
+    public function save(string $filename): bool
     {
         $content = $this->build();
-           
         return file_put_contents($filename, trim($content)) !== false;
     } 
 

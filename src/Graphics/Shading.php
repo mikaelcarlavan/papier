@@ -19,10 +19,6 @@ trait Shading
      */
     public function setShading(string $sh)
     {
-        if (!StringValidator::isValid($sh)) {
-            throw new InvalidArgumentException("Shading is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $state = sprintf('%s sh', Factory::create('Name', $sh)->format());
         return $this->addToContent($state);
     } 

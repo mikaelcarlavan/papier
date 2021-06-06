@@ -11,7 +11,7 @@ class ArrayObject extends DictionaryObject
      *  
      * @return IndirectObject
      */
-    public function first() 
+    public function first(): IndirectObject
     {
         $objects = $this->getObjects();
         $keys = $this->getKeys();
@@ -24,7 +24,7 @@ class ArrayObject extends DictionaryObject
      *  
      * @return IndirectObject
      */
-    public function last() 
+    public function last(): IndirectObject
     {
         $objects = $this->getObjects();
         $keys = $this->getKeys();
@@ -38,7 +38,7 @@ class ArrayObject extends DictionaryObject
      * @param  string  $value
      * @return bool
      */
-    public function has(string $value)
+    public function has(string $value): bool
     {
         $objects = $this->getObjects();
         if (count($objects)) {
@@ -55,9 +55,9 @@ class ArrayObject extends DictionaryObject
     /**
      * Get object at position.
      *  
-     * @return int
+     * @return IndirectObject
      */
-    public function current() 
+    public function current() : IndirectObject
     {
         $objects = $this->getObjects();
         return $objects[$this->position];
@@ -68,7 +68,7 @@ class ArrayObject extends DictionaryObject
      *  
      * @return int
      */
-    public function key() 
+    public function key(): int
     {
         return $this->position;
     }
@@ -78,7 +78,7 @@ class ArrayObject extends DictionaryObject
      *  
      * @return bool
      */
-    public function valid() 
+    public function valid(): bool
     {
         $objects = $this->getObjects();
         return isset($objects[$this->position]);
@@ -89,7 +89,7 @@ class ArrayObject extends DictionaryObject
      *  
      * @return int
      */
-    public function count()
+    public function count(): int
     {
         $objects = $this->getObjects();
         return count($objects);
@@ -102,7 +102,7 @@ class ArrayObject extends DictionaryObject
      * @param IndirectObject $object
      * @return ArrayObject
      */
-    public function append(IndirectObject $object)
+    public function append(IndirectObject $object): ArrayObject
     {
         $objects = $this->getObjects();
         $objects[] = $object;
@@ -115,7 +115,7 @@ class ArrayObject extends DictionaryObject
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         $objects = $this->getObjects();
         $value = '';

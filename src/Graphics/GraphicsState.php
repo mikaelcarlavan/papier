@@ -5,7 +5,6 @@ namespace Papier\Graphics;
 use Papier\Validator\NumberValidator;
 use Papier\Validator\LineCapStyleValidator;
 use Papier\Validator\LineJoinStyleValidator;
-use Papier\Validator\StringValidator;
 use Papier\Validator\RenderingIntentValidator;
 use Papier\Validator\IntegersArrayValidator;
 
@@ -51,30 +50,17 @@ trait GraphicsState
      */
     public function setCTM($a, $b , $c, $d, $e, $f)
     {
-        if (!NumberValidator::isValid($a)) {
-            throw new InvalidArgumentException("A is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
+        $components = [
+            'A' => $a,
+            'B' => $b,
+            'C' => $c,
+            'D' => $d,
+            'E' => $e,
+            'F' => $f,
+        ];
 
-        if (!NumberValidator::isValid($b)) {
-            throw new InvalidArgumentException("B is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
+        $this->checkCTMComponents($components);
 
-        if (!NumberValidator::isValid($c)) {
-            throw new InvalidArgumentException("C is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        if (!NumberValidator::isValid($d)) {
-            throw new InvalidArgumentException("D is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        if (!NumberValidator::isValid($e)) {
-            throw new InvalidArgumentException("E is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        if (!NumberValidator::isValid($f)) {
-            throw new InvalidArgumentException("F is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-        
         $state = sprintf('%s %s %s %s %s %s cm', 
             Factory::create('Number', $a)->format(), 
             Factory::create('Number', $b)->format(), 
@@ -107,11 +93,11 @@ trait GraphicsState
     /**
      * Set line cap style.
      *  
-     * @param  mixed  $lc
+     * @param  int  $lc
      * @return mixed
      * @throws InvalidArgumentException if the provided argument is not a valid line cap style.
      */
-    public function setLineCapStyle($lc)
+    public function setLineCapStyle(int $lc)
     {
         if (!LineCapStyleValidator::isValid($lc)) {
             throw new InvalidArgumentException("LC is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -222,11 +208,27 @@ trait GraphicsState
      */
     public function setDictionary(string $dn)
     {
-        if (!StringValidator::isValid($dn)) {
-            throw new InvalidArgumentException("DN is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $state = sprintf('%s gs', $dn);
         return $this->addToContent($state);
-    } 
+    }
+
+    /**
+     * Check CTM components.
+     *
+     * @param array $components
+     * @return bool
+     * @throws InvalidArgumentException if one of the provided argument is not 'float' or 'int'.
+     */
+    private function checkCTMComponents(array $components): bool
+    {
+        if (is_array($components) && count($components) > 0) {
+            foreach ($components as $key => $component) {
+                if (!NumberValidator::isValid($component)) {
+                    throw new InvalidArgumentException("$key is incorrect. See ".__CLASS__." class's documentation for possible values.");
+                }
+            }
+        }
+
+        return true;
+    }
 }

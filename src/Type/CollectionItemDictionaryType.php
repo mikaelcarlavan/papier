@@ -21,7 +21,7 @@ class CollectionItemDictionaryType extends DictionaryObject
      * @throws InvalidArgumentException if the provided argument is not of type 'IndirectObject'.
      * @return CollectionItemDictionaryType
      */
-    public function setObject(string $key, $object)
+    public function setObject(string $key, $object): CollectionItemDictionaryType
     {
         if (!StringValidator::isValid($key)) {
             throw new InvalidArgumentException("Key is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -40,7 +40,7 @@ class CollectionItemDictionaryType extends DictionaryObject
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         $type = Factory::create('Name', 'CollectionItem');
         $this->setEntry('Type', $type);

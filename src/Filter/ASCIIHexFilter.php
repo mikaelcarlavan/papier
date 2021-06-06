@@ -26,7 +26,7 @@ class ASCIIHexFilter extends Filter
      * @throws InvalidArgumentException if stream does not end with the end-of-data marker.
      * @throws RuntimeException if stream is empty.
      */
-    public static function decode(string $stream, $param = array())
+    public static function decode(string $stream, $param = array()): string
     {
         $stream = trim($stream);
         $marker = substr($stream, -strlen(self::EOD_MARKER));
@@ -48,7 +48,7 @@ class ASCIIHexFilter extends Filter
      * @return string
      * @throws InvalidArgumentException if the provided argument is not a string.
      */
-    public static function encode(string $value, $param = array())
+    public static function encode(string $value, $param = array()): string
     {
         // Clean white-spaces
         $value = preg_replace('/\s+/', '', $value);

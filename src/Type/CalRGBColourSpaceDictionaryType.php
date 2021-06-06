@@ -5,11 +5,7 @@ namespace Papier\Type;
 use Papier\Factory\Factory;
 
 use Papier\Validator\NumbersArrayValidator;
-use Papier\Validator\NumberValidator;
 
-use Papier\Type\CalGrayColourSpaceDictionaryType;
-
-use RuntimeException;
 use InvalidArgumentException;
 
 class CalRGBColourSpaceDictionaryType extends CalGrayColourSpaceDictionaryType
@@ -21,7 +17,7 @@ class CalRGBColourSpaceDictionaryType extends CalGrayColourSpaceDictionaryType
      * @return CalRGBColourSpaceDictionaryType
      * @throws InvalidArgumentException if the provided argument is not a 9 length array of type 'int' or 'float'.
      */
-    public function setMatrix(array $matrix)
+    public function setMatrix(array $matrix): CalRGBColourSpaceDictionaryType
     {
         if (!NumbersArrayValidator::isValid($matrix, 9)) {
             throw new InvalidArgumentException("Matrix is incorrect. See ".__CLASS__." class's documentation for possible values.");

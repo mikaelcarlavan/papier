@@ -3,7 +3,6 @@
 namespace Papier\Object;
 
 use Papier\Base\IndirectObject;
-use Papier\Validator\StringValidator;
 
 use InvalidArgumentException;
 
@@ -16,22 +15,19 @@ class NameObject extends IndirectObject
      * @return NameObject
      * @throws InvalidArgumentException if the provided argument is not of type 'string'.
      */
-    public function setValue($value)
+    public function setValue($value): NameObject
     {
-        if (!StringValidator::isValid($value)) {
-            throw new InvalidArgumentException("String is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
+        parent::setValue($value);
+        return $this;
+    }
 
-        return parent::setValue($value);
-    } 
-    
 
     /**
      * Format object's value.
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         $value = $this->getValue();
 

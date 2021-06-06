@@ -12,7 +12,7 @@ class CrossReferenceTable extends ArrayObject
      *  
      * @return CrossReferenceSection
      */
-    public function addSection()
+    public function addSection(): CrossReferenceSection
     {
         $objects = $this->getSections();
 
@@ -29,7 +29,7 @@ class CrossReferenceTable extends ArrayObject
      *  
      * @return array
      */
-    public function getSections()
+    public function getSections(): array
     {
         return $this->getObjects();
     }  
@@ -39,13 +39,13 @@ class CrossReferenceTable extends ArrayObject
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         $objects = $this->getSections();
 
         $value = '';
         if (is_array($objects)) {
-            foreach ($objects as $key => $object) {
+            foreach ($objects as $object) {
                 $value .= $object->write();
             }
         }

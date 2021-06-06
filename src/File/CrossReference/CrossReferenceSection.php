@@ -11,7 +11,7 @@ class CrossReferenceSection extends ArrayObject
      *  
      * @return CrossReferenceSubsection
      */
-    public function addSubsection()
+    public function addSubsection(): CrossReferenceSubsection
     {
         $objects = $this->getSubsections();
 
@@ -28,7 +28,7 @@ class CrossReferenceSection extends ArrayObject
      *  
      * @return array
      */
-    public function getSubsections()
+    public function getSubsections(): array
     {
         return $this->getObjects();
     }  
@@ -38,13 +38,13 @@ class CrossReferenceSection extends ArrayObject
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         $objects = $this->getSubsections();
 
         $value = 'xref'. self::EOL_MARKER;
         if (is_array($objects) && count($objects) > 0) {
-            foreach ($objects as $key => $object) {
+            foreach ($objects as $object) {
                 $value .= $object->write();
             }
         }

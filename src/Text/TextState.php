@@ -4,7 +4,6 @@ namespace Papier\Text;
 
 use Papier\Validator\NumberValidator;
 use Papier\Validator\StringValidator;
-use Papier\Validator\IntegerValidator;
 use Papier\Validator\RenderingModeValidator;
 
 use Papier\Factory\Factory;

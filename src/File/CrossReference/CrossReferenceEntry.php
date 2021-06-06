@@ -5,7 +5,6 @@ namespace Papier\File\CrossReference;
 use Papier\Base\BaseObject;
 
 use Papier\Validator\IntegerValidator;
-use Papier\Validator\BooleanValidator;
 
 use InvalidArgumentException;
 
@@ -53,7 +52,7 @@ class CrossReferenceEntry extends BaseObject
      * @return CrossReferenceEntry
      * @throws InvalidArgumentException if the provided argument does not inherit 'int'.
      */
-    public function setOffset(int $offset)
+    public function setOffset(int $offset): CrossReferenceEntry
     {
         if (!IntegerValidator::isValid($offset, 0)) {
             throw new InvalidArgumentException("Offset is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -66,16 +65,12 @@ class CrossReferenceEntry extends BaseObject
     /**
      * Set entry to be free.
      *  
-     * @param  bool  $free
+     * @param bool $free
      * @return CrossReferenceEntry
      * @throws InvalidArgumentException if the provided argument does not inherit 'bool'.
      */
-    public function setFree($free = true)
+    public function setFree(bool $free = true): CrossReferenceEntry
     {
-        if (!BooleanValidator::isValid($free)) {
-            throw new InvalidArgumentException("Free boolean is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->free = $free;
         return $this;
     } 
@@ -86,9 +81,9 @@ class CrossReferenceEntry extends BaseObject
      * @param  int  $generation
      * @return CrossReferenceEntry
      */
-    public function setGeneration(int $generation)
+    public function setGeneration(int $generation): CrossReferenceEntry
     {
-        if (!IntegerValidator::isValid($generation)) {
+        if (!IntegerValidator::isValid($generation, 0)) {
             throw new InvalidArgumentException("Generation number is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
@@ -101,7 +96,7 @@ class CrossReferenceEntry extends BaseObject
      *  
      * @return bool
      */
-    protected function isFree()
+    protected function isFree(): bool
     {
         return $this->free;
     } 
@@ -112,7 +107,7 @@ class CrossReferenceEntry extends BaseObject
      *
      * @return int
      */
-    public function getOffset()
+    public function getOffset(): int
     {
         return $this->offset;
     }
@@ -122,7 +117,7 @@ class CrossReferenceEntry extends BaseObject
      *
      * @return int
      */
-    public function getGeneration()
+    public function getGeneration(): int
     {
         return $this->generation;
     }
@@ -132,7 +127,7 @@ class CrossReferenceEntry extends BaseObject
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         $keyword = $this->isFree() ? self::FREE_ENTRY : self::IN_USE_ENTRY;
         return sprintf("%010d %05d %s", $this->getOffset(), $this->getGeneration(), $keyword);

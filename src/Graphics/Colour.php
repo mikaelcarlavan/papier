@@ -4,10 +4,6 @@ namespace Papier\Graphics;
 
 use Papier\Validator\NumberValidator;
 
-use Papier\Factory\Factory;
-
-use Papier\Graphics\DeviceColour;
-
 use InvalidArgumentException;
 
 trait Colour

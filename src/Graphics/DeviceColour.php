@@ -160,17 +160,7 @@ trait DeviceColour
      */
     public function setNonStrokingRGBColour($r, $g, $b)
     {
-        if (!NumberValidator::isValid($r)) {
-            throw new InvalidArgumentException("Red is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        if (!NumberValidator::isValid($g)) {
-            throw new InvalidArgumentException("Green is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        if (!NumberValidator::isValid($b)) {
-            throw new InvalidArgumentException("Blue is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
+        $this->checkRGBComponents($r, $g, $b);
 
         $state = sprintf('%s %s %s rg', 
             Factory::create('Number', $r)->format(), 
@@ -193,21 +183,7 @@ trait DeviceColour
      */
     public function setCMYKColour($c, $m, $y, $k)
     {
-        if (!NumberValidator::isValid($c)) {
-            throw new InvalidArgumentException("Cyan is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        if (!NumberValidator::isValid($m)) {
-            throw new InvalidArgumentException("Magenta is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        if (!NumberValidator::isValid($y)) {
-            throw new InvalidArgumentException("Yellow is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        if (!NumberValidator::isValid($k)) {
-            throw new InvalidArgumentException("Black is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
+        $this->checkCMYKComponents($c, $m, $y, $k);
 
         $state = sprintf('%s %s %s %s K', 
             Factory::create('Number', $c)->format(), 
@@ -231,6 +207,30 @@ trait DeviceColour
      */
     public function setNonStrokingCMYKColour($c, $m, $y, $k)
     {
+        $this->checkCMYKComponents($c, $m, $y, $k);
+
+        $state = sprintf('%s %s %s %s k',
+            Factory::create('Number', $c)->format(), 
+            Factory::create('Number', $m)->format(),
+            Factory::create('Number', $y)->format(),
+            Factory::create('Number', $k)->format()
+        );
+
+        return $this->addToContent($state);
+    }
+
+    /**
+     * Check CMYK colour components.
+     *
+     * @param   mixed   $c
+     * @param   mixed   $m
+     * @param   mixed   $y
+     * @param   mixed   $k
+     * @return bool
+     * @throws InvalidArgumentException if one of the provided argument is not 'float' or 'int'.
+     */
+    private function checkCMYKComponents($c, $m, $y, $k): bool
+    {
         if (!NumberValidator::isValid($c)) {
             throw new InvalidArgumentException("Cyan is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
@@ -247,13 +247,32 @@ trait DeviceColour
             throw new InvalidArgumentException("Black is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $state = sprintf('%s %s %s %s k', 
-            Factory::create('Number', $c)->format(), 
-            Factory::create('Number', $m)->format(),
-            Factory::create('Number', $y)->format(),
-            Factory::create('Number', $k)->format()
-        );
+        return true;
+    }
 
-        return $this->addToContent($state);
+    /**
+     * Check RGB colour components.
+     *
+     * @param   mixed   $r
+     * @param   mixed   $g
+     * @param   mixed   $b
+     * @return bool
+     * @throws InvalidArgumentException if one of the provided argument is not 'float' or 'int'.
+     */
+    private function checkRGBComponents($r, $g, $b): bool
+    {
+        if (!NumberValidator::isValid($r)) {
+            throw new InvalidArgumentException("Red is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        if (!NumberValidator::isValid($g)) {
+            throw new InvalidArgumentException("Green is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        if (!NumberValidator::isValid($b)) {
+            throw new InvalidArgumentException("Blue is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        return true;
     }
 }

@@ -16,13 +16,14 @@ class CommentObject extends BaseObject
     * @return CommentObject
     * @throws InvalidArgumentException if the provided argument is not of type 'string'.
     */
-    public function setValue($value)
+    public function setValue($value): CommentObject
     {
         if (!StringValidator::isValid($value)) {
             throw new InvalidArgumentException("String is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        return parent::setValue($value);
+        parent::setValue($value);
+        return $this;
     }
 
     /**
@@ -30,7 +31,7 @@ class CommentObject extends BaseObject
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         $value = $this->getValue();
 

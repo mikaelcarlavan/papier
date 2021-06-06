@@ -21,7 +21,7 @@ class CalGrayColourSpaceDictionaryType extends DictionaryObject
      * @return CalGrayColourSpaceDictionaryType
      * @throws InvalidArgumentException if the provided argument is not an 3 length array of type 'int' or 'float'.
      */
-    public function setWhitePoint(array $whitepoint)
+    public function setWhitePoint(array $whitepoint): CalGrayColourSpaceDictionaryType
     {
         if (!NumbersArrayValidator::isValid($whitepoint, 3)) {
             throw new InvalidArgumentException("WhitePoint is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -40,7 +40,7 @@ class CalGrayColourSpaceDictionaryType extends DictionaryObject
      * @return CalGrayColourSpaceDictionaryType
      * @throws InvalidArgumentException if the provided argument is not an 3 length array of type 'int' or 'float'.
      */
-    public function setBlackPoint(array $blackpoint)
+    public function setBlackPoint(array $blackpoint): CalGrayColourSpaceDictionaryType
     {
         if (!NumbersArrayValidator::isValid($blackpoint, 3)) {
             throw new InvalidArgumentException("BlackPoint is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -59,7 +59,7 @@ class CalGrayColourSpaceDictionaryType extends DictionaryObject
      * @return CalGrayColourSpaceDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'int' or 'float'.
      */
-    public function setGamma($gamma)
+    public function setGamma($gamma): CalGrayColourSpaceDictionaryType
     {
         if (!NumberValidator::isValid($gamma)) {
             throw new InvalidArgumentException("Gamma is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -77,7 +77,7 @@ class CalGrayColourSpaceDictionaryType extends DictionaryObject
      * @return string
      * @throws RuntimeException if white-point is not set.
      */
-    public function format()
+    public function format(): string
     {
         if (!$this->hasEntry('WhitePoint')) {
             throw new RuntimeException("WhitePoint is missing. See ".__CLASS__." class's documentation for possible values.");

@@ -47,7 +47,7 @@ class CrossReference extends DictionaryObject
      * @return CrossReference
      * @throws InvalidArgumentException if the provided argument is not of type 'int'.
      */
-    public function setOffset(int $offset)
+    public function setOffset(int $offset): CrossReference
     {
         if (!IntegerValidator::isValid($offset, 0)) {
             throw new InvalidArgumentException("Offset is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -62,7 +62,7 @@ class CrossReference extends DictionaryObject
      *
      * @return int
      */
-    protected function getOffset()
+    protected function getOffset(): int
     {
         return $this->offset;
     }
@@ -72,7 +72,7 @@ class CrossReference extends DictionaryObject
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         $table = new CrossReferenceTable();
         $subsection = $table->addSection()->addSubsection();

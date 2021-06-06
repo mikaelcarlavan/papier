@@ -68,29 +68,16 @@ trait TextPositioning
      */
     public function setTextMatrix($a, $b, $c, $d, $e, $f)
     {
-        if (!NumberValidator::isValid($a)) {
-            throw new InvalidArgumentException("A is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-  
-        if (!NumberValidator::isValid($b)) {
-            throw new InvalidArgumentException("B is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
+        $components = [
+            'A' => $a,
+            'B' => $b,
+            'C' => $c,
+            'D' => $d,
+            'E' => $e,
+            'F' => $f,
+        ];
 
-        if (!NumberValidator::isValid($c)) {
-            throw new InvalidArgumentException("C is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        if (!NumberValidator::isValid($d)) {
-            throw new InvalidArgumentException("D is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        if (!NumberValidator::isValid($e)) {
-            throw new InvalidArgumentException("E is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        if (!NumberValidator::isValid($f)) {
-            throw new InvalidArgumentException("F is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
+        $this->checkMatrixComponents($components);
 
         $state = sprintf('%s %s %s %s %s %s Tm', 
             Factory::create('Number', $a)->format(), 
@@ -113,5 +100,25 @@ trait TextPositioning
     {
         $state = 'T*';
         return $this->addToContent($state);
+    }
+
+    /**
+     * Check matrix components.
+     *
+     * @param array $components
+     * @return bool
+     * @throws InvalidArgumentException if one of the provided argument is not 'float' or 'int'.
+     */
+    private function checkMatrixComponents(array $components): bool
+    {
+        if (is_array($components) && count($components) > 0) {
+            foreach ($components as $key => $component) {
+                if (!NumberValidator::isValid($component)) {
+                    throw new InvalidArgumentException("$key is incorrect. See ".__CLASS__." class's documentation for possible values.");
+                }
+            }
+        }
+
+        return true;
     }
 }

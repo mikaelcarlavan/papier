@@ -76,30 +76,17 @@ trait PathConstruction
      */
     public function appendCubicBezier($x1, $y1, $x2, $y2, $x3, $y3)
     {
-        if (!NumberValidator::isValid($x1)) {
-            throw new InvalidArgumentException("X1 is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
+        $components = [
+            'X1' => $x1,
+            'Y1' => $y1,
+            'X2' => $x2,
+            'Y2' => $y2,
+            'X3' => $x3,
+            'Y3' => $y3,
+        ];
 
-        if (!NumberValidator::isValid($y1)) {
-            throw new InvalidArgumentException("Y1 is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
+        $this->checkBezierComponents($components);
 
-        if (!NumberValidator::isValid($x2)) {
-            throw new InvalidArgumentException("X2 is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        if (!NumberValidator::isValid($y2)) {
-            throw new InvalidArgumentException("Y2 is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        if (!NumberValidator::isValid($x3)) {
-            throw new InvalidArgumentException("X3 is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        if (!NumberValidator::isValid($y3)) {
-            throw new InvalidArgumentException("Y3 is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-        
         $state = sprintf('%s %s %s %s %s %s c', 
             Factory::create('Number', $x1)->format(), 
             Factory::create('Number', $y1)->format(),
@@ -124,21 +111,14 @@ trait PathConstruction
      */
     public function appendCubicBezier2a($x2, $y2, $x3, $y3)
     {
-        if (!NumberValidator::isValid($x2)) {
-            throw new InvalidArgumentException("X2 is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
+        $components = [
+            'X2' => $x2,
+            'Y2' => $y2,
+            'X3' => $x3,
+            'Y3' => $y3,
+        ];
 
-        if (!NumberValidator::isValid($y2)) {
-            throw new InvalidArgumentException("Y2 is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        if (!NumberValidator::isValid($x3)) {
-            throw new InvalidArgumentException("X3 is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        if (!NumberValidator::isValid($y3)) {
-            throw new InvalidArgumentException("Y3 is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
+        $this->checkBezierComponents($components);
         
         $state = sprintf('%s %s %s %s v', 
             Factory::create('Number', $x2)->format(),
@@ -162,21 +142,14 @@ trait PathConstruction
      */
     public function appendCubicBezier2b($x1, $y1, $x3, $y3)
     {
-        if (!NumberValidator::isValid($x1)) {
-            throw new InvalidArgumentException("X1 is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
+        $components = [
+            'X1' => $x1,
+            'Y1' => $y1,
+            'X3' => $x3,
+            'Y3' => $y3,
+        ];
 
-        if (!NumberValidator::isValid($y1)) {
-            throw new InvalidArgumentException("Y1 is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        if (!NumberValidator::isValid($x3)) {
-            throw new InvalidArgumentException("X3 is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        if (!NumberValidator::isValid($y3)) {
-            throw new InvalidArgumentException("Y3 is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
+        $this->checkBezierComponents($components);
         
         $state = sprintf('%s %s %s %s y', 
             Factory::create('Number', $x1)->format(), 
@@ -235,5 +208,25 @@ trait PathConstruction
         );
 
         return $this->addToContent($state);
+    }
+
+    /**
+     * Check Bézier components.
+     *
+     * @param array $components
+     * @return bool
+     * @throws InvalidArgumentException if one of the provided argument is not 'float' or 'int'.
+     */
+    private function checkBezierComponents(array $components): bool
+    {
+        if (is_array($components) && count($components) > 0) {
+            foreach ($components as $key => $component) {
+                if (!NumberValidator::isValid($component)) {
+                    throw new InvalidArgumentException("$key is incorrect. See ".__CLASS__." class's documentation for possible values.");
+                }
+            }
+        }
+
+        return true;
     }
 }

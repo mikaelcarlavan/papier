@@ -6,8 +6,6 @@ use Papier\Object\ArrayObject;
 
 use Papier\Validator\NumberValidator;
 use Papier\Validator\StringValidator;
-use Papier\Validator\IntegerValidator;
-use Papier\Validator\RenderingModeValidator;
 
 use Papier\Factory\Factory;
 
@@ -35,16 +33,11 @@ trait TextShowing
     /**
      * Move to next line and show a text string.
      *  
-     * @param   string   $text
+     * @param string $text
      * @return mixed
-     * @throws InvalidArgumentException if the provided arguments are not of type 'string'.
      */
-    public function moveToNextLineAndShowText($text)
+    public function moveToNextLineAndShowText(string $text)
     {
-        if (!StringValidator::isValid($text)) {
-            throw new InvalidArgumentException("Text is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-  
         $state = sprintf('%s \'', Factory::create('LiteralString', $text)->format());
         return $this->addToContent($state);
     }

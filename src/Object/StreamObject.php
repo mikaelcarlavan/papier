@@ -24,7 +24,7 @@ class StreamObject extends DictionaryObject
      *
      * @return string
      */
-    private function getStream()
+    private function getStream(): string
     {
         $stream = $this->getContent();
 
@@ -52,9 +52,9 @@ class StreamObject extends DictionaryObject
     /**
      * Get object's content.
      *
-     * @return string
+     * @return string|null
      */
-    protected function getContent()
+    protected function getContent(): ?string
     {
         return $this->content;
     }
@@ -65,7 +65,7 @@ class StreamObject extends DictionaryObject
      * @param  mixed  $content
      * @return StreamObject
      */
-    public function setContent($content)
+    public function setContent($content): StreamObject
     {
         $this->content = $content;
         return $this;
@@ -74,11 +74,11 @@ class StreamObject extends DictionaryObject
     /**
      * Add data to content.
      *  
-     * @param  string  $data
-     * @param  bool  $withEndOfLine
+     * @param string $data
+     * @param bool $withEndOfLine
      * @return StreamObject
      */
-    protected function addToContent($data, $withEndOfLine = true)
+    protected function addToContent(string $data, bool $withEndOfLine = true): StreamObject
     {
         $content = $this->getContent();
         $content.= $data;
@@ -92,9 +92,9 @@ class StreamObject extends DictionaryObject
      *  
      * @param  mixed  $filter
      * @return StreamObject
-     *@throws InvalidArgumentException if the provided argument is not of type 'string' or 'ArrayObject'.
+     * @throws InvalidArgumentException if the provided argument is not of type 'string' or 'ArrayObject'.
      */
-    public function setFilter($filter)
+    public function setFilter($filter): StreamObject
     {
         if (!StringValidator::isValid($filter) && !$filter instanceof ArrayObject) {
             throw new InvalidArgumentException("Filter is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -111,9 +111,9 @@ class StreamObject extends DictionaryObject
      *  
      * @param  mixed  $parms
      * @return StreamObject
-     *@throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject' or 'ArrayObject'.
+     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject' or 'ArrayObject'.
      */
-    public function setDecodeParms($parms)
+    public function setDecodeParms($parms): StreamObject
     {
         if (!$parms instanceof DictionaryObject && !$parms instanceof ArrayObject) {
             throw new InvalidArgumentException("DecodeParms is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -129,7 +129,7 @@ class StreamObject extends DictionaryObject
      * @param  FileSpecificationStringType $f
      * @return StreamObject
      */
-    public function setF(FileSpecificationStringType $f)
+    public function setF(FileSpecificationStringType $f): StreamObject
     {
         $this->setEntry('F', $f);
         return $this;
@@ -142,7 +142,7 @@ class StreamObject extends DictionaryObject
      * @return StreamObject
      * @throws InvalidArgumentException if the provided argument is not of type 'string' or 'ArrayObject'.
      */
-    public function setFFilter($ffilter)
+    public function setFFilter($ffilter): StreamObject
     {
         if (!StringValidator::isValid($ffilter) && !$ffilter instanceof ArrayObject) {
             throw new InvalidArgumentException("FFilter is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -161,7 +161,7 @@ class StreamObject extends DictionaryObject
      * @return StreamObject
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject' or 'ArrayObject'.
      */
-    public function setFDecodeParms($parms)
+    public function setFDecodeParms($parms): StreamObject
     {
         if (!$parms instanceof DictionaryObject && !$parms instanceof ArrayObject) {
             throw new InvalidArgumentException("FDecodeParms is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -178,12 +178,8 @@ class StreamObject extends DictionaryObject
      * @return StreamObject
      * @throws InvalidArgumentException if the provided argument is not of type 'int'.
      */
-    public function setDL(int $dl)
+    public function setDL(int $dl): StreamObject
     {
-        if (!IntegerValidator::isValid($dl)) {
-            throw new InvalidArgumentException("DL is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('Integer', $dl);
 
         $this->setEntry('DL', $value);
@@ -195,12 +191,12 @@ class StreamObject extends DictionaryObject
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         $stream = $this->getStream();
 
         // Compute length of stream and set it into dictionary
-        $length = Factory::create('Integer', intval(strlen($stream)));
+        $length = Factory::create('Integer', strlen($stream));
     
         $this->setEntry('Length', $length);
 

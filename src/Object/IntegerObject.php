@@ -16,12 +16,13 @@ class IntegerObject extends IndirectObject
     * @return IntegerObject
     * @throws InvalidArgumentException if the provided argument is not of type 'int'.
     */
-    public function setValue($value)
+    public function setValue($value): IntegerObject
     {
         if (!IntegerValidator::isValid($value)) {
             throw new InvalidArgumentException("Integer is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        return parent::setValue($value);
+        parent::setValue($value);
+        return $this;
     }    
 }

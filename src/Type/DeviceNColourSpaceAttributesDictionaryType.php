@@ -4,11 +4,7 @@ namespace Papier\Type;
 
 use Papier\Object\DictionaryObject;
 
-use Papier\Validator\StringValidator;
-
 use Papier\Factory\Factory;
-
-use InvalidArgumentException;
 
 class DeviceNColourSpaceAttributesDictionaryType extends DictionaryObject
 {
@@ -17,14 +13,9 @@ class DeviceNColourSpaceAttributesDictionaryType extends DictionaryObject
      *  
      * @param  string  $subtype
      * @return DeviceNColourSpaceAttributesDictionaryType
-     * @throws InvalidArgumentException if the provided argument is not of type 'string'.
      */
-    public function setSubtype(string $subtype)
+    public function setSubtype(string $subtype): DeviceNColourSpaceAttributesDictionaryType
     {
-        if (!StringValidator::isValid($subtype)) {
-            throw new InvalidArgumentException("Subtype is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('Name', $subtype);
 
         $this->setEntry('Subtype', $value);
@@ -37,7 +28,7 @@ class DeviceNColourSpaceAttributesDictionaryType extends DictionaryObject
      * @param DictionaryObject $colorants
      * @return DeviceNColourSpaceAttributesDictionaryType
      */
-    public function setColorants(DictionaryObject $colorants)
+    public function setColorants(DictionaryObject $colorants): DeviceNColourSpaceAttributesDictionaryType
     {
         $this->setEntry('Colorants', $colorants);
         return $this;
@@ -49,7 +40,7 @@ class DeviceNColourSpaceAttributesDictionaryType extends DictionaryObject
      * @param DictionaryObject $process
      * @return DeviceNColourSpaceAttributesDictionaryType
      */
-    public function setProcess(DictionaryObject $process)
+    public function setProcess(DictionaryObject $process): DeviceNColourSpaceAttributesDictionaryType
     {
         $this->setEntry('Process', $process);
         return $this;
@@ -58,10 +49,10 @@ class DeviceNColourSpaceAttributesDictionaryType extends DictionaryObject
     /**
      * Set mixing hints.
      *
-     * @param DictionaryObject $colorants
+     * @param DictionaryObject $mixinghints
      * @return DeviceNColourSpaceAttributesDictionaryType
      */
-    public function setMixingHints(DictionaryObject $colorants)
+    public function setMixingHints(DictionaryObject $mixinghints): DeviceNColourSpaceAttributesDictionaryType
     {
         $this->setEntry('MixingHints', $mixinghints);
         return $this;

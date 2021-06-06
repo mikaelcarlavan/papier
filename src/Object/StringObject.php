@@ -16,7 +16,7 @@ class StringObject extends IndirectObject
     * @throws InvalidArgumentException if the provided argument is not of type 'string'.
     * @return StringObject
     */
-    public function setValue($value)
+    public function setValue($value): StringObject
     {
         if (!StringValidator::isValid($value)) {
             throw new InvalidArgumentException("String is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -30,7 +30,7 @@ class StringObject extends IndirectObject
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         $value = $this->getValue();
 

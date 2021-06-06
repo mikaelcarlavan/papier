@@ -13,21 +13,21 @@ class ByteStringsArrayType extends ArrayType
     /**
     * Set object's byte strings.
     *
-    * @param  mixed  $strings
+    * @param  mixed  $value
     * @throws InvalidArgumentException if the provided argument is not an array of 'string'.
     * @return ByteStringsArrayType
     */
-    public function setValue($strings)
+    public function setValue($value): ByteStringsArrayType
     {
-        if (!ByteStringsArrayValidator::isValid($strings)) {
+        if (!ByteStringsArrayValidator::isValid($value)) {
             throw new InvalidArgumentException("Array is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $objects = $this->getObjects();
 
-        foreach ($strings as $i => $string) {
-            $value = Factory::create('ByteString', $string);
-            $objects[$i] = $value;
+        foreach ($value as $i => $val) {
+            $object = Factory::create('ByteString', $val);
+            $objects[$i] = $object;
         }
 
         return parent::setValue($objects);

@@ -2,8 +2,6 @@
 
 namespace Papier\Graphics;
 
-use Papier\Validator\StringValidator;
-
 use Papier\Factory\Factory;
 
 use InvalidArgumentException;
@@ -19,10 +17,6 @@ trait XObject
      */
     public function paintXObject(string $xobject)
     {
-        if (!StringValidator::isValid($xobject)) {
-            throw new InvalidArgumentException("XObject is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $state = sprintf('%s Do', Factory::create('Name', $xobject)->format());
         return $this->addToContent($state);
     } 

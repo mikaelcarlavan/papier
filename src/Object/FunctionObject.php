@@ -21,7 +21,7 @@ class FunctionObject extends StreamObject
      * @return FunctionObject
      * @throws InvalidArgumentException if the provided argument is not a valid function type.
      */
-    public function setFunctionType(int $type)
+    public function setFunctionType(int $type): FunctionObject
     {
         if (!FunctionTypeValidator::isValid($type)) {
             throw new InvalidArgumentException("FunctionType is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -42,7 +42,7 @@ class FunctionObject extends StreamObject
      * @throws InvalidArgumentException if values of provided argument are not increasing.
      * @throws InvalidArgumentException if values of provided argument are out of boundaries.
      */
-    public function setDomain(ArrayObject $domain)
+    public function setDomain(ArrayObject $domain): FunctionObject
     {
         if (count($domain) % 2 != 0) {
             throw new InvalidArgumentException("Domain should be even length. See ".__CLASS__." class's documentation for possible values.");
@@ -76,7 +76,7 @@ class FunctionObject extends StreamObject
      * @throws InvalidArgumentException if values of provided argument are not increasing.
      * @throws InvalidArgumentException if values of provided argument are out of boundaries.
      */
-    public function setRange(ArrayObject $range)
+    public function setRange(ArrayObject $range): FunctionObject
     {
         if (count($range) % 2 != 0) {
             throw new InvalidArgumentException("Range should be even length. See ".__CLASS__." class's documentation for possible values.");
@@ -108,7 +108,7 @@ class FunctionObject extends StreamObject
      * @throws RuntimeException if domain is not defined.
      * @throws RuntimeException if function type is set to 'Sampled' or 'PostScript Calculator' and if range is not defined.
      */
-    public function format()
+    public function format(): string
     {
         if (!$this->hasEntry('FunctionType')) {
             throw new RuntimeException("FunctionType is missing. See ".__CLASS__." class's documentation for possible values.");

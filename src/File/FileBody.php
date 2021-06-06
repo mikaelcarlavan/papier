@@ -4,35 +4,27 @@ namespace Papier\File;
 
 use Papier\Base\BaseObject;
 
-use Papier\Object\IntegerObject;
-use Papier\Object\NameObject;
-use Papier\Object\DictionaryObject;
-
 use Papier\Repository\Repository;
 use Papier\Factory\Factory;
-
+use Papier\Type\DocumentCatalogType;
+use Papier\Type\PageObjectType;
+use Papier\Type\PageTreeNodeType;
 use Papier\Type\PageTreeType;
-use Papier\Type\RectangleType;
 
-use Papier\Graphics\DeviceColourSpace;
-
-use Papier\Document\ProcedureSet;
-
-use Papier\Validator\IntegerValidator;
 
 class FileBody extends BaseObject
 {
      /**
      * Page tree
      *
-     * @var \Papier\Document\PageTree
+     * @var PageTreeType
      */
     private $pageTree;
 
      /**
      * Document catalog
      *
-     * @var \Papier\Type\DocumentCatalogType
+     * @var DocumentCatalogType
      */
     private $documentCatalog;
 
@@ -57,14 +49,14 @@ class FileBody extends BaseObject
 
         $this->pageTree = $pageTree->getNode();
 
-        $this->documentCatalog->setOutlines($outlines);
+        //$this->documentCatalog->setOutlines($outlines);
         $this->documentCatalog->setPages($this->pageTree);
     }
 
     /**
      * Get page tree.
      *
-     * @return \Papier\Type\PageTreeNodeType
+     * @return PageTreeNodeType
      */
     public function getPageTree()
     {
@@ -74,9 +66,9 @@ class FileBody extends BaseObject
     /**
      * Get document catalog.
      *
-     * @return \Papier\Type\DocumentCatalogType
+     * @return DocumentCatalogType
      */
-    public function getDocumentCatalog()
+    public function getDocumentCatalog(): DocumentCatalogType
     {
         return $this->documentCatalog;
     }
@@ -84,44 +76,12 @@ class FileBody extends BaseObject
     /**
      * Add page to body.
      *
-     * @return \Papier\Type\PageObjectType
+     * @return PageObjectType
      */
-    public function addPage()
+    public function addPage(): PageObjectType
     {
         $page = $this->getPageTree()->addObject();
-
-        $pdf = Factory::create('Name', ProcedureSet::GRAPHICS);
-        $text = Factory::create('Name', ProcedureSet::TEXT);
-        $imageb = Factory::create('Name', ProcedureSet::GRAYSCALE_IMAGES);
-
-        $procset = Factory::create('Array', null, true)
-            ->append($pdf)
-            ->append($text)
-            ->append($imageb);
-
-        $helvetica = Factory::create('Type1Font', null, true)
-            ->setName('F1')
-            ->setBaseFont('Helvetica');
-
-        $font = Factory::create('Dictionary')->setEntry('F1', $helvetica);
-
-        
-        $image = Factory::create('Image', null, true);
-        $image->setWidth(256);
-        $image->setHeight(320);
-        $image->setColorSpace(DeviceColourSpace::GRAY);
-        $image->setBitsPerComponent(8);
-        $image->setContent(\substr(\file_get_contents('image.bmp'), 14));
-
-        $xobject = Factory::create('Dictionary')->setEntry('Im1', $image);
-
         $page->setParent($this->getPageTree());
-
-        $resources = $page->getResources();
-        $resources->setEntry('ProcSet', $procset);
-        $resources->setEntry('Font', $font);
-        $resources->setEntry('XObject', $xobject);
-
         return $page;
     } 
 
@@ -130,7 +90,7 @@ class FileBody extends BaseObject
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         $objects = Repository::getInstance()->getObjects();
                 

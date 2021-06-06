@@ -3,9 +3,7 @@
 namespace Papier\Object;
 
 use Papier\Base\IndirectObject;
-
 use Papier\Validator\BooleanValidator;
-
 use InvalidArgumentException;
 
 class BooleanObject extends IndirectObject
@@ -15,15 +13,15 @@ class BooleanObject extends IndirectObject
     *
     * @param  mixed  $value
     * @return BooleanObject
-    * @throws InvalidArgumentException if the provided argument is not of type 'bool'.
     */
-    public function setValue($value)
+    public function setValue($value): BooleanObject
     {
         if (!BooleanValidator::isValid($value)) {
             throw new InvalidArgumentException("Boolean is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        return parent::setValue($value);
+        parent::setValue($value);
+        return $this;
     }   
 
     /**
@@ -31,7 +29,7 @@ class BooleanObject extends IndirectObject
     *
     * @return BooleanObject
      */
-    public function setTrue()
+    public function setTrue(): BooleanObject
     {
         return $this->setValue(true);
     }
@@ -41,7 +39,7 @@ class BooleanObject extends IndirectObject
      *  
      * @return BooleanObject
      */
-    public function setFalse()
+    public function setFalse(): BooleanObject
     {
         return $this->setValue(false);
     }
@@ -51,7 +49,7 @@ class BooleanObject extends IndirectObject
      *  
      * @return bool
      */
-    public function isTrue()
+    public function isTrue(): bool
     {
         return $this->getValue();
     }
@@ -61,7 +59,7 @@ class BooleanObject extends IndirectObject
      *  
      * @return bool
      */
-    public function isFalse()
+    public function isFalse(): bool
     {
         return !$this->isTrue();
     }
@@ -71,10 +69,9 @@ class BooleanObject extends IndirectObject
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         $value = $this->getValue();
-
         return $value ? 'true' : 'false';
     }
 }

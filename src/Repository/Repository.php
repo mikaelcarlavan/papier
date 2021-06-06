@@ -5,23 +5,21 @@ namespace Papier\Repository;
 use Papier\Object\ArrayObject;
 use Papier\Base\IndirectObject;
 
-use InvalidArgumentException;
-
 class Repository extends ArrayObject
 {
     /**
     * Instance of the object.
     *
-    * @var Repository
+    * @var ?Repository
     */
-    protected static $instance = null;
+    protected static ?Repository $instance = null;
    
     /**
     * Get instance of repository.
     *
     * @return Repository
     */
-    public static function getInstance() 
+    public static function getInstance(): Repository
     {
         if (is_null(self::$instance)) {
             self::$instance = new Repository();  
@@ -36,7 +34,7 @@ class Repository extends ArrayObject
      * @param IndirectObject $object
      * @return Repository
      */
-    public function addObject(IndirectObject $object)
+    public function addObject(IndirectObject $object): Repository
     {
         $objects = $this->getObjects();
         $objects[$object->getNumber()] = $object;
@@ -50,7 +48,7 @@ class Repository extends ArrayObject
      * @param IndirectObject $object
      * @return Repository
      */
-    public function removeObject(IndirectObject $object)
+    public function removeObject(IndirectObject $object): Repository
     {
         $objects = $this->getObjects();
         unset($objects[$object->getNumber()]);

@@ -18,7 +18,7 @@ class RealObject extends IndirectObject
     * @return RealObject
     * @throws InvalidArgumentException if the provided argument is not of type 'float'.
     */
-    public function setValue($value)
+    public function setValue($value): RealObject
     {
         if (!RealValidator::isValid($value)) {
             throw new InvalidArgumentException("Real is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -26,6 +26,7 @@ class RealObject extends IndirectObject
 
         // Convert from scientific notation
         $value = number_format($value, Papier::MAX_DECIMALS);
-        return parent::setValue($value);
+        parent::setValue($value);
+        return $this;
     }    
 }

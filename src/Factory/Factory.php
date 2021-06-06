@@ -2,7 +2,6 @@
 
 namespace Papier\Factory;
 
-use Papier\Validator\StringValidator;
 use InvalidArgumentException;
 
 class Factory
@@ -30,13 +29,9 @@ class Factory
      * @return mixed
      * @throws InvalidArgumentException if the provided type's object does not exist.
      */
-    public static function create(string $type, $value = null, $isIndirect = false)
+    public static function create(string $type, $value = null, bool $isIndirect = false)
     {
         $instance = self::getInstance();
-
-        if (!StringValidator::isValid($type)) {
-            throw new InvalidArgumentException("$type is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
 
         $class = 'Papier\Type\\'.ucfirst($type).'Type';
         

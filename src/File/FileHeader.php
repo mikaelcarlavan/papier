@@ -7,7 +7,6 @@ use Papier\Base\BaseObject;
 use Papier\Factory\Factory;
 
 use Papier\Validator\VersionValidator;
-use Papier\Validator\BooleanValidator;
 
 use InvalidArgumentException;
 
@@ -25,7 +24,7 @@ class FileHeader extends BaseObject
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         $value = sprintf("%%PDF-1.%d", $this->getVersion());
         if ($this->hasBinaryData()) {
@@ -41,7 +40,7 @@ class FileHeader extends BaseObject
      *
      * @return int
      */
-    protected function getVersion()
+    protected function getVersion(): int
     {
         return $this->getValue() ?? 0;
     }
@@ -53,7 +52,7 @@ class FileHeader extends BaseObject
      * @return FileHeader
      * @throws InvalidArgumentException if the provided argument is not of type 'int' or is outside acceptable values.
      */
-    public function setVersion(int $version)
+    public function setVersion(int $version): FileHeader
     {
         if (!VersionValidator::isValid($version)) {
             throw new InvalidArgumentException("Version is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -78,14 +77,9 @@ class FileHeader extends BaseObject
      *  
      * @param  bool  $binaryData
      * @return FileHeader
-     * @throws InvalidArgumentException if the provided argument is not of type 'bool'.
      */
-    public function setBinaryData(bool $binaryData)
+    public function setBinaryData(bool $binaryData): FileHeader
     {
-        if (!BooleanValidator::isValid($binaryData)) {
-            throw new InvalidArgumentException("BinaryData is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->binaryData = $binaryData;
         return $this;
     } 

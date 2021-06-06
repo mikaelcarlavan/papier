@@ -7,23 +7,24 @@ use Papier\Object\IntegerObject;
 use Papier\Validator\DateValidator;
 
 use DateTime;
+use InvalidArgumentException;
 
 class DateType extends IntegerObject
 {
     /**
     * Set object's value.
     *
-    * @param  mixed  $date
+    * @param  mixed  $value
     * @return DateType
-    * @throws InvalidArgumentException if the provided argument is not of type 'DateTime'.
+    * @throws InvalidArgumentException if the provided argument is not of type 'DateTime' or convertible to.
     */
-    public function setValue($date)
+    public function setValue($value): DateType
     {
-        if (!DateValidator::isValid($date)) {
+        if (!DateValidator::isValid($value)) {
             throw new InvalidArgumentException("Date is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $timestamp = $date instanceof DateTime ? $date->format('U') : strtotime($date);
+        $timestamp = $value instanceof DateTime ? $value->format('U') : strtotime($value);
 
         return parent::setValue(intval($timestamp));
     } 
@@ -33,7 +34,7 @@ class DateType extends IntegerObject
      *
      * @return string
      */
-    protected function getValue()
+    protected function getValue(): string
     {
         $value = parent::getValue();
 

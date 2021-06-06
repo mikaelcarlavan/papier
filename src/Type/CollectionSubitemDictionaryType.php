@@ -3,8 +3,6 @@
 namespace Papier\Type;
 
 use Papier\Object\DictionaryObject;
-use Papier\Object\IndirectObject;
-
 use Papier\Validator\DateValidator;
 use Papier\Validator\NumberValidator;
 use Papier\Validator\StringValidator;
@@ -22,7 +20,7 @@ class CollectionSubitemDictionaryType extends DictionaryObject
      * @return CollectionSubitemDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'int', 'float', 'date' or 'string'.
      */
-    public function setD($d)
+    public function setD($d): CollectionSubitemDictionaryType
     {
         if (!NumberValidator::isValid($d) && !StringValidator::isValid($d) && !DateValidator::isValid($d)) {
             throw new InvalidArgumentException("D is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -43,16 +41,12 @@ class CollectionSubitemDictionaryType extends DictionaryObject
     /**
      * Set prefix.
      *  
-     * @param  string  $p
+     * @param string $p
      * @return CollectionSubitemDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'string'.
      */
-    public function setP($p)
+    public function setP(string $p): CollectionSubitemDictionaryType
     {
-        if (!StringValidator::isValid($p)) {
-            throw new InvalidArgumentException("P is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('TextString', $p);
 
         $this->setEntry('P', $value);
@@ -64,7 +58,7 @@ class CollectionSubitemDictionaryType extends DictionaryObject
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         $type = Factory::create('Name', 'CollectionSubitem');
         $this->setEntry('Type', $type);

@@ -13,21 +13,21 @@ class BooleansArrayType extends ArrayType
     /**
      * Set object's numbers.
      *
-     * @param mixed $booleans
+     * @param mixed $value
      * @return BooleansArrayType
      * @throws InvalidArgumentException if the provided argument is not an array of 'float' or 'int'.
      */
-    public function setValue($booleans)
+    public function setValue($value): BooleansArrayType
     {
-        if (!BooleansArrayValidator::isValid($booleans)) {
+        if (!BooleansArrayValidator::isValid($value)) {
             throw new InvalidArgumentException("Array is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $objects = $this->getObjects();
 
-        foreach ($booleans as $i => $boolean) {
-            $value = Factory::create('Boolean', $boolean);
-            $objects[$i] = $value;
+        foreach ($value as $i => $val) {
+            $object = Factory::create('Boolean', $val);
+            $objects[$i] = $object;
         }
 
         return parent::setValue($objects);

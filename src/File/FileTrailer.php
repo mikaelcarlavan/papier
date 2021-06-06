@@ -34,7 +34,7 @@ class FileTrailer extends DictionaryObject
      *
      * @return int
      */
-    public function getCrossReferenceOffset()
+    public function getCrossReferenceOffset(): int
     {
         return $this->crossReferenceOffset;
     }
@@ -46,9 +46,9 @@ class FileTrailer extends DictionaryObject
      * @return FileTrailer
      * @throws InvalidArgumentException if the provided argument is not of type 'int'.
      */
-    public function setCrossReferenceOffset(int $crossReferenceOffset)
+    public function setCrossReferenceOffset(int $crossReferenceOffset): FileTrailer
     {
-        if (!IntegerValidator::isValid($crossReferenceOffset)) {
+        if (!IntegerValidator::isValid($crossReferenceOffset, 0)) {
             throw new InvalidArgumentException("Cross reference offset is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
@@ -63,9 +63,9 @@ class FileTrailer extends DictionaryObject
      * @return FileTrailer
      * @throws InvalidArgumentException if the provided argument is not of type 'int'.
      */
-    public function setSize(int $size)
+    public function setSize(int $size): FileTrailer
     {
-        if (!IntegerValidator::isValid($size)) {
+        if (!IntegerValidator::isValid($size, 0)) {
             throw new InvalidArgumentException("Size is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
@@ -82,9 +82,9 @@ class FileTrailer extends DictionaryObject
      * @return FileTrailer
      * @throws InvalidArgumentException if the provided argument is not of type 'int'.
      */
-    public function setPrev(int $prev)
+    public function setPrev(int $prev): FileTrailer
     {
-        if (!IntegerValidator::isValid($prev)) {
+        if (!IntegerValidator::isValid($prev, 0)) {
             throw new InvalidArgumentException("Prev is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
@@ -101,7 +101,7 @@ class FileTrailer extends DictionaryObject
      * @return FileTrailer
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
      */
-    public function setRoot(DictionaryObject $root)
+    public function setRoot(DictionaryObject $root): FileTrailer
     {
         $this->setEntry('Root', $root);
         return $this;
@@ -115,7 +115,7 @@ class FileTrailer extends DictionaryObject
      * @return FileTrailer
      *@throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
      */
-    public function setEncrypt(DictionaryObject $encrypt)
+    public function setEncrypt(DictionaryObject $encrypt): FileTrailer
     {
         $this->setEntry('Encrypt', $encrypt);
         return $this;
@@ -129,7 +129,7 @@ class FileTrailer extends DictionaryObject
      * @return FileTrailer
      *@throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
      */
-    public function setInfo(DictionaryObject $info)
+    public function setInfo(DictionaryObject $info): FileTrailer
     {
         $this->setEntry('Info', $info);
         return $this;
@@ -140,7 +140,7 @@ class FileTrailer extends DictionaryObject
      *  
      * @return DocumentInformationDictionaryType
      */
-    public function getInfo()
+    public function getInfo(): DocumentInformationDictionaryType
     {
         if (!$this->hasEntry('Info')) {
             $value = Factory::create('DocumentInformationDictionary', null, true);
@@ -155,9 +155,8 @@ class FileTrailer extends DictionaryObject
      *  
      * @param ArrayObject $ID
      * @return FileTrailer
-     * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
      */
-    public function setID(ArrayObject $ID)
+    public function setID(ArrayObject $ID): FileTrailer
     {
         $this->setEntry('ID', $ID);
         return $this;
@@ -168,7 +167,7 @@ class FileTrailer extends DictionaryObject
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         $repository = Repository::getInstance();
         $this->setSize(count($repository->getObjects()));
@@ -186,7 +185,8 @@ class FileTrailer extends DictionaryObject
         $value .= 'startxref' . self::EOL_MARKER;
         $value .= $this->getCrossReferenceOffset() . self::EOL_MARKER;
         $value .= self::EOF_MARKER;
-        
+        $value .= self::EOL_MARKER;
+
         return $value;
     }
 }
