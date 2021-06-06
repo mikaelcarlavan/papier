@@ -2,8 +2,6 @@
 
 namespace Papier\Validator;
 
-use Papier\Validator\StringValidator;
-
 class ByteStringValidator extends StringValidator
 {
      /**
@@ -12,7 +10,7 @@ class ByteStringValidator extends StringValidator
      * @param  string  $value
      * @return bool
      */
-    public static function isValid($value)
+    public static function isValid($value): bool
     {
         $isValid = parent::isValid($value);
 

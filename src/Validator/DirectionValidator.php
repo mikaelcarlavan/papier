@@ -3,7 +3,6 @@
 namespace Papier\Validator;
 
 use Papier\Document\Direction;
-use Papier\Validator\StringValidator;
 
 class DirectionValidator extends StringValidator
 {
@@ -24,9 +23,8 @@ class DirectionValidator extends StringValidator
      * @param  string  $value
      * @return bool
      */
-    public static function isValid($value)
+    public static function isValid($value): bool
     {
-        $isValid = parent::isValid($value) && in_array($value, self::DIRECTIONS);
-        return $isValid;
+        return parent::isValid($value) && in_array($value, self::DIRECTIONS);
     }
 }

@@ -3,7 +3,6 @@
 namespace Papier\Validator;
 
 use Papier\Document\TabOrder;
-use Papier\Validator\StringValidator;
 
 class TabOrderValidator extends StringValidator
 {
@@ -25,9 +24,8 @@ class TabOrderValidator extends StringValidator
      * @param  mixed  $value
      * @return bool
      */
-    public static function isValid($value)
+    public static function isValid($value): bool
     {
-        $isValid = parent::isValid($value) && in_array($value, self::TAB_ORDERS);
-        return $isValid;
+        return parent::isValid($value) && in_array($value, self::TAB_ORDERS);
     }
 }

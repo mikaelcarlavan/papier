@@ -5,7 +5,6 @@ namespace Papier\Validator;
 use Papier\Graphics\ShadingType;
 
 use Papier\Validator\Base\Validator;
-use Papier\Validator\IntegerValidator;
 
 class ShadingTypeValidator implements Validator
 {
@@ -31,9 +30,8 @@ class ShadingTypeValidator implements Validator
      * @param  int  $value
      * @return bool
      */
-    public static function isValid($value)
+    public static function isValid($value): bool
     {
-        $isValid = IntegerValidator::isValid($value) && in_array($value, self::SHADING_TYPES);
-        return $isValid;
+        return IntegerValidator::isValid($value) && in_array($value, self::SHADING_TYPES);
     }
 }

@@ -9,10 +9,10 @@ class ArrayValidator implements Validator
      * Test if given parameter is a valid array.
      * 
      * @param  mixed  $value
-     * @param  int  $size
+     * @param int $size
      * @return bool
      */
-    public static function isValid($value, $size = -1)
+    public static function isValid($value, int $size = -1): bool
     {
         $isValid = is_array($value);
 

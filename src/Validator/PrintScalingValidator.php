@@ -3,7 +3,6 @@
 namespace Papier\Validator;
 
 use Papier\Document\PrintScaling;
-use Papier\Validator\StringValidator;
 
 class PrintScalingValidator extends StringValidator
 {
@@ -24,9 +23,8 @@ class PrintScalingValidator extends StringValidator
      * @param  string  $value
      * @return bool
      */
-    public static function isValid($value)
+    public static function isValid($value): bool
     {
-        $isValid = parent::isValid($value) && in_array($value, self::PRINT_SCALING_TYPES);
-        return $isValid;
+        return parent::isValid($value) && in_array($value, self::PRINT_SCALING_TYPES);
     }
 }

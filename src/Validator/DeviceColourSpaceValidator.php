@@ -3,7 +3,6 @@
 namespace Papier\Validator;
 
 use Papier\Graphics\DeviceColourSpace;
-use Papier\Validator\StringValidator;
 
 class DeviceColourSpaceValidator extends StringValidator
 {
@@ -25,9 +24,8 @@ class DeviceColourSpaceValidator extends StringValidator
      * @param  string  $value
      * @return bool
      */
-    public static function isValid($value)
+    public static function isValid($value): bool
     {
-        $isValid = parent::isValid($value) && in_array($value, self::DEVICE_COLOUR_SPACES);
-        return $isValid;
+        return parent::isValid($value) && in_array($value, self::DEVICE_COLOUR_SPACES);
     }
 }

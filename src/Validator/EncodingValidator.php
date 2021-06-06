@@ -3,7 +3,6 @@
 namespace Papier\Validator;
 
 use Papier\Text\Encoding;
-use Papier\Validator\StringValidator;
 
 class EncodingValidator extends StringValidator
 {
@@ -25,9 +24,8 @@ class EncodingValidator extends StringValidator
      * @param  string  $value
      * @return bool
      */
-    public static function isValid($value)
+    public static function isValid($value): bool
     {
-        $isValid = parent::isValid($value) && in_array($value, self::ENCODINGS);
-        return $isValid;
+        return parent::isValid($value) && in_array($value, self::ENCODINGS);
     }
 }

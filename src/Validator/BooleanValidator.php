@@ -11,9 +11,8 @@ class BooleanValidator implements Validator
      * @param  mixed  $value
      * @return bool
      */
-    public static function isValid($value)
+    public static function isValid($value): bool
     {
-        $isValid = is_bool($value);
-        return $isValid;
+        return is_bool($value);
     }
 }

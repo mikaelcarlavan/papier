@@ -27,9 +27,8 @@ class ColourComponentsValidator implements Validator
      * @param  int  $value
      * @return bool
      */
-    public static function isValid($value)
+    public static function isValid($value): bool
     {
-        $isValid = IntegerValidator::isValid($value) && in_array($value, self::COMPONENTS_VALUES);
-        return $isValid;
+        return IntegerValidator::isValid($value) && in_array($value, self::COMPONENTS_VALUES);
     }
 }

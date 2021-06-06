@@ -5,7 +5,6 @@ namespace Papier\Validator;
 use Papier\Graphics\OverprintMode;
 
 use Papier\Validator\Base\Validator;
-use Papier\Validator\IntegerValidator;
 
 class OverprintModeValidator implements Validator
 {
@@ -26,9 +25,8 @@ class OverprintModeValidator implements Validator
      * @param  string  $value
      * @return bool
      */
-    public static function isValid($value)
+    public static function isValid($value): bool
     {
-        $isValid = IntegerValidator::isValid($value) && in_array($value, self::OVERPRINT_MODES);
-        return $isValid;
+        return IntegerValidator::isValid($value) && in_array($value, self::OVERPRINT_MODES);
     }
 }

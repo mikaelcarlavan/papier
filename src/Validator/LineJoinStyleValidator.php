@@ -5,7 +5,6 @@ namespace Papier\Validator;
 use Papier\Graphics\LineJoinStyle;
 
 use Papier\Validator\Base\Validator;
-use Papier\Validator\IntegerValidator;
 
 class LineJoinStyleValidator implements Validator
 {
@@ -27,9 +26,8 @@ class LineJoinStyleValidator implements Validator
      * @param  int  $value
      * @return bool
      */
-    public static function isValid($value)
+    public static function isValid($value): bool
     {
-        $isValid = IntegerValidator::isValid($value) && in_array($value, self::LINE_JOIN_STYLES);
-        return $isValid;
+        return IntegerValidator::isValid($value) && in_array($value, self::LINE_JOIN_STYLES);
     }
 }

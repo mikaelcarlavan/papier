@@ -2,7 +2,6 @@
 
 namespace Papier\Validator;
 
-use Papier\Validator\IntegerValidator;
 use Papier\Validator\Base\Validator;
 
 class BitsPerFlagValidator implements Validator
@@ -23,9 +22,8 @@ class BitsPerFlagValidator implements Validator
      * @param  int  $value
      * @return bool
      */
-    public static function isValid($value)
+    public static function isValid($value): bool
     {
-        $isValid = IntegerValidator::isValid($value) && in_array($value, self::BITS_PER_FLAG);
-        return $isValid;
+        return IntegerValidator::isValid($value) && in_array($value, self::BITS_PER_FLAG);
     }
 }

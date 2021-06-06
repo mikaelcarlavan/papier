@@ -3,7 +3,6 @@
 namespace Papier\Validator;
 
 use Papier\Validator\Base\Validator;
-use Papier\Validator\IntegerValidator;
 
 class VersionValidator implements Validator
 {
@@ -27,9 +26,8 @@ class VersionValidator implements Validator
      * @param  mixed  $value
      * @return bool
      */
-    public static function isValid($value)
+    public static function isValid($value): bool
     {
-        $isValid = IntegerValidator::isValid($value, self::minVersion, self::maxVersion);
-        return $isValid;
+        return IntegerValidator::isValid($value, self::minVersion, self::maxVersion);
     }
 }

@@ -26,21 +26,21 @@ class Papier
      *
      * @var FileHeader
      */
-    private $header;
+    private FileHeader $header;
 
      /**
      * Body
      *
      * @var FileBody
      */
-    private $body;
+    private FileBody $body;
 
      /**
      * Trailer
      *
      * @var FileTrailer
      */
-    private $trailer;
+    private FileTrailer $trailer;
 
     /**
      * Create a new Papier instance.
@@ -61,7 +61,7 @@ class Papier
      *
      * @return FileHeader
      */
-    public function getHeader()
+    public function getHeader(): FileHeader
     {
         return $this->header;
     }
@@ -71,7 +71,7 @@ class Papier
      *
      * @return FileBody
      */
-    public function getBody()
+    public function getBody(): FileBody
     {
         return $this->body;
     }
@@ -81,7 +81,7 @@ class Papier
      *
      * @return FileTrailer
      */
-    public function getTrailer()
+    public function getTrailer(): FileTrailer
     {
         return $this->trailer;
     }
@@ -91,7 +91,7 @@ class Papier
      *
      * @return DocumentInformationDictionaryType
      */
-    public function getInfo()
+    public function getInfo(): DocumentInformationDictionaryType
     {
         return $this->getTrailer()->getInfo();
     }
@@ -102,7 +102,7 @@ class Papier
      * @param  int  $version
      * @return Papier
      */
-    public function setVersion(int $version)
+    public function setVersion(int $version): Papier
     {
         $this->getHeader()->setVersion($version);
         return $this;
@@ -114,7 +114,7 @@ class Papier
      *
      * @return PageObjectType
      */
-    public function addPage()
+    public function addPage(): PageObjectType
     {
         return $this->getBody()->addPage();
     } 
@@ -125,7 +125,7 @@ class Papier
      *  
      * @return ViewerPreferencesDictionaryType
      */
-    public function getViewerPreferences()
+    public function getViewerPreferences(): ViewerPreferencesDictionaryType
     {
         $body = $this->getBody();
         return $body->getDocumentCatalog()->getViewerPreferences();
@@ -136,9 +136,9 @@ class Papier
      *
      * @return string
      */
-    public function build()
+    public function build(): string
     {
-        $this->check();
+        // $this->check();
         
         $header = $this->getHeader();
         $body = $this->getBody();
@@ -179,7 +179,7 @@ class Papier
      *
      * @return bool
      */
-    public function check()
+    public function check(): bool
     {
         return true;
     }

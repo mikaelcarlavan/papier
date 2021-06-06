@@ -3,7 +3,6 @@
 namespace Papier\Validator;
 
 use Papier\Document\Trapped;
-use Papier\Validator\StringValidator;
 
 class TrappedValidator extends StringValidator
 {
@@ -25,9 +24,8 @@ class TrappedValidator extends StringValidator
      * @param  string  $value
      * @return bool
      */
-    public static function isValid($value)
+    public static function isValid($value): bool
     {
-        $isValid = parent::isValid($value) && in_array($value, self::TRAPPED_VALUES);
-        return $isValid;
+        return parent::isValid($value) && in_array($value, self::TRAPPED_VALUES);
     }
 }

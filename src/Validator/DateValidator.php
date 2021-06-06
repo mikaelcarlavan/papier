@@ -13,7 +13,7 @@ class DateValidator implements Validator
      * @param  mixed  $value
      * @return bool
      */
-    public static function isValid($value)
+    public static function isValid($value): bool
     {
         if ($value instanceof DateTime) {
             $isValid = true;

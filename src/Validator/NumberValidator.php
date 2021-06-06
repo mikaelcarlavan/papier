@@ -3,9 +3,6 @@
 namespace Papier\Validator;
 use Papier\Validator\Base\Validator;
 
-use Papier\Validator\IntegerValidator;
-use Papier\Validator\RealValidator;
-
 class NumberValidator implements Validator
 {
      /**
@@ -16,9 +13,8 @@ class NumberValidator implements Validator
      * @param  mixed  $max
      * @return bool
      */
-    public static function isValid($value, $min = null, $max = null)
+    public static function isValid($value, $min = null, $max = null): bool
     {
-        $isValid = RealValidator::isValid($value, $min, $max) || IntegerValidator::isValid($value, $min, $max);
-        return $isValid;
+        return RealValidator::isValid($value, $min, $max) || IntegerValidator::isValid($value, $min, $max);
     }
 }

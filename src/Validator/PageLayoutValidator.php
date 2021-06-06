@@ -2,7 +2,6 @@
 
 namespace Papier\Validator;
 
-use Papier\Validator\StringValidator;
 use Papier\Document\PageLayout;
 
 class PageLayoutValidator extends StringValidator
@@ -27,9 +26,8 @@ class PageLayoutValidator extends StringValidator
      * @param  string  $value
      * @return bool
      */
-    public static function isValid($value)
+    public static function isValid($value): bool
     {
-        $isValid = parent::isValid($value) && in_array($value, self::PAGE_LAYOUTS);
-        return $isValid;
+        return parent::isValid($value) && in_array($value, self::PAGE_LAYOUTS);
     }
 }

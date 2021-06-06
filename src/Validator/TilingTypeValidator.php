@@ -5,7 +5,6 @@ namespace Papier\Validator;
 use Papier\Graphics\TilingType;
 
 use Papier\Validator\Base\Validator;
-use Papier\Validator\IntegerValidator;
 
 class TilingTypeValidator implements Validator
 {
@@ -27,9 +26,8 @@ class TilingTypeValidator implements Validator
      * @param  int  $value
      * @return bool
      */
-    public static function isValid($value)
+    public static function isValid($value): bool
     {
-        $isValid = IntegerValidator::isValid($value) && in_array($value, self::TILING_TYPES);
-        return $isValid;
+        return IntegerValidator::isValid($value) && in_array($value, self::TILING_TYPES);
     }
 }

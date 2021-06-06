@@ -23,10 +23,10 @@ class PageBoundariesValidator extends StringValidator
      /**
      * Test if given parameter is a valid page mode.
      * 
-     * @param  string  $value
+     * @param  mixed  $value
      * @return bool
      */
-    public static function isValid(string $value)
+    public static function isValid($value): bool
     {
         return parent::isValid($value) && in_array($value, self::PAGE_BOUNDARIES_TYPES);
     }

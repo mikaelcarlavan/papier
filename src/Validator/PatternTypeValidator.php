@@ -5,7 +5,6 @@ namespace Papier\Validator;
 use Papier\Graphics\PatternType;
 
 use Papier\Validator\Base\Validator;
-use Papier\Validator\IntegerValidator;
 
 class PatternTypeValidator implements Validator
 {
@@ -16,7 +15,7 @@ class PatternTypeValidator implements Validator
      */
     const PATTERN_TYPES = array(
         PatternType::TILING_PATTERN,
-        PatternType::SHADING_PATERN,
+        PatternType::SHADING_PATTERN,
     );
 
 
@@ -26,9 +25,8 @@ class PatternTypeValidator implements Validator
      * @param  int  $value
      * @return bool
      */
-    public static function isValid($value)
+    public static function isValid($value): bool
     {
-        $isValid = IntegerValidator::isValid($value) && in_array($value, self::PATTERN_TYPES);
-        return $isValid;
+        return IntegerValidator::isValid($value) && in_array($value, self::PATTERN_TYPES);
     }
 }

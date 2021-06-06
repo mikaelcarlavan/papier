@@ -1,8 +1,6 @@
 <?php
 
 namespace Papier\Validator;
-use Papier\Validator\ArrayValidator;
-use Papier\Validator\BooleanValidator;
 
 class BooleansArrayValidator extends ArrayValidator
 {
@@ -10,10 +8,10 @@ class BooleansArrayValidator extends ArrayValidator
      * Test if given parameter is a valid array of bool.
      * 
      * @param  mixed  $value
-     * @param  int  $size
+     * @param int $size
      * @return bool
      */
-    public static function isValid($value, $size = -1)
+    public static function isValid($value, int $size = -1): bool
     {
         $isValid = parent::isValid($value, $size);
 

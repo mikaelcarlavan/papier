@@ -9,18 +9,18 @@ class RealValidator implements Validator
      * Test if given parameter is a valid real.
      * 
      * @param  mixed  $value
-     * @param  float  $min
-     * @param  float  $max
+     * @param float|null $min
+     * @param float|null $max
      * @return bool
      */
-    public static function isValid($value, $min = null, $max = null)
+    public static function isValid($value, float $min = null, float $max = null): bool
     {
         $isValid = is_float($value);
         if (is_float($min) && $isValid) {
-            $isValid = $isValid & ($value >= $min);
+            $isValid = ($value >= $min);
         }  
         if (is_float($max) && $isValid) {
-            $isValid = $isValid & ($value <= $max);
+            $isValid = ($value <= $max);
         }             
         return $isValid;
     }

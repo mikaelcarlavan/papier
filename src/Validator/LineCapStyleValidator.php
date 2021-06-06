@@ -5,7 +5,6 @@ namespace Papier\Validator;
 use Papier\Graphics\LineCapStyle;
 
 use Papier\Validator\Base\Validator;
-use Papier\Validator\IntegerValidator;
 
 class LineCapStyleValidator implements Validator
 {
@@ -27,9 +26,8 @@ class LineCapStyleValidator implements Validator
      * @param  int  $value
      * @return bool
      */
-    public static function isValid($value)
+    public static function isValid($value): bool
     {
-        $isValid = IntegerValidator::isValid($value) && in_array($value, self::LINE_CAP_STYLES);
-        return $isValid;
+        return IntegerValidator::isValid($value) && in_array($value, self::LINE_CAP_STYLES);
     }
 }

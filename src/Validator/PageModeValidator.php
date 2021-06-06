@@ -3,7 +3,6 @@
 namespace Papier\Validator;
 
 use Papier\Document\PageMode;
-use Papier\Validator\StringValidator;
 
 class PageModeValidator extends StringValidator
 {
@@ -28,9 +27,8 @@ class PageModeValidator extends StringValidator
      * @param  string  $value
      * @return bool
      */
-    public static function isValid($value)
+    public static function isValid($value): bool
     {
-        $isValid = parent::isValid($value) && in_array($value, self::PAGE_MODES);
-        return $isValid;
+        return parent::isValid($value) && in_array($value, self::PAGE_MODES);
     }
 }
