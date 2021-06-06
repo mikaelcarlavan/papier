@@ -2,12 +2,6 @@
 
 namespace Papier\Type;
 
-use Papier\Object\DictionaryObject;
-use Papier\Type\LiteralStringType;
-use Papier\Base\IndirectObject;
-
-use InvalidArgumentException;
-
 class LimitsArrayType extends ArrayObject
 {
 
@@ -16,7 +10,7 @@ class LimitsArrayType extends ArrayObject
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         $objects = $this->getObjects() ?? array();
         $value = '';

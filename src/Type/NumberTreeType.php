@@ -10,9 +10,9 @@ class NumberTreeType extends TreeType
     /**
      * Get root.
      *  
-     * @return \Papier\Type\NumberTreeNodeType
+     * @return NumberTreeNodeType
      */
-    public function getRoot()
+    public function getRoot(): NumberTreeNodeType
     {
         if (!$this->hasEntry('Root')) {
             $root = Factory::create('NumberTreeNode', null, true)->setRoot();
@@ -26,10 +26,10 @@ class NumberTreeType extends TreeType
      * Add number to tree.
      *  
      * @param  mixed  $object
-     * @param  string  $key
-     * @return \Papier\Type\NumberTreeType
+     * @param string $key
+     * @return NumberTreeType
      */
-    public function addNum($key, $object)
+    public function addNum(string $key, $object): NumberTreeType
     {
         $this->getRoot()->addNum($key, $object);
         return $this;

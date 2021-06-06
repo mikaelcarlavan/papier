@@ -2,8 +2,6 @@
 
 namespace Papier\Type;
 
-use Papier\Type\StreamType;
-
 class TextStreamType extends StreamType
 {
      /**
@@ -11,7 +9,7 @@ class TextStreamType extends StreamType
      *  
      * @return string
      */
-    protected function getContent()
+    protected function getContent(): string
     {
         $content = parent::getcontent();
         return mb_convert_encoding($content, 'UTF-16BE');

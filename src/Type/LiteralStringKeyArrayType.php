@@ -3,11 +3,8 @@
 namespace Papier\Type;
 
 use Papier\Object\DictionaryObject;
-use Papier\Base\IndirectObject;
 
 use Papier\Factory\Factory;
-
-use InvalidArgumentException;
 
 class LiteralStringKeyArrayType extends DictionaryObject
 {
@@ -17,7 +14,7 @@ class LiteralStringKeyArrayType extends DictionaryObject
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         $objects = $this->getObjects();
         

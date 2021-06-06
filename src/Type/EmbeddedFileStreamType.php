@@ -3,18 +3,12 @@
 namespace Papier\Type;
 
 use Papier\Object\StreamObject;
-use Papier\Object\ArrayObject;
-use Papier\Object\IntegerObject;
-use Papier\Object\NameObject;
+
 use Papier\Object\DictionaryObject;
-
-use Papier\Validator\StringValidator;
-
 
 use Papier\Factory\Factory;
 
 use InvalidArgumentException;
-use RuntimeException;
 
 class EmbeddedFileStreamType extends StreamObject
 {
@@ -24,14 +18,10 @@ class EmbeddedFileStreamType extends StreamObject
      *  
      * @param  string  $subtype
      * @throws InvalidArgumentException if the provided argument is not of type 'string'.
-     * @return \Papier\Type\EmbeddedFileStreamType
+     * @return EmbeddedFileStreamType
      */
-    public function setSubtype($subtype)
+    public function setSubtype(string $subtype): EmbeddedFileStreamType
     {
-        if (!StringValidator::isValid($subtype)) {
-            throw new InvalidArgumentException("Subtype is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('Name', $subtype);
 
         $this->setEntry('Subtype', $value);
@@ -41,16 +31,12 @@ class EmbeddedFileStreamType extends StreamObject
     /**
      * Set parameters.
      *  
-     * @param  \Papier\Object\DictionaryObject  $params
+     * @param  DictionaryObject  $params
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Type\ImageType
+     * @return EmbeddedFileStreamType
      */
-    public function setParams($params)
+    public function setParams(DictionaryObject $params): EmbeddedFileStreamType
     {
-        if (!$params instanceof DictionaryObject) {
-            throw new InvalidArgumentException("Params is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('Params', $params);
         return $this;
     }
@@ -60,7 +46,7 @@ class EmbeddedFileStreamType extends StreamObject
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         $type = Factory::create('Name', 'EmbeddedFile');
         $this->setEntry('Type', $type);

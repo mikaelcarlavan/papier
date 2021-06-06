@@ -12,16 +12,12 @@ class ResourceDictionaryType extends DictionaryObject
     /**
      * Set graphics state parameter mapping dictionary.
      *  
-     * @param  \Papier\Object\DictionaryObject  $state
+     * @param  DictionaryObject$state
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Type\ResourceDictionaryType
+     * @return ResourceDictionaryType
      */
-    public function setExtGState($state)
+    public function setExtGState(DictionaryObject $state): ResourceDictionaryType
     {
-        if (!$state instanceof DictionaryObject) {
-            throw new InvalidArgumentException("ExtGState is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('ExtGState', $state);
         return $this;
     } 
@@ -30,16 +26,12 @@ class ResourceDictionaryType extends DictionaryObject
     /**
      * Set colour space mapping dictionary.
      *  
-     * @param  \Papier\Object\DictionaryObject  $colour
+     * @param  DictionaryObject  $colour
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Type\ResourceDictionaryType
+     * @return ResourceDictionaryType
      */
-    public function setColourSpace($colour)
+    public function setColourSpace(DictionaryObject $colour): ResourceDictionaryType
     {
-        if (!$colour instanceof DictionaryObject) {
-            throw new InvalidArgumentException("Colour is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('ColourSpace', $colour);
         return $this;
     }
@@ -47,16 +39,12 @@ class ResourceDictionaryType extends DictionaryObject
     /**
      * Set pattern mapping dictionary.
      *  
-     * @param  \Papier\Object\DictionaryObject  $pattern
+     * @param  DictionaryObject  $pattern
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Type\ResourceDictionaryType
+     * @return ResourceDictionaryType
      */
-    public function setPattern($pattern)
+    public function setPattern(DictionaryObject $pattern): ResourceDictionaryType
     {
-        if (!$pattern instanceof DictionaryObject) {
-            throw new InvalidArgumentException("Pattern is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('Pattern', $pattern);
         return $this;
     } 
@@ -64,16 +52,12 @@ class ResourceDictionaryType extends DictionaryObject
     /**
      * Set shading mapping dictionary.
      *  
-     * @param  \Papier\Object\DictionaryObject  $shading
+     * @param  DictionaryObject  $shading
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Type\ResourceDictionaryType
+     * @return ResourceDictionaryType
      */
-    public function setShading($shading)
+    public function setShading(DictionaryObject $shading): ResourceDictionaryType
     {
-        if (!$shading instanceof DictionaryObject) {
-            throw new InvalidArgumentException("Shading is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('Shading', $shading);
         return $this;
     } 
@@ -81,16 +65,12 @@ class ResourceDictionaryType extends DictionaryObject
     /**
      * Set external objects mapping dictionary.
      *  
-     * @param  \Papier\Object\DictionaryObject  $xobject
+     * @param  DictionaryObject  $xobject
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Type\ResourceDictionaryType
+     * @return ResourceDictionaryType
      */
-    public function setXObject($xobject)
+    public function setXObject(DictionaryObject $xobject): ResourceDictionaryType
     {
-        if (!$xobject instanceof DictionaryObject) {
-            throw new InvalidArgumentException("XObject is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('XObject', $xobject);
         return $this;
     } 
@@ -98,16 +78,12 @@ class ResourceDictionaryType extends DictionaryObject
     /**
      * Set font mapping dictionary.
      *  
-     * @param  \Papier\Object\DictionaryObject  $font
+     * @param  DictionaryObject  $font
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Type\ResourceDictionaryType
+     * @return ResourceDictionaryType
      */
-    public function setFont($font)
+    public function setFont(DictionaryObject $font): ResourceDictionaryType
     {
-        if (!$font instanceof DictionaryObject) {
-            throw new InvalidArgumentException("Font is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('Font', $font);
         return $this;
     } 
@@ -115,16 +91,11 @@ class ResourceDictionaryType extends DictionaryObject
     /**
      * Set procedure set names.
      *  
-     * @param  \Papier\Object\ArrayObject  $procset
-     * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
-     * @return \Papier\Type\ResourceDictionaryType
+     * @param ArrayObject $procset
+     * @return ResourceDictionaryType
      */
-    public function setProcSet($procset)
+    public function setProcSet(ArrayObject $procset): ResourceDictionaryType
     {
-        if (!$procset instanceof ArrayObject) {
-            throw new InvalidArgumentException("ProcSet is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('ProcSet', $procset);
         return $this;
     } 
@@ -132,16 +103,11 @@ class ResourceDictionaryType extends DictionaryObject
     /**
      * Set property list mapping dictionary.
      *  
-     * @param  \Papier\Object\DictionaryObject  $properties
-     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Type\ResourceDictionaryType
+     * @param DictionaryObject $properties
+     * @return ResourceDictionaryType
      */
-    public function setProperties($properties)
+    public function setProperties(DictionaryObject $properties): ResourceDictionaryType
     {
-        if (!$properties instanceof DictionaryObject) {
-            throw new InvalidArgumentException("Properties is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('Properties', $properties);
         return $this;
     }

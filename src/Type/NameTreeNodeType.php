@@ -2,13 +2,8 @@
 
 namespace Papier\Type;
 
-use Papier\Type\TreeNodeType;
-use Papier\Type\LiteralStringKeyArrayType;
-use Papier\Type\LiteralStringType;
-
 use Papier\Factory\Factory;
 
-use InvalidArgumentException;
 use RunTimeException;
 
 class NameTreeNodeType extends TreeNodeType
@@ -16,9 +11,9 @@ class NameTreeNodeType extends TreeNodeType
     /**
      * Add kid to node.
      *  
-     * @return \Papier\Type\NameTreeNodeType
+     * @return NameTreeNodeType
      */
-    public function addKid()
+    public function addKid(): NameTreeNodeType
     {
         $node = Factory::create('NameTreeNode');
         $this->getKids()->append($node);
@@ -30,43 +25,22 @@ class NameTreeNodeType extends TreeNodeType
      * Add name to node.
      *  
      * @param  mixed  $object
-     * @param  string  $key
-     * @return \Papier\Type\NameTreeNodeType
+     * @param string $key
+     * @return NameTreeNodeType
      */
-    public function addName($key, $object)
+    public function addName(string $key, $object): NameTreeNodeType
     {
         $this->getNames()->setEntry($key, $object);
         return $this;
     }
 
     /**
-     * Set names.
-     *  
-     * @param  \Papier\Type\LiteralStringKeyArrayType  $names
-     * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
-     * @throws RunTimeException if node already contains 'Names' key.
-     * @return \Papier\Document\DocumentCatalog
-     */
-    protected function setNames($names)
-    {
-        if (!$names instanceof LiteralStringKeyArrayType) {
-            throw new InvalidArgumentException("Names is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        if ($this->hasEntry('Kids')) {
-            throw new RunTimeException("Kids is already present. See ".__CLASS__." class's documentation for possible values.");  
-        }
-
-        return $this->setEntry('Names', $names);
-    } 
-
-    /**
      * Get kids.
      *  
      * @throws RunTimeException if node already contains 'Kids' key.
-     * @return \Papier\Type\LiteralStringKeyArrayType
+     * @return LiteralStringKeyArrayType
      */
-    protected function getNames()
+    protected function getNames(): LiteralStringKeyArrayType
     {
         if ($this->hasEntry('Kids')) {
             throw new RunTimeException("Kids is already present. See ".__CLASS__." class's documentation for possible values.");  
@@ -81,42 +55,11 @@ class NameTreeNodeType extends TreeNodeType
     }
 
     /**
-     * Get names from node.
-     *
-     * @param  \Papier\Type\TreeNodeType  $node
-     * @return array
-     */    
-    protected function collectNames($node)
-    {        
-        if (!$node instanceof TreeNodeType) {
-            throw new InvalidArgumentException("Node is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }  
-
-        $objects = array();
-
-        if ($node->hasEntry('Names')) {
-            $names = $node->getEntry('Names')->getKeys();
-            $objects = array_merge($objects, $names);
-        } else {
-            $kids = $node->getEntry('Kids');
-            
-            if (count($kids) > 0) {
-                foreach ($kids as $kid) {
-                    $names = $this->collectNames($kid);
-                    $objects = array_merge($objects, $names);
-                }
-            }
-        }
-
-        return $objects;
-    }
-
-    /**
      * Format object's value.
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         if (!$this->isRoot()) {
             // Compute limits

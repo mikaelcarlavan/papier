@@ -2,7 +2,6 @@
 
 namespace Papier\Type;
 
-use Papier\Type\TreeType;
 use Papier\Factory\Factory;
 
 class NameTreeType extends TreeType
@@ -10,9 +9,9 @@ class NameTreeType extends TreeType
     /**
      * Get root.
      *  
-     * @return \Papier\Type\NameTreeNodeType
+     * @return NameTreeNodeType
      */
-    public function getRoot()
+    public function getRoot(): NameTreeNodeType
     {
         if (!$this->hasEntry('Root')) {
             $root = Factory::create('NameTreeNode', null, true)->setRoot();
@@ -24,12 +23,12 @@ class NameTreeType extends TreeType
     
     /**
      * Add number to tree.
-     *  
-     * @param  mixed  $object
+     *
      * @param  string  $key
-     * @return \Papier\Type\NameTreeType
+     * @param  mixed  $object
+     * @return NameTreeType
      */
-    public function addName($key, $object)
+    public function addName(string $key, $object): NameTreeType
     {
         $this->getRoot()->addName($key, $object);
         return $this;

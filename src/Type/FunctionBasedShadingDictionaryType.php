@@ -2,19 +2,14 @@
 
 namespace Papier\Type;
 
-use Papier\Object\DictionaryObject;
-use Papier\Object\ArrayObject;
 use Papier\Object\FunctionObject;
-
 use Papier\Factory\Factory;
 
-use Papier\Type\ShadingDictionaryType;
-
-use Papier\Validator\ShadingTypeValidator;
-use Papier\Validator\StringValidator;
-use Papier\Validator\BooleanValidator;
+use Papier\Validator\NumbersArrayValidator;
+use Papier\Validator\ArrayValidator;
 
 use InvalidArgumentException;
+use RuntimeException;
 
 class FunctionBasedShadingDictionaryType extends ShadingDictionaryType
 {
@@ -23,9 +18,9 @@ class FunctionBasedShadingDictionaryType extends ShadingDictionaryType
      *  
      * @param  array $domain
      * @throws InvalidArgumentException if the provided argument is not of type 'array'.
-     * @return \Papier\Type\FunctionBasedShadingDictionaryType
+     * @return FunctionBasedShadingDictionaryType
      */
-    public function setDomain($domain)
+    public function setDomain(array $domain): FunctionBasedShadingDictionaryType
     {
         if (!ArrayValidator::isValid($domain, 4)) {
             throw new InvalidArgumentException("Domain is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -42,9 +37,9 @@ class FunctionBasedShadingDictionaryType extends ShadingDictionaryType
      *  
      * @param  array  $matrix
      * @throws InvalidArgumentException if the provided argument is not of type 'array'.
-     * @return \Papier\Type\FunctionBasedShadingDictionaryType
+     * @return FunctionBasedShadingDictionaryType
      */
-    public function setMatrix($matrix)
+    public function setMatrix(array $matrix): FunctionBasedShadingDictionaryType
     {
         if (!NumbersArrayValidator::isValid($matrix, 6)) {
             throw new InvalidArgumentException("Matrix is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -59,16 +54,12 @@ class FunctionBasedShadingDictionaryType extends ShadingDictionaryType
     /**
      * Set function.
      *  
-     * @param  \Papier\Object\FunctionObject  $function
+     * @param FunctionObject $function
      * @throws InvalidArgumentException if the provided argument is not of type 'FunctionObject'.
-     * @return \Papier\Type\FunctionBasedShadingDictionaryType
+     * @return FunctionBasedShadingDictionaryType
      */
-    public function setFunction($function)
+    public function setFunction(FunctionObject $function): FunctionBasedShadingDictionaryType
     {
-        if (!$function instanceof FunctionObject) {
-            throw new InvalidArgumentException("Function is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('Function', $function);
         return $this;
     }
@@ -78,7 +69,7 @@ class FunctionBasedShadingDictionaryType extends ShadingDictionaryType
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         if (!$this->hasEntry('Function')) {
             throw new RuntimeException("Function is missing. See ".__CLASS__." class's documentation for possible values.");

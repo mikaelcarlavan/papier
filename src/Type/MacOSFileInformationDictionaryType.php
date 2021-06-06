@@ -19,9 +19,9 @@ class MacOSFileInformationDictionaryType extends DictionaryObject
      *  
      * @param  string  $subtype
      * @throws InvalidArgumentException if the provided argument is not of type 'string'.
-     * @return \Papier\Type\MacOSFileInformationDictionaryType
+     * @return MacOSFileInformationDictionaryType
      */
-    public function setSubtype($subtype)
+    public function setSubtype($subtype): MacOSFileInformationDictionaryType
     {
         if (!StringValidator::isValid($subtype)) {
             throw new InvalidArgumentException("Subtype is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -41,16 +41,12 @@ class MacOSFileInformationDictionaryType extends DictionaryObject
     /**
      * Set creator.
      *  
-     * @param  string  $creator
+     * @param string $creator
+     * @return MacOSFileInformationDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'string'.
-     * @return \Papier\Type\MacOSFileInformationDictionaryType
      */
-    public function setCreator($creator)
+    public function setCreator(string $creator): MacOSFileInformationDictionaryType
     {
-        if (!StringValidator::isValid($creator)) {
-            throw new InvalidArgumentException("Creator is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $hex = '';
         foreach (str_split($creator) as $s) {
             $hex.= dechex(ord($s));
@@ -65,11 +61,11 @@ class MacOSFileInformationDictionaryType extends DictionaryObject
     /**
      * Set binary content of resource fork.
      *  
-     * @param  \Papier\Object\StreamObject  $resfork
+     * @param  StreamObject  $resfork
      * @throws InvalidArgumentException if the provided argument is not of type 'StreamObject'.
-     * @return \Papier\Type\MacOSFileInformationDictionaryType
+     * @return MacOSFileInformationDictionaryType
      */
-    public function setResFork($resfork)
+    public function setResFork(StreamObject $resfork): MacOSFileInformationDictionaryType
     {
         if (!$resfork instanceof StreamObject) {
             throw new InvalidArgumentException("ResFork is incorrect. See ".__CLASS__." class's documentation for possible values.");

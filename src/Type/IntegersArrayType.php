@@ -2,8 +2,6 @@
 
 namespace Papier\Type;
 
-use Papier\Type\ArrayType;
-
 use Papier\Validator\IntegersArrayValidator;
 
 use Papier\Factory\Factory;
@@ -15,21 +13,21 @@ class IntegersArrayType extends ArrayType
     /**
     * Set object's numbers.
     *
-    * @param  array  $values
+    * @param  mixed  $value
     * @throws InvalidArgumentException if the provided argument is not of type 'array' or if each element of the array is not of type 'int'.
-    * @return \Papier\Type\IntegersArrayType
+    * @return IntegersArrayType
     */
-    public function setValue($numbers)
+    public function setValue($value): IntegersArrayType
     {
-        if (!IntegersArrayValidator::isValid($numbers)) {
+        if (!IntegersArrayValidator::isValid($value)) {
             throw new InvalidArgumentException("Array is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $objects = $this->getObjects();
 
-        foreach ($numbers as $i => $number) {
-            $value = Factory::create('Integer', $number);
-            $objects[$i] = $value;
+        foreach ($value as $i => $val) {
+            $object = Factory::create('Integer', $val);
+            $objects[$i] = $object;
         }
 
         return parent::setValue($objects);

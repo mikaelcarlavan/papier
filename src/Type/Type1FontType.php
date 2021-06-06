@@ -22,16 +22,11 @@ class Type1FontType extends DictionaryType
     /**
      * Set name.
      *  
-     * @param  string  $name
-     * @throws InvalidArgumentException if the provided argument is not of type 'string'.
-     * @return \Papier\Type\Type1FontType
+     * @param string $name
+     * @return Type1FontType
      */
-    public function setName($name)
+    public function setName(string $name): Type1FontType
     {
-        if (!StringValidator::isValid($name)) {
-            throw new InvalidArgumentException("Name is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('Name', $name);
         return $this->setEntry('Name', $value);
     }
@@ -39,16 +34,11 @@ class Type1FontType extends DictionaryType
     /**
      * Set basefont (PostScript) name.
      *  
-     * @param  string  $name
-     * @throws InvalidArgumentException if the provided argument is not of type 'string'.
-     * @return \Papier\Type\Type1FontType
+     * @param string $name
+     * @return Type1FontType
      */
-    public function setBaseFont($name)
+    public function setBaseFont(string $name): Type1FontType
     {
-        if (!StringValidator::isValid($name)) {
-            throw new InvalidArgumentException("BaseFont is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('Name', $name);
         return $this->setEntry('BaseFont', $value);
     }
@@ -56,16 +46,11 @@ class Type1FontType extends DictionaryType
     /**
      * Set first character code.
      *  
-     * @param  int  $fc
-     * @throws InvalidArgumentException if the provided argument is not of type 'int'.
-     * @return \Papier\Type\Type1FontType
+     * @param int $fc
+     * @return Type1FontType
      */
-    public function setFirstChar($fc)
+    public function setFirstChar(int $fc): Type1FontType
     {
-        if (!IntegerValidator::isValid($fc)) {
-            throw new InvalidArgumentException("FirstChar is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('Integer', $fc);
         return $this->setEntry('FirstChar', $value);
     }
@@ -73,16 +58,11 @@ class Type1FontType extends DictionaryType
     /**
      * Set last character code.
      *  
-     * @param  int  $lc
-     * @throws InvalidArgumentException if the provided argument is not of type 'int'.
-     * @return \Papier\Type\Type1FontType
+     * @param int $lc
+     * @return Type1FontType
      */
-    public function setLastChar($lc)
+    public function setLastChar(int $lc): Type1FontType
     {
-        if (!IntegerValidator::isValid($lc)) {
-            throw new InvalidArgumentException("LastChar is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('Integer', $lc);
         return $this->setEntry('LastChar', $value);
     }
@@ -90,32 +70,22 @@ class Type1FontType extends DictionaryType
     /**
      * Set widths.
      *  
-     * @param  \Papier\Object\ArrayObject  $widths
-     * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
-     * @return \Papier\Type\Type1FontType
+     * @param ArrayObject $widths
+     * @return Type1FontType
      */
-    public function setWidths($widths)
+    public function setWidths(ArrayObject $widths): Type1FontType
     {
-        if (!$widths instanceof ArrayObject) {
-            throw new InvalidArgumentException("Widths is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         return $this->setEntry('Widths', $widths);
     }
 
     /**
      * Set font descriptor.
      *  
-     * @param  \Papier\Object\DictionaryObject  $fd
-     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Type\Type1FontType
+     * @param  DictionaryObject  $fd
+     * @return Type1FontType
      */
-    public function setFontDescriptor($fd)
+    public function setFontDescriptor(DictionaryObject $fd): Type1FontType
     {
-        if (!$fd instanceof DictionaryObject) {
-            throw new InvalidArgumentException("FontDescriptor is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         return $this->setEntry('FontDescriptor', $fd);
     }
 
@@ -124,9 +94,9 @@ class Type1FontType extends DictionaryType
      *  
      * @param  mixed  $encoding
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject' or 'string'.
-     * @return \Papier\Type\Type1FontType
+     * @return Type1FontType
      */
-    public function setEncoding($encoding)
+    public function setEncoding($encoding): Type1FontType
     {
         if (!$encoding instanceof DictionaryObject && !StringValidator::isValid($encoding)) {
             throw new InvalidArgumentException("Encoding is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -146,16 +116,11 @@ class Type1FontType extends DictionaryType
     /**
      * Set map to unicde values.
      *  
-     * @param  \Papier\Object\StreamObject  $encoding
-     * @throws InvalidArgumentException if the provided argument is not of type 'StreamObject'.
-     * @return \Papier\Type\Type1FontType
+     * @param  StreamObject  $tounicode
+     * @return Type1FontType
      */
-    public function setToUnicode($tounicode)
+    public function setToUnicode(StreamObject $tounicode): Type1FontType
     {
-        if (!$tounicode instanceof StreamObject) {
-            throw new InvalidArgumentException("Encoding is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-        
         return $this->setEntry('ToUnicode', $tounicode);
     }
 
@@ -164,7 +129,7 @@ class Type1FontType extends DictionaryType
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         $type = Factory::create('Name', 'Font');
         $this->setEntry('Type', $type);

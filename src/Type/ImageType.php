@@ -2,18 +2,14 @@
 
 namespace Papier\Type;
 
-use Papier\Filter\FilterType;
-
 use Papier\Object\StreamObject;
 use Papier\Object\ArrayObject;
-use Papier\Object\IntegerObject;
-use Papier\Object\NameObject;
+use Papier\Object\DictionaryObject;
 
-use Papier\Validator\IntegerValidator;
-use Papier\Validator\BooleanValidator;
 use Papier\Validator\StringValidator;
 use Papier\Validator\BitsPerComponentValidator;
 use Papier\Validator\RenderingIntentValidator;
+use Papier\Validator\NumbersArrayValidator;
 
 use Papier\Factory\Factory;
 
@@ -27,15 +23,10 @@ class ImageType extends StreamObject
      * Set width.
      *  
      * @param  int  $width
-     * @throws InvalidArgumentException if the provided argument is not of type 'int'.
-     * @return \Papier\Type\ImageType
+     * @return ImageType
      */
-    public function setWidth($width)
+    public function setWidth(int $width): ImageType
     {
-        if (!IntegerValidator::isValid($width)) {
-            throw new InvalidArgumentException("Width is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('Integer', $width);
 
         $this->setEntry('Width', $value);
@@ -46,14 +37,10 @@ class ImageType extends StreamObject
      * Set height.
      *  
      * @param  int  $height
-     * @throws InvalidArgumentException if the provided argument is not of type 'int'.
-     * @return \Papier\Type\ImageType
+     * @return ImageType
      */
-    public function setHeight($height)
+    public function setHeight(int $height): ImageType
     {
-        if (!IntegerValidator::isValid($height)) {
-            throw new InvalidArgumentException("Height is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
 
         $value = Factory::create('Integer', $height);
 
@@ -66,9 +53,9 @@ class ImageType extends StreamObject
      *  
      * @param  mixed  $space
      * @throws InvalidArgumentException if the provided argument is not of type 'string' or 'ArrayObject'.
-     * @return \Papier\Type\ImageType
+     * @return ImageType
      */
-    public function setColorSpace($space)
+    public function setColorSpace($space): ImageType
     {
         if (!StringValidator::isValid($space) && !$space instanceof ArrayObject) {
             throw new InvalidArgumentException("ColorSpace is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -83,11 +70,11 @@ class ImageType extends StreamObject
      /**
      * Set the number of bits used to represent each colour component.
      *  
-     * @param  array  $bits
+     * @param int $bits
+     * @return ImageType
      * @throws InvalidArgumentException if the provided argument is not of type 'int'.
-     * @return \Papier\Type\ImageType
      */
-    public function setBitsPerComponent($bits)
+    public function setBitsPerComponent(int $bits): ImageType
     {
         if (!BitsPerComponentValidator::isValid($bits)) {
             throw new InvalidArgumentException("BitsPerComponent is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -102,11 +89,11 @@ class ImageType extends StreamObject
     /**
      * Set name of rendering intent.
      *  
-     * @param  string  $intent
+     * @param string $intent
+     * @return ImageType
      * @throws InvalidArgumentException if the provided argument is not a valid rendering intent.
-     * @return \Papier\Type\ImageType
      */
-    public function setIntent($intent)
+    public function setIntent(string $intent): ImageType
     {
         if (!RenderingIntentValidator::isValid($intent)) {
             throw new InvalidArgumentException("Intent is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -120,16 +107,12 @@ class ImageType extends StreamObject
     /**
      * Set image mask.
      *  
-     * @param  bool  $imagemask
+     * @param bool $imagemask
+     * @return ImageType
      * @throws InvalidArgumentException if the provided argument is not of type 'bool'.
-     * @return \Papier\Type\ImageType
      */
-    public function setImageMask($imagemask)
+    public function setImageMask(bool $imagemask): ImageType
     {
-        if (!BooleanValidator::isValid($imagemask)) {
-            throw new InvalidArgumentException("ImageMask is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('Boolean', $imagemask);
         $this->setEntry('ImageMask', $value);
         return $this;
@@ -140,9 +123,9 @@ class ImageType extends StreamObject
      *  
      * @param  mixed  $mask
      * @throws InvalidArgumentException if the provided argument is not of type 'StreamObject' or 'ArrayObject'.
-     * @return \Papier\Type\ImageType
+     * @return ImageType
      */
-    public function setMask($mask)
+    public function setMask($mask): ImageType
     {
         if (!$mask instanceof StreamObject && !$mask instanceof ArrayObject) {
             throw new InvalidArgumentException("Mask is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -155,11 +138,11 @@ class ImageType extends StreamObject
     /**
      * Set map from image samples to the appropriate ranges of values.
      *  
-     * @param  array  $decode
+     * @param array $decode
+     * @return ImageType
      * @throws InvalidArgumentException if the provided argument is not of type 'array' and if each element of the provided argument is not of type 'int' or 'float.
-     * @return \Papier\Type\ImageType
      */
-    public function setDecode($decode)
+    public function setDecode(array $decode): ImageType
     {
         if (!NumbersArrayValidator::isValid($decode)) {
             throw new InvalidArgumentException("Decode is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -174,16 +157,11 @@ class ImageType extends StreamObject
     /**
      * Set interpolation.
      *  
-     * @param  bool  $interpolate
-     * @throws InvalidArgumentException if the provided argument does not inherit 'bool'.
-     * @return \Papier\Type\ImageType
+     * @param bool $interpolate
+     * @return ImageType
      */
-    public function setInterpolate($interpolate = true)
+    public function setInterpolate(bool $interpolate = true): ImageType
     {
-        if (!BooleanValidator::isValid($interpolate)) {
-            throw new InvalidArgumentException("Interpolate is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('Boolean', $interpolate);
 
         $this->setEntry('Interpolate', $value);
@@ -193,16 +171,11 @@ class ImageType extends StreamObject
     /**
      * Set alternates.
      *  
-     * @param  \Papier\Object\ArrayObject  $alternates
-     * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
-     * @return \Papier\Type\ImageType
+     * @param ArrayObject $alternates
+     * @return ImageType
      */
-    public function setAlternates($alternates)
+    public function setAlternates(ArrayObject $alternates): ImageType
     {
-        if (!$alternates instanceof ArrayObject) {
-            throw new InvalidArgumentException("Alternates is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('Alternates', $alternates);
         return $this;
     }
@@ -210,16 +183,11 @@ class ImageType extends StreamObject
     /**
      * Set soft-mask image.
      *  
-     * @param  \Papier\Object\StreamObject  $smask
-     * @throws InvalidArgumentException if the provided argument is not of type 'StreamObject'.
-     * @return \Papier\Type\ImageType
+     * @param StreamObject $smask
+     * @return ImageType
      */
-    public function setSMask($smask)
+    public function setSMask(StreamObject $smask): ImageType
     {
-        if (!$smask instanceof StreamObject) {
-            throw new InvalidArgumentException("SMask is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('SMask', $smask);
         return $this;
     }
@@ -227,16 +195,11 @@ class ImageType extends StreamObject
     /**
      * Set soft-mask image.
      *  
-     * @param  int  $indata
-     * @throws InvalidArgumentException if the provided argument is not of type 'int'.
-     * @return \Papier\Type\ImageType
+     * @param int $indata
+     * @return ImageType
      */
-    public function setSMaskInData($indata)
+    public function setSMaskInData(int $indata): ImageType
     {
-        if (!IntegerValidator::isValid($indata)) {
-            throw new InvalidArgumentException("SMaskInData is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('Integer', $indata);
 
         $this->setEntry('SMaskInData', $value);
@@ -246,16 +209,11 @@ class ImageType extends StreamObject
     /**
      * Set name.
      *  
-     * @param  mixed  $name
-     * @throws InvalidArgumentException if the provided argument is not of type 'string'.
-     * @return \Papier\Type\ImageType
+     * @param  string  $name
+     * @return ImageType
      */
-    public function setName($name)
+    public function setName(string $name): ImageType
     {
-        if (!StringValidator::isValid($space)) {
-            throw new InvalidArgumentException("Name is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('Name', $name);
 
         $this->setEntry('Name', $value);
@@ -265,16 +223,11 @@ class ImageType extends StreamObject
     /**
      * Set integer key of image's entry in the structural parent tree.
      *  
-     * @param  int  $struct
-     * @throws InvalidArgumentException if the provided argument is not of type 'int'.
-     * @return \Papier\Type\ImageType
+     * @param int $struct
+     * @return ImageType
      */
-    public function setStructParent($struct)
+    public function setStructParent(int $struct): ImageType
     {
-        if (!IntegerValidator::isValid($struct)) {
-            throw new InvalidArgumentException("StructParent is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('Integer', $struct);
 
         $this->setEntry('StructParent', $value);
@@ -284,16 +237,11 @@ class ImageType extends StreamObject
     /**
      * Set digital identifier of the page's parent web capture content set.
      *  
-     * @param  \Papier\Type\ByteStringType  $id
-     * @throws InvalidArgumentException if the provided argument is not of type 'ByteStringType'.
-     * @return \Papier\Type\ImageType
+     * @param ByteStringType $id
+     * @return ImageType
      */
-    public function setID($id)
+    public function setID(ByteStringType $id): ImageType
     {
-        if (!$id instanceof ByteStringType) {
-            throw new InvalidArgumentException("ID is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('ID', $id);
         return $this;
     }
@@ -301,16 +249,11 @@ class ImageType extends StreamObject
     /**
      * Set open prepress interface.
      *  
-     * @param  \Papier\Object\DictionaryObject  $opi
-     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Type\ImageType
+     * @param  DictionaryObject  $opi
+     * @return ImageType
      */
-    public function setOPI($opi)
+    public function setOPI(DictionaryObject $opi): ImageType
     {
-        if (!$opi instanceof DictionaryObject) {
-            throw new InvalidArgumentException("OPI is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('OPI', $opi);
         return $this;
     }
@@ -318,33 +261,23 @@ class ImageType extends StreamObject
     /**
      * Set metadata.
      *  
-     * @param  \Papier\Object\StreamObject  $metadata
-     * @throws InvalidArgumentException if the provided argument is not of type 'StreamObject'.
-     * @return \Papier\Type\ImageType
+     * @param StreamObject $metadata
+     * @return ImageType
      */
-    public function setMetadata($metadata)
+    public function setMetadata(StreamObject $metadata): ImageType
     {
-        if (!$metadata instanceof StreamObject) {
-            throw new InvalidArgumentException("Metadata is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        $this->setEntry('Metadata', $metadata);
+       $this->setEntry('Metadata', $metadata);
         return $this;
     } 
 
     /**
      * Set optional content.
      *  
-     * @param  \Papier\Object\DictionaryObject  $oc
-     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Type\ImageType
+     * @param DictionaryObject $oc
+     * @return ImageType
      */
-    public function setOC($oc)
+    public function setOC(DictionaryObject $oc): ImageType
     {
-        if (!$oc instanceof DictionaryObject) {
-            throw new InvalidArgumentException("OC is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('OC', $oc);
         return $this;
     }
@@ -354,7 +287,7 @@ class ImageType extends StreamObject
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         $type = Factory::create('Name', 'XObject');
         $this->setEntry('Type', $type);

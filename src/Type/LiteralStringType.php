@@ -12,7 +12,7 @@ class LiteralStringType extends StringObject
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         $value = $this->getValue();
 

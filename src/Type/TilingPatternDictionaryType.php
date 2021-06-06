@@ -2,10 +2,7 @@
 
 namespace Papier\Type;
 
-use Papier\Object\ArrayObject;
 use Papier\Object\DictionaryObject;
-
-use Papier\Type\PatternDictionaryType;
 
 use Papier\Factory\Factory;
 use Papier\Validator\PaintTypeValidator;
@@ -13,7 +10,7 @@ use Papier\Validator\TilingTypeValidator;
 use Papier\Validator\NumbersArrayValidator;
 
 use Papier\Graphics\PatternType;
-
+use Papier\Validator\NumberValidator;
 
 use InvalidArgumentException;
 use RuntimeException;
@@ -23,11 +20,11 @@ class TilingPatternDictionaryType extends PatternDictionaryType
     /**
      * Set paint type.
      *  
-     * @param  int $type
+     * @param int $type
+     * @return TilingPatternDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'int' or a valid type.
-     * @return \Papier\Type\TilingPatternDictionaryType
      */
-    public function setPaintType($type)
+    public function setPaintType(int $type): TilingPatternDictionaryType
     {
         if (!PaintTypeValidator::isValid($type)) {
             throw new InvalidArgumentException("PaintType is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -42,11 +39,11 @@ class TilingPatternDictionaryType extends PatternDictionaryType
     /**
      * Set tiling type.
      *  
-     * @param  int $type
+     * @param int $type
+     * @return TilingPatternDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'int' or a valid type.
-     * @return \Papier\Type\TilingPatternDictionaryType
      */
-    public function setTilingType($type)
+    public function setTilingType(int $type): TilingPatternDictionaryType
     {
         if (!TilingTypeValidator::isValid($type)) {
             throw new InvalidArgumentException("TilingType is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -61,16 +58,12 @@ class TilingPatternDictionaryType extends PatternDictionaryType
     /**
      * Set boundaries of the pattern's cell bounding box.
      *  
-     * @param  \Papier\Type\RectangleType  $bbox
+     * @param RectangleType $bbox
+     * @return TilingPatternDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'RectangleType'.
-     * @return \Papier\Type\TilingPatternDictionaryType
      */
-    public function setBBox($bbox)
+    public function setBBox(RectangleType $bbox): TilingPatternDictionaryType
     {
-        if (!$bbox instanceof RectangleType) {
-            throw new InvalidArgumentException("BBox is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('BBox', $bbox);
         return $this;
     }
@@ -80,9 +73,9 @@ class TilingPatternDictionaryType extends PatternDictionaryType
      *  
      * @param  mixed  $xstep
      * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
-     * @return \Papier\Type\TilingPatternDictionaryType
+     * @return TilingPatternDictionaryType
      */
-    public function setXStep($xstep)
+    public function setXStep($xstep): TilingPatternDictionaryType
     {
         if (!NumberValidator::isValid($xstep)) {
             throw new InvalidArgumentException("XStep is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -98,9 +91,9 @@ class TilingPatternDictionaryType extends PatternDictionaryType
      *  
      * @param  mixed  $ystep
      * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
-     * @return \Papier\Type\TilingPatternDictionaryType
+     * @return TilingPatternDictionaryType
      */
-    public function setYStep($ystep)
+    public function setYStep($ystep): TilingPatternDictionaryType
     {
         if (!NumberValidator::isValid($ystep)) {
             throw new InvalidArgumentException("YStep is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -114,16 +107,11 @@ class TilingPatternDictionaryType extends PatternDictionaryType
     /**
      * Set resources.
      *  
-     * @param  \Papier\Object\DictionaryObject  $resources
-     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Type\TilingPatternDictionaryType
+     * @param  DictionaryObject  $resources
+     * @return TilingPatternDictionaryType
      */
-    public function setResources($resources)
+    public function setResources(DictionaryObject $resources): TilingPatternDictionaryType
     {
-        if (!$resources instanceof DictionaryObject) {
-            throw new InvalidArgumentException("Resources is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('Resources', $resources);
         return $this;
     } 
@@ -131,9 +119,9 @@ class TilingPatternDictionaryType extends PatternDictionaryType
     /**
      * Get resources.
      *  
-     * @return \Papier\Type\DictionaryType
+     * @return DictionaryType
      */
-    public function getResources()
+    public function getResources(): DictionaryType
     {
         if (!$this->hasEntry('Resources')) {
             $resources = Factory::create('Dictionary');
@@ -146,11 +134,11 @@ class TilingPatternDictionaryType extends PatternDictionaryType
     /**
      * Set pattern matrix.
      *  
-     * @param  array  $matrix
+     * @param array $matrix
+     * @return TilingPatternDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'array'.
-     * @return \Papier\Type\TilingPatternDictionaryType
      */
-    public function setMatrix($matrix)
+    public function setMatrix(array $matrix): TilingPatternDictionaryType
     {
         if (!NumbersArrayValidator::isValid($matrix, 6)) {
             throw new InvalidArgumentException("Matrix is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -167,7 +155,7 @@ class TilingPatternDictionaryType extends PatternDictionaryType
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         $this->setPatternType(PatternType::TILING_PATTERN);
 

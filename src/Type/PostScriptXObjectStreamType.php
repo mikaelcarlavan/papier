@@ -2,24 +2,19 @@
 
 namespace Papier\Type;
 
-use Papier\Type\StreamType;
 use Papier\Object\StreamObject;
+use Papier\Factory\Factory;
 
 class PostScriptXObjectStreamType extends StreamType
 {
     /**
      * Set replacing stream when target interpreter supports only LanguageLevel 1.
      *  
-     * @param  \Papier\Object\StreamObject  $level1
-     * @throws InvalidArgumentException if the provided argument is not of type 'StreamObject'.
-     * @return \Papier\Type\PostScriptXObjectStreamType
+     * @param StreamObject $level1
+     * @return PostScriptXObjectStreamType
      */
-    public function setLevel1($level1)
+    public function setLevel1(StreamObject $level1): PostScriptXObjectStreamType
     {
-        if (!$level1 instanceof StreamObject) {
-            throw new InvalidArgumentException("Level1 is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('Level1', $level1);
         return $this;
     } 
@@ -29,7 +24,7 @@ class PostScriptXObjectStreamType extends StreamType
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         $type = Factory::create('Name', 'PS');
         $this->setEntry('Subtype', $type);

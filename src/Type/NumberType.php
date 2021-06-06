@@ -14,14 +14,15 @@ class NumberType extends IndirectObject
     *
     * @param  mixed  $value
     * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
-    * @return \Papier\Type\NumberType
+    * @return NumberType
     */
-    public function setValue($value)
+    public function setValue($value): NumberType
     {
         if (!NumberValidator::isValid($value)) {
             throw new InvalidArgumentException("Number is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        return parent::setValue($value);
+        parent::setValue($value);
+        return $this;
     }    
 }

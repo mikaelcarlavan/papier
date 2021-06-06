@@ -3,14 +3,6 @@
 namespace Papier\Type;
 
 use Papier\Object\DictionaryObject;
-use Papier\Object\ArrayObject;
-use Papier\Object\IntegerObject;
-use Papier\Object\NameObject;
-use Papier\Object\StreamObject;
-
-use Papier\Validator\IntegerValidator;
-use Papier\Validator\BooleanValidator;
-use Papier\Validator\StringValidator;
 use Papier\Validator\ByteStringsArrayValidator;
 
 use Papier\Factory\Factory;
@@ -24,34 +16,24 @@ class FileSpecificationDictionaryType extends DictionaryObject
      * Set file system.
      *  
      * @param  string  $fs
-     * @throws InvalidArgumentException if the provided argument is not of type 'string'.
-     * @return \Papier\Type\FileSpecificationDictionaryType
+     * @return FileSpecificationDictionaryType
      */
-    public function setFS($fs)
+    public function setFS(string $fs): FileSpecificationDictionaryType
     {
-        if (!StringValidator::isValid($space)) {
-            throw new InvalidArgumentException("FS is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('Name', $fs);
 
         $this->setEntry('FS', $value);
         return $this;
-    } 
+    }
 
     /**
      * Set file specification.
-     *  
-     * @param  string  $fs
-     * @throws InvalidArgumentException if the provided argument is not of type 'string'.
-     * @return \Papier\Type\FileSpecificationDictionaryType
+     *
+     * @param string $f
+     * @return FileSpecificationDictionaryType
      */
-    public function setF($f)
+    public function setF(string $f): FileSpecificationDictionaryType
     {
-        if (!StringValidator::isValid($f)) {
-            throw new InvalidArgumentException("F is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('FileSpecificationString', $f);
 
         $this->setEntry('FS', $value);
@@ -61,16 +43,11 @@ class FileSpecificationDictionaryType extends DictionaryObject
     /**
      * Set unicode file specification.
      *  
-     * @param  string  $uf
-     * @throws InvalidArgumentException if the provided argument is not of type 'string'.
-     * @return \Papier\Type\FileSpecificationDictionaryType
+     * @param string $uf
+     * @return FileSpecificationDictionaryType
      */
-    public function setUF($uf)
+    public function setUF(string $uf): FileSpecificationDictionaryType
     {
-        if (!StringValidator::isValid($uf)) {
-            throw new InvalidArgumentException("UF is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('TextString', Factory::create('FileSpecificationString', $uf)->getConvertedValue());
 
         $this->setEntry('UF', $value);
@@ -80,11 +57,11 @@ class FileSpecificationDictionaryType extends DictionaryObject
     /**
      * Set digital identifier of the page's parent web capture content set.
      *  
-     * @param  array  $id
+     * @param array $id
+     * @return FileSpecificationDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'array' or if each element of the array is not of type 'string'.
-     * @return \Papier\Type\FileSpecificationDictionaryType
      */
-    public function setID($id)
+    public function setID(array $id): FileSpecificationDictionaryType
     {
         if (!ByteStringsArrayValidator::isValid($id, 2)) {
             throw new InvalidArgumentException("ID is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -97,16 +74,11 @@ class FileSpecificationDictionaryType extends DictionaryObject
     /**
      * Set volatile.
      *  
-     * @param  bool  $v
-     * @throws InvalidArgumentException if the provided argument is not of type 'bool'.
-     * @return \Papier\Type\FileSpecificationDictionaryType
+     * @param bool $v
+     * @return FileSpecificationDictionaryType
      */
-    public function setV($v)
+    public function setV(bool $v): FileSpecificationDictionaryType
     {
-        if (!BooleanValidator::isValid($v)) {
-            throw new InvalidArgumentException("V is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('Boolean', $v);
         $this->setEntry('V', $value);
         return $this;
@@ -116,16 +88,11 @@ class FileSpecificationDictionaryType extends DictionaryObject
     /**
      * Set embed files.
      *  
-     * @param  \Papier\Object\DictionaryObject  $ef
-     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Type\FileSpecificationDictionaryType
+     * @param DictionaryObject $ef
+     * @return FileSpecificationDictionaryType
      */
-    public function setEF($ef)
+    public function setEF(DictionaryObject $ef): FileSpecificationDictionaryType
     {
-        if (!$ef instanceof DictionaryObject) {
-            throw new InvalidArgumentException("EF is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('EF', $ef);
         return $this;
     }
@@ -133,16 +100,11 @@ class FileSpecificationDictionaryType extends DictionaryObject
     /**
      * Set relative files.
      *  
-     * @param  \Papier\Object\DictionaryObject  $rf
-     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Type\FileSpecificationDictionaryType
+     * @param DictionaryObject $rf
+     * @return FileSpecificationDictionaryType
      */
-    public function setRF($rf)
+    public function setRF(DictionaryObject $rf): FileSpecificationDictionaryType
     {
-        if (!$rf instanceof DictionaryObject) {
-            throw new InvalidArgumentException("RF is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('RF', $rf);
         return $this;
     }
@@ -151,15 +113,10 @@ class FileSpecificationDictionaryType extends DictionaryObject
      * Set description.
      *  
      * @param  string  $desc
-     * @throws InvalidArgumentException if the provided argument is not of type 'string'.
-     * @return \Papier\Type\FileSpecificationDictionaryType
+     * @return FileSpecificationDictionaryType
      */
-    public function setDesc($desc)
+    public function setDesc(string $desc): FileSpecificationDictionaryType
     {
-        if (!StringValidator::isValid($desc)) {
-            throw new InvalidArgumentException("Desc is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('TextString', $desc);
 
         $this->setEntry('Desc', $value);
@@ -169,16 +126,11 @@ class FileSpecificationDictionaryType extends DictionaryObject
     /**
      * Set collection items.
      *  
-     * @param  \Papier\Object\DictionaryObject  $ci
-     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Type\FileSpecificationDictionaryType
+     * @param DictionaryObject $ci
+     * @return FileSpecificationDictionaryType
      */
-    public function setCI($ci)
+    public function setCI(DictionaryObject $ci): FileSpecificationDictionaryType
     {
-        if (!$ci instanceof DictionaryObject) {
-            throw new InvalidArgumentException("CI is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('CI', $ci);
         return $this;
     }
@@ -188,7 +140,7 @@ class FileSpecificationDictionaryType extends DictionaryObject
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         $type = Factory::create('Name', 'Filespec');
         $this->setEntry('Type', $type);

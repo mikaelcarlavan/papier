@@ -12,17 +12,18 @@ use Papier\Validator\StringValidator;
 use Papier\Validator\BooleanValidator;
 
 use InvalidArgumentException;
+use RuntimeException;
 
 class ShadingDictionaryType extends DictionaryObject
 {
     /**
      * Set shading type.
      *  
-     * @param  int $type
+     * @param int $type
+     * @return ShadingDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'int' or a valid type.
-     * @return \Papier\Type\ShadingDictionaryType
      */
-    public function setShadingType($type)
+    public function setShadingType(int $type): ShadingDictionaryType
     {
         if (!ShadingTypeValidator::isValid($type)) {
             throw new InvalidArgumentException("ShadingType is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -39,9 +40,9 @@ class ShadingDictionaryType extends DictionaryObject
      *  
      * @param  mixed $space
      * @throws InvalidArgumentException if the provided argument is not of type 'string' or 'ArrayObject'.
-     * @return \Papier\Type\ShadingDictionaryType
+     * @return ShadingDictionaryType
      */
-    public function setColourSpace($space)
+    public function setColourSpace($space): ShadingDictionaryType
     {
         if (!StringValidator::isValid($space) && (!$space instanceof ArrayObject)) {
             throw new InvalidArgumentException("ColorSpace is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -56,16 +57,11 @@ class ShadingDictionaryType extends DictionaryObject
     /**
      * Set background.
      *  
-     * @param  \Papier\Object\ArrayObject $background
-     * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
-     * @return \Papier\Type\ShadingDictionaryType
+     * @param ArrayObject $background
+     * @return ShadingDictionaryType
      */
-    public function setBackground($background)
+    public function setBackground(ArrayObject $background): ShadingDictionaryType
     {
-        if (!$background instanceof ArrayObject) {
-            throw new InvalidArgumentException("Background is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('Background', $background);
         return $this;
     }
@@ -73,16 +69,11 @@ class ShadingDictionaryType extends DictionaryObject
     /**
      * Set boundaries of the shading's bounding box.
      *  
-     * @param  \Papier\Type\RectangleType  $bbox
-     * @throws InvalidArgumentException if the provided argument is not of type 'RectangleType'.
-     * @return \Papier\Type\ShadingDictionaryType
+     * @param  RectangleType  $bbox
+     * @return ShadingDictionaryType
      */
-    public function setBBox($bbox)
+    public function setBBox(RectangleType $bbox): ShadingDictionaryType
     {
-        if (!$bbox instanceof RectangleType) {
-            throw new InvalidArgumentException("BBox is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('BBox', $bbox);
         return $this;
     }
@@ -90,16 +81,11 @@ class ShadingDictionaryType extends DictionaryObject
     /**
      * Set a flag to filter the shading function to prevent aliasing artifacts.
      *  
-     * @param  bool $antialias
-     * @throws InvalidArgumentException if the provided argument is not of type 'bool'.
-     * @return \Papier\Type\ShadingDictionaryType
+     * @param bool $antialias
+     * @return ShadingDictionaryType
      */
-    public function setAntiAlias($antialias)
+    public function setAntiAlias(bool $antialias): ShadingDictionaryType
     {
-        if (!BooleanValidator::isValid($antialias)) {
-            throw new InvalidArgumentException("AntiAlias is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('Boolean', $antialias);
 
         $this->setEntry('AntiAlias', $value);
@@ -111,7 +97,7 @@ class ShadingDictionaryType extends DictionaryObject
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         if (!$this->hasEntry('ShadingType')) {
             throw new RuntimeException("ShadingType is missing. See ".__CLASS__." class's documentation for possible values.");

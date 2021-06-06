@@ -2,15 +2,13 @@
 
 namespace Papier\Type;
 
-use Papier\Type\PageObjectType;
-use Papier\Type\DictionaryType;
-
 use Papier\Object\DictionaryObject;
 use Papier\Object\ArrayObject;
 
 use Papier\Factory\Factory;
 
 use InvalidArgumentException;
+use Papier\Validator\NumbersArrayValidator;
 use RuntimeException;
 
 class PageTreeNodeType extends DictionaryType
@@ -18,16 +16,11 @@ class PageTreeNodeType extends DictionaryType
     /**
      * Set parent.
      *  
-     * @param  \Papier\Type\PageTreeNodeType  $parent
-     * @throws InvalidArgumentException if the provided argument is not of type 'PageTreeNodeType'.
-     * @return \Papier\Type\PageTreeNodeType
+     * @param  PageTreeNodeType  $parent
+     * @return PageTreeNodeType
      */
-    public function setParent($parent)
+    public function setParent(PageTreeNodeType $parent): PageTreeNodeType
     {
-        if (!$parent instanceof PageTreeNodeType) {
-            throw new InvalidArgumentException("Parent is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('Parent', $parent);
         return $this;
     } 
@@ -35,9 +28,9 @@ class PageTreeNodeType extends DictionaryType
      /**
      * Get parent.
      *  
-     * @return \Papier\Type\PageTreeNodeType
+     * @return PageTreeNodeType
      */
-    public function getParent()
+    public function getParent(): PageTreeNodeType
     {
         return $this->getEntry('Parent');
     } 
@@ -45,9 +38,9 @@ class PageTreeNodeType extends DictionaryType
     /**
      * Get kids.
      *  
-     * @return \Papier\Type\ArrayType
+     * @return ArrayType
      */
-    protected function getKids()
+    protected function getKids(): ArrayType
     {
         if (!$this->hasEntry('Kids')) {
             $kids = Factory::create('Array');
@@ -61,9 +54,9 @@ class PageTreeNodeType extends DictionaryType
     /**
      * Add node to tree.
      *  
-     * @return \Papier\Type\PageTreeNode
+     * @return PageTreeNodeType
      */
-    public function addNode()
+    public function addNode(): PageTreeNodeType
     {
         $node = Factory::create('PageTreeNode', null, true);
         $this->getKids()->append($node);
@@ -74,9 +67,9 @@ class PageTreeNodeType extends DictionaryType
     /**
      * Add object to node.
      *  
-     * @return \Papier\Type\PageObjectType
+     * @return PageObjectType
      */
-    public function addObject()
+    public function addObject(): PageObjectType
     {
         $node = Factory::create('PageObject', null, true);
         $this->getKids()->append($node);
@@ -87,25 +80,130 @@ class PageTreeNodeType extends DictionaryType
     /**
      * Set kids.
      *  
-     * @param  \Papier\Object\ArrayObject  $kids
-     * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
-     * @return \Papier\Type\TreeNodeType
+     * @param  ArrayObject  $kids
+     * @return PageTreeNodeType
      */
-    protected function setKids($kids)
+    protected function setKids(ArrayObject $kids): PageTreeNodeType
     {
-        if (!$kids instanceof ArrayObject) {
-            throw new InvalidArgumentException("Kids is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        return $this->setEntry('Kids', $kids);
+        $this->setEntry('Kids', $kids);
+        return $this;
     }
 
     /**
-     * Format catalog's content.
+     * Set resources.
+     *
+     * @param DictionaryObject $resources
+     * @return PageTreeNodeType
+     */
+    public function setResources(DictionaryObject $resources): PageTreeNodeType
+    {
+        $this->setEntry('Resources', $resources);
+        return $this;
+    }
+
+    /**
+     * Get resources.
+     *
+     * @return DictionaryType
+     */
+    public function getResources(): DictionaryType
+    {
+        if (!$this->hasEntry('Resources')) {
+            $resources = Factory::create('Dictionary');
+            $this->setResources($resources);
+        }
+
+        return $this->getEntry('Resources');
+    }
+
+    /**
+     * Set boundaries of the physical medium on which the page shall be displayed or printed.
+     *
+     * @param array $mediabox
+     * @return PageTreeNodeType
+     * @throws InvalidArgumentException if the provided argument is not of type 'array'.
+     */
+    public function setMediaBox(array $mediabox): PageTreeNodeType
+    {
+        if (!NumbersArrayValidator::isValid($mediabox, 4)) {
+            throw new InvalidArgumentException("MediaBox is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $value = Factory::create('Rectangle', $mediabox);
+
+        $this->setEntry('MediaBox', $value);
+        return $this;
+    }
+
+    /**
+     * Get mediabox.
+     *
+     * @return RectangleType
+     */
+    public function getMediaBox(): RectangleType
+    {
+        if (!$this->hasEntry('MediaBox')) {
+            $mediabox = Factory::create('Rectangle');
+            $this->setMediaBox($mediabox);
+        }
+
+        return $this->getEntry('MediaBox');
+    }
+
+    /**
+     * Set the visible region of default user space.
+     *
+     * @param array $cropbox
+     * @return PageTreeNodeType
+     * @throws InvalidArgumentException if the provided argument is not of type 'array'.
+     */
+    public function setCropBox(array $cropbox): PageTreeNodeType
+    {
+        if (!NumbersArrayValidator::isValid($cropbox, 4)) {
+            throw new InvalidArgumentException("CropBox is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $value = Factory::create('Rectangle', $cropbox);
+
+        $this->setEntry('CropBox', $value);
+        return $this;
+    }
+
+    /**
+     * Get cropbox.
+     *
+     * @return RectangleType
+     */
+    public function getCropBox(): RectangleType
+    {
+        if (!$this->hasEntry('CropBox')) {
+            $cropbox = Factory::create('Rectangle');
+            $this->setCropBox($cropbox);
+        }
+
+        return $this->getEntry('CropBox');
+    }
+
+    /**
+     * Set the number of degrees by which the page should be rotated before printed or displayed.
+     *
+     * @param int $rotate
+     * @return PageTreeNodeType
+     */
+    public function setRotate(int $rotate): PageTreeNodeType
+    {
+        $value = Factory::create('Integer', $rotate);
+
+        $this->setEntry('Rotate', $value);
+        return $this;
+    }
+
+    /**
+     * Format page tree's content.
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         /*        
         if (!$this->hasEntry('Parent')) {

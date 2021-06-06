@@ -20,7 +20,7 @@ class DeviceNProcessDictionaryType extends DictionaryObject
      * @return DeviceNProcessDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'string' or 'ArrayObject'.
      */
-    public function setColorSpace($space)
+    public function setColorSpace($space): DeviceNProcessDictionaryType
     {
         if (!StringValidator::isValid($space) && !$space instanceof ArrayObject) {
             throw new InvalidArgumentException("ColorSpace is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -38,7 +38,7 @@ class DeviceNProcessDictionaryType extends DictionaryObject
      * @param  ArrayObject  $components
      * @return DeviceNProcessDictionaryType
      */
-    public function setComponents(ArrayObject $components)
+    public function setComponents(ArrayObject $components): DeviceNProcessDictionaryType
     {
         $this->setEntry('Components', $components);
         return $this;

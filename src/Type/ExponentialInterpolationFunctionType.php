@@ -3,7 +3,6 @@
 namespace Papier\Type;
 
 use Papier\Object\FunctionObject;
-use Papier\Object\RealObject;
 use Papier\Object\ArrayObject;
 
 use Papier\Functions\FunctionType;
@@ -21,16 +20,11 @@ class ExponentialInterpolationFunctionType extends FunctionObject
     /**
      * Set C0 (function result when x = 0.0).
      *  
-     * @param  \Papier\Object\ArrayObject  $c0
-     * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
-     * @return \Papier\Type\ExponentialInterpolationFunctionType
+     * @param  ArrayObject  $c0
+     * @return ExponentialInterpolationFunctionType
      */
-    public function setC0($c0)
+    public function setC0(ArrayObject $c0): ExponentialInterpolationFunctionType
     {
-        if (!$c0 instanceof ArrayObject) {
-            throw new InvalidArgumentException("C0 is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('C0', $c0);
         return $this;
     } 
@@ -38,16 +32,11 @@ class ExponentialInterpolationFunctionType extends FunctionObject
     /**
      * Set C1 (function result when x = 1.0).
      *  
-     * @param  \Papier\Object\ArrayObject  $c1
-     * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
-     * @return \Papier\Type\ExponentialInterpolationFunctionType
+     * @param  ArrayObject  $c1
+     * @return ExponentialInterpolationFunctionType
      */
-    public function setC1($c1)
+    public function setC1(ArrayObject $c1): ExponentialInterpolationFunctionType
     {
-        if (!$c1 instanceof ArrayObject) {
-            throw new InvalidArgumentException("C1 is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('C1', $c1);
         return $this;
     } 
@@ -56,15 +45,10 @@ class ExponentialInterpolationFunctionType extends FunctionObject
      * Set interpolation exponent.
      *  
      * @param  float  $N
-     * @throws InvalidArgumentException if the provided argument is not of type 'float'.
-     * @return \Papier\Type\ExponentialInterpolationFunctionType
+     * @return ExponentialInterpolationFunctionType
      */
-    public function setN($N)
+    public function setN(float $N): ExponentialInterpolationFunctionType
     {
-        if (!RealValidator::isValid($N)) {
-            throw new InvalidArgumentException("N is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('Real', $N);
 
         $this->setEntry('N', $value);
@@ -76,7 +60,7 @@ class ExponentialInterpolationFunctionType extends FunctionObject
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         $this->setFunctionType(FunctionType::EXPONENTIAL_INTERPOLATION);
 

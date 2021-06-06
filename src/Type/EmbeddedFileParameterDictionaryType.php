@@ -3,20 +3,11 @@
 namespace Papier\Type;
 
 use Papier\Object\DictionaryObject;
-use Papier\Object\ArrayObject;
-use Papier\Object\IntegerObject;
-use Papier\Object\NameObject;
-use Papier\Object\StreamObject;
-
-use Papier\Validator\IntegerValidator;
-use Papier\Validator\BooleanValidator;
-use Papier\Validator\StringValidator;
-use Papier\Validator\ByteStringsArrayValidator;
 
 use Papier\Factory\Factory;
+use Papier\Validator\DateValidator;
 
 use InvalidArgumentException;
-use RuntimeException;
 
 class EmbeddedFileParameterDictionaryType extends DictionaryObject
 {
@@ -24,16 +15,11 @@ class EmbeddedFileParameterDictionaryType extends DictionaryObject
     /**
      * Set size.
      *  
-     * @param  int  $size
-     * @throws InvalidArgumentException if the provided argument is not of type 'int'.
-     * @return \Papier\Type\EmbeddedFileParameterDictionaryType
+     * @param int $size
+     * @return EmbeddedFileParameterDictionaryType
      */
-    public function setSize($size)
+    public function setSize(int $size): EmbeddedFileParameterDictionaryType
     {
-        if (!IntegerValidator::isValid($size)) {
-            throw new InvalidArgumentException("Size is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('Integer', $size);
 
         $this->setEntry('Size', $value);
@@ -43,11 +29,11 @@ class EmbeddedFileParameterDictionaryType extends DictionaryObject
     /**
      * Set creation date.
      * 
-     * @param   string  $date
+     * @param  mixed  $date
      * @throws InvalidArgumentException if the provided argument is not a valid date.
-     * @return \Papier\Type\EmbeddedFileParameterDictionaryType
+     * @return EmbeddedFileParameterDictionaryType
      */
-    public function setCreationDate($date)
+    public function setCreationDate($date): EmbeddedFileParameterDictionaryType
     {
         if (!DateValidator::isValid($date)) {
             throw new InvalidArgumentException("CreationDate is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -62,11 +48,11 @@ class EmbeddedFileParameterDictionaryType extends DictionaryObject
     /**
      * Set modification date.
      * 
-     * @param   string  $data
+     * @param   mixed  $date
      * @throws InvalidArgumentException if the provided argument is not a valid date.
-     * @return \Papier\Type\EmbeddedFileParameterDictionaryType
+     * @return EmbeddedFileParameterDictionaryType
      */
-    public function setModDate($date)
+    public function setModDate($date): EmbeddedFileParameterDictionaryType
     {
         if (!DateValidator::isValid($date)) {
             throw new InvalidArgumentException("ModDate is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -81,16 +67,11 @@ class EmbeddedFileParameterDictionaryType extends DictionaryObject
     /**
      * Set mac os files.
      *  
-     * @param  \Papier\Object\DictionaryObject  $mac
-     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Type\EmbeddedFileParameterDictionaryType
+     * @param  DictionaryObject  $mac
+     * @return EmbeddedFileParameterDictionaryType
      */
-    public function setMac($mac)
+    public function setMac(DictionaryObject $mac): EmbeddedFileParameterDictionaryType
     {
-        if (!$mac instanceof DictionaryObject) {
-            throw new InvalidArgumentException("Mac is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('Mac', $mac);
         return $this;
     }
@@ -98,16 +79,11 @@ class EmbeddedFileParameterDictionaryType extends DictionaryObject
     /**
      * Set checksum.
      *  
-     * @param  string  $checksum
-     * @throws InvalidArgumentException if the provided argument is not of type 'string'.
-     * @return \Papier\Type\EmbeddedFileParameterDictionaryType
+     * @param string $checksum
+     * @return EmbeddedFileParameterDictionaryType
      */
-    public function setCheckSum($checksum)
+    public function setCheckSum(string $checksum): EmbeddedFileParameterDictionaryType
     {
-        if (!StringValidator::isValid($checksum)) {
-            throw new InvalidArgumentException("CheckSum is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('LiteralString', $checksum);
 
         $this->setEntry('CheckSum', $value);

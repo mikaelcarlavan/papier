@@ -3,11 +3,8 @@
 namespace Papier\Type;
 
 use Papier\Object\DictionaryObject;
-use Papier\Object\ArrayObject;
 
 use Papier\Factory\Factory;
-
-use Papier\Validator\StringValidator;
 
 use InvalidArgumentException;
 
@@ -18,14 +15,10 @@ class ExtensionsDictionaryType extends DictionaryObject
      * 
      * @param string $name
      * @throws InvalidArgumentException if the provided argument is not of type 'string'.
-     * @return \Papier\Type\DeveloperExtensionDictionaryType
+     * @return DeveloperExtensionDictionaryType
      */
-    public function addExtension($name)
+    public function addExtension(string $name): DeveloperExtensionDictionaryType
     {
-        if (!StringValidator::isValid($name)) {
-            throw new InvalidArgumentException("Name is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $extension = Factory::create('DeveloperExtensionDictionary');
 
         $this->setEntry($name, $extension);

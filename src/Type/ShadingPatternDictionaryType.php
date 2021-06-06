@@ -23,9 +23,9 @@ class ShadingPatternDictionaryType extends PatternDictionaryType
      *  
      * @param  mixed  $shading
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject' or 'StreamObject'.
-     * @return \Papier\Type\ShadingPatternDictionaryType
+     * @return ShadingPatternDictionaryType
      */
-    public function setShading($shading)
+    public function setShading($shading): ShadingPatternDictionaryType
     {
         if (!$shading instanceof DictionaryObject && !$shading instanceof StreamObject) {
             throw new InvalidArgumentException("Shading is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -39,11 +39,11 @@ class ShadingPatternDictionaryType extends PatternDictionaryType
     /**
      * Set pattern matrix.
      *  
-     * @param  array  $matrix
+     * @param array $matrix
+     * @return ShadingPatternDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'array'.
-     * @return \Papier\Type\ShadingPatternDictionaryType
      */
-    public function setMatrix($matrix)
+    public function setMatrix(array $matrix): ShadingPatternDictionaryType
     {
         if (!NumbersArrayValidator::isValid($matrix, 6)) {
             throw new InvalidArgumentException("Matrix is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -58,16 +58,11 @@ class ShadingPatternDictionaryType extends PatternDictionaryType
     /**
      * Set graphics state parameter dictionary.
      *  
-     * @param  \Papier\Object\DictionaryObject  $extgstate
-     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Type\ShadingPatternDictionaryType
+     * @param DictionaryObject $extgstate
+     * @return ShadingPatternDictionaryType
      */
-    public function setExtGState($extgstate)
+    public function setExtGState(DictionaryObject $extgstate): ShadingPatternDictionaryType
     {
-        if (!$extgstate instanceof DictionaryObject) {
-            throw new InvalidArgumentException("ExtGState is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('ExtGState', $extgstate);
         return $this;
     } 
@@ -77,7 +72,7 @@ class ShadingPatternDictionaryType extends PatternDictionaryType
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         $this->setPatternType(PatternType::SHADING_PATTERN);
 

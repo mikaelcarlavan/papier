@@ -4,32 +4,28 @@ namespace Papier\Type;
 
 use Papier\Object\StreamObject;
 use Papier\Object\ArrayObject;
-use Papier\Object\IntegerObject;
-use Papier\Object\NameObject;
+
 
 use Papier\Validator\ColourComponentsValidator;
-use Papier\Validator\IntegerValidator;
-use Papier\Validator\BooleanValidator;
 use Papier\Validator\StringValidator;
-use Papier\Validator\BitsPerComponentValidator;
-use Papier\Validator\RenderingIntentValidator;
+
 
 use Papier\Factory\Factory;
 
 use InvalidArgumentException;
 use RuntimeException;
 
-class ICCBaseColourSpaceStreamType extends StreamObject
+class ICCBasedColourSpaceStreamType extends StreamObject
 {
  
     /**
      * Set number of colour components.
      *  
-     * @param  int  $N
-     * @throws InvalidArgumentException if the provided argument is not of type 'int'.
-     * @return \Papier\Type\ICCBaseColourSpaceStreamType
+     * @param int $N
+     * @return ICCBasedColourSpaceStreamType
+     *@throws InvalidArgumentException if the provided argument is not of type 'int'.
      */
-    public function setN($N)
+    public function setN(int $N): ICCBasedColourSpaceStreamType
     {
         if (!ColourComponentsValidator::isValid($N)) {
             throw new InvalidArgumentException("N is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -46,9 +42,9 @@ class ICCBaseColourSpaceStreamType extends StreamObject
      *  
      * @param  mixed  $alternate
      * @throws InvalidArgumentException if the provided argument is not of type 'string' or 'ArrayObject'.
-     * @return \Papier\Type\ICCBaseColourSpaceStreamType
+     * @return ICCBasedColourSpaceStreamType
      */
-    public function setAlternate($alternate)
+    public function setAlternate($alternate): ICCBasedColourSpaceStreamType
     {
         if (!StringValidator::isValid($alternate) && !$alternate instanceof ArrayObject) {
             throw new InvalidArgumentException("Alternate is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -63,11 +59,11 @@ class ICCBaseColourSpaceStreamType extends StreamObject
      /**
      * Set the range of colour components.
      *  
-     * @param  array  $range
+     * @param array $range
+     * @return ICCBasedColourSpaceStreamType
      * @throws InvalidArgumentException if the provided argument is not an array of type 'int' or 'float'.
-     * @return \Papier\Type\ICCBaseColourSpaceStreamType
      */
-    public function setRange($range)
+    public function setRange(array $range): ICCBasedColourSpaceStreamType
     {
         if (!NumbersArrayValidator::isValid($range)) {
             throw new InvalidArgumentException("Range is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -82,16 +78,12 @@ class ICCBaseColourSpaceStreamType extends StreamObject
     /**
      * Set metadata.
      *  
-     * @param  \Papier\Object\StreamObject  $metadata
+     * @param  StreamObject  $metadata
      * @throws InvalidArgumentException if the provided argument is not of type 'StreamObject'.
-     * @return \Papier\Type\ICCBaseColourSpaceStreamType
+     * @return ICCBasedColourSpaceStreamType
      */
-    public function setMetadata($metadata)
+    public function setMetadata(StreamObject $metadata): ICCBasedColourSpaceStreamType
     {
-        if (!$metadata instanceof StreamObject) {
-            throw new InvalidArgumentException("Metadata is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('Metadata', $metadata);
         return $this;
     }
@@ -101,18 +93,19 @@ class ICCBaseColourSpaceStreamType extends StreamObject
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         throw new RuntimeException("ICCBased colour space is not implemented in this version. See ".__CLASS__." class's documentation for possible values.");
 
-        if (!$this->hasEntry('N')) {
+        /*if (!$this->hasEntry('N')) {
             throw new RuntimeException("N is missing. See ".__CLASS__." class's documentation for possible values.");
         }
 
         if ($this->hasEntry('Range') && count($this->getEntry('Range')) != 2 * $this->getEntry('N')->getValue()) {
             throw new RuntimeException("Range size is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
+        }*
 
         return parent::format();
+        */
     }
 }

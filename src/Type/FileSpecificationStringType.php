@@ -12,7 +12,7 @@ class FileSpecificationStringType extends StringObject
      *
      * @return string
      */
-    public function getConvertedValue()
+    public function getConvertedValue(): string
     {
         $value = $this->getValue();
 
@@ -28,9 +28,7 @@ class FileSpecificationStringType extends StringObject
         }
 
         $trans = array('(' => '\(', ')' => '\)', '\\' => '/');
-        $value = strtr($value, $trans);
-
-        return $value;
+        return strtr($value, $trans);
     }
 
     /**
@@ -38,7 +36,7 @@ class FileSpecificationStringType extends StringObject
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         $value = $this->getConvertedValue();
         return '(' .$value. ')';

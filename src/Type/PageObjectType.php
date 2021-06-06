@@ -3,21 +3,10 @@
 namespace Papier\Type;
 
 use Papier\Object\DictionaryObject;
-use Papier\Object\NameObject;
-use Papier\Object\IntegerObject;
 use Papier\Object\ArrayObject;
 use Papier\Object\StreamObject;
 
-use Papier\Type\DateType;
-use Papier\Type\ByteStringType;
-use Papier\Type\NumberType;
-use Papier\Type\RectangleType;
-use Papier\Type\DictionaryType;
-
-use Papier\Validator\BooleanValidator;
 use Papier\Validator\TabOrderValidator;
-use Papier\Validator\IntegerValidator;
-use Papier\Validator\RealValidator;
 use Papier\Validator\NumbersArrayValidator;
 
 use Papier\Factory\Factory;
@@ -30,16 +19,11 @@ class PageObjectType extends DictionaryType
     /**
      * Set parent.
      *  
-     * @param  \Papier\Type\PageTreeNodeType  $parent
-     * @throws InvalidArgumentException if the provided argument is not of type 'PageTreeNodeType'.
-     * @return \Papier\Type\PageObjectType
+     * @param PageTreeNodeType $parent
+     * @return PageObjectType
      */
-    public function setParent($parent)
+    public function setParent(PageTreeNodeType $parent): PageObjectType
     {
-        if (!$parent instanceof PageTreeNodeType) {
-            throw new InvalidArgumentException("Parent is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('Parent', $parent);
         return $this;
     } 
@@ -47,9 +31,9 @@ class PageObjectType extends DictionaryType
      /**
      * Get parent.
      *  
-     * @return \Papier\Type\PageObjectType
-     */
-    public function getParent()
+     * @return PageObjectType
+      */
+    public function getParent(): PageObjectType
     {
         return $this->getEntry('Parent');
     } 
@@ -57,16 +41,11 @@ class PageObjectType extends DictionaryType
     /**
      * Set date and time of last object's modification.
      *  
-     * @param  \Papier\Type\DateType  $date
-     * @throws InvalidArgumentException if the provided argument is not of type 'DateType'.
-     * @return \Papier\Type\PageObjectType
+     * @param DateType $date
+     * @return PageObjectType
      */
-    public function setLastModified($date)
+    public function setLastModified(DateType $date): PageObjectType
     {
-        if (!$date instanceof DateType) {
-            throw new InvalidArgumentException("ExtGState is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('LastModified', $date);
         return $this;
     } 
@@ -74,16 +53,11 @@ class PageObjectType extends DictionaryType
     /**
      * Set resources.
      *  
-     * @param  \Papier\Object\DictionaryObject  $resources
-     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Type\PageObjectType
+     * @param DictionaryObject $resources
+     * @return PageObjectType
      */
-    public function setResources($resources)
+    public function setResources(DictionaryObject $resources): PageObjectType
     {
-        if (!$resources instanceof DictionaryObject) {
-            throw new InvalidArgumentException("Resources is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('Resources', $resources);
         return $this;
     } 
@@ -91,9 +65,9 @@ class PageObjectType extends DictionaryType
     /**
      * Get resources.
      *  
-     * @return \Papier\Type\DictionaryType
+     * @return DictionaryType
      */
-    public function getResources()
+    public function getResources(): DictionaryType
     {
         if (!$this->hasEntry('Resources')) {
             $resources = Factory::create('Dictionary');
@@ -106,11 +80,11 @@ class PageObjectType extends DictionaryType
     /**
      * Set boundaries of the physical medium on which the page shall be displayed or printed.
      *  
-     * @param  array  $mediabox
+     * @param array $mediabox
+     * @return PageObjectType
      * @throws InvalidArgumentException if the provided argument is not of type 'array'.
-     * @return \Papier\Type\PageObjectType
      */
-    public function setMediaBox($mediabox)
+    public function setMediaBox(array $mediabox): PageObjectType
     {
         if (!NumbersArrayValidator::isValid($mediabox, 4)) {
             throw new InvalidArgumentException("MediaBox is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -125,9 +99,9 @@ class PageObjectType extends DictionaryType
     /**
      * Get mediabox.
      *  
-     * @return \Papier\Type\RectangleType
+     * @return RectangleType
      */
-    public function getMediaBox()
+    public function getMediaBox(): RectangleType
     {
         if (!$this->hasEntry('MediaBox')) {
             $mediabox = Factory::create('Rectangle');
@@ -140,28 +114,28 @@ class PageObjectType extends DictionaryType
     /**
      * Set the visible region of default user space.
      *  
-     * @param  array  $cropbox
+     * @param array $cropbox
+     * @return PageObjectType
      * @throws InvalidArgumentException if the provided argument is not of type 'array'.
-     * @return \Papier\Type\PageObjectType
      */
-    public function setCropBox($cropbox)
+    public function setCropBox(array $cropbox): PageObjectType
     {
         if (!NumbersArrayValidator::isValid($cropbox, 4)) {
             throw new InvalidArgumentException("CropBox is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Rectangle', $mediabox);
+        $value = Factory::create('Rectangle', $cropbox);
 
-        $this->setEntry('CropBox', $cropbox);
+        $this->setEntry('CropBox', $value);
         return $this;
     }
 
     /**
      * Get cropbox.
      *  
-     * @return \Papier\Type\RectangleType
+     * @return RectangleType
      */
-    public function getCropBox()
+    public function getCropBox(): RectangleType
     {
         if (!$this->hasEntry('CropBox')) {
             $cropbox = Factory::create('Rectangle');
@@ -174,28 +148,28 @@ class PageObjectType extends DictionaryType
     /**
      * Set region to which the contents of the page shall be clipped when output in a production enviroment.
      *  
-     * @param  array  $bleedbox
+     * @param array $bleedbox
+     * @return PageObjectType
      * @throws InvalidArgumentException if the provided argument is not of type 'array'.
-     * @return \Papier\Type\PageObjectType
      */
-    public function setBleedBox($cropbox)
+    public function setBleedBox(array $bleedbox): PageObjectType
     {
-        if (!NumbersArrayValidator::isValid($cropbox, 4)) {
+        if (!NumbersArrayValidator::isValid($bleedbox, 4)) {
             throw new InvalidArgumentException("BleedBox is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Rectangle', $cropbox);
+        $value = Factory::create('Rectangle', $bleedbox);
 
-        $this->setEntry('BleedBox', $bleedbox);
+        $this->setEntry('BleedBox', $value);
         return $this;
     }
 
     /**
      * Get bleedbox.
      *  
-     * @return \Papier\Type\RectangleType
+     * @return RectangleType
      */
-    public function getBleedBox()
+    public function getBleedBox(): RectangleType
     {
         if (!$this->hasEntry('BleedBox')) {
             $bleedbox = Factory::create('Rectangle');
@@ -208,11 +182,11 @@ class PageObjectType extends DictionaryType
     /**
      * Set intended dimensions of the finished page after trimming.
      *  
-     * @param  array  $trimbox
+     * @param array $trimbox
+     * @return PageObjectType
      * @throws InvalidArgumentException if the provided argument is not of type 'array'.
-     * @return \Papier\Type\PageObjectType
      */
-    public function setTrimBox($trimbox)
+    public function setTrimBox(array $trimbox): PageObjectType
     {
         if (!NumbersArrayValidator::isValid($trimbox, 4)) {
             throw new InvalidArgumentException("TrimBox is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -220,16 +194,16 @@ class PageObjectType extends DictionaryType
 
         $value = Factory::create('Rectangle', $trimbox);
 
-        $this->setEntry('TrimBox', $trimbox);
+        $this->setEntry('TrimBox', $value);
         return $this;
     }
 
     /**
      * Get trimbox.
      *  
-     * @return \Papier\Type\RectangleType
+     * @return RectangleType
      */
-    public function getTrimBox()
+    public function getTrimBox(): RectangleType
     {
         if (!$this->hasEntry('TrimBox')) {
             $trimbox = Factory::create('Rectangle');
@@ -242,11 +216,11 @@ class PageObjectType extends DictionaryType
     /**
      * Set extend of the page's meaningful content.
      *  
-     * @param  array  $artbox
+     * @param array $artbox
+     * @return PageObjectType
      * @throws InvalidArgumentException if the provided argument is not of type 'array'.
-     * @return \Papier\Type\PageObjectType
      */
-    public function setArtBox($artbox)
+    public function setArtBox(array $artbox): PageObjectType
     {
         if (!NumbersArrayValidator::isValid($artbox, 4)) {
             throw new InvalidArgumentException("ArtBox is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -254,16 +228,16 @@ class PageObjectType extends DictionaryType
 
         $value = Factory::create('Rectangle', $artbox);
 
-        $this->setEntry('ArtBox', $artbox);
+        $this->setEntry('ArtBox', $value);
         return $this;
     }
 
     /**
      * Get artbox.
      *  
-     * @return \Papier\Type\RectangleType
+     * @return RectangleType
      */
-    public function getArtBox()
+    public function getArtBox(): RectangleType
     {
         if (!$this->hasEntry('ArtBox')) {
             $artbox = Factory::create('Rectangle');
@@ -276,11 +250,11 @@ class PageObjectType extends DictionaryType
     /**
      * Set colours and other visual characteristics.
      *  
-     * @param  \Papier\Object\DictionaryObject  $boxcolorinfo
+     * @param DictionaryObject $boxcolorinfo
+     * @return PageObjectType
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Type\PageObjectType
      */
-    public function setBoxColorInfo($boxcolorinfo)
+    public function setBoxColorInfo(DictionaryObject $boxcolorinfo): PageObjectType
     {
         if (!$boxcolorinfo instanceof DictionaryObject) {
             throw new InvalidArgumentException("BoxColorInfo is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -296,9 +270,9 @@ class PageObjectType extends DictionaryType
      *  
      * @param  mixed  $contents
      * @throws InvalidArgumentException if the provided argument is not of type 'StreamObject' or 'ArrayObject'.
-     * @return \Papier\Type\PageObjectType
+     * @return PageObjectType
      */
-    public function setContents($contents)
+    public function setContents($contents): PageObjectType
     {
         if (!$contents instanceof StreamObject && !$contents instanceof ArrayObject) {
             throw new InvalidArgumentException("Contents is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -310,14 +284,15 @@ class PageObjectType extends DictionaryType
 
     /**
      * Get contents.
-     *  
-     * @return mixed
+     *
+     * @param  bool  $stream
+     * @return ContentStreamType|ArrayType
      */
-    public function getContents($stream = true)
+    public function getContents(bool $stream = true)
     {
         if (!$this->hasEntry('Contents')) {
-            $conents = $stream ? Factory::create('ContentStream', null, true) : Factory::create('Array', null, true);
-            $this->setContents($conents);
+            $contents = $stream ? Factory::create('ContentStream', null, true) : Factory::create('Array', null, true);
+            $this->setContents($contents);
         }
 
         return $this->getEntry('Contents');
@@ -326,16 +301,11 @@ class PageObjectType extends DictionaryType
     /**
      * Set the number of degrees by which the page should be rotated before printed or displayed.
      *  
-     * @param  int  $rotate
-     * @throws InvalidArgumentException if the provided argument is not of type int.
-     * @return \Papier\Type\PageObjectType
+     * @param int $rotate
+     * @return PageObjectType
      */
-    public function setRotate($rotate)
+    public function setRotate(int $rotate): PageObjectType
     {
-        if (!IntegerValidator::isValid($rotate)) {
-            throw new InvalidArgumentException("Rotate is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('Integer', $rotate);
 
         $this->setEntry('Rotate', $value);
@@ -345,16 +315,11 @@ class PageObjectType extends DictionaryType
     /**
      * Set attributes of the page's page group for use in the transparent imaging model.
      *  
-     * @param  \Papier\Object\DictionaryObject  $boxcolorinfo
-     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Type\PageObjectType
+     * @param DictionaryObject $group
+     * @return PageObjectType
      */
-    public function setGroup($group)
+    public function setGroup(DictionaryObject $group): PageObjectType
     {
-        if (!$group instanceof DictionaryObject) {
-            throw new InvalidArgumentException("Group is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('Group', $group);
         return $this;
     }
@@ -363,16 +328,11 @@ class PageObjectType extends DictionaryType
     /**
      * Set the thumbnail image of the page.
      *  
-     * @param  \Papier\Object\StreamObject  $contents
-     * @throws InvalidArgumentException if the provided argument is not of type 'StreamObject'.
-     * @return \Papier\Type\PageObjectType
+     * @param  StreamObject  $thumb
+     * @return PageObjectType
      */
-    public function setThumb($thumb)
+    public function setThumb(StreamObject $thumb): PageObjectType
     {
-        if (!$thumb instanceof StreamObject) {
-            throw new InvalidArgumentException("Thumb is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('Thumb', $thumb);
         return $this;
     }
@@ -380,33 +340,23 @@ class PageObjectType extends DictionaryType
     /**
      * Set references to articles beads.
      *  
-     * @param  \Papier\Object\ArrayObject  $b
-     * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
-     * @return \Papier\Type\PageObjectType
+     * @param  ArrayObject  $b
+     * @return PageObjectType
      */
-    public function setB($b)
+    public function setB(ArrayObject $b): PageObjectType
     {
-        if (!$b instanceof ArrayObject) {
-            throw new InvalidArgumentException("B is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('B', $b);
         return $this;
     }
 
     /**
-     * Set maxium display duration (in seconds).
+     * Set maximum display duration (in seconds).
      *  
-     * @param  float  $b
-     * @throws InvalidArgumentException if the provided argument is not of type 'float'.
-     * @return \Papier\Type\PageObjectType
+     * @param  float  $dur
+     * @return PageObjectType
      */
-    public function setDur($dur)
+    public function setDur(float $dur): PageObjectType
     {
-        if (!RealValidator::isValid($dur)) {
-            throw new InvalidArgumentException("Dur is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('Real', $dur);
 
         $this->setEntry('Dur', $value);
@@ -416,16 +366,11 @@ class PageObjectType extends DictionaryType
     /**
      * Set transition effect.
      *  
-     * @param  \Papier\Object\DictionaryObject  $trans
-     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Type\PageObjectType
+     * @param DictionaryObject $trans
+     * @return PageObjectType
      */
-    public function setTrans($trans)
+    public function setTrans(DictionaryObject $trans): PageObjectType
     {
-        if (!$trans instanceof DictionaryObject) {
-            throw new InvalidArgumentException("Trans is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('Trans', $trans);
         return $this;
     }
@@ -433,16 +378,11 @@ class PageObjectType extends DictionaryType
     /**
      * Set annotations.
      *  
-     * @param  \Papier\Object\ArrayObject  $annots
-     * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
-     * @return \Papier\Type\PageObjectType
+     * @param  ArrayObject  $annots
+     * @return PageObjectType
      */
-    public function setAnnots($annots)
+    public function setAnnots(ArrayObject $annots): PageObjectType
     {
-        if (!$annots instanceof ArrayObject) {
-            throw new InvalidArgumentException("Annots is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('Annots', $annots);
         return $this;
     }
@@ -450,33 +390,23 @@ class PageObjectType extends DictionaryType
     /**
      * Set additional actions.
      *  
-     * @param  \Papier\Object\DictionaryObject  $aa
-     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Type\PageObjectType
+     * @param DictionaryObject $aa
+     * @return PageObjectType
      */
-    public function setAA($aa)
+    public function setAA(DictionaryObject $aa): PageObjectType
     {
-        if (!$aa instanceof DictionaryObject) {
-            throw new InvalidArgumentException("AA is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('AA', $aa);
         return $this;
     }
 
     /**
-     * Set additional actions.
+     * Set metadata.
      *  
-     * @param  \Papier\Object\StreamObject  $aa
-     * @throws InvalidArgumentException if the provided argument is not of type 'StreamObject'.
-     * @return \Papier\Type\PageObjectType
+     * @param  StreamObject  $metadata
+     * @return PageObjectType
      */
-    public function setMetadata($metadata)
+    public function setMetadata(StreamObject $metadata): PageObjectType
     {
-        if (!$metadata instanceof StreamObject) {
-            throw new InvalidArgumentException("Metadata is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('Metadata', $metadata);
         return $this;
     }
@@ -484,16 +414,11 @@ class PageObjectType extends DictionaryType
     /**
      * Set page-piece dictionary.
      *  
-     * @param  \Papier\Object\DictionaryObject  $pieceinfo
-     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Type\PageObjectType
+     * @param  DictionaryObject $pieceinfo
+     * @return PageObjectType
      */
-    public function setPieceInfo($pieceinfo)
+    public function setPieceInfo(DictionaryObject $pieceinfo): PageObjectType
     {
-        if (!$pieceinfo instanceof DictionaryObject) {
-            throw new InvalidArgumentException("PieceInfo is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('PieceInfo', $pieceinfo);
         return $this;
     }
@@ -501,16 +426,11 @@ class PageObjectType extends DictionaryType
     /**
      * Set integer key of this page in structural parent tree.
      *  
-     * @param  int  $struct
-     * @throws InvalidArgumentException if the provided argument is not of type 'int'.
-     * @return \Papier\Type\PageObjectType
+     * @param int $struct
+     * @return PageObjectType
      */
-    public function setStructParents($struct)
+    public function setStructParents(int $struct): PageObjectType
     {
-        if (!IntegerValidator::isValid($struct)) {
-            throw new InvalidArgumentException("StructParents is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('Integer', $struct);
 
         $this->setEntry('StructParents', $value);
@@ -520,16 +440,11 @@ class PageObjectType extends DictionaryType
     /**
      * Set digital identifier of the page's parent web capture content set.
      *  
-     * @param  \Papier\Type\ByteStringType  $id
-     * @throws InvalidArgumentException if the provided argument is not of type 'ByteStringType'.
-     * @return \Papier\Type\PageObjectType
+     * @param  ByteStringType  $id
+     * @return PageObjectType
      */
-    public function setID($id)
+    public function setID(ByteStringType $id): PageObjectType
     {
-        if (!$id instanceof ByteStringType) {
-            throw new InvalidArgumentException("ID is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('ID', $id);
         return $this;
     }
@@ -538,15 +453,10 @@ class PageObjectType extends DictionaryType
      * Set preferred zoom.
      *  
      * @param  float  $pz
-     * @throws InvalidArgumentException if the provided argument is not of type 'float'.
-     * @return \Papier\Type\PageObjectType
+     * @return PageObjectType
      */
-    public function setPZ($pz)
+    public function setPZ(float $pz): PageObjectType
     {
-        if (!RealValidator::isValid($pz)) {
-            throw new InvalidArgumentException("PZ is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('Real', $pz);
 
         $this->setEntry('PZ', $value);
@@ -556,16 +466,11 @@ class PageObjectType extends DictionaryType
     /**
      * Set colour separations.
      *  
-     * @param  \Papier\Object\DictionaryObject  $separationinfo
-     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Type\PageObjectType
+     * @param  DictionaryObject $separationinfo
+     * @return PageObjectType
      */
-    public function setSeparationInfo($separationinfo)
+    public function setSeparationInfo(DictionaryObject $separationinfo): PageObjectType
     {
-        if (!$separationinfo instanceof DictionaryObject) {
-            throw new InvalidArgumentException("SeparationInfo is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('SeparationInfo', $separationinfo);
         return $this;
     }
@@ -573,11 +478,11 @@ class PageObjectType extends DictionaryType
     /**
      * Set tab order.
      *  
-     * @param  string  $tabs
+     * @param string $tabs
+     * @return PageObjectType
      * @throws InvalidArgumentException if the provided argument is not a valid tab order.
-     * @return \Papier\Type\PageObjectType
      */
-    public function setTabs($tabs)
+    public function setTabs(string $tabs): PageObjectType
     {
         if (!TabOrderValidator::isValid($tabs)) {
             throw new InvalidArgumentException("Tabs is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -591,16 +496,11 @@ class PageObjectType extends DictionaryType
     /**
      * Set name of the originating page object.
      *  
-     * @param  \Papier\Object\NameObject  $pressteps
-     * @throws InvalidArgumentException if the provided argument is not of type 'NameObject'.
-     * @return \Papier\Type\PageObjectType
+     * @param  DictionaryObject  $template
+     * @return PageObjectType
      */
-    public function setTemplateInstantiated($template)
+    public function setTemplateInstantiated(DictionaryObject $template): PageObjectType
     {
-        if (!$template instanceof DictionaryObject) {
-            throw new InvalidArgumentException("TemplateInstantiated is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('TemplateInstantiated', $template);
         return $this;
     }
@@ -608,16 +508,11 @@ class PageObjectType extends DictionaryType
     /**
      * Set navigation node dictionary.
      *  
-     * @param  \Papier\Object\DictionaryObject  $pressteps
-     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Type\PageObjectType
+     * @param  DictionaryObject $pressteps
+     * @return PageObjectType
      */
-    public function setPresSteps($pressteps)
+    public function setPresSteps(DictionaryObject $pressteps): PageObjectType
     {
-        if (!$pressteps instanceof DictionaryObject) {
-            throw new InvalidArgumentException("PresSteps is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('PresSteps', $pressteps);
         return $this;
     }
@@ -626,15 +521,10 @@ class PageObjectType extends DictionaryType
      * Set default user space units (in multiple of 1/72 inch).
      *  
      * @param  float  $userunit
-     * @throws InvalidArgumentException if the provided argument is not of type 'float'.
-     * @return \Papier\Type\PageObjectType
+     * @return PageObjectType
      */
-    public function setUserUnit($userunit)
+    public function setUserUnit(float $userunit): PageObjectType
     {
-        if (!RealValidator::isValid($userunit)) {
-            throw new InvalidArgumentException("UserUnit is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('Real', $userunit);
 
         $this->setEntry('UserUnit', $value);
@@ -644,17 +534,26 @@ class PageObjectType extends DictionaryType
      /**
      * Set viewport dictionaries.
      *  
-     * @param  \Papier\Object\DictionaryObject  $vp
-     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
-     * @return \Papier\Type\PageObjectType
+     * @param DictionaryObject $vp
+      * @return PageObjectType
+      *@throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject'.
      */
-    public function setVP($vp)
+    public function setVP(DictionaryObject $vp): PageObjectType
     {
-        if (!$vp instanceof DictionaryObject) {
-            throw new InvalidArgumentException("VP is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('VP', $vp);
         return $this;
+    }
+
+    /**
+     * Format page object's content.
+     *
+     * @return string
+     */
+    public function format(): string
+    {
+        $type = Factory::create('Name', 'Page');
+        $this->setEntry('Type', $type);
+
+        return parent::format();
     }
 }

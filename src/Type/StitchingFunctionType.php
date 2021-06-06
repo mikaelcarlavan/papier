@@ -3,14 +3,10 @@
 namespace Papier\Type;
 
 use Papier\Object\FunctionObject;
-use Papier\Object\IntegerObject;
 use Papier\Object\ArrayObject;
 
 use Papier\Functions\FunctionType;
 
-use Papier\Validator\IntegerValidator;
-
-use InvalidArgumentException;
 use RuntimeException;
 
 class StitchingFunctionType extends FunctionObject
@@ -19,16 +15,11 @@ class StitchingFunctionType extends FunctionObject
     /**
      * Set functions.
      *  
-     * @param  \Papier\Object\ArrayObject  $functions
-     * @throws InvalidArgumentException if the provided argument is not a valid function type.
-     * @return \Papier\Type\StitchingFunctionType
+     * @param ArrayObject $functions
+     * @return StitchingFunctionType
      */
-    public function setFunctions($functions)
+    public function setFunctions(ArrayObject $functions): StitchingFunctionType
     {
-        if (!$functions instanceof ArrayObject) {
-            throw new InvalidArgumentException("Functions is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('Functions', $functions);
         return $this;
     } 
@@ -36,16 +27,11 @@ class StitchingFunctionType extends FunctionObject
     /**
      * Set encode.
      *  
-     * @param  int  $encode
-     * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
-     * @return \Papier\Type\StitchingFunctionType
+     * @param  ArrayObject  $encode
+     * @return StitchingFunctionType
      */
-    public function setEncode($encode)
+    public function setEncode(ArrayObject $encode): StitchingFunctionType
     {
-        if (!$encode instanceof ArrayObject) {
-            throw new InvalidArgumentException("Encode is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('Encode', $encode);
         return $this;
     } 
@@ -53,16 +39,11 @@ class StitchingFunctionType extends FunctionObject
     /**
      * Set bounds.
      *  
-     * @param  \Papier\Object\ArrayObject  $bounds
-     * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
-     * @return \Papier\Type\StitchingFunctionType
+     * @param  ArrayObject  $bounds
+     * @return StitchingFunctionType
      */
-    public function setBounds($bounds)
+    public function setBounds(ArrayObject $bounds): StitchingFunctionType
     {
-        if (!$bounds instanceof ArrayObject) {
-            throw new InvalidArgumentException("Decode is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('Bounds', $bounds);
         return $this;
     } 
@@ -72,7 +53,7 @@ class StitchingFunctionType extends FunctionObject
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         $this->setFunctionType(FunctionType::STITCHING);
 

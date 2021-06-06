@@ -4,13 +4,7 @@ namespace Papier\Type;
 
 use Papier\Object\ArrayObject;
 use Papier\Object\DictionaryObject;
-use Papier\Object\NameObject;
 
-use Papier\Validator\StringValidator;
-
-use Papier\Factory\Factory;
-
-use InvalidArgumentException;
 use RuntimeException;
 
 class DeviceNMixingHintsDictionaryType extends DictionaryObject
@@ -21,7 +15,7 @@ class DeviceNMixingHintsDictionaryType extends DictionaryObject
      * @param DictionaryObject $solidities
      * @return DeviceNMixingHintsDictionaryType
      */
-    public function setSolidities(DictionaryObject $solidities)
+    public function setSolidities(DictionaryObject $solidities): DeviceNMixingHintsDictionaryType
     {
         $this->setEntry('Solidities', $solidities);
         return $this;
@@ -33,7 +27,7 @@ class DeviceNMixingHintsDictionaryType extends DictionaryObject
      * @param  ArrayObject  $order
      * @return DeviceNMixingHintsDictionaryType
      */
-    public function setPrintingOrder(ArrayObject $order)
+    public function setPrintingOrder(ArrayObject $order): DeviceNMixingHintsDictionaryType
     {
         $this->setEntry('PrintingOrder', $order);
         return $this;
@@ -45,7 +39,7 @@ class DeviceNMixingHintsDictionaryType extends DictionaryObject
      * @param DictionaryObject $dotgain
      * @return DeviceNMixingHintsDictionaryType
      */
-    public function setDotGain(DictionaryObject $dotgain)
+    public function setDotGain(DictionaryObject $dotgain): DeviceNMixingHintsDictionaryType
     {
         $this->setEntry('DotGain', $dotgain);
         return $this;
@@ -56,7 +50,7 @@ class DeviceNMixingHintsDictionaryType extends DictionaryObject
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         if ($this->hasEntry('Solidities') && !$this->hasEntry('PrintingOrder')) {
             throw new RuntimeException("PrintingOrder is missing. See ".__CLASS__." class's documentation for possible values.");

@@ -6,7 +6,6 @@ use Papier\Object\DictionaryObject;
 
 use Papier\Factory\Factory;
 
-use Papier\Validator\StringValidator;
 use Papier\Validator\DateValidator;
 use Papier\Validator\TrappedValidator;
 
@@ -19,14 +18,9 @@ class DocumentInformationDictionaryType extends DictionaryObject
      * 
      * @param   string  $title
      * @return DocumentInformationDictionaryType
-     * @throws InvalidArgumentException if the provided argument is not of type 'string'.
      */
-    public function setTitle(string $title)
+    public function setTitle(string $title): DocumentInformationDictionaryType
     {
-        if (!StringValidator::isValid($title)) {
-            throw new InvalidArgumentException("Title is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('TextString', $title);
 
         $this->setEntry('Title', $value);
@@ -38,14 +32,9 @@ class DocumentInformationDictionaryType extends DictionaryObject
      * 
      * @param   string  $author
      * @return DocumentInformationDictionaryType
-     * @throws InvalidArgumentException if the provided argument is not of type 'string'.
      */
-    public function setAuthor(string $author)
+    public function setAuthor(string $author): DocumentInformationDictionaryType
     {
-        if (!StringValidator::isValid($author)) {
-            throw new InvalidArgumentException("Author is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('TextString', $author);
 
         $this->setEntry('Author', $value);
@@ -57,14 +46,9 @@ class DocumentInformationDictionaryType extends DictionaryObject
      * 
      * @param   string  $subject
      * @return DocumentInformationDictionaryType
-     * @throws InvalidArgumentException if the provided argument is not of type 'string'.
      */
-    public function setSubject(string $subject)
+    public function setSubject(string $subject): DocumentInformationDictionaryType
     {
-        if (!StringValidator::isValid($subject)) {
-            throw new InvalidArgumentException("Subject is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('TextString', $subject);
 
         $this->setEntry('Subject', $value);
@@ -76,14 +60,9 @@ class DocumentInformationDictionaryType extends DictionaryObject
      * 
      * @param   string  $keywords
      * @return DocumentInformationDictionaryType
-     * @throws InvalidArgumentException if the provided argument is not of type 'string'.
      */
-    public function setKeywords(string $keywords)
+    public function setKeywords(string $keywords): DocumentInformationDictionaryType
     {
-        if (!StringValidator::isValid($keywords)) {
-            throw new InvalidArgumentException("Keywords is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('TextString', $keywords);
 
         $this->setEntry('Keywords', $value);
@@ -97,12 +76,8 @@ class DocumentInformationDictionaryType extends DictionaryObject
      * @return DocumentInformationDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'string'.
      */
-    public function setCreator(string $creator)
+    public function setCreator(string $creator): DocumentInformationDictionaryType
     {
-        if (!StringValidator::isValid($creator)) {
-            throw new InvalidArgumentException("Creator is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('TextString', $creator);
 
         $this->setEntry('Creator', $value);
@@ -114,14 +89,9 @@ class DocumentInformationDictionaryType extends DictionaryObject
      * 
      * @param   string  $producer
      * @return DocumentInformationDictionaryType
-     * @throws InvalidArgumentException if the provided argument is not of type 'string'.
      */
-    public function setProducer(string $producer)
+    public function setProducer(string $producer): DocumentInformationDictionaryType
     {
-        if (!StringValidator::isValid($producer)) {
-            throw new InvalidArgumentException("Producer is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('TextString', $producer);
 
         $this->setEntry('Producer', $value);
@@ -135,7 +105,7 @@ class DocumentInformationDictionaryType extends DictionaryObject
      * @return DocumentInformationDictionaryType
      * @throws InvalidArgumentException if the provided argument is not a valid date.
      */
-    public function setCreationDate($date)
+    public function setCreationDate($date): DocumentInformationDictionaryType
     {
         if (!DateValidator::isValid($date)) {
             throw new InvalidArgumentException("CreationDate is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -154,7 +124,7 @@ class DocumentInformationDictionaryType extends DictionaryObject
      * @return DocumentInformationDictionaryType
      *@throws InvalidArgumentException if the provided argument is not a valid date.
      */
-    public function setModDate($date)
+    public function setModDate($date): DocumentInformationDictionaryType
     {
         if (!DateValidator::isValid($date)) {
             throw new InvalidArgumentException("ModDate is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -173,7 +143,7 @@ class DocumentInformationDictionaryType extends DictionaryObject
      * @return DocumentInformationDictionaryType
      * @throws InvalidArgumentException if the provided argument is not a valid trapped.
      */
-    public function setTrapped(string $trapped)
+    public function setTrapped(string $trapped): DocumentInformationDictionaryType
     {
         if (!TrappedValidator::isValid($trapped)) {
             throw new InvalidArgumentException("Trapped is incorrect. See ".__CLASS__." class's documentation for possible values.");

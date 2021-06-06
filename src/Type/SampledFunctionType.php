@@ -3,7 +3,6 @@
 namespace Papier\Type;
 
 use Papier\Object\FunctionObject;
-use Papier\Object\IntegerObject;
 use Papier\Object\ArrayObject;
 
 use Papier\Functions\FunctionType;
@@ -22,16 +21,11 @@ class SampledFunctionType extends FunctionObject
     /**
      * Set size.
      *  
-     * @param  \Papier\Object\ArrayObject  $size
-     * @throws InvalidArgumentException if the provided argument is not a valid function type.
-     * @return \Papier\Type\SampledFunctionType
+     * @param ArrayObject $size
+     * @return SampledFunctionType
      */
-    public function setSize($size)
+    public function setSize(ArrayObject $size): SampledFunctionType
     {
-        if (!$size instanceof ArrayObject) {
-            throw new InvalidArgumentException("Size is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('Size', $size);
         return $this;
     } 
@@ -39,13 +33,13 @@ class SampledFunctionType extends FunctionObject
     /**
      * Set bits per sample.
      *  
-     * @param  int  $bits
+     * @param int $bits
+     * @return SampledFunctionType
      * @throws InvalidArgumentException if the provided argument is not of type 'int'.
-     * @return \Papier\Type\SampledFunctionType
      */
-    public function setBitsPerSample($bits)
+    public function setBitsPerSample(int $bits): SampledFunctionType
     {
-        if (!BitsPerSampleValidator::isValid($bis)) {
+        if (!BitsPerSampleValidator::isValid($bits)) {
             throw new InvalidArgumentException("BitsPerSample is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
@@ -58,11 +52,11 @@ class SampledFunctionType extends FunctionObject
     /**
      * Set order.
      *  
-     * @param  int  $order
+     * @param int $order
+     * @return SampledFunctionType
      * @throws InvalidArgumentException if the provided argument is not of type 'int'.
-     * @return \Papier\Type\SampledFunctionType
      */
-    public function setOrder($order)
+    public function setOrder(int $order): SampledFunctionType
     {
         if (!IntegerValidator::isValid($order, 1, 3)) {
             throw new InvalidArgumentException("Order is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -78,33 +72,23 @@ class SampledFunctionType extends FunctionObject
     /**
      * Set encode.
      *  
-     * @param  int  $encode
-     * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
-     * @return \Papier\Type\SampledFunctionType
+     * @param  ArrayObject  $encode
+     * @return SampledFunctionType
      */
-    public function setEncode($encode)
+    public function setEncode(ArrayObject $encode): SampledFunctionType
     {
-        if (!$encode instanceof ArrayObject) {
-            throw new InvalidArgumentException("Encode is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('Encode', $encode);
         return $this;
-    } 
+    }
 
     /**
      * Set decode.
-     *  
-     * @param  \Papier\Object\ArrayObject  $encode
-     * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
-     * @return \Papier\Type\SampledFunctionType
+     *
+     * @param ArrayObject $decode
+     * @return SampledFunctionType
      */
-    public function setDecode($decode)
+    public function setDecode(ArrayObject $decode): SampledFunctionType
     {
-        if (!$decode instanceof ArrayObject) {
-            throw new InvalidArgumentException("Decode is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('Decode', $decode);
         return $this;
     } 
@@ -114,7 +98,7 @@ class SampledFunctionType extends FunctionObject
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         $this->setFunctionType(FunctionType::SAMPLED);
 

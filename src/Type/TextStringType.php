@@ -2,8 +2,6 @@
 
 namespace Papier\Type;
 
-use Papier\Type\LiteralStringType;
-
 class TextStringType extends LiteralStringType
 {
     /**
@@ -11,7 +9,7 @@ class TextStringType extends LiteralStringType
      *
      * @return string
      */
-    protected function getValue()
+    protected function getValue(): string
     {
         $value = parent::getValue();
         return mb_convert_encoding($value, 'UTF-16BE');

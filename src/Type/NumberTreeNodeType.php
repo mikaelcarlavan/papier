@@ -2,10 +2,6 @@
 
 namespace Papier\Type;
 
-use Papier\Type\TreeNodeType;
-use Papier\TYpe\IntegerKeyArrayType;
-use Papier\Object\IntegerObject;
-
 use Papier\Factory\Factory;
 
 use InvalidArgumentException;
@@ -16,9 +12,9 @@ class NumberTreeNodeType extends TreeNodeType
     /**
      * Add kid to node.
      *  
-     * @return \Papier\Type\NumberTreeNodeType
+     * @return NumberTreeNodeType
      */
-    public function addKid()
+    public function addKid(): NumberTreeNodeType
     {
         $node = Factory::create('NumberTreeNode', null, true);
         $this->getKids()->append($node);
@@ -30,10 +26,10 @@ class NumberTreeNodeType extends TreeNodeType
      * Add number to node.
      *  
      * @param  mixed  $object
-     * @param  string  $key
-     * @return \Papier\Type\NumberTreeNodeType
+     * @param string $key
+     * @return NumberTreeNodeType
      */
-    public function addNum($key, $object)
+    public function addNum(string $key, $object): NumberTreeNodeType
     {
         $this->getNums()->setEntry($key, $object);
         return $this;
@@ -42,17 +38,12 @@ class NumberTreeNodeType extends TreeNodeType
     /**
      * Set nums.
      *  
-     * @param  \Papier\Type\IntegerKeyArrayType  $nums
-     * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
-     * @throws RunTimeException if node already contains 'Names' key.
-     * @return \Papier\Document\DocumentCatalog
+     * @param  IntegerKeyArrayType  $nums
+     * @throws RunTimeException if node already contains 'Kids' key.
+     * @return NumberTreeNodeType
      */
-    protected function setNums($nums)
+    protected function setNums(IntegerKeyArrayType $nums): NumberTreeNodeType
     {
-        if (!$nums instanceof IntegerKeyArrayType) {
-            throw new InvalidArgumentException("Nums is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         if ($this->hasEntry('Kids')) {
             throw new RunTimeException("Kids is already present. See ".__CLASS__." class's documentation for possible values.");  
         }
@@ -64,9 +55,9 @@ class NumberTreeNodeType extends TreeNodeType
      * Get nums.
      *  
      * @throws RunTimeException if node already contains 'Kids' key.
-     * @return \Papier\Type\IntegerKeyArrayType
+     * @return IntegerKeyArrayType
      */
-    protected function getNums()
+    protected function getNums(): IntegerKeyArrayType
     {
         if ($this->hasEntry('Kids')) {
             throw new RunTimeException("Kids is already present. See ".__CLASS__." class's documentation for possible values.");  
@@ -83,10 +74,10 @@ class NumberTreeNodeType extends TreeNodeType
     /**
      * Get nums from node.
      *
-     * @param  \Papier\Type\TreeNodeType  $node
+     * @param  TreeNodeType  $node
      * @return array
      */    
-    protected function collectNums($node)
+    protected function collectNums(TreeNodeType $node): array
     {        
         if (!$node instanceof TreeNodeType) {
             throw new InvalidArgumentException("Node is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -116,7 +107,7 @@ class NumberTreeNodeType extends TreeNodeType
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         if (!$this->isRoot()) {
             // Compute limits

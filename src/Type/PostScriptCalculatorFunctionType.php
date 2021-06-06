@@ -3,16 +3,8 @@
 namespace Papier\Type;
 
 use Papier\Object\FunctionObject;
-use Papier\Object\IntegerObject;
-use Papier\Object\ArrayObject;
 
 use Papier\Functions\FunctionType;
-
-use Papier\Validator\BitsPerSampleValidator;
-use Papier\Validator\IntegerValidator;
-
-use InvalidArgumentException;
-use RuntimeException;
 
 class PostScriptCalculatorFunctionType extends FunctionObject
 {
@@ -21,7 +13,7 @@ class PostScriptCalculatorFunctionType extends FunctionObject
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         $this->setFunctionType(FunctionType::POSTSCRIPT_CALCULATOR);
 

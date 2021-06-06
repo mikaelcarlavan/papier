@@ -3,15 +3,13 @@
 namespace Papier\Type;
 
 use Papier\Object\DictionaryObject;
-use Papier\Object\ArrayObject;
 
 use Papier\Factory\Factory;
 
-use Papier\Validator\StringValidator;
 use Papier\Validator\NumbersArrayValidator;
-use Papier\Validator\NumberValidator;
 
 use InvalidArgumentException;
+use RuntimeException;
 
 class LabColourSpaceDictionaryType extends DictionaryObject
 {
@@ -19,10 +17,10 @@ class LabColourSpaceDictionaryType extends DictionaryObject
      * Set white point.
      * 
      * @param array $whitepoint
+     * @return LabColourSpaceDictionaryType
      * @throws InvalidArgumentException if the provided argument is not an array of type 'int' or 'float'.
-     * @return \Papier\Type\LabColourSpaceDictionaryType
      */
-    public function setWhitePoint($whitepoint)
+    public function setWhitePoint(array $whitepoint): LabColourSpaceDictionaryType
     {
         if (!NumbersArrayValidator::isValid($whitepoint, 3)) {
             throw new InvalidArgumentException("WhitePoint is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -38,10 +36,10 @@ class LabColourSpaceDictionaryType extends DictionaryObject
      * Set black point.
      * 
      * @param array $blackpoint
+     * @return LabColourSpaceDictionaryType
      * @throws InvalidArgumentException if the provided argument is not an array of type 'int' or 'float'.
-     * @return \Papier\Type\LabColourSpaceDictionaryType
      */
-    public function setBlackPoint($blackpoint)
+    public function setBlackPoint(array $blackpoint): LabColourSpaceDictionaryType
     {
         if (!NumbersArrayValidator::isValid($blackpoint, 3)) {
             throw new InvalidArgumentException("BlackPoint is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -57,10 +55,10 @@ class LabColourSpaceDictionaryType extends DictionaryObject
      * Set range.
      * 
      * @param array $range
+     * @return LabColourSpaceDictionaryType
      * @throws InvalidArgumentException if the provided argument is not an array of type 'int' or 'float'.
-     * @return \Papier\Type\LabColourSpaceDictionaryType
      */
-    public function setRange($range)
+    public function setRange(array $range): LabColourSpaceDictionaryType
     {
         if (!NumbersArrayValidator::isValid($range, 4)) {
             throw new InvalidArgumentException("Range is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -77,7 +75,7 @@ class LabColourSpaceDictionaryType extends DictionaryObject
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         if (!$this->hasEntry('WhitePoint')) {
             throw new RuntimeException("WhitePoint is missing. See ".__CLASS__." class's documentation for possible values.");

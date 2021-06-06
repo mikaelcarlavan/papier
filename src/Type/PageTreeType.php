@@ -2,7 +2,6 @@
 
 namespace Papier\Type;
 
-use Papier\Type\DictionaryType;
 use Papier\Factory\Factory;
 
 class PageTreeType extends DictionaryType
@@ -10,9 +9,9 @@ class PageTreeType extends DictionaryType
     /**
      * Get node.
      *  
-     * @return \Papier\Type\PageTreeNodeType
+     * @return PageTreeNodeType
      */
-    public function getNode()
+    public function getNode(): PageTreeNodeType
     {
         if (!$this->hasEntry('Node')) {
             $node = Factory::create('PageTreeNode', null, true);
@@ -27,7 +26,7 @@ class PageTreeType extends DictionaryType
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         $node = $this->getNode();
         return $node->format();

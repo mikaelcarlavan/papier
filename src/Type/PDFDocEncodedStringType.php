@@ -2,8 +2,6 @@
 
 namespace Papier\Type;
 
-use Papier\Type\StringType;
-
 class PDFDocEncodedStringType extends StringType
 {
      /**
@@ -11,7 +9,7 @@ class PDFDocEncodedStringType extends StringType
      *
      * @return string
      */
-    protected function getValue()
+    protected function getValue(): string
     {
         $value = parent::getValue();
         return mb_convert_encoding($value, 'ISO-8859-1');

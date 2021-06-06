@@ -2,13 +2,7 @@
 
 namespace Papier\Type;
 
-use Papier\Type\NumbersArrayType;
-use Papier\Type\NumberType;
-
 use Papier\Validator\NumberValidator;
-use Papier\Validator\ArrayValidator;
-use Papier\Validator\NumbersArrayValidator;
-
 use Papier\Factory\Factory;
 
 use InvalidArgumentException;
@@ -20,9 +14,9 @@ class RectangleType extends NumbersArrayType
     *
     * @param  mixed  $coordinate
     * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
-    * @return \Papier\Type\RectangleType
+    * @return RectangleType
     */
-    public function setLowerLeftX($coordinate)
+    public function setLowerLeftX($coordinate): RectangleType
     {
         if (!NumberValidator::isValid($coordinate)) {
             throw new InvalidArgumentException("Number is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -42,9 +36,9 @@ class RectangleType extends NumbersArrayType
     *
     * @param  mixed  $coordinate
     * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
-    * @return \Papier\Type\RectangleType
+    * @return RectangleType
     */
-    public function setLowerLeftY($coordinate)
+    public function setLowerLeftY($coordinate): RectangleType
     {
         if (!NumberValidator::isValid($coordinate)) {
             throw new InvalidArgumentException("Number is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -63,9 +57,9 @@ class RectangleType extends NumbersArrayType
     *
     * @param  mixed  $coordinate
     * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
-    * @return \Papier\Type\RectangleType
+    * @return RectangleType
     */
-    public function setUpperRightX($coordinate)
+    public function setUpperRightX($coordinate): RectangleType
     {
         if (!NumberValidator::isValid($coordinate)) {
             throw new InvalidArgumentException("Number is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -82,11 +76,11 @@ class RectangleType extends NumbersArrayType
     /**
     * Set object's upper right Y coordinate.
     *
-    * @param  mixed  $value
+    * @param  mixed  $coordinate
     * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
-    * @return \Papier\Type\RectangleType
+    * @return RectangleType
     */
-    public function setUpperRightY($coordinate)
+    public function setUpperRightY($coordinate): RectangleType
     {
         if (!NumberValidator::isValid($coordinate)) {
             throw new InvalidArgumentException("Number is incorrect. See ".__CLASS__." class's documentation for possible values.");

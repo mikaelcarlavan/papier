@@ -3,12 +3,9 @@
 namespace Papier\Type;
 
 use Papier\Object\DictionaryObject;
-use Papier\Object\IntegerObject;
-use Papier\Base\IndirectObject;
 
 use Papier\Factory\Factory;
 
-use InvalidArgumentException;
 
 class IntegerKeyArrayType extends DictionaryObject
 {
@@ -18,7 +15,7 @@ class IntegerKeyArrayType extends DictionaryObject
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         $objects = $this->getObjects();
         
