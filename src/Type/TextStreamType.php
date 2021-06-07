@@ -1,6 +1,7 @@
 <?php
 
 namespace Papier\Type;
+use Papier\Text\Encoding;
 
 class TextStreamType extends StreamType
 {
@@ -12,6 +13,6 @@ class TextStreamType extends StreamType
     protected function getContent(): string
     {
         $content = parent::getcontent();
-        return mb_convert_encoding($content, 'UTF-16BE');
+        return Encoding::toUTF16BE($content);
     } 
 }
