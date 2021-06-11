@@ -26,6 +26,17 @@ class Encoding
     const WIN_ANSI = 'WinAnsiEncoding';
 
     /**
+     * Convert string to UTF8 encoding.
+     *
+     * @param string $value
+     * @return string
+     */
+    public static function toUTF8(string $value): string
+    {
+        return utf8_encode($value);
+    }
+
+    /**
      * Convert string to UTF16-BE encoding.
      *
      * @param string $value
