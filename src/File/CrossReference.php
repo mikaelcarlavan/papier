@@ -17,24 +17,32 @@ class CrossReference extends DictionaryObject
      *
      * @var int
      */
-    protected $offset = 0;
+    protected int $offset = 0;
 
     /**
     * Instance of the object.
     *
-    * @var CrossReference
+    * @var ?CrossReference
     */
-    protected static $instance = null;
-   
+    protected static ?CrossReference $instance = null;
+
+    /**
+     * Crossreferencee's table.
+     *
+     * @var CrossReferenceTable
+     */
+    protected CrossReferenceTable $table;
+
     /**
     * Get instance of cross-reference.
     *
     * @return CrossReference
     */
-    public static function getInstance() 
+    public static function getInstance(): CrossReference
     {
         if (is_null(self::$instance)) {
-            self::$instance = new CrossReference();  
+            self::$instance = new CrossReference();
+            self::$instance->table = new CrossReferenceTable();
         }
 
         return self::$instance;
@@ -62,9 +70,19 @@ class CrossReference extends DictionaryObject
      *
      * @return int
      */
-    protected function getOffset(): int
+    public function getOffset(): int
     {
         return $this->offset;
+    }
+
+    /**
+     * Get crossreference's table.
+     *
+     * @return CrossReferenceTable
+     */
+    public function getTable(): CrossReferenceTable
+    {
+        return $this->table;
     }
 
     /**
@@ -74,21 +92,6 @@ class CrossReference extends DictionaryObject
      */
     public function format(): string
     {
-        $table = new CrossReferenceTable();
-        $subsection = $table->addSection()->addSubsection();
-
-        $subsection->addEntry()->setFree()->setGeneration(65535);
-
-        $offset = $this->getOffset();
-
-        $objects = Repository::getInstance()->getObjects();
-        if (count($objects) > 0) {
-            foreach ($objects as $object) {
-                $subsection->addEntry()->setOffset($offset);
-                $offset += strlen($object->getObject());
-            }
-        }
-
-        return $table->format();
+        return $this->getTable()->format();
     }
 }
