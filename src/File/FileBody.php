@@ -11,7 +11,6 @@ use Papier\Type\PageObjectType;
 use Papier\Type\PageTreeNodeType;
 use Papier\Type\PageTreeType;
 
-
 class FileBody extends BaseObject
 {
      /**
@@ -93,11 +92,23 @@ class FileBody extends BaseObject
     public function format(): string
     {
         $objects = Repository::getInstance()->getObjects();
-                
+
+        $crossreference = CrossReference::getInstance();
+        $table = $crossreference->getTable();
+
+        $subsection = $table->addSection()->addSubsection();
+
+        $subsection->addEntry()->setFree()->setGeneration(65535);
+
+        $offset = $crossreference->getOffset();
+
         $content = '';
         if (count($objects) > 0) {
             foreach ($objects as $object) {
-                $content .= $object->getObject();
+                $subsection->addEntry()->setOffset($offset);
+                $obj = $object->getObject();
+                $content .= $obj;
+                $offset += strlen($obj);
             }
         }
 
