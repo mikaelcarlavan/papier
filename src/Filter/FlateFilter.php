@@ -5,6 +5,7 @@ namespace Papier\Filter;
 
 
 use Papier\Filter\Base\Filter;
+use RuntimeException;
 
 class FlateFilter extends Filter
 {
@@ -18,6 +19,9 @@ class FlateFilter extends Filter
      */
     public static function encode(string $value, array $param = array()): string
     {
+        if (!function_exists('gzcompress')) {
+            throw new RuntimeException("ZLib extension is required for FlateFilter. See ".__CLASS__." class's documentation for possible values.");
+        }
         return gzcompress($value);
     }
 
@@ -32,6 +36,9 @@ class FlateFilter extends Filter
      */
     public static function decode(string $stream, array $param = array()): string
     {
+        if (!function_exists('gzuncompress')) {
+            throw new RuntimeException("ZLib extension is required for FlateFilter. See ".__CLASS__." class's documentation for possible values.");
+        }
         return gzuncompress($stream);
     }
 }
