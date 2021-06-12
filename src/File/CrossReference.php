@@ -86,6 +86,17 @@ class CrossReference extends DictionaryObject
     }
 
     /**
+     * Clear crossreference's table.
+     *
+     * @return CrossReference
+     */
+    public function clearTable(): CrossReference
+    {
+        $this->table = new CrossReferenceTable();
+        return $this;
+    }
+
+    /**
      * Format object's value.
      *
      * @return string
