@@ -11,7 +11,7 @@ abstract class Filter
      * @param  array  $param
      * @return string
      */
-    public static function decode(string $stream, $param = array())
+    public static function decode(string $stream, array $param = array()): string
     {
         return $stream;
     }
@@ -23,7 +23,7 @@ abstract class Filter
      * @param  array  $param
      * @return string
      */
-    public static function encode(string $value, $param = array())
+    public static function encode(string $value, array $param = array()): string
     {
         return $value;
     }

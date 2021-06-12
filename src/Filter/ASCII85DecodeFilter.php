@@ -9,14 +9,7 @@ use RuntimeException;
 use InvalidArgumentException;
 
 class ASCII85DecodeFilter extends Filter
-{    
-    /**
-     * End-of-data marker.
-     *
-     * @var string
-     */
-    const EOD_MARKER = "~>"; 
-
+{
     /**
      * Process value.
      *
