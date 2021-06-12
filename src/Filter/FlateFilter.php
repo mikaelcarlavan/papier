@@ -16,7 +16,7 @@ class FlateFilter extends Filter
      * @return string
      * @throws InvalidArgumentException if the provided argument is not a string.
      */
-    public static function encode(string $value, $param = array()): string
+    public static function encode(string $value, array $param = array()): string
     {
         return gzcompress($value);
     }
@@ -30,7 +30,7 @@ class FlateFilter extends Filter
      * @throws InvalidArgumentException if stream does not end with the end-of-data marker.
      * @throws RuntimeException if stream is empty.
      */
-    public static function decode(string $stream, $param = array()): string
+    public static function decode(string $stream, array $param = array()): string
     {
         return gzuncompress($stream);
     }
