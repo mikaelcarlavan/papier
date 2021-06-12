@@ -20,6 +20,13 @@ class StreamObject extends DictionaryObject
     protected $content;
 
     /**
+     * Set compression method of stream.
+     *
+     * @var ?string
+     */
+    protected ?string $compression = null;
+
+    /**
      * Get object's stream.
      *
      * @return string
@@ -27,22 +34,16 @@ class StreamObject extends DictionaryObject
     private function getStream(): string
     {
         $stream = $this->getContent();
+        $compression = $this->getCompression();
 
-        if ($this->hasEntry('Filter')) {
-            $filters = $this->getEntry('Filter');
-            $params = $this->getEntry('DecodeParms');
-
-            if (is_array($filters) && count($filters) > 0) {
-                foreach ($filters as $i => $name) {
-
-                    $class = 'Papier\Filter\\'.$name.'Filter';
-                    if (class_exists($class)) {
-                        $param = $params[$i];
-                        $stream = $class::encode($stream, $param);
-                    } else {
-                        throw new InvalidArgumentException("Filter $name is not implemented. See ".__CLASS__." class's documentation for possible values.");
-                    }
-                }
+        if (!is_null($compression)) {
+            $filter = $compression.'Decode';
+            $class = 'Papier\Filter\\'.$filter.'Filter';
+            if (class_exists($class)) {
+                $stream = $class::process($stream);
+                $this->setFilter($filter);
+            } else {
+                throw new InvalidArgumentException("Compression $compression is not implemented. See ".__CLASS__." class's documentation for possible values.");
             }
         }
 
@@ -69,20 +70,41 @@ class StreamObject extends DictionaryObject
     {
         $this->content = $content;
         return $this;
-    } 
+    }
+
+    /**
+     * Get stream's compression.
+     *
+     * @return string|null
+     */
+    protected function getCompression(): ?string
+    {
+        return $this->compression;
+    }
+
+    /**
+     * Set stream's compression.
+     *
+     * @param  string  $compression
+     * @return StreamObject
+     */
+    public function setCompression(string $compression): StreamObject
+    {
+        $this->compression = $compression;
+        return $this;
+    }
 
     /**
      * Add data to content.
-     *  
+     *
      * @param string $data
-     * @param bool $withEndOfLine
      * @return StreamObject
      */
-    protected function addToContent(string $data, bool $withEndOfLine = true): StreamObject
+    protected function addToContent(string $data): StreamObject
     {
         $content = $this->getContent();
         $content.= $data;
-        $content.= $withEndOfLine ? self::EOL_MARKER : '';
+        $content.= self::EOL_MARKER;
 
         return $this->setContent($content);
     } 
