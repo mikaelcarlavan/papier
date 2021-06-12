@@ -37,11 +37,10 @@ class StreamObject extends DictionaryObject
         $compression = $this->getCompression();
 
         if (!is_null($compression)) {
-            $filter = $compression.'Decode';
-            $class = 'Papier\Filter\\'.$filter.'Filter';
+            $class = 'Papier\Filter\\'.$compression.'Filter';
             if (class_exists($class)) {
                 $stream = $class::process($stream);
-                $this->setFilter($filter);
+                $this->setFilter($compression);
             } else {
                 throw new InvalidArgumentException("Compression $compression is not implemented. See ".__CLASS__." class's documentation for possible values.");
             }
