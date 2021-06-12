@@ -147,7 +147,8 @@ class Papier
         $trailer->setRoot($body->getDocumentCatalog());
 
         $crossreference = CrossReference::getInstance();
-
+        $crossreference->clearTable();
+        
         $content  = $header->write();
 
         $crossreference->setOffset(strlen($content));
