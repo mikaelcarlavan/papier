@@ -148,7 +148,7 @@ class Papier
 
         $crossreference = CrossReference::getInstance();
         $crossreference->clearTable();
-        
+
         $content  = $header->write();
 
         $crossreference->setOffset(strlen($content));
