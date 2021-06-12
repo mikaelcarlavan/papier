@@ -5,6 +5,20 @@ namespace Papier\Filter;
 class FilterType
 {
     /**
+     * ASCIIHex filter
+     *
+     * @var string
+     */
+    const ASCIIHEX_DECODE = 'ASCIIHexDecode';
+
+    /**
+     * ASCII85 filter
+     *
+     * @var string
+     */
+    const ASCII85_DECODE = 'ASCII85Decode';
+
+    /**
      * JPX filter
      *
      * @var string
