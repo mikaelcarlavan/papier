@@ -12,11 +12,11 @@ class CommentObject extends BaseObject
     /**
     * Set comment's value.
     *
-    * @param  mixed  $value
+    * @param mixed $value
     * @return CommentObject
     * @throws InvalidArgumentException if the provided argument is not of type 'string'.
     */
-    public function setValue($value): CommentObject
+    public function setValue(mixed $value): CommentObject
     {
         if (!StringValidator::isValid($value)) {
             throw new InvalidArgumentException("String is incorrect. See ".__CLASS__." class's documentation for possible values.");

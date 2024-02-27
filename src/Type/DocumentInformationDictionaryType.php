@@ -21,7 +21,7 @@ class DocumentInformationDictionaryType extends DictionaryObject
      */
     public function setTitle(string $title): DocumentInformationDictionaryType
     {
-        $value = Factory::create('TextString', $title);
+        $value = Factory::create('Papier\Type\TextStringType', $title);
 
         $this->setEntry('Title', $value);
         return $this;
@@ -35,7 +35,7 @@ class DocumentInformationDictionaryType extends DictionaryObject
      */
     public function setAuthor(string $author): DocumentInformationDictionaryType
     {
-        $value = Factory::create('TextString', $author);
+        $value = Factory::create('Papier\Type\TextStringType', $author);
 
         $this->setEntry('Author', $value);
         return $this;
@@ -49,7 +49,7 @@ class DocumentInformationDictionaryType extends DictionaryObject
      */
     public function setSubject(string $subject): DocumentInformationDictionaryType
     {
-        $value = Factory::create('TextString', $subject);
+        $value = Factory::create('Papier\Type\TextStringType', $subject);
 
         $this->setEntry('Subject', $value);
         return $this;
@@ -63,7 +63,7 @@ class DocumentInformationDictionaryType extends DictionaryObject
      */
     public function setKeywords(string $keywords): DocumentInformationDictionaryType
     {
-        $value = Factory::create('TextString', $keywords);
+        $value = Factory::create('Papier\Type\TextStringType', $keywords);
 
         $this->setEntry('Keywords', $value);
         return $this;
@@ -78,7 +78,7 @@ class DocumentInformationDictionaryType extends DictionaryObject
      */
     public function setCreator(string $creator): DocumentInformationDictionaryType
     {
-        $value = Factory::create('TextString', $creator);
+        $value = Factory::create('Papier\Type\TextStringType', $creator);
 
         $this->setEntry('Creator', $value);
         return $this;
@@ -92,7 +92,7 @@ class DocumentInformationDictionaryType extends DictionaryObject
      */
     public function setProducer(string $producer): DocumentInformationDictionaryType
     {
-        $value = Factory::create('TextString', $producer);
+        $value = Factory::create('Papier\Type\TextStringType', $producer);
 
         $this->setEntry('Producer', $value);
         return $this;
@@ -111,7 +111,7 @@ class DocumentInformationDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("CreationDate is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Date', $date);
+        $value = Factory::create('Papier\Type\DateType', $date);
 
         $this->setEntry('CreationDate', $value);
         return $this;
@@ -130,7 +130,7 @@ class DocumentInformationDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("ModDate is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('TextString', $date);
+        $value = Factory::create('Papier\Type\TextStringType', $date);
 
         $this->setEntry('ModDate', $value);
         return $this;
@@ -149,7 +149,7 @@ class DocumentInformationDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("Trapped is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Name', $trapped);
+        $value = Factory::create('Papier\Type\NameType', $trapped);
 
         $this->setEntry('Trapped', $value);
         return $this;

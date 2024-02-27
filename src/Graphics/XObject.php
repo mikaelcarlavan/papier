@@ -17,7 +17,7 @@ trait XObject
      */
     public function paintXObject(string $xobject)
     {
-        $state = sprintf('%s Do', Factory::create('Name', $xobject)->format());
+        $state = sprintf('%s Do', Factory::create('Papier\Type\NameType', $xobject)->format());
         return $this->addToContent($state);
     } 
 }

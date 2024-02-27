@@ -15,7 +15,7 @@ class NameObject extends IndirectObject
      * @return NameObject
      * @throws InvalidArgumentException if the provided argument is not of type 'string'.
      */
-    public function setValue($value): NameObject
+    public function setValue(mixed $value): NameObject
     {
         parent::setValue($value);
         return $this;

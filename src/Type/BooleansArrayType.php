@@ -17,7 +17,7 @@ class BooleansArrayType extends ArrayType
      * @return BooleansArrayType
      * @throws InvalidArgumentException if the provided argument is not an array of 'float' or 'int'.
      */
-    public function setValue($value): BooleansArrayType
+    public function setValue(mixed $value): BooleansArrayType
     {
         if (!BooleansArrayValidator::isValid($value)) {
             throw new InvalidArgumentException("Array is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -26,7 +26,7 @@ class BooleansArrayType extends ArrayType
         $objects = $this->getObjects();
 
         foreach ($value as $i => $val) {
-            $object = Factory::create('Boolean', $val);
+            $object = Factory::create('Papier\Type\BooleanType', $val);
             $objects[$i] = $object;
         }
 

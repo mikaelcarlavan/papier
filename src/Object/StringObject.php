@@ -12,11 +12,11 @@ class StringObject extends IndirectObject
     /**
     * Set object's value.
     *
-    * @param  mixed  $value
-    * @throws InvalidArgumentException if the provided argument is not of type 'string'.
+    * @param mixed $value
     * @return StringObject
+    *@throws InvalidArgumentException if the provided argument is not of type 'string'.
     */
-    public function setValue($value): StringObject
+    public function setValue(mixed $value): StringObject
     {
         if (!StringValidator::isValid($value)) {
             throw new InvalidArgumentException("String is incorrect. See ".__CLASS__." class's documentation for possible values.");

@@ -15,7 +15,7 @@ class NameTreeNodeType extends TreeNodeType
      */
     public function addKid(): NameTreeNodeType
     {
-        $node = Factory::create('NameTreeNode');
+        $node = Factory::create('Papier\Type\NameTreeNodeType');
         $this->getKids()->append($node);
 
         return $node;
@@ -47,7 +47,7 @@ class NameTreeNodeType extends TreeNodeType
         }
 
         if (!$this->hasEntry('Names')) {
-            $names = Factory::create('LiteralStringKeyArray');
+            $names = Factory::create('Papier\Type\LiteralStringKeyArrayType');
             $this->setEntry('Names', $names);
         }
 
@@ -63,14 +63,14 @@ class NameTreeNodeType extends TreeNodeType
     {
         if (!$this->isRoot()) {
             // Compute limits
-            $limits = Factory::create('LimitsArray');
+            $limits = Factory::create('Papier\Type\LimitsArrayType');
             $objects = $this->collectNames($this);
 
             if (count($objects)) {
                 sort($objects);
 
-                $first = Factory::create('LiteralString', array_shift($objects));
-                $last = Factory::create('LiteralString', array_pop($objects));
+                $first = Factory::create('Papier\Type\LiteralStringType', array_shift($objects));
+                $last = Factory::create('Papier\Type\LiteralStringType', array_pop($objects));
                 
                 $limits->append($first);
                 $limits->append($last);

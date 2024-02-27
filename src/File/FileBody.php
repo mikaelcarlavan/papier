@@ -9,23 +9,22 @@ use Papier\Factory\Factory;
 use Papier\Type\DocumentCatalogType;
 use Papier\Type\PageObjectType;
 use Papier\Type\PageTreeNodeType;
-use Papier\Type\PageTreeType;
 
 class FileBody extends BaseObject
 {
      /**
      * Page tree
      *
-     * @var PageTreeType
+     * @var PageTreeNodeType
      */
-    private $pageTree;
+    private PageTreeNodeType $pageTree;
 
      /**
      * Document catalog
      *
      * @var DocumentCatalogType
      */
-    private $documentCatalog;
+    private DocumentCatalogType $documentCatalog;
 
     /**
      * Create a new object instance.
@@ -34,14 +33,14 @@ class FileBody extends BaseObject
      */
     public function __construct()
     {
-        $this->documentCatalog = Factory::create('DocumentCatalog', null, true);
+        $this->documentCatalog = Factory::create('Papier\Type\DocumentCatalogType', null, true);
 
-        $outlines = Factory::create('Dictionary', null, true);
+        $outlines = Factory::create('Papier\Type\DictionaryType', null, true);
         
-        $pageTree = Factory::create('PageTree');
+        $pageTree = Factory::create('Papier\Type\PageTreeType');
 
-        $name = Factory::create('Name', 'Outlines');
-        $count = Factory::create('Integer', 0);
+        $name = Factory::create('Papier\Type\NameType', 'Outlines');
+        $count = Factory::create('Papier\Type\IntegerType', 0);
 
         $outlines->setEntry('Type', $name);
         $outlines->setEntry('Count', $count);
@@ -57,7 +56,7 @@ class FileBody extends BaseObject
      *
      * @return PageTreeNodeType
      */
-    public function getPageTree()
+    public function getPageTree(): PageTreeNodeType
     {
         return $this->pageTree;
     }
@@ -93,14 +92,14 @@ class FileBody extends BaseObject
     {
         $objects = Repository::getInstance()->getObjects();
 
-        $crossreference = CrossReference::getInstance();
-        $table = $crossreference->getTable();
+        $crossReference = CrossReference::getInstance();
+        $table = $crossReference->getTable();
 
         $subsection = $table->addSection()->addSubsection();
 
         $subsection->addEntry()->setFree()->setGeneration(65535);
 
-        $offset = $crossreference->getOffset();
+        $offset = $crossReference->getOffset();
 
         $content = '';
         if (count($objects) > 0) {

@@ -29,7 +29,7 @@ class MeshShadingDictionaryType extends ShadingDictionaryType
             throw new InvalidArgumentException("BitsPerCoordinate is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Integer', $bits);
+        $value = Factory::create('Papier\Type\IntegerType', $bits);
 
         $this->setEntry('BitsPerCoordinate', $value);
         return $this;
@@ -48,7 +48,7 @@ class MeshShadingDictionaryType extends ShadingDictionaryType
             throw new InvalidArgumentException("BitsPerComponent is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Integer', $bits);
+        $value = Factory::create('Papier\Type\IntegerType', $bits);
 
         $this->setEntry('BitsPerComponent', $value);
         return $this;
@@ -67,7 +67,7 @@ class MeshShadingDictionaryType extends ShadingDictionaryType
             throw new InvalidArgumentException("BitsPerFlag is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Integer', $bits);
+        $value = Factory::create('Papier\Type\IntegerType', $bits);
 
         $this->setEntry('BitsPerFlag', $value);
         return $this;

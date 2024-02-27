@@ -27,8 +27,8 @@ class Type1FontType extends DictionaryType
      */
     public function setName(string $name): Type1FontType
     {
-        $value = Factory::create('Name', $name);
-        return $this->setEntry('Name', $value);
+        $value = Factory::create('Papier\Type\NameType', $name);
+        return $this->setEntry('Papier\Type\NameType', $value);
     }
 
     /**
@@ -39,7 +39,7 @@ class Type1FontType extends DictionaryType
      */
     public function setBaseFont(string $name): Type1FontType
     {
-        $value = Factory::create('Name', $name);
+        $value = Factory::create('Papier\Type\NameType', $name);
         return $this->setEntry('BaseFont', $value);
     }
 
@@ -51,7 +51,7 @@ class Type1FontType extends DictionaryType
      */
     public function setFirstChar(int $fc): Type1FontType
     {
-        $value = Factory::create('Integer', $fc);
+        $value = Factory::create('Papier\Type\IntegerType', $fc);
         return $this->setEntry('FirstChar', $value);
     }
 
@@ -63,7 +63,7 @@ class Type1FontType extends DictionaryType
      */
     public function setLastChar(int $lc): Type1FontType
     {
-        $value = Factory::create('Integer', $lc);
+        $value = Factory::create('Papier\Type\IntegerType', $lc);
         return $this->setEntry('LastChar', $value);
     }
 
@@ -108,7 +108,7 @@ class Type1FontType extends DictionaryType
             }
         }
 
-        $value = $encoding instanceof DictionaryObject ? $encoding : Factory::create('Name', $encoding);
+        $value = $encoding instanceof DictionaryObject ? $encoding : Factory::create('Papier\Type\NameType', $encoding);
         
         return $this->setEntry('Encoding', $value);
     }
@@ -131,13 +131,13 @@ class Type1FontType extends DictionaryType
      */
     public function format(): string
     {
-        $type = Factory::create('Name', 'Font');
+        $type = Factory::create('Papier\Type\NameType', 'Font');
         $this->setEntry('Type', $type);
 
-        $subtype = Factory::create('Name', 'Type1');
+        $subtype = Factory::create('Papier\Type\NameType', 'Type1');
         $this->setEntry('Subtype', $subtype);
 
-        if (!$this->hasEntry('Name')) {
+        if (!$this->hasEntry('Papier\Type\NameType')) {
             throw new RuntimeException("Name is missing. See ".__CLASS__." class's documentation for possible values.");
         }
 

@@ -26,7 +26,7 @@ trait TextShowing
             throw new InvalidArgumentException("Text is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
   
-        $state = sprintf('%s Tj', Factory::create('LiteralString', $text)->format());
+        $state = sprintf('%s Tj', Factory::create('Papier\Type\LiteralStringType', $text)->format());
         return $this->addToContent($state);
     }
 
@@ -38,7 +38,7 @@ trait TextShowing
      */
     public function moveToNextLineAndShowText(string $text)
     {
-        $state = sprintf('%s \'', Factory::create('LiteralString', $text)->format());
+        $state = sprintf('%s \'', Factory::create('Papier\Type\LiteralStringType', $text)->format());
         return $this->addToContent($state);
     }
 
@@ -67,9 +67,9 @@ trait TextShowing
         }
 
         $state = sprintf('%s %s %s "', 
-            Factory::create('Number', $aw)->format(),
-            Factory::create('Number', $ac)->format(),
-            Factory::create('LiteralString', $text)->format()
+            Factory::create('Papier\Type\NumberType', $aw)->format(),
+            Factory::create('Papier\Type\NumberType', $ac)->format(),
+            Factory::create('Papier\Type\LiteralStringType', $text)->format()
         );
 
         return $this->addToContent($state);

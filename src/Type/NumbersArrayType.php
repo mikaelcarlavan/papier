@@ -13,10 +13,10 @@ class NumbersArrayType extends ArrayType
     /**
      * Set object's numbers.
      *
-     * @param $value
+     * @param mixed $value
      * @return NumbersArrayType
      */
-    public function setValue($value): NumbersArrayType
+    public function setValue(mixed $value): NumbersArrayType
     {
         if (!NumbersArrayValidator::isValid($value)) {
             throw new InvalidArgumentException("Array is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -25,7 +25,7 @@ class NumbersArrayType extends ArrayType
         $objects = $this->getObjects();
 
         foreach ($value as $i => $val) {
-            $object = Factory::create('Number', $val);
+            $object = Factory::create('Papier\Type\NumberType', $val);
             $objects[$i] = $object;
         }
 

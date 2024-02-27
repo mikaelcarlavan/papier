@@ -32,7 +32,7 @@ class MacOSFileInformationDictionaryType extends DictionaryObject
             $hex.= dechex(ord($s));
         }
 
-        $value = Factory::create('Integer', hexdec($hex));
+        $value = Factory::create('Papier\Type\IntegerType', hexdec($hex));
 
         $this->setEntry('Subtype', $value);
         return $this;
@@ -52,7 +52,7 @@ class MacOSFileInformationDictionaryType extends DictionaryObject
             $hex.= dechex(ord($s));
         }
 
-        $value = Factory::create('Integer', hexdec($hex));
+        $value = Factory::create('Papier\Type\IntegerType', hexdec($hex));
 
         $this->setEntry('Creator', $value);
         return $this;

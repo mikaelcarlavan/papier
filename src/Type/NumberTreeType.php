@@ -15,7 +15,7 @@ class NumberTreeType extends TreeType
     public function getRoot(): NumberTreeNodeType
     {
         if (!$this->hasEntry('Root')) {
-            $root = Factory::create('NumberTreeNode', null, true)->setRoot();
+            $root = Factory::create('Papier\Type\NumberTreeNodeType', null, true)->setRoot();
             $this->setEntry('Root', $root);
         }
 

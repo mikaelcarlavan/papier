@@ -3,9 +3,9 @@
 namespace Papier\Filter;
 
 use Papier\Filter\Base\Filter;
+use Papier\Object\DictionaryObject;
 use Papier\Validator\StringValidator;
 
-use RuntimeException;
 use InvalidArgumentException;
 
 class ASCIIHexFilter extends Filter
@@ -15,18 +15,16 @@ class ASCIIHexFilter extends Filter
      *
      * @var string
      */
-    const EOD_MARKER = ">"; 
+    const EOD_MARKER = ">";
 
     /**
      * Decode stream.
-     *  
-     * @param  string  $stream
-     * @param array $param
+     *
+     * @param string $stream
+     * @param DictionaryObject|null $param
      * @return string
-     * @throws InvalidArgumentException if stream does not end with the end-of-data marker.
-     * @throws RuntimeException if stream is empty.
      */
-    public static function decode(string $stream, array $param = array()): string
+    public static function decode(string $stream, DictionaryObject $param = null): string
     {
         $stream = trim($stream);
         $marker = substr($stream, -strlen(self::EOD_MARKER));
@@ -42,13 +40,12 @@ class ASCIIHexFilter extends Filter
 
     /**
      * Encode value.
-     *  
-     * @param  string  $value
-     * @param array $param
+     *
+     * @param string $value
+     * @param DictionaryObject|null $param
      * @return string
-     * @throws InvalidArgumentException if the provided argument is not a string.
      */
-    public static function encode(string $value, array $param = array()): string
+    public static function encode(string $value, DictionaryObject $param = null): string
     {
         if (!StringValidator::isValid($value)) {
             throw new InvalidArgumentException("Value is incorrect. See ".__CLASS__." class's documentation for possible values.");

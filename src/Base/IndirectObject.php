@@ -15,21 +15,21 @@ abstract class IndirectObject extends BaseObject
      *
      * @var bool
      */
-    protected $indirect = false;
+    protected bool $indirect = false;
 
     /**
      * The number of the object.
      *
      * @var int
      */
-    protected $number = 1;
+    protected int $number = 1;
   
     /**
      * The generation number of the object.
      *
      * @var int
      */
-    protected $generation = 0;
+    protected int $generation = 0;
 
     /**
      * Set object's number.

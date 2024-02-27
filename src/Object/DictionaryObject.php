@@ -38,7 +38,7 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
      * Reset current position.
      *  
      */
-    public function rewind() 
+    public function rewind(): void
     {
         $this->position = 0;
     }
@@ -48,7 +48,7 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
      *  
      * @return mixed
      */
-    public function current()
+    public function current(): mixed
     {
         $keys = $this->getKeys();
         $objects = $this->getObjects();
@@ -60,7 +60,7 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
      *  
      * @return mixed
      */
-    public function key() 
+    public function key() : mixed
     {
         $keys = $this->getKeys();
         return $keys[$this->position];
@@ -70,7 +70,7 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
      * Increment current position.
      *  
      */
-    public function next() 
+    public function next(): void
     {
         ++$this->position;
     }
@@ -105,7 +105,7 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
      * @param  mixed  $object
      * @return DictionaryObject
      */
-    protected function setObjectForKey(string $key, $object): DictionaryObject
+    protected function setObjectForKey(string $key, mixed $object): DictionaryObject
     {
         $objects = $this->getObjects();
         $objects[$key] = $object;
@@ -119,7 +119,7 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
      * @param  string  $key
      * @return mixed
      */
-    protected function getObjectForKey(string $key)
+    protected function getObjectForKey(string $key): mixed
     {
         $objects = $this->getObjects();
         return $objects[$key] ?? new NullObject();
@@ -133,7 +133,7 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
      * @param  mixed  $object
      * @return DictionaryObject
      */
-    public function setEntry(string $key, $object): DictionaryObject
+    public function setEntry(string $key, mixed $object): DictionaryObject
     {
         $this->setObjectForKey($key, $object);
         return $this;
@@ -165,6 +165,18 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
     }
 
     /**
+     * Get entry value from dictionary.
+     *
+     * @param  string  $key
+     * @return mixed
+     */
+    public function getEntryValue(string $key): mixed
+    {
+        $object = $this->getObjectForKey($key);
+        return $object->getValue();
+    }
+
+    /**
      * Get number of objects.
      *  
      * @return int
@@ -180,7 +192,7 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
      *  
      * @return mixed
      */
-    public function getObjects()
+    public function getObjects(): mixed
     {
         $objects = $this->getValue();
         return is_array($objects) ? $objects : array($objects);
@@ -241,7 +253,7 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
 
         $value = '';
         foreach ($objects as $key => $object) {
-            $name = Factory::create('Name', $key);
+            $name = Factory::create('Papier\Type\NameType', $key);
             $value .= $name->format() .' '. $object->write();
         }
 

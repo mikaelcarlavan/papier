@@ -5,6 +5,7 @@ namespace Papier\Filter;
 
 
 use Papier\Filter\Base\Filter;
+use Papier\Object\DictionaryObject;
 use RuntimeException;
 
 class FlateFilter extends Filter
@@ -12,12 +13,11 @@ class FlateFilter extends Filter
     /**
      * Encode value.
      *
-     * @param  string  $value
-     * @param  array  $param
+     * @param string $value
+     * @param DictionaryObject|null $param
      * @return string
-     * @throws InvalidArgumentException if the provided argument is not a string.
      */
-    public static function encode(string $value, array $param = array()): string
+    public static function encode(string $value, DictionaryObject $param = null): string
     {
         if (!function_exists('gzcompress')) {
             throw new RuntimeException("ZLib extension is required for FlateFilter. See ".__CLASS__." class's documentation for possible values.");
@@ -29,12 +29,10 @@ class FlateFilter extends Filter
      * Decode stream.
      *
      * @param string $stream
-     * @param array $param
+     * @param DictionaryObject|null $param
      * @return string
-     * @throws InvalidArgumentException if stream does not end with the end-of-data marker.
-     * @throws RuntimeException if stream is empty.
      */
-    public static function decode(string $stream, array $param = array()): string
+    public static function decode(string $stream, DictionaryObject $param = null): string
     {
         if (!function_exists('gzuncompress')) {
             throw new RuntimeException("ZLib extension is required for FlateFilter. See ".__CLASS__." class's documentation for possible values.");

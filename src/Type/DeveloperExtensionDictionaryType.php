@@ -29,7 +29,7 @@ class DeveloperExtensionDictionaryType extends DictionaryObject
      */
     public function setExtensionLevel(int $level): DeveloperExtensionDictionaryType
     {
-        $value = Factory::create('Integer', $level);
+        $value = Factory::create('Papier\Type\IntegerType', $level);
 
         $this->setEntry('ExtensionLevel', $value);
         return $this;

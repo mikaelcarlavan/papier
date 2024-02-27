@@ -24,7 +24,7 @@ trait DeviceColour
             throw new InvalidArgumentException("Space is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $state = sprintf('%s CS', Factory::create('Name', $space)->format());
+        $state = sprintf('%s CS', Factory::create('Papier\Type\NameType', $space)->format());
         return $this->addToContent($state);
     }
 
@@ -41,7 +41,7 @@ trait DeviceColour
             throw new InvalidArgumentException("Space is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $state = sprintf('%s cs', Factory::create('Name', $space)->format());
+        $state = sprintf('%s cs', Factory::create('Papier\Type\NameType', $space)->format());
         return $this->addToContent($state);
     }
 
@@ -96,7 +96,7 @@ trait DeviceColour
             throw new InvalidArgumentException("Colour is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $state = sprintf('%s G', Factory::create('Number', $colour)->format());
+        $state = sprintf('%s G', Factory::create('Papier\Type\NumberType', $colour)->format());
         return $this->addToContent($state);
     }
 
@@ -113,7 +113,7 @@ trait DeviceColour
             throw new InvalidArgumentException("Colour is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $state = sprintf('%s g', Factory::create('Number', $colour)->format());
+        $state = sprintf('%s g', Factory::create('Papier\Type\NumberType', $colour)->format());
         return $this->addToContent($state);
     }
 
@@ -141,9 +141,9 @@ trait DeviceColour
         }
 
         $state = sprintf('%s %s %s RG', 
-            Factory::create('Number', $r)->format(), 
-            Factory::create('Number', $g)->format(),
-            Factory::create('Number', $b)->format()
+            Factory::create('Papier\Type\NumberType', $r)->format(), 
+            Factory::create('Papier\Type\NumberType', $g)->format(),
+            Factory::create('Papier\Type\NumberType', $b)->format()
         );        
         
         return $this->addToContent($state);
@@ -163,9 +163,9 @@ trait DeviceColour
         $this->checkRGBComponents($r, $g, $b);
 
         $state = sprintf('%s %s %s rg', 
-            Factory::create('Number', $r)->format(), 
-            Factory::create('Number', $g)->format(),
-            Factory::create('Number', $b)->format()
+            Factory::create('Papier\Type\NumberType', $r)->format(), 
+            Factory::create('Papier\Type\NumberType', $g)->format(),
+            Factory::create('Papier\Type\NumberType', $b)->format()
         );
 
         return $this->addToContent($state);
@@ -186,10 +186,10 @@ trait DeviceColour
         $this->checkCMYKComponents($c, $m, $y, $k);
 
         $state = sprintf('%s %s %s %s K', 
-            Factory::create('Number', $c)->format(), 
-            Factory::create('Number', $m)->format(),
-            Factory::create('Number', $y)->format(),
-            Factory::create('Number', $k)->format()
+            Factory::create('Papier\Type\NumberType', $c)->format(), 
+            Factory::create('Papier\Type\NumberType', $m)->format(),
+            Factory::create('Papier\Type\NumberType', $y)->format(),
+            Factory::create('Papier\Type\NumberType', $k)->format()
         );
 
         return $this->addToContent($state);
@@ -210,10 +210,10 @@ trait DeviceColour
         $this->checkCMYKComponents($c, $m, $y, $k);
 
         $state = sprintf('%s %s %s %s k',
-            Factory::create('Number', $c)->format(), 
-            Factory::create('Number', $m)->format(),
-            Factory::create('Number', $y)->format(),
-            Factory::create('Number', $k)->format()
+            Factory::create('Papier\Type\NumberType', $c)->format(), 
+            Factory::create('Papier\Type\NumberType', $m)->format(),
+            Factory::create('Papier\Type\NumberType', $y)->format(),
+            Factory::create('Papier\Type\NumberType', $k)->format()
         );
 
         return $this->addToContent($state);

@@ -3,22 +3,19 @@
 namespace Papier\Filter;
 
 use Papier\Filter\Base\Filter;
-use Papier\Validator\StringValidator;
+use Papier\Object\DictionaryObject;
 
-use RuntimeException;
-use InvalidArgumentException;
 
 class ASCII85DecodeFilter extends Filter
 {
     /**
      * Process value.
      *
-     * @param  string  $value
-     * @param array $param
+     * @param string $value
+     * @param DictionaryObject|null $param
      * @return string
-     * @throws InvalidArgumentException if the provided argument is not a string.
      */
-    public static function process(string $value, array $param = array()): string
+    public static function process(string $value, DictionaryObject $param = null): string
     {
         return ASCII85Filter::encode($value, $param);
     }

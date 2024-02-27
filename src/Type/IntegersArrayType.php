@@ -13,11 +13,11 @@ class IntegersArrayType extends ArrayType
     /**
     * Set object's numbers.
     *
-    * @param  mixed  $value
-    * @throws InvalidArgumentException if the provided argument is not of type 'array' or if each element of the array is not of type 'int'.
+    * @param mixed $value
     * @return IntegersArrayType
+    *@throws InvalidArgumentException if the provided argument is not of type 'array' or if each element of the array is not of type 'int'.
     */
-    public function setValue($value): IntegersArrayType
+    public function setValue(mixed $value): IntegersArrayType
     {
         if (!IntegersArrayValidator::isValid($value)) {
             throw new InvalidArgumentException("Array is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -26,7 +26,7 @@ class IntegersArrayType extends ArrayType
         $objects = $this->getObjects();
 
         foreach ($value as $i => $val) {
-            $object = Factory::create('Integer', $val);
+            $object = Factory::create('Papier\Type\IntegerType', $val);
             $objects[$i] = $object;
         }
 

@@ -29,7 +29,7 @@ class ShadingDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("ShadingType is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Integer', $type);
+        $value = Factory::create('Papier\Type\IntegerType', $type);
 
         $this->setEntry('ShadingType', $value);
         return $this;
@@ -48,7 +48,7 @@ class ShadingDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("ColorSpace is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = $space instanceof ArrayObject ? $space : Factory::create('Name', $space);
+        $value = $space instanceof ArrayObject ? $space : Factory::create('Papier\Type\NameType', $space);
 
         $this->setEntry('ColorSpace', $value);
         return $this;
@@ -86,7 +86,7 @@ class ShadingDictionaryType extends DictionaryObject
      */
     public function setAntiAlias(bool $antialias): ShadingDictionaryType
     {
-        $value = Factory::create('Boolean', $antialias);
+        $value = Factory::create('Papier\Type\BooleanType', $antialias);
 
         $this->setEntry('AntiAlias', $value);
         return $this;

@@ -26,7 +26,7 @@ class PostScriptXObjectStreamType extends StreamType
      */
     public function format(): string
     {
-        $type = Factory::create('Name', 'PS');
+        $type = Factory::create('Papier\Type\NameType', 'PS');
         $this->setEntry('Subtype', $type);
         
         return parent::format();

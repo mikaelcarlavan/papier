@@ -29,8 +29,8 @@ trait PathConstruction
         }
 
         $state = sprintf('%s %s m', 
-            Factory::create('Number', $x)->format(),
-            Factory::create('Number', $y)->format()
+            Factory::create('Papier\Type\NumberType', $x)->format(),
+            Factory::create('Papier\Type\NumberType', $y)->format()
         );
 
         return $this->addToContent($state);
@@ -55,8 +55,8 @@ trait PathConstruction
         }
 
         $state = sprintf('%s %s l', 
-            Factory::create('Number', $x)->format(),
-            Factory::create('Number', $y)->format()
+            Factory::create('Papier\Type\NumberType', $x)->format(),
+            Factory::create('Papier\Type\NumberType', $y)->format()
         );
 
         return $this->addToContent($state);
@@ -88,12 +88,12 @@ trait PathConstruction
         $this->checkBezierComponents($components);
 
         $state = sprintf('%s %s %s %s %s %s c', 
-            Factory::create('Number', $x1)->format(), 
-            Factory::create('Number', $y1)->format(),
-            Factory::create('Number', $x2)->format(),
-            Factory::create('Number', $y2)->format(),
-            Factory::create('Number', $x3)->format(),
-            Factory::create('Number', $y3)->format()
+            Factory::create('Papier\Type\NumberType', $x1)->format(), 
+            Factory::create('Papier\Type\NumberType', $y1)->format(),
+            Factory::create('Papier\Type\NumberType', $x2)->format(),
+            Factory::create('Papier\Type\NumberType', $y2)->format(),
+            Factory::create('Papier\Type\NumberType', $x3)->format(),
+            Factory::create('Papier\Type\NumberType', $y3)->format()
         );
 
         return $this->addToContent($state);
@@ -121,10 +121,10 @@ trait PathConstruction
         $this->checkBezierComponents($components);
         
         $state = sprintf('%s %s %s %s v', 
-            Factory::create('Number', $x2)->format(),
-            Factory::create('Number', $y2)->format(),
-            Factory::create('Number', $x3)->format(),
-            Factory::create('Number', $y3)->format()
+            Factory::create('Papier\Type\NumberType', $x2)->format(),
+            Factory::create('Papier\Type\NumberType', $y2)->format(),
+            Factory::create('Papier\Type\NumberType', $x3)->format(),
+            Factory::create('Papier\Type\NumberType', $y3)->format()
         );
 
         return $this->addToContent($state);
@@ -152,10 +152,10 @@ trait PathConstruction
         $this->checkBezierComponents($components);
         
         $state = sprintf('%s %s %s %s y', 
-            Factory::create('Number', $x1)->format(), 
-            Factory::create('Number', $y1)->format(), 
-            Factory::create('Number', $x3)->format(), 
-            Factory::create('Number', $y3)->format()
+            Factory::create('Papier\Type\NumberType', $x1)->format(), 
+            Factory::create('Papier\Type\NumberType', $y1)->format(), 
+            Factory::create('Papier\Type\NumberType', $x3)->format(), 
+            Factory::create('Papier\Type\NumberType', $y3)->format()
         );
 
         return $this->addToContent($state);
@@ -201,10 +201,10 @@ trait PathConstruction
         }
 
         $state = sprintf('%s %s %s %s re', 
-            Factory::create('Number', $x)->format(), 
-            Factory::create('Number', $y)->format(), 
-            Factory::create('Number', $width)->format(), 
-            Factory::create('Number', $height)->format()
+            Factory::create('Papier\Type\NumberType', $x)->format(), 
+            Factory::create('Papier\Type\NumberType', $y)->format(), 
+            Factory::create('Papier\Type\NumberType', $width)->format(), 
+            Factory::create('Papier\Type\NumberType', $height)->format()
         );
 
         return $this->addToContent($state);

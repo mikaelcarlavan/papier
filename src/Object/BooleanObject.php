@@ -11,10 +11,10 @@ class BooleanObject extends IndirectObject
     /**
     * Set object's value.
     *
-    * @param  mixed  $value
+    * @param mixed $value
     * @return BooleanObject
     */
-    public function setValue($value): BooleanObject
+    public function setValue(mixed $value): BooleanObject
     {
         if (!BooleanValidator::isValid($value)) {
             throw new InvalidArgumentException("Boolean is incorrect. See ".__CLASS__." class's documentation for possible values.");

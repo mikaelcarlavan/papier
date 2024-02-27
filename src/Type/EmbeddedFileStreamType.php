@@ -22,7 +22,7 @@ class EmbeddedFileStreamType extends StreamObject
      */
     public function setSubtype(string $subtype): EmbeddedFileStreamType
     {
-        $value = Factory::create('Name', $subtype);
+        $value = Factory::create('Papier\Type\NameType', $subtype);
 
         $this->setEntry('Subtype', $value);
         return $this;
@@ -48,7 +48,7 @@ class EmbeddedFileStreamType extends StreamObject
      */
     public function format(): string
     {
-        $type = Factory::create('Name', 'EmbeddedFile');
+        $type = Factory::create('Papier\Type\NameType', 'EmbeddedFile');
         $this->setEntry('Type', $type);
 
         return parent::format();

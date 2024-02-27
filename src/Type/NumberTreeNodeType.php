@@ -118,8 +118,8 @@ class NumberTreeNodeType extends TreeNodeType
             if (count($objects)) {
                 sort($objects);
 
-                $first = Factory::create('Integer', array_shift($objects));
-                $last = Factory::create('Integer', array_pop($objects));
+                $first = Factory::create('Papier\Type\IntegerType', array_shift($objects));
+                $last = Factory::create('Papier\Type\IntegerType', array_pop($objects));
                 
                 $limits->append($first);
                 $limits->append($last);

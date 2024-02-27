@@ -26,6 +26,13 @@ class FilterType
     const JPX_DECODE = 'JPXDecode';
 
     /**
+     * Crypt filter
+     *
+     * @var string
+     */
+    const CRYPT = 'Crypt';
+
+    /**
      * DCT filter
      *
      * @var string

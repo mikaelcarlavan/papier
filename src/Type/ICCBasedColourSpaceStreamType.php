@@ -31,7 +31,7 @@ class ICCBasedColourSpaceStreamType extends StreamObject
             throw new InvalidArgumentException("N is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Integer', $N);
+        $value = Factory::create('Papier\Type\IntegerType', $N);
 
         $this->setEntry('N', $value);
         return $this;
@@ -50,7 +50,7 @@ class ICCBasedColourSpaceStreamType extends StreamObject
             throw new InvalidArgumentException("Alternate is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = $alternate instanceof ArrayObject ? $alternate : Factory::create('Name', $alternate);
+        $value = $alternate instanceof ArrayObject ? $alternate : Factory::create('Papier\Type\NameType', $alternate);
 
         $this->setEntry('Alternate', $value);
         return $this;

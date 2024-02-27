@@ -20,7 +20,7 @@ class FileSpecificationDictionaryType extends DictionaryObject
      */
     public function setFS(string $fs): FileSpecificationDictionaryType
     {
-        $value = Factory::create('Name', $fs);
+        $value = Factory::create('Papier\Type\NameType', $fs);
 
         $this->setEntry('FS', $value);
         return $this;
@@ -34,7 +34,7 @@ class FileSpecificationDictionaryType extends DictionaryObject
      */
     public function setF(string $f): FileSpecificationDictionaryType
     {
-        $value = Factory::create('FileSpecificationString', $f);
+        $value = Factory::create('Papier\Type\FileSpecificationStringType', $f);
 
         $this->setEntry('FS', $value);
         return $this;
@@ -48,7 +48,7 @@ class FileSpecificationDictionaryType extends DictionaryObject
      */
     public function setUF(string $uf): FileSpecificationDictionaryType
     {
-        $value = Factory::create('TextString', Factory::create('FileSpecificationString', $uf)->getConvertedValue());
+        $value = Factory::create('Papier\Type\TextStringType', Factory::create('Papier\Type\FileSpecificationStringType', $uf)->getConvertedValue());
 
         $this->setEntry('UF', $value);
         return $this;
@@ -79,7 +79,7 @@ class FileSpecificationDictionaryType extends DictionaryObject
      */
     public function setV(bool $v): FileSpecificationDictionaryType
     {
-        $value = Factory::create('Boolean', $v);
+        $value = Factory::create('Papier\Type\BooleanType', $v);
         $this->setEntry('V', $value);
         return $this;
     }
@@ -117,7 +117,7 @@ class FileSpecificationDictionaryType extends DictionaryObject
      */
     public function setDesc(string $desc): FileSpecificationDictionaryType
     {
-        $value = Factory::create('TextString', $desc);
+        $value = Factory::create('Papier\Type\TextStringType', $desc);
 
         $this->setEntry('Desc', $value);
         return $this;
@@ -142,7 +142,7 @@ class FileSpecificationDictionaryType extends DictionaryObject
      */
     public function format(): string
     {
-        $type = Factory::create('Name', 'Filespec');
+        $type = Factory::create('Papier\Type\NameType', 'Filespec');
         $this->setEntry('Type', $type);
 
         if (!$this->hasEntry('F') && !$this->hasEntry('UF')) {

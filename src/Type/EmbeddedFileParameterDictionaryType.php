@@ -20,7 +20,7 @@ class EmbeddedFileParameterDictionaryType extends DictionaryObject
      */
     public function setSize(int $size): EmbeddedFileParameterDictionaryType
     {
-        $value = Factory::create('Integer', $size);
+        $value = Factory::create('Papier\Type\IntegerType', $size);
 
         $this->setEntry('Size', $value);
         return $this;
@@ -39,7 +39,7 @@ class EmbeddedFileParameterDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("CreationDate is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Date', $date);
+        $value = Factory::create('Papier\Type\DateType', $date);
 
         $this->setEntry('CreationDate', $value);
         return $this;
@@ -58,7 +58,7 @@ class EmbeddedFileParameterDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("ModDate is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('TextString', $date);
+        $value = Factory::create('Papier\Type\TextStringType', $date);
 
         $this->setEntry('ModDate', $value);
         return $this;

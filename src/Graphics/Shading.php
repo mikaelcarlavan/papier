@@ -19,7 +19,7 @@ trait Shading
      */
     public function setShading(string $sh)
     {
-        $state = sprintf('%s sh', Factory::create('Name', $sh)->format());
+        $state = sprintf('%s sh', Factory::create('Papier\Type\NameType', $sh)->format());
         return $this->addToContent($state);
     } 
 }

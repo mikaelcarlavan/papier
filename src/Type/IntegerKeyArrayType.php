@@ -22,7 +22,7 @@ class IntegerKeyArrayType extends DictionaryObject
         $value = '';
         if (is_array($objects)) {
             foreach ($objects as $key => $object) {
-                $name = Factory::create('Integer', $key);
+                $name = Factory::create('Papier\Type\IntegerType', $key);
                 $value .= $name->format() .' '. $object->write();
             }
         }

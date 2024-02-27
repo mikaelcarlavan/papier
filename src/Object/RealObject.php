@@ -14,11 +14,11 @@ class RealObject extends IndirectObject
     /**
     * Set object's value.
     *
-    * @param  mixed  $value
+    * @param mixed $value
     * @return RealObject
     * @throws InvalidArgumentException if the provided argument is not of type 'float'.
     */
-    public function setValue($value): RealObject
+    public function setValue(mixed $value): RealObject
     {
         if (!RealValidator::isValid($value)) {
             throw new InvalidArgumentException("Real is incorrect. See ".__CLASS__." class's documentation for possible values.");

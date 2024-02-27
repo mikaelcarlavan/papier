@@ -28,7 +28,7 @@ trait TextPositioning
             throw new InvalidArgumentException("TY is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
         
-        $state = sprintf('%s %s Td', Factory::create('Number', $tx)->format(), Factory::create('Number', $ty)->format());
+        $state = sprintf('%s %s Td', Factory::create('Papier\Type\NumberType', $tx)->format(), Factory::create('Papier\Type\NumberType', $ty)->format());
         return $this->addToContent($state);
     }
 
@@ -50,7 +50,7 @@ trait TextPositioning
             throw new InvalidArgumentException("TY is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $state = sprintf('%s %s TD', Factory::create('Number', $tx)->format(), Factory::create('Number', $ty)->format());
+        $state = sprintf('%s %s TD', Factory::create('Papier\Type\NumberType', $tx)->format(), Factory::create('Papier\Type\NumberType', $ty)->format());
         return $this->addToContent($state);
     }
 
@@ -80,12 +80,12 @@ trait TextPositioning
         $this->checkMatrixComponents($components);
 
         $state = sprintf('%s %s %s %s %s %s Tm', 
-            Factory::create('Number', $a)->format(), 
-            Factory::create('Number', $b)->format(),
-            Factory::create('Number', $c)->format(),
-            Factory::create('Number', $d)->format(),
-            Factory::create('Number', $e)->format(),
-            Factory::create('Number', $f)->format()
+            Factory::create('Papier\Type\NumberType', $a)->format(),
+            Factory::create('Papier\Type\NumberType', $b)->format(),
+            Factory::create('Papier\Type\NumberType', $c)->format(),
+            Factory::create('Papier\Type\NumberType', $d)->format(),
+            Factory::create('Papier\Type\NumberType', $e)->format(),
+            Factory::create('Papier\Type\NumberType', $f)->format()
         );
         
         return $this->addToContent($state);
@@ -111,7 +111,7 @@ trait TextPositioning
      */
     private function checkMatrixComponents(array $components): bool
     {
-        if (is_array($components) && count($components) > 0) {
+        if (count($components) > 0) {
             foreach ($components as $key => $component) {
                 if (!NumberValidator::isValid($component)) {
                     throw new InvalidArgumentException("$key is incorrect. See ".__CLASS__." class's documentation for possible values.");

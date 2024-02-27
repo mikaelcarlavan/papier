@@ -43,7 +43,7 @@ class PageTreeNodeType extends DictionaryType
     protected function getKids(): ArrayType
     {
         if (!$this->hasEntry('Kids')) {
-            $kids = Factory::create('Array');
+            $kids = Factory::create('Papier\Type\ArrayType');
             $this->setEntry('Kids', $kids);
         }
 
@@ -58,7 +58,7 @@ class PageTreeNodeType extends DictionaryType
      */
     public function addNode(): PageTreeNodeType
     {
-        $node = Factory::create('PageTreeNode', null, true);
+        $node = Factory::create('Papier\Type\PageTreeNodeType', null, true);
         $this->getKids()->append($node);
 
         return $node;
@@ -71,7 +71,7 @@ class PageTreeNodeType extends DictionaryType
      */
     public function addObject(): PageObjectType
     {
-        $node = Factory::create('PageObject', null, true);
+        $node = Factory::create('Papier\Type\PageObjectType', null, true);
         $this->getKids()->append($node);
 
         return $node;
@@ -109,7 +109,7 @@ class PageTreeNodeType extends DictionaryType
     public function getResources(): DictionaryType
     {
         if (!$this->hasEntry('Resources')) {
-            $resources = Factory::create('Dictionary');
+            $resources = Factory::create('Papier\Type\DictionaryType');
             $this->setResources($resources);
         }
 
@@ -129,7 +129,7 @@ class PageTreeNodeType extends DictionaryType
             throw new InvalidArgumentException("MediaBox is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Rectangle', $mediabox);
+        $value = Factory::create('Papier\Type\RectangleType', $mediabox);
 
         $this->setEntry('MediaBox', $value);
         return $this;
@@ -143,7 +143,7 @@ class PageTreeNodeType extends DictionaryType
     public function getMediaBox(): RectangleType
     {
         if (!$this->hasEntry('MediaBox')) {
-            $mediabox = Factory::create('Rectangle');
+            $mediabox = Factory::create('Papier\Type\RectangleType');
             $this->setMediaBox($mediabox);
         }
 
@@ -163,7 +163,7 @@ class PageTreeNodeType extends DictionaryType
             throw new InvalidArgumentException("CropBox is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Rectangle', $cropbox);
+        $value = Factory::create('Papier\Type\RectangleType', $cropbox);
 
         $this->setEntry('CropBox', $value);
         return $this;
@@ -177,7 +177,7 @@ class PageTreeNodeType extends DictionaryType
     public function getCropBox(): RectangleType
     {
         if (!$this->hasEntry('CropBox')) {
-            $cropbox = Factory::create('Rectangle');
+            $cropbox = Factory::create('Papier\Type\RectangleType');
             $this->setCropBox($cropbox);
         }
 
@@ -192,7 +192,7 @@ class PageTreeNodeType extends DictionaryType
      */
     public function setRotate(int $rotate): PageTreeNodeType
     {
-        $value = Factory::create('Integer', $rotate);
+        $value = Factory::create('Papier\Type\IntegerType', $rotate);
 
         $this->setEntry('Rotate', $value);
         return $this;
@@ -231,8 +231,8 @@ class PageTreeNodeType extends DictionaryType
             }
         }
         
-        $type = Factory::create('Name', 'Pages');
-        $count = Factory::create('Integer', $num);
+        $type = Factory::create('Papier\Type\NameType', 'Pages');
+        $count = Factory::create('Papier\Type\IntegerType', $num);
 
         $this->setEntry('Type', $type);
         $this->setEntry('Count', $count);

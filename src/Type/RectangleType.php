@@ -22,7 +22,7 @@ class RectangleType extends NumbersArrayType
             throw new InvalidArgumentException("Number is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Number', $coordinate);
+        $value = Factory::create('Papier\Type\NumberType', $coordinate);
 
         $objects = $this->getObjects();
         $objects[0] = $value;
@@ -44,7 +44,7 @@ class RectangleType extends NumbersArrayType
             throw new InvalidArgumentException("Number is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Number', $coordinate);
+        $value = Factory::create('Papier\Type\NumberType', $coordinate);
 
         $objects = $this->getObjects();
         $objects[1] = $value;
@@ -65,7 +65,7 @@ class RectangleType extends NumbersArrayType
             throw new InvalidArgumentException("Number is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Number', $coordinate);
+        $value = Factory::create('Papier\Type\NumberType', $coordinate);
 
         $objects = $this->getObjects();
         $objects[2] = $value;
@@ -86,7 +86,7 @@ class RectangleType extends NumbersArrayType
             throw new InvalidArgumentException("Number is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Number', $coordinate);
+        $value = Factory::create('Papier\Type\NumberType', $coordinate);
 
         $objects = $this->getObjects();
         $objects[3] = $value;

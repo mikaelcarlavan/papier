@@ -62,12 +62,12 @@ trait GraphicsState
         $this->checkCTMComponents($components);
 
         $state = sprintf('%s %s %s %s %s %s cm', 
-            Factory::create('Number', $a)->format(), 
-            Factory::create('Number', $b)->format(), 
-            Factory::create('Number', $c)->format(), 
-            Factory::create('Number', $d)->format(), 
-            Factory::create('Number', $e)->format(),  
-            Factory::create('Number', $f)->format()
+            Factory::create('Papier\Type\NumberType', $a)->format(), 
+            Factory::create('Papier\Type\NumberType', $b)->format(), 
+            Factory::create('Papier\Type\NumberType', $c)->format(), 
+            Factory::create('Papier\Type\NumberType', $d)->format(), 
+            Factory::create('Papier\Type\NumberType', $e)->format(),  
+            Factory::create('Papier\Type\NumberType', $f)->format()
         );
 
         return $this->addToContent($state);
@@ -86,7 +86,7 @@ trait GraphicsState
             throw new InvalidArgumentException("LW is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
         
-        $state = sprintf('%s w', Factory::create('Number', $lw)->format());
+        $state = sprintf('%s w', Factory::create('Papier\Type\NumberType', $lw)->format());
         return $this->addToContent($state);
     }
 
@@ -138,7 +138,7 @@ trait GraphicsState
             throw new InvalidArgumentException("ML is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $state = sprintf('%s M', Factory::create('Number', $ml)->format());
+        $state = sprintf('%s M', Factory::create('Papier\Type\NumberType', $ml)->format());
         return $this->addToContent($state);
     }
 
@@ -161,7 +161,7 @@ trait GraphicsState
             throw new InvalidArgumentException("DP is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $state = sprintf('%s %s d', Factory::create('IntegersArray', $da)->format(), Factory::create('Number', $dp)->format());
+        $state = sprintf('%s %s d', Factory::create('IntegersArray', $da)->format(), Factory::create('Papier\Type\NumberType', $dp)->format());
         return $this->addToContent($state);
     }
 
@@ -178,7 +178,7 @@ trait GraphicsState
             throw new InvalidArgumentException("FL is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $state = sprintf('%s i', Factory::create('Number', $fl)->format());
+        $state = sprintf('%s i', Factory::create('Papier\Type\NumberType', $fl)->format());
         return $this->addToContent($state);
     } 
     
@@ -195,7 +195,7 @@ trait GraphicsState
             throw new InvalidArgumentException("RI is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $state = sprintf('%s ri', Factory::create('Name', $ri)->format());
+        $state = sprintf('%s ri', Factory::create('Papier\Type\NameType', $ri)->format());
         return $this->addToContent($state);
     } 
 

@@ -30,7 +30,7 @@ class TilingPatternDictionaryType extends PatternDictionaryType
             throw new InvalidArgumentException("PaintType is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Integer', $type);
+        $value = Factory::create('Papier\Type\IntegerType', $type);
 
         $this->setEntry('PaintType', $value);
         return $this;
@@ -49,7 +49,7 @@ class TilingPatternDictionaryType extends PatternDictionaryType
             throw new InvalidArgumentException("TilingType is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Integer', $type);
+        $value = Factory::create('Papier\Type\IntegerType', $type);
 
         $this->setEntry('TilingType', $value);
         return $this;
@@ -81,7 +81,7 @@ class TilingPatternDictionaryType extends PatternDictionaryType
             throw new InvalidArgumentException("XStep is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Number', $xstep);
+        $value = Factory::create('Papier\Type\NumberType', $xstep);
         $this->setEntry('XStep', $value);
         return $this;
     }
@@ -99,7 +99,7 @@ class TilingPatternDictionaryType extends PatternDictionaryType
             throw new InvalidArgumentException("YStep is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Number', $ystep);
+        $value = Factory::create('Papier\Type\NumberType', $ystep);
         $this->setEntry('YStep', $value);
         return $this;
     }

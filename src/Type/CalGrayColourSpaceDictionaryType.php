@@ -65,7 +65,7 @@ class CalGrayColourSpaceDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("Gamma is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Number', $gamma);
+        $value = Factory::create('Papier\Type\NumberType', $gamma);
 
         $this->setEntry('Gamma', $value);
         return $this;

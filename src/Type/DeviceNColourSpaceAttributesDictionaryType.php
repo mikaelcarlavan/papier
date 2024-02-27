@@ -16,7 +16,7 @@ class DeviceNColourSpaceAttributesDictionaryType extends DictionaryObject
      */
     public function setSubtype(string $subtype): DeviceNColourSpaceAttributesDictionaryType
     {
-        $value = Factory::create('Name', $subtype);
+        $value = Factory::create('Papier\Type\NameType', $subtype);
 
         $this->setEntry('Subtype', $value);
         return $this;

@@ -49,7 +49,7 @@ class ExponentialInterpolationFunctionType extends FunctionObject
      */
     public function setN(float $N): ExponentialInterpolationFunctionType
     {
-        $value = Factory::create('Real', $N);
+        $value = Factory::create('Papier\Type\RealType', $N);
 
         $this->setEntry('N', $value);
         return $this;

@@ -25,7 +25,7 @@ trait TextState
             throw new InvalidArgumentException("Character spacing is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
         
-        $state = sprintf('%s Tc', Factory::create('Number', $cs)->format());
+        $state = sprintf('%s Tc', Factory::create('Papier\Type\NumberType', $cs)->format());
         return $this->addToContent($state);
     }
 
@@ -42,24 +42,24 @@ trait TextState
             throw new InvalidArgumentException("Word spacing is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
         
-        $state = sprintf('%s Tw', Factory::create('Number', $ws)->format());
+        $state = sprintf('%s Tw', Factory::create('Papier\Type\NumberType', $ws)->format());
         return $this->addToContent($state);
     }
 
     /**
-     * Set horizontal scale.
+     * Set horizontal scaling.
      *  
      * @param   mixed   $hs
      * @return mixed
      * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
      */
-    public function setHorizontalScale($hs)
+    public function setHorizontalScaling($hs)
     {
         if (!NumberValidator::isValid($hs, 0, 100)) {
-            throw new InvalidArgumentException("Horizontal scale is incorrect. See ".__CLASS__." class's documentation for possible values.");
+            throw new InvalidArgumentException("Horizontal scaling is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
         
-        $state = sprintf('%s Tz', Factory::create('Number', $hs)->format());
+        $state = sprintf('%s Tz', Factory::create('Papier\Type\NumberType', $hs)->format());
         return $this->addToContent($state);
     }
 
@@ -77,7 +77,7 @@ trait TextState
             throw new InvalidArgumentException("Leading is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
         
-        $state = sprintf('%s TL', Factory::create('Number', $tl)->format());
+        $state = sprintf('%s TL', Factory::create('Papier\Type\NumberType', $tl)->format());
         return $this->addToContent($state);
     }
 
@@ -100,7 +100,7 @@ trait TextState
             throw new InvalidArgumentException("Size is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
         
-        $state = sprintf('%s %s Tf', Factory::create('Name', $font)->format(), Factory::create('Number', $size)->format());
+        $state = sprintf('%s %s Tf', Factory::create('Papier\Type\NameType', $font)->format(), Factory::create('Papier\Type\NumberType', $size)->format());
         return $this->addToContent($state);
     }
 
@@ -134,7 +134,7 @@ trait TextState
             throw new InvalidArgumentException("Rise is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
         
-        $state = sprintf('%s Ts', Factory::create('Number', $tr)->format());
+        $state = sprintf('%s Ts', Factory::create('Papier\Type\NumberType', $tr)->format());
         return $this->addToContent($state);
     }
 }

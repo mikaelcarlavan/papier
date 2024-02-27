@@ -3,6 +3,10 @@
 namespace Papier\Factory;
 
 use InvalidArgumentException;
+use Papier\Type\ArrayType;
+use Papier\Type\ASCIIStringType;
+use Papier\Type\DictionaryType;
+use Papier\Type\NameType;
 
 class Factory
 {
@@ -11,30 +15,29 @@ class Factory
     *
     * @var int
     */
-    protected static $number = 1;
+    protected static int $number = 1;
   
     /**
     * Instance of the object.
     *
-    * @var Factory
+    * @var Factory|null
     */
-    protected static $instance = null;
+    protected static ?Factory $instance = null;
 
     /**
      * Create a new instance of type
      *
-     * @param string $type
-     * @param mixed $value
+     * @template T
+     * @param class-string<T> $class
+     * @param mixed|null $value
      * @param bool $isIndirect
-     * @return mixed
+     * @return T
      * @throws InvalidArgumentException if the provided type's object does not exist.
      */
-    public static function create(string $type, $value = null, bool $isIndirect = false)
+    public static function create(string $class, mixed $value = null, bool $isIndirect = false)
     {
         $instance = self::getInstance();
 
-        $class = 'Papier\Type\\'.ucfirst($type).'Type';
-        
         if (!class_exists($class)) {
             throw new InvalidArgumentException("$class does not exist. See ".__CLASS__." class's documentation for possible values.");
         }
@@ -54,13 +57,13 @@ class Factory
         
         return $object;
     }
-   
+
     /**
-    * Get instance of factory.
-    *
-    * @return Factory
-    */
-    public static function getInstance() 
+     * Get instance of factory.
+     *
+     * @return Factory|null
+     */
+    private static function getInstance(): ?Factory
     {
         if (is_null(self::$instance)) {
             self::$instance = new Factory();  

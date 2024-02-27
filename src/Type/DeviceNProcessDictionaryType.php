@@ -26,7 +26,7 @@ class DeviceNProcessDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("ColorSpace is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = $space instanceof ArrayObject ? $space : Factory::create('Name', $space);
+        $value = $space instanceof ArrayObject ? $space : Factory::create('Papier\Type\NameType', $space);
 
         $this->setEntry('ColorSpace', $value);
         return $this;

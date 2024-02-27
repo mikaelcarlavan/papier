@@ -33,7 +33,7 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("LW is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Number', $lw);
+        $value = Factory::create('Papier\Type\NumberType', $lw);
         $this->setEntry('LW', $value);
         return $this;
     }
@@ -51,7 +51,7 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("LC is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Integer', $lc);
+        $value = Factory::create('Papier\Type\IntegerType', $lc);
         $this->setEntry('LC', $value);
         return $this;
     }
@@ -69,7 +69,7 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("LJ is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Integer', $lj);
+        $value = Factory::create('Papier\Type\IntegerType', $lj);
         $this->setEntry('LJ', $value);
         return $this;
     }
@@ -87,7 +87,7 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("ML is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Number', $ml);
+        $value = Factory::create('Papier\Type\NumberType', $ml);
         $this->setEntry('ML', $value);
         return $this;
     }
@@ -122,7 +122,7 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("RI is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Name', $ri);
+        $value = Factory::create('Papier\Type\NameType', $ri);
         $this->setEntry('RI', $value);
         return $this;
     }
@@ -140,7 +140,7 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("OP is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Boolean', $op);
+        $value = Factory::create('Papier\Type\BooleanType', $op);
 
         $this->setEntry('OP', $value);
         $this->setEntry('op', $value);
@@ -160,7 +160,7 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("OPM is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Integer', $opm);
+        $value = Factory::create('Papier\Type\IntegerType', $opm);
         $this->setEntry('OPM', $value);
         return $this;
     }
@@ -330,7 +330,7 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("FL is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Number', $fl);
+        $value = Factory::create('Papier\Type\NumberType', $fl);
         $this->setEntry('FL', $value);
         return $this;
     }
@@ -348,7 +348,7 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("SM is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Number', $sm);
+        $value = Factory::create('Papier\Type\NumberType', $sm);
         $this->setEntry('SM', $value);
         return $this;
     }
@@ -366,7 +366,7 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("SA is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Boolean', $sa);
+        $value = Factory::create('Papier\Type\BooleanType', $sa);
 
         $this->setEntry('SA', $value);
         return $this;
@@ -419,7 +419,7 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("CA is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Number', $ca);
+        $value = Factory::create('Papier\Type\NumberType', $ca);
 
         $this->setEntry('CA', $value);
         $this->setEntry('ca', $value);
@@ -439,7 +439,7 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("AIS is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Boolean', $ais);
+        $value = Factory::create('Papier\Type\BooleanType', $ais);
 
         $this->setEntry('AIS', $value);
         return $this;
@@ -458,7 +458,7 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("TK is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Boolean', $sa);
+        $value = Factory::create('Papier\Type\BooleanType', $sa);
 
         $this->setEntry('TK', $value);
         return $this;
@@ -470,7 +470,7 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
      */
     public function format()
     {
-        $type = Factory::create('Name', 'ExtGState');
+        $type = Factory::create('Papier\Type\NameType', 'ExtGState');
         $this->setEntry('Type', $type);
 
         return parent::format();

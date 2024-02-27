@@ -138,26 +138,24 @@ class Papier
      */
     public function build(): string
     {
-        // $this->check();
-        
         $header = $this->getHeader();
         $body = $this->getBody();
         $trailer = $this->getTrailer();
         
         $trailer->setRoot($body->getDocumentCatalog());
 
-        $crossreference = CrossReference::getInstance();
-        $crossreference->clearTable();
+        $crossReference = CrossReference::getInstance();
+        $crossReference->clearTable();
 
         $content  = $header->write();
 
-        $crossreference->setOffset(strlen($content));
+        $crossReference->setOffset(strlen($content));
 
         $content .= $body->format();
 
         $trailer->setCrossReferenceOffset(strlen($content));
 
-        $content .= $crossreference->write();
+        $content .= $crossReference->write();
         $content .= $trailer->write();
 
         return $content;
@@ -176,7 +174,7 @@ class Papier
     } 
 
     /**
-     * Check if PDF can be build.
+     * Check if PDF can be built.
      *
      * @return bool
      */

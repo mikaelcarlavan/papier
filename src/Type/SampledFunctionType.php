@@ -43,7 +43,7 @@ class SampledFunctionType extends FunctionObject
             throw new InvalidArgumentException("BitsPerSample is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Integer', $bits);
+        $value = Factory::create('Papier\Type\IntegerType', $bits);
 
         $this->setEntry('BitsPerSample', $value);
         return $this;
@@ -62,7 +62,7 @@ class SampledFunctionType extends FunctionObject
             throw new InvalidArgumentException("Order is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Integer', $order);
+        $value = Factory::create('Papier\Type\IntegerType', $order);
 
         $this->setEntry('Order', $value);
         return $this;

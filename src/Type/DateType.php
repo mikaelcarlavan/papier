@@ -14,11 +14,11 @@ class DateType extends IntegerObject
     /**
     * Set object's value.
     *
-    * @param  mixed  $value
+    * @param mixed $value
     * @return DateType
     * @throws InvalidArgumentException if the provided argument is not of type 'DateTime' or convertible to.
     */
-    public function setValue($value): DateType
+    public function setValue(mixed $value): DateType
     {
         if (!DateValidator::isValid($value)) {
             throw new InvalidArgumentException("Date is incorrect. See ".__CLASS__." class's documentation for possible values.");

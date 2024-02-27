@@ -27,11 +27,11 @@ class CollectionSubitemDictionaryType extends DictionaryObject
         }
 
         if (NumberValidator::isValid($d)) {
-            $value = Factory::create('Integer', $d);
+            $value = Factory::create('Papier\Type\IntegerType', $d);
         } else if (StringValidator::isValid($d)) {
-            $value = Factory::create('TextString', $d);
+            $value = Factory::create('Papier\Type\TextStringType', $d);
         } else {
-            $value = Factory::create('Date', $d);
+            $value = Factory::create('Papier\Type\DateType', $d);
         }
 
         $this->setEntry('D', $value);
@@ -47,7 +47,7 @@ class CollectionSubitemDictionaryType extends DictionaryObject
      */
     public function setP(string $p): CollectionSubitemDictionaryType
     {
-        $value = Factory::create('TextString', $p);
+        $value = Factory::create('Papier\Type\TextStringType', $p);
 
         $this->setEntry('P', $value);
         return $this;
@@ -60,7 +60,7 @@ class CollectionSubitemDictionaryType extends DictionaryObject
      */
     public function format(): string
     {
-        $type = Factory::create('Name', 'CollectionSubitem');
+        $type = Factory::create('Papier\Type\NameType', 'CollectionSubitem');
         $this->setEntry('Type', $type);
 
         return parent::format();

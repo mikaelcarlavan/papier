@@ -25,7 +25,7 @@ class PatternDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("PatternType is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Integer', $type);
+        $value = Factory::create('Papier\Type\IntegerType', $type);
 
         $this->setEntry('PatternType', $value);
         return $this;
@@ -42,7 +42,7 @@ class PatternDictionaryType extends DictionaryObject
             throw new RuntimeException("PatternType is missing. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $type = Factory::create('Name', 'Pattern');
+        $type = Factory::create('Papier\Type\NameType', 'Pattern');
         $this->setEntry('Type', $type);
 
         return parent::format();

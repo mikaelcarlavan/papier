@@ -9,7 +9,7 @@ abstract class BaseObject
      *
      * @var mixed
      */
-    protected $value;
+    protected mixed $value;
 
     /**
      * End-of-line marker.
@@ -43,7 +43,7 @@ abstract class BaseObject
      *
      * @return mixed
      */
-    protected function getValue()
+    protected function getValue(): mixed
     {
         return $this->value;
     }
@@ -65,7 +65,7 @@ abstract class BaseObject
      * @param  mixed  $value
      * @return BaseObject
      */
-    protected function setValue($value): BaseObject
+    protected function setValue(mixed $value): BaseObject
     {
         $this->value = $value;
         return $this;

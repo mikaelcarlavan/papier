@@ -13,11 +13,11 @@ class ByteStringsArrayType extends ArrayType
     /**
     * Set object's byte strings.
     *
-    * @param  mixed  $value
-    * @throws InvalidArgumentException if the provided argument is not an array of 'string'.
+    * @param mixed $value
     * @return ByteStringsArrayType
+    *@throws InvalidArgumentException if the provided argument is not an array of 'string'.
     */
-    public function setValue($value): ByteStringsArrayType
+    public function setValue(mixed $value): ByteStringsArrayType
     {
         if (!ByteStringsArrayValidator::isValid($value)) {
             throw new InvalidArgumentException("Array is incorrect. See ".__CLASS__." class's documentation for possible values.");

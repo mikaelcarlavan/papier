@@ -69,7 +69,7 @@ class FileTrailer extends DictionaryObject
             throw new InvalidArgumentException("Size is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Integer', $size);
+        $value = Factory::create('Papier\Type\IntegerType', $size);
 
         $this->setEntry('Size', $value);
         return $this;
@@ -88,7 +88,7 @@ class FileTrailer extends DictionaryObject
             throw new InvalidArgumentException("Prev is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Integer', $prev);
+        $value = Factory::create('Papier\Type\IntegerType', $prev);
 
         $this->setEntry('Prev', $value);
         return $this;
@@ -143,7 +143,7 @@ class FileTrailer extends DictionaryObject
     public function getInfo(): DocumentInformationDictionaryType
     {
         if (!$this->hasEntry('Info')) {
-            $value = Factory::create('DocumentInformationDictionary', null, true);
+            $value = Factory::create('Papier\Type\DocumentInformationDictionaryType', null, true);
             $this->setInfo($value);
         }
 

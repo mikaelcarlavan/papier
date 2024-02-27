@@ -121,7 +121,7 @@ class StreamObject extends DictionaryObject
             throw new InvalidArgumentException("Filter is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = $filter instanceof ArrayObject ? $filter : Factory::create('Name', $filter);
+        $value = $filter instanceof ArrayObject ? $filter : Factory::create('Papier\Type\NameType', $filter);
 
         $this->setEntry('Filter', $value);
         return $this;
@@ -169,7 +169,7 @@ class StreamObject extends DictionaryObject
             throw new InvalidArgumentException("FFilter is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = $ffilter instanceof ArrayObject ? $ffilter : Factory::create('Name', $ffilter);
+        $value = $ffilter instanceof ArrayObject ? $ffilter : Factory::create('Papier\Type\NameType', $ffilter);
 
         $this->setEntry('FFilter', $value);
         return $this;
@@ -201,7 +201,7 @@ class StreamObject extends DictionaryObject
      */
     public function setDL(int $dl): StreamObject
     {
-        $value = Factory::create('Integer', $dl);
+        $value = Factory::create('Papier\Type\IntegerType', $dl);
 
         $this->setEntry('DL', $value);
         return $this;
@@ -217,7 +217,7 @@ class StreamObject extends DictionaryObject
         $stream = $this->getStream();
 
         // Compute length of stream and set it into dictionary
-        $length = Factory::create('Integer', strlen($stream));
+        $length = Factory::create('Papier\Type\IntegerType', strlen($stream));
     
         $this->setEntry('Length', $length);
 

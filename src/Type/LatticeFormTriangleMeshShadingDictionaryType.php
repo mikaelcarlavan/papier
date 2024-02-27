@@ -26,7 +26,7 @@ class LatticeFormTriangleMeshShadingDictionaryType extends MeshShadingDictionary
             throw new InvalidArgumentException("VerticesPerRow is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Integer', $vertices);
+        $value = Factory::create('Papier\Type\IntegerType', $vertices);
 
         $this->setEntry('VerticesPerRow', $value);
         return $this;
