@@ -1,12 +1,10 @@
 <?php
 
-namespace Papier\Base;
-
-use Papier\Repository\Repository;
-
-use Papier\Validator\IntegerValidator;
+namespace Papier\Object;
 
 use InvalidArgumentException;
+use Papier\Repository\Repository;
+use Papier\Validator\IntegerValidator;
 
 abstract class IndirectObject extends BaseObject
 {

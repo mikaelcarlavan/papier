@@ -40,7 +40,7 @@ class PageTreeNodeType extends DictionaryType
      *  
      * @return ArrayType
      */
-    protected function getKids(): ArrayType
+    public function getKids(): ArrayType
     {
         if (!$this->hasEntry('Kids')) {
             $kids = Factory::create('Papier\Type\ArrayType');
@@ -83,7 +83,7 @@ class PageTreeNodeType extends DictionaryType
      * @param  ArrayObject  $kids
      * @return PageTreeNodeType
      */
-    protected function setKids(ArrayObject $kids): PageTreeNodeType
+    public function setKids(ArrayObject $kids): PageTreeNodeType
     {
         $this->setEntry('Kids', $kids);
         return $this;
@@ -220,23 +220,27 @@ class PageTreeNodeType extends DictionaryType
             $allObjects = $kid instanceof PageObjectType;
             $allNodes = $kid instanceof PageTreeNodeType;
 
-            foreach ($kids as $kid) {
+            for ($i = 0; $i < $kids->count(); $i++) {
+                $kid = $kids->current();
+
                 if ($kid instanceof PageTreeNodeType && $allObjects) {
-                    throw new RuntimeException("All kids should be of same type. See ".__CLASS__." class's documentation for possible values.");  
+                    throw new RuntimeException("All kids should be of same type. See ".__CLASS__." class's documentation for possible values.");
                 }
 
                 if ($kid instanceof PageObjectType && $allNodes) {
-                    throw new RuntimeException("All kids should be of same type. See ".__CLASS__." class's documentation for possible values.");  
+                    throw new RuntimeException("All kids should be of same type. See ".__CLASS__." class's documentation for possible values.");
                 }
+
+                $kids->next();
             }
         }
-        
+
         $type = Factory::create('Papier\Type\NameType', 'Pages');
         $count = Factory::create('Papier\Type\IntegerType', $num);
 
         $this->setEntry('Type', $type);
         $this->setEntry('Count', $count);
-        
+
         return parent::format();
     }
 }

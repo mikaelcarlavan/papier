@@ -2,8 +2,6 @@
 
 namespace Papier\Object;
 
-use Papier\Base\IndirectObject;
-
 class ArrayObject extends DictionaryObject
 {
     /**
@@ -72,6 +70,7 @@ class ArrayObject extends DictionaryObject
     {
         return $this->position;
     }
+
 
     /**
      * Check if object exist at current position.

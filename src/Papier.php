@@ -11,6 +11,7 @@ use Papier\File\CrossReference;
 use Papier\Type\DocumentInformationDictionaryType;
 use Papier\Type\PageObjectType;
 use Papier\Type\ViewerPreferencesDictionaryType;
+use Papier\Widget\TextWidget;
 
 class Papier
 {
@@ -106,9 +107,41 @@ class Papier
     {
         $this->getHeader()->setVersion($version);
         return $this;
-    } 
+    }
 
+    /**
+     * Add text to PDF's content.
+     *
+     * @return TextWidget
+     */
+    public function addText(): TextWidget
+    {
+        return new TextWidget($this);
+    }
 
+    /**
+     * Set current PDF's page.
+     *
+     * @param int $page
+     * @return Papier
+     */
+    public function setCurrentPage(int $page): Papier
+    {
+        $this->getBody()->getPageTree()->getKids()->moveTo($page);
+        return $this;
+    }
+
+    /**
+     * Get current PDF's page.
+     *
+     * @return PageObjectType
+     */
+    public function getCurrentPage(): PageObjectType
+    {
+        /** @var PageObjectType $page */
+        $page = $this->getBody()->getPageTree()->getKids()->current();
+        return $page;
+    }
     /**
      * Add page to PDF's content.
      *

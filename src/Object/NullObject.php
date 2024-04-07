@@ -2,8 +2,6 @@
 
 namespace Papier\Object;
 
-use Papier\Base\IndirectObject;
-
 class NullObject extends IndirectObject
 {
 

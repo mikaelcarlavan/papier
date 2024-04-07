@@ -2,12 +2,9 @@
 
 namespace Papier\Object;
 
-use Papier\Papier;
-
-use Papier\Base\IndirectObject;
-use Papier\Validator\RealValidator;
-
 use InvalidArgumentException;
+use Papier\Papier;
+use Papier\Validator\RealValidator;
 
 class RealObject extends IndirectObject
 {

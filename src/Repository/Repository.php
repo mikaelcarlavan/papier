@@ -3,7 +3,7 @@
 namespace Papier\Repository;
 
 use Papier\Object\ArrayObject;
-use Papier\Base\IndirectObject;
+use Papier\Object\IndirectObject;
 
 class Repository extends ArrayObject
 {

@@ -2,10 +2,8 @@
 
 namespace Papier\Object;
 
-use Papier\Base\IndirectObject;
-use Papier\Validator\IntegerValidator;
-
 use InvalidArgumentException;
+use Papier\Validator\IntegerValidator;
 
 class IntegerObject extends IndirectObject
 {

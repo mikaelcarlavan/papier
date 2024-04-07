@@ -2,10 +2,8 @@
 
 namespace Papier\Object;
 
-use Papier\Base\IndirectObject;
-use Papier\Validator\StringValidator;
-
 use InvalidArgumentException;
+use Papier\Validator\StringValidator;
 
 class StringObject extends IndirectObject
 {

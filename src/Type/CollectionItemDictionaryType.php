@@ -2,14 +2,11 @@
 
 namespace Papier\Type;
 
-use Papier\Object\DictionaryObject;
-use Papier\Base\IndirectObject;
-
-use Papier\Validator\StringValidator;
-
-use Papier\Factory\Factory;
-
 use InvalidArgumentException;
+use Papier\Factory\Factory;
+use Papier\Object\DictionaryObject;
+use Papier\Object\IndirectObject;
+use Papier\Validator\StringValidator;
 
 class CollectionItemDictionaryType extends DictionaryObject
 {

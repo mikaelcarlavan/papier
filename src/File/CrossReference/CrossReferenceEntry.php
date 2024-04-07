@@ -2,11 +2,9 @@
 
 namespace Papier\File\CrossReference;
 
-use Papier\Base\BaseObject;
-
-use Papier\Validator\IntegerValidator;
-
 use InvalidArgumentException;
+use Papier\Object\BaseObject;
+use Papier\Validator\IntegerValidator;
 
 class CrossReferenceEntry extends BaseObject
 {

@@ -2,9 +2,8 @@
 
 namespace Papier\Object;
 
-use Papier\Base\IndirectObject;
-use Papier\Validator\BooleanValidator;
 use InvalidArgumentException;
+use Papier\Validator\BooleanValidator;
 
 class BooleanObject extends IndirectObject
 {

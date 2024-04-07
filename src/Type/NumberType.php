@@ -2,10 +2,9 @@
 
 namespace Papier\Type;
 
-use Papier\Base\IndirectObject;
-use Papier\Validator\NumberValidator;
-
 use InvalidArgumentException;
+use Papier\Object\IndirectObject;
+use Papier\Validator\NumberValidator;
 
 class NumberType extends IndirectObject
 {
@@ -14,7 +13,7 @@ class NumberType extends IndirectObject
     *
     * @param mixed $value
     * @return NumberType
-    *@throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
+    * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
     */
     public function setValue(mixed $value): NumberType
     {

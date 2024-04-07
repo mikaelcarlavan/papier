@@ -1,6 +1,6 @@
 <?php
 
-namespace Papier\Base;
+namespace Papier\Object;
 
 abstract class BaseObject
 {

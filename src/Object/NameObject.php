@@ -2,8 +2,6 @@
 
 namespace Papier\Object;
 
-use Papier\Base\IndirectObject;
-
 use InvalidArgumentException;
 
 class NameObject extends IndirectObject

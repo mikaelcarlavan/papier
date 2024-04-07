@@ -2,17 +2,11 @@
 
 namespace Papier\Object;
 
-use Papier\Base\IndirectObject;
-use Papier\Base\BaseObject;
-
-use Papier\Factory\Factory;
-
-use Papier\Validator\ArrayValidator;
-
-use InvalidArgumentException;
-
 use Countable;
+use InvalidArgumentException;
 use Iterator;
+use Papier\Factory\Factory;
+use Papier\Validator\ArrayValidator;
 
 class DictionaryObject extends IndirectObject implements Countable, Iterator
 {

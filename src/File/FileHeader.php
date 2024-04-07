@@ -2,13 +2,10 @@
 
 namespace Papier\File;
 
-use Papier\Base\BaseObject;
-
-use Papier\Factory\Factory;
-
-use Papier\Validator\VersionValidator;
-
 use InvalidArgumentException;
+use Papier\Factory\Factory;
+use Papier\Object\BaseObject;
+use Papier\Validator\VersionValidator;
 
 class FileHeader extends BaseObject
 {

@@ -2,10 +2,8 @@
 
 namespace Papier\Object;
 
-use Papier\Base\BaseObject;
-use Papier\Validator\StringValidator;
-
 use InvalidArgumentException;
+use Papier\Validator\StringValidator;
 
 class CommentObject extends BaseObject
 {

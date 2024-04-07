@@ -82,8 +82,6 @@ class LZWFilter extends Filter
         }
         $characters = unpack("C*", $value);
 
-        var_dump($characters);
-
         $currentCode = self::EOD_MARKER;
         $sequence = '';
         while ($i <= count($characters)) {

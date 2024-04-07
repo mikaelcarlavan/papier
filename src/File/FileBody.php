@@ -2,10 +2,9 @@
 
 namespace Papier\File;
 
-use Papier\Base\BaseObject;
-
-use Papier\Repository\Repository;
 use Papier\Factory\Factory;
+use Papier\Object\BaseObject;
+use Papier\Repository\Repository;
 use Papier\Type\DocumentCatalogType;
 use Papier\Type\PageObjectType;
 use Papier\Type\PageTreeNodeType;
