@@ -37,69 +37,35 @@ $now = new DateTime("now");
 $pdf = new Papier();
 $pdf->getHeader()->setVersion(3);
 
-$pdf->getBody()->getPageTree()->setMediaBox([0, 0, 595.28, 841.89]);
-
-// $page = $pdf->getBody()->addPage();
 $page = $pdf->addPage();
 
 
-$graphics = Factory::create('\Papier\Type\NameType', ProcedureSet::GRAPHICS);
-$text = Factory::create('\Papier\Type\NameType',  ProcedureSet::TEXT);
-$imageb = Factory::create('\Papier\Type\NameType', ProcedureSet::GRAYSCALE_IMAGES);
-$imagec = Factory::create('\Papier\Type\NameType', ProcedureSet::COLOUR_IMAGES);
-$imagei = Factory::create('\Papier\Type\NameType', ProcedureSet::INDEXED_IMAGES);
+$image = $pdf->createImageWidget()->setPage($page);
+$image->setSource('unsplash.jpg');
+$image->setWidth(595.28);
+$image->setHeight(841.89);
+//$image->setX(300);
+/*
+$text = $pdf->createTextWidget()->setPage($page);
+$text->setNonStrokingColor(0.4, 0, 0.4);
+$text->setNonStrokingColorSpace(DeviceColourSpace::RGB);
 
-$procset = Factory::create('\Papier\Type\ArrayType', null, true)
-    ->append($imageb)
-    ->append($imagec)
-    ->append($imagei)
-    ->append($graphics)
-    ->append($text);
+$text->setText('Hello World !');
+$text->setBaseFont('Helvetica');
+$text->setFontSize(24);
+$text->setY(100);
+$text->setX(100);
 
-
-$image = Factory::create('\Papier\Type\ImageType', null, true);
-$image->setWidth(100);
-$image->setHeight(125);
-$image->setColorSpace(DeviceColourSpace::RGB);
-$image->setBitsPerComponent(8);
-$image->setFilter(FilterType::DCT_DECODE);
-$image->setContent(file_get_contents('unsplash.jpg'));
-
-
-$xObject = Factory::create('\Papier\Type\DictionaryType')->setEntry('Im1', $image);
-
-
-$helvetica = Factory::create('\Papier\Type\Type1FontType', null, true)
-    ->setName('F1')
-    ->setBaseFont('Helvetica');
-
-$font = Factory::create('\Papier\Type\DictionaryType')->setEntry('F1', $helvetica);
-
-
-$resources = $page->getResources();
-$resources->setEntry('ProcSet', $procset);
-$resources->setEntry('Font', $font);
-$resources->setEntry('XObject', $xObject);
-
-$contents = $page->getContents();
-
-$contents->setNonStrokingRGBColour(0.1, 0.3, 0.8);
-
-$contents->beginText();
-$contents->setFont('F1', 24);
-$contents->setCharacterSpacing(-2);
-$contents->moveToNextLineStartWithOffset(100, 500);
-$contents->showText('Hello World !');
-$contents->endText();
-
-
-$contents->setCompression(FilterType::FLATE_DECODE);
-$contents->save();
-$contents->setCTM(75.00, 0, 0, 93.75, 28.35, 719.79);
-$contents->paintXObject('Im1');
-$contents->restore();
-
-
+$rectangle = $pdf->createRectangleWidget()->setPage($page);
+$rectangle->setWidth(100);
+$rectangle->setHeight(50);
+$rectangle->setY(300);
+$rectangle->setX(300);
+//$rectangle->setNonStrokingColor(0.4, 0, 0.4);
+$rectangle->setStrokingColor(0.9, 0, 0);
+$rectangle->setStrokingColorSpace(DeviceColourSpace::RGB);
+//$rectangle->setNonStrokingColorSpace(DeviceColourSpace::RGB);
+*/
 $info = $pdf->getInfo();
 $info->setTitle('Test');
 $info->setAuthor('Mikaël Carlavan');
@@ -110,6 +76,6 @@ $viewer->setDisplayDocTitle(true);
 //$viewer->setHideToolbar(true);
 //$viewer->setHideMenubar(true);
 
-//print $pdf->build();
+print $pdf->build();
 $pdf->save('test.pdf');
 
