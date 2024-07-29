@@ -140,6 +140,7 @@ abstract class IndirectObject extends BaseObject
     public function write(): string
     {
         $value = $this->isIndirect() ? $this->getReference() : $this->format();
-        return $value. self::EOL_MARKER;
+        $value .= self::EOL_MARKER;
+        return $value;
     }
 }
