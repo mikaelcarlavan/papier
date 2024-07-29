@@ -52,7 +52,7 @@ trait TextShowing
      * @throws InvalidArgumentException if the $aw and $ac arguments are not of type 'int' or 'float'.
      * @return mixed
      */
-    public function moveToNextLineAndShowWTextWithSpacing(string $text, $aw, $ac)
+    public function moveToNextLineAndShowTextWithSpacing(string $text, $aw, $ac)
     {
         if (!StringValidator::isValid($text)) {
             throw new InvalidArgumentException("Text is incorrect. See ".__CLASS__." class's documentation for possible values.");
