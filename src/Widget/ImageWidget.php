@@ -247,6 +247,7 @@ class ImageWidget extends BaseWidget
 
         $width = $dimensions[0] ?? 0;
         $height = $dimensions[1] ?? 0;
+        $ratio = $height > 0 ? $width / $height : 1;
 
         if (!$procset->has(ProcedureSet::GRAPHICS)) {
             $graphics = Factory::create('\Papier\Type\NameType', ProcedureSet::GRAPHICS);
@@ -287,8 +288,25 @@ class ImageWidget extends BaseWidget
         $userUnit = $page->hasEntry('UserUnit') ? $page->getEntryValue('UserUnit') : 1.0;
         $userUnit *= 25.4 / 72;
 
-        $withInUI = $this->getWidth() / $userUnit;
-        $heightInUI = $this->getHeight() / $userUnit;
+        $desiredWidth = $this->getWidth();
+        $desiredHeight = $this->getHeight();
+
+        $withInUI = 0;
+        $heightInUI = 0;
+        if ($desiredWidth && $desiredHeight) {
+            $withInUI = $desiredWidth / $userUnit;
+            $heightInUI = $desiredHeight / $userUnit;
+        } else if ($desiredWidth) {
+            $withInUI = $desiredWidth / $userUnit;
+            $heightInUI = $withInUI / $ratio;
+        } else if ($desiredHeight) {
+            $heightInUI = $desiredHeight / $userUnit;
+            $withInUI = $heightInUI * $ratio;
+        } else {
+            $withInUI = $width / $userUnit;
+            $heightInUI = $height / $userUnit;
+        }
+
 
         $contents->setCompression(FilterType::FLATE_DECODE);
         $contents->save();
