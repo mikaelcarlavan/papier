@@ -2,138 +2,153 @@
 
 namespace Papier\Widget;
 
+use Papier\Document\ProcedureSet;
 use Papier\Factory\Factory;
-use Papier\Object\DictionaryObject;
-use Papier\Papier;
-use Papier\Type\DocumentCatalogType;
-use Papier\Validator\ArrayValidator;
-use Papier\Validator\IntegerValidator;
-use Papier\Validator\StringValidator;
-use InvalidArgumentException;
+use Papier\Type\ImageType;
+
 
 class TextWidget extends BaseWidget
 {
-    /**
-     * The value of the text color.
-     *
-     * @var array
-     */
-    protected array $textColor = array(0, 0, 0);
+    use ColorWidget;
 
     /**
-     * The name of the text font.
+     * Text's font name.
      *
      * @var string
      */
-    protected string $font;
+    protected string $fontName = 'Helvetica';
 
     /**
-     * The size of the text font.
+     * Text's font size.
      *
-     * @var int
+     * @var float
      */
-    protected int $fontSize = 10;
+    protected float $fontSize = 10;
 
     /**
-     * Get text color.
+     * Text of widget.
      *
-     * @return array
+     * @var string
      */
-    public function getTextColor(): array
-    {
-        return $this->textColor;
-    }
+    protected string $text;
 
     /**
-     * Set text color.
+     * Set text.
      *
-     * @param array $textColor
+     * @param string $text
      * @return TextWidget
-     * @throws InvalidArgumentException if the $textColor argument is not an array.
      */
-    public function setTextColor(array $textColor): TextWidget
+    public function setText(string $text): TextWidget
     {
-        if (!ArrayValidator::isValid($textColor)) {
-            throw new InvalidArgumentException("Text's color is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        $this->textColor = $textColor;
+        $this->text = $text;
         return $this;
     }
 
     /**
-     * Get font.
+     * Get text.
      *
      * @return string
      */
-    public function getFont(): string
+    public function getText(): string
     {
-        return $this->font;
+        return $this->text;
     }
 
     /**
-     * Set font.
+     * Set basefont (PostScript) name.
      *
-     * @param string $font
+     * @param string $fontName
      * @return TextWidget
-     * @throws InvalidArgumentException if the $textColor argument is not a string.
      */
-    public function setFont(string $font): TextWidget
+    public function setBaseFont(string $fontName): TextWidget
     {
-        if (!StringValidator::isValid($font)) {
-            throw new InvalidArgumentException("Font is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        $this->font = $font;
+        $this->fontName = $fontName;
         return $this;
     }
 
     /**
-     * Get font size.
+     * Get basefont name.
      *
-     * @return int
+     * @return string $fontName
      */
-    public function getFontSize(): int
+    public function getBaseFont(): string
     {
-        return $this->fontSize;
+        return $this->fontName;
     }
 
-    /**
-     * Set font size.
-     *
-     * @param int $fontSize
-     * @return TextWidget
-     * @throws InvalidArgumentException if the $fontSize argument is not an int.
-     */
-    public function setFontSize(int $fontSize): TextWidget
-    {
-        if (!IntegerValidator::isValid($fontSize)) {
-            throw new InvalidArgumentException("Font's size is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
 
+    /**
+     * Set font's size.
+     *
+     * @param float $fontSize
+     * @return TextWidget
+     */
+    public function setFontSize(float $fontSize): TextWidget
+    {
         $this->fontSize = $fontSize;
         return $this;
     }
 
     /**
-     * Format widget.
+     * Get font's size.
      *
-     * @return void
+     * @return float
      */
-    public function format(): void
+    public function getFontSize(): float
     {
-        $page = $this->pdf->getCurrentPage();
+        return $this->fontSize;
+    }
 
-        $contents = $page->getContents();
+    function format(): BaseWidget
+    {
+        $page = $this->getPage();
+        $fontName = $this->getBaseFont();
 
-        $contents->setNonStrokingRGBColour($this->getTextColor());
+        $trueFont = Factory::create('\Papier\Type\Type1FontType', null, true)->setBaseFont($fontName);
+        $trueFont->setName(sprintf('F%d', $trueFont->getNumber()));
+
+        $font = Factory::create('\Papier\Type\DictionaryType')->setEntry($trueFont->getName(), $trueFont);
+
+        $resources = $page->getResources();
+        $resources->setEntry('Font', $font);
+
+        if (!$resources->hasEntry('ProcSet')) {
+            $procset = Factory::create('\Papier\Type\ArrayType', null, true);
+            $resources->setEntry('ProcSet', $procset);
+        }
+
+        $procset = $resources->getEntry('ProcSet');
+
+        if (!$procset->has(ProcedureSet::TEXT)) {
+            $text = Factory::create('\Papier\Type\NameType', ProcedureSet::TEXT);
+            $procset->append($text);
+        }
+
+        $contents = $this->getContents();
+        $contents->save();
 
         $contents->beginText();
-        $contents->setFont($this->getFont(), $this->getFontSize());
-        $contents->setCharacterSpacing(-2);
+        $contents->setFont($trueFont->getName(), $this->getFontSize());
+
+        $strokingColors = $this->getStrokingColor();
+        $nonStrokingColors = $this->getNonStrokingColor();
+
+        if ($strokingColors) {
+            $contents->setStrokingSpace($this->getStrokingColorSpace());
+            $contents->setStrokingColor(...$strokingColors);
+        }
+
+        if ($nonStrokingColors) {
+            $contents->setNonStrokingSpace($this->getNonStrokingColorSpace());
+            $contents->setNonStrokingColor(...$nonStrokingColors);
+        }
+
         $contents->moveToNextLineStartWithOffset($this->getX(), $this->getY());
         $contents->showText($this->getText());
         $contents->endText();
 
+        $contents->restore();
+
+        return $this;
     }
 }
