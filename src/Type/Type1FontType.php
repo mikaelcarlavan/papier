@@ -18,7 +18,18 @@ use RuntimeException;
 use InvalidArgumentException;
 
 class Type1FontType extends DictionaryType
-{ 
+{
+    /**
+     * Get name.
+     *
+     * @return string|null
+     */
+    public function getName(): ?string
+    {
+        $value = $this->getEntryValue('Papier\Type\NameType');
+        return $value;
+    }
+
     /**
      * Set name.
      *  
