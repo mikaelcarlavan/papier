@@ -284,9 +284,15 @@ class ImageWidget extends BaseWidget
 
         $contents = $this->getContents();
 
+        $userUnit = $page->hasEntry('UserUnit') ? $page->getEntryValue('UserUnit') : 1.0;
+        $userUnit *= 25.4 / 72;
+
+        $withInUI = $this->getWidth() / $userUnit;
+        $heightInUI = $this->getHeight() / $userUnit;
+
         $contents->setCompression(FilterType::FLATE_DECODE);
         $contents->save();
-        $contents->setCTM($this->getWidth(), $this->getSkewY(), $this->getSkewX(), $this->getHeight(), $this->getX(), $this->getY());
+        $contents->setCTM($withInUI, $this->getSkewY(), $this->getSkewX(), $heightInUI, $this->getX(), $this->getY());
         $contents->paintXObject($this->getName());
         $contents->restore();
 
