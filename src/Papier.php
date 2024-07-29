@@ -15,6 +15,7 @@ use Papier\Type\DocumentInformationDictionaryType;
 use Papier\Type\PageObjectType;
 use Papier\Type\ViewerPreferencesDictionaryType;
 use Papier\Validator\NumbersArrayValidator;
+use Papier\Validator\NumberValidator;
 use Papier\Widget\ImageWidget;
 use Papier\Widget\RectangleWidget;
 use Papier\Widget\TextWidget;
@@ -27,20 +28,6 @@ class Papier
      * @var int
      */
     const MAX_DECIMALS = 5;
-
-    /**
-     * Uer unit for page size
-     *
-     * @var string
-     */
-    const USER_UNIT = 'user';
-
-    /**
-     * Millimeters unit for page size
-     *
-     * @var string
-     */
-    const MILLIMETERS_UNIT = 'mm';
 
      /**
      * Header
@@ -206,15 +193,28 @@ class Papier
     /**
      * Add page to PDF's content.
      *
-     * @param array $dimensions
-     * @param string $unit
-     * @param float $dpi
+     * @param array $dimensions Dimensions (width and height) of the page in millimeters.
+     * @param float $dpi Resolution of the page (72 by default, i.e. 72 points par inch).
      * @return PageObjectType
      */
-    public function addPage(): PageObjectType
+    public function addPage(array $dimensions, float $dpi = 72): PageObjectType
     {
         $page = $this->getBody()->addPage();
-        $page->setMediaBox([0, 0, 595, 842]);
+
+        if (!NumberValidator::isValid($dpi, 0) || $dpi == 0) {
+            throw new \InvalidArgumentException("Dpi is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $userUnit = 72 / $dpi;
+        $page->setUserUnit($userUnit);
+
+        $mmToUserSpace = $dpi / 25.4;
+
+        array_walk($dimensions, function (&$dimension) use ($mmToUserSpace) {
+            $dimension *= $mmToUserSpace;
+        });
+
+        $page->setMediaBox([0, 0, $dimensions[0], $dimensions[1]]);
 
         return $page;
     }

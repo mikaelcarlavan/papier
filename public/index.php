@@ -37,13 +37,13 @@ $now = new DateTime("now");
 $pdf = new Papier();
 $pdf->getHeader()->setVersion(3);
 
-$page = $pdf->addPage();
+$page = $pdf->addPage([210, 297], 144);
 
 
 $image = $pdf->createImageWidget()->setPage($page);
 $image->setSource('unsplash.jpg');
-$image->setWidth(595.28);
-$image->setHeight(841.89);
+$image->setWidth(210);
+$image->setHeight(297);
 //$image->setX(300);
 /*
 $text = $pdf->createTextWidget()->setPage($page);
