@@ -96,13 +96,6 @@ class LZWFilter extends Filter
                 $currentCode++;
                 $table[$newSequence] = $currentCode;
             }
-
-
-
-            /*if (isset($table[$sequence])) {
-                $out .= $table[$byteCharacter];
-                $newSequence = $byteCharacter .
-            }*/
         }
 
         return $out;
