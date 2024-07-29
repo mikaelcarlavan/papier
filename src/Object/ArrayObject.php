@@ -110,6 +110,44 @@ class ArrayObject extends DictionaryObject
     }
 
     /**
+     * Append object to array.
+     *
+     * @param IndirectObject $object
+     * @return ArrayObject
+     */
+    public function push(IndirectObject $object): ArrayObject
+    {
+        return $this->append($object);
+    }
+
+    /**
+     * Shift object from array.
+     *
+     * @return IndirectObject
+     */
+    public function shift(): IndirectObject
+    {
+        $objects = $this->getObjects();
+        $object = array_shift($objects);
+        $this->setObjects($objects);
+        return $object;
+    }
+
+    /**
+     * Pop object from array.
+     *
+     * @return IndirectObject
+     */
+    public function pop(): IndirectObject
+    {
+        $objects = $this->getObjects();
+        $object = array_pop($objects);
+        $this->setObjects($objects);
+
+        return $object;
+    }
+
+    /**
      * Format object's value.
      *
      * @return string
@@ -121,10 +159,10 @@ class ArrayObject extends DictionaryObject
 
         if (is_array($objects) && count($objects) > 0) {
             foreach ($objects as $object) {
-                $value .= ' '.$object->write();
+                $value .= ' '.$object->write(false);
             }         
         }
 
-        return '[' .$value. ']';
+        return '[' .trim($value). ']';
     }
 }
