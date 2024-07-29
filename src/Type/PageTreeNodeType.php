@@ -10,6 +10,7 @@ use Papier\Factory\Factory;
 use InvalidArgumentException;
 use Papier\Validator\NumbersArrayValidator;
 use RuntimeException;
+use Papier\Document\ProcedureSet;
 
 class PageTreeNodeType extends DictionaryType
 {
