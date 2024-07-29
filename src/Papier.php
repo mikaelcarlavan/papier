@@ -2,15 +2,21 @@
 
 namespace Papier;
 
+use Papier\Document\ProcedureSet;
+use Papier\Factory\Factory;
 use Papier\File\FileHeader;
 use Papier\File\FileTrailer;
 use Papier\File\FileBody;
 
 use Papier\File\CrossReference;
 
+use Papier\Object\NullObject;
 use Papier\Type\DocumentInformationDictionaryType;
 use Papier\Type\PageObjectType;
 use Papier\Type\ViewerPreferencesDictionaryType;
+use Papier\Validator\NumbersArrayValidator;
+use Papier\Widget\ImageWidget;
+use Papier\Widget\RectangleWidget;
 use Papier\Widget\TextWidget;
 
 class Papier
@@ -21,6 +27,20 @@ class Papier
      * @var int
      */
     const MAX_DECIMALS = 5;
+
+    /**
+     * Uer unit for page size
+     *
+     * @var string
+     */
+    const USER_UNIT = 'user';
+
+    /**
+     * Millimeters unit for page size
+     *
+     * @var string
+     */
+    const MILLIMETERS_UNIT = 'mm';
 
      /**
      * Header
@@ -42,6 +62,13 @@ class Papier
      * @var FileTrailer
      */
     private FileTrailer $trailer;
+
+    /**
+     * Widgets
+     *
+     * @var array
+     */
+    private array $widgets = [];
 
     /**
      * Create a new Papier instance.
@@ -110,13 +137,46 @@ class Papier
     }
 
     /**
-     * Add text to PDF's content.
+     * Create image widget.
+     *
+     * @return ImageWidget
+     */
+    public function createImageWidget(): ImageWidget
+    {
+        $widget = new ImageWidget();
+        $widget->setPage($this->getCurrentPage());
+
+        $this->widgets[] = $widget;
+        return $widget;
+    }
+
+    /**
+     * Create text widget.
      *
      * @return TextWidget
      */
-    public function addText(): TextWidget
+    public function createTextWidget(): TextWidget
     {
-        return new TextWidget($this);
+        $widget = new TextWidget();
+        $widget->setPage($this->getCurrentPage());
+
+        $this->widgets[] = $widget;
+        return $widget;
+    }
+
+
+    /**
+     * Create rectangle widget.
+     *
+     * @return RectangleWidget
+     */
+    public function createRectangleWidget(): RectangleWidget
+    {
+        $widget = new RectangleWidget();
+        $widget->setPage($this->getCurrentPage());
+
+        $this->widgets[] = $widget;
+        return $widget;
     }
 
     /**
@@ -142,15 +202,22 @@ class Papier
         $page = $this->getBody()->getPageTree()->getKids()->current();
         return $page;
     }
+
     /**
      * Add page to PDF's content.
      *
+     * @param array $dimensions
+     * @param string $unit
+     * @param float $dpi
      * @return PageObjectType
      */
     public function addPage(): PageObjectType
     {
-        return $this->getBody()->addPage();
-    } 
+        $page = $this->getBody()->addPage();
+        $page->setMediaBox([0, 0, 595, 842]);
+
+        return $page;
+    }
 
 
     /**
@@ -162,7 +229,17 @@ class Papier
     {
         $body = $this->getBody();
         return $body->getDocumentCatalog()->getViewerPreferences();
-    } 
+    }
+
+    /**
+     * Get viewer preferences.
+     *
+     * @return ViewerPreferencesDictionaryType
+     */
+    private function getWidgets(): array
+    {
+        return $this->widgets;
+    }
 
     /**
      * Build PDF's content.
@@ -171,10 +248,19 @@ class Papier
      */
     public function build(): string
     {
+        // Build widgets
+        $widgets = $this->getWidgets();
+
+        if (count($widgets)) {
+            foreach ($widgets as $widget) {
+                $widget->format();
+            }
+        }
+
         $header = $this->getHeader();
         $body = $this->getBody();
         $trailer = $this->getTrailer();
-        
+
         $trailer->setRoot($body->getDocumentCatalog());
 
         $crossReference = CrossReference::getInstance();
