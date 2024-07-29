@@ -46,7 +46,6 @@ class FileBody extends BaseObject
 
         $this->pageTree = $pageTree->getNode();
 
-        //$this->documentCatalog->setOutlines($outlines);
         $this->documentCatalog->setPages($this->pageTree);
     }
 
@@ -79,6 +78,7 @@ class FileBody extends BaseObject
     {
         $page = $this->getPageTree()->addObject();
         $page->setParent($this->getPageTree());
+
         return $page;
     } 
 
@@ -89,6 +89,7 @@ class FileBody extends BaseObject
      */
     public function format(): string
     {
+
         $objects = Repository::getInstance()->getObjects();
 
         $crossReference = CrossReference::getInstance();
@@ -101,6 +102,7 @@ class FileBody extends BaseObject
         $offset = $crossReference->getOffset();
 
         $content = '';
+
         if (count($objects) > 0) {
             foreach ($objects as $object) {
                 $subsection->addEntry()->setOffset($offset);
