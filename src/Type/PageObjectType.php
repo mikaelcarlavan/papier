@@ -6,6 +6,7 @@ use Papier\Object\DictionaryObject;
 use Papier\Object\ArrayObject;
 use Papier\Object\StreamObject;
 
+use Papier\Validator\NumberValidator;
 use Papier\Validator\TabOrderValidator;
 use Papier\Validator\NumbersArrayValidator;
 
@@ -92,7 +93,7 @@ class PageObjectType extends DictionaryType
 
         $value = Factory::create('Papier\Type\RectangleType', $mediabox);
         
-        $this->setEntry('MediaxBox', $value);
+        $this->setEntry('MediaBox', $value);
         return $this;
     }
 
@@ -105,10 +106,10 @@ class PageObjectType extends DictionaryType
     {
         if (!$this->hasEntry('MediaBox')) {
             $mediabox = Factory::create('Papier\Type\RectangleType');
-            $this->setMediaBox($mediabox);
+            $this->setMediaBox($mediabox->getObjects());
         }
 
-        return $this->getEntry('MediaxBox');
+        return $this->getEntry('MediaBox');
     }
 
     /**
