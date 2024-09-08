@@ -4,3 +4,4 @@ composer.json
 composer.lock
 *.pdf
 .idea
+/public
