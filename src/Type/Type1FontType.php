@@ -26,7 +26,7 @@ class Type1FontType extends DictionaryType
      */
     public function getName(): ?string
     {
-        $value = $this->getEntryValue('Papier\Type\NameType');
+        $value = $this->getEntryValue('Name');
         return $value;
     }
 
@@ -39,7 +39,7 @@ class Type1FontType extends DictionaryType
     public function setName(string $name): Type1FontType
     {
         $value = Factory::create('Papier\Type\NameType', $name);
-        return $this->setEntry('Papier\Type\NameType', $value);
+        return $this->setEntry('Name', $value);
     }
 
     /**
@@ -148,7 +148,7 @@ class Type1FontType extends DictionaryType
         $subtype = Factory::create('Papier\Type\NameType', 'Type1');
         $this->setEntry('Subtype', $subtype);
 
-        if (!$this->hasEntry('Papier\Type\NameType')) {
+        if (!$this->hasEntry('Name')) {
             throw new RuntimeException("Name is missing. See ".__CLASS__." class's documentation for possible values.");
         }
 
