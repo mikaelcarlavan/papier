@@ -23,6 +23,19 @@ use Papier\Widget\TextWidget;
 class Papier
 {
     /**
+     * Default DPI
+     *
+     * @var float
+     */
+    const DEFAULT_DPI = 72;
+
+    /**
+     * Convert factor from mm to user unit
+     *
+     * @var float
+     */
+    const MM_TO_USER_UNIT = self::DEFAULT_DPI / 25.4;
+    /**
      * Number of decimals for real numbers
      *
      * @var int
@@ -68,7 +81,7 @@ class Papier
         $this->trailer = new FileTrailer();
         $this->body = new FileBody();
 
-        $this->setVersion(4);
+        $this->setVersion(3);
     } 
 
     /**
@@ -197,24 +210,12 @@ class Papier
      * @param float $dpi Resolution of the page (72 by default, i.e. 72 points par inch).
      * @return PageObjectType
      */
-    public function addPage(array $dimensions, float $dpi = 72): PageObjectType
+    public function addPage(array $dimensions): PageObjectType
     {
         $page = $this->getBody()->addPage();
 
-        if (!NumberValidator::isValid($dpi, 0) || $dpi == 0) {
-            throw new \InvalidArgumentException("Dpi is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        $userUnit = 72 / $dpi;
-        $page->setUserUnit($userUnit);
-
-        $mmToUserSpace = $dpi / 25.4;
-
-        array_walk($dimensions, function (&$dimension) use ($mmToUserSpace) {
-            $dimension *= $mmToUserSpace;
-        });
-
-        $page->setMediaBox([0, 0, $dimensions[0], $dimensions[1]]);
+        $mmToUserUnit = Papier::MM_TO_USER_UNIT;
+        $page->setMediaBox([0, 0, $mmToUserUnit * $dimensions[0], $mmToUserUnit * $dimensions[1]]);
 
         return $page;
     }

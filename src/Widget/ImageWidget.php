@@ -7,6 +7,7 @@ use Papier\Factory\Factory;
 use Papier\Filter\FilterType;
 use Papier\Graphics\DeviceColourSpace;
 use Papier\Object\StringObject;
+use Papier\Papier;
 use Papier\Stream\TextStream;
 use Papier\Text\RenderingMode;
 use Papier\Type\ArrayType;
@@ -285,8 +286,7 @@ class ImageWidget extends BaseWidget
 
         $contents = $this->getContents();
 
-        $userUnit = $page->hasEntry('UserUnit') ? $page->getEntryValue('UserUnit') : 1.0;
-        $userUnit *= 25.4 / 72;
+        $mmToUserUnit = Papier::MM_TO_USER_UNIT;
 
         $desiredWidth = $this->getWidth();
         $desiredHeight = $this->getHeight();
@@ -294,23 +294,31 @@ class ImageWidget extends BaseWidget
         $withInUI = 0;
         $heightInUI = 0;
         if ($desiredWidth && $desiredHeight) {
-            $withInUI = $desiredWidth / $userUnit;
-            $heightInUI = $desiredHeight / $userUnit;
+            $withInUI = $desiredWidth;
+            $heightInUI = $desiredHeight;
         } else if ($desiredWidth) {
-            $withInUI = $desiredWidth / $userUnit;
+            $withInUI = $desiredWidth;
             $heightInUI = $withInUI / $ratio;
         } else if ($desiredHeight) {
-            $heightInUI = $desiredHeight / $userUnit;
+            $heightInUI = $desiredHeight;
             $withInUI = $heightInUI * $ratio;
         } else {
-            $withInUI = $width / $userUnit;
-            $heightInUI = $height / $userUnit;
+            $withInUI = $width;
+            $heightInUI = $height;
         }
 
+        $w = $withInUI * $mmToUserUnit;
+        $h = $heightInUI * $mmToUserUnit;
+
+        $x = $this->getX() * $mmToUserUnit;
+        $y = $this->getY() * $mmToUserUnit;
+
+        $skewX = $this->getSkewX() * $mmToUserUnit;
+        $skewY = $this->getSkewY() * $mmToUserUnit;
 
         $contents->setCompression(FilterType::FLATE_DECODE);
         $contents->save();
-        $contents->setCTM($withInUI, $this->getSkewY(), $this->getSkewX(), $heightInUI, $this->getX(), $this->getY());
+        $contents->setCTM($w, $skewX, $skewY, $h, $x, $y);
         $contents->paintXObject($this->getName());
         $contents->restore();
 
