@@ -36,7 +36,6 @@ $text->setX(100);
 $info = $pdf->getInfo();
 $info->setTitle('Test');
 $info->setAuthor('Mikaël Carlavan');
-$info->setCreationDate($now);
 
 $viewer = $pdf->getViewerPreferences();
 $viewer->setDisplayDocTitle(true);
