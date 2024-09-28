@@ -3,11 +3,11 @@
 ## Introduction
 Papier is a low-level PHP library for generating PDF files. It implements the ISO 32000-1 standard.
 
-## Why not use FPDF or TFPDF?
+## Why not use FPDF or TCPDF?
 Although these are excellent libraries, they don't allow you to use the many features offered by the PDF format.
 
 ## What can be done with Papier ?
-The library is growing every day, but for the moment Papier can only be used to write text and display images and graphics.
+The library is growing every day, but for the moment Papier can be used to write text and display images and graphics.
 
 ## Example usage
 ```php
