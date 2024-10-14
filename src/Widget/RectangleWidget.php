@@ -3,6 +3,8 @@
 namespace Papier\Widget;
 
 use Papier\Factory\Factory;
+use Papier\Graphics\LineCapStyle;
+use Papier\Papier;
 use Papier\Validator\NumberValidator;
 use InvalidArgumentException;
 
@@ -25,18 +27,42 @@ class RectangleWidget extends BaseWidget
     protected float $height = 0;
 
     /**
+     * Line width.
+     *
+     * @var float
+     */
+    protected float $lineWidth = 0;
+
+    /**
+     * Set line's width.
+     *
+     * @param  float  $lineWidth
+     * @return RectangleWidget
+     */
+    public function setLineWidth(float $lineWidth): RectangleWidget
+    {
+        $this->lineWidth = $lineWidth;
+        return $this;
+    }
+
+    /**
+     * Get line's cap width.
+     *
+     * @return float
+     */
+    public function getLineWidth(): float
+    {
+        return $this->lineWidth;
+    }
+
+    /**
      * Set widget's width.
      *
      * @param  float  $width
      * @return RectangleWidget
-     * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int' and positive.
      */
     public function setWidth(float $width): RectangleWidget
     {
-        if (!NumberValidator::isValid($width, 0.0)) {
-            throw new InvalidArgumentException("Width is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->width = $width;
         return $this;
     }
@@ -46,14 +72,9 @@ class RectangleWidget extends BaseWidget
      *
      * @param  float  $height
      * @return RectangleWidget
-     * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int' and positive.
      */
     public function setHeight(float $height): RectangleWidget
     {
-        if (!NumberValidator::isValid($height, 0.0)) {
-            throw new InvalidArgumentException("Height is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->height = $height;
         return $this;
     }
@@ -78,27 +99,36 @@ class RectangleWidget extends BaseWidget
         return $this->height;
     }
 
-    function format(): BaseWidget
+    function format(): RectangleWidget
     {
         $contents = $this->getContents();
         $contents->save();
 
-        $contents->setLineWidth(1);
+        $this->applyColors($contents);
+
+        $x = $this->getX();
+        $y = $this->getY();
+        $width = $this->getWidth();
+        $height = $this->getHeight();
+
+        $mmToUserUnit = Papier::MM_TO_USER_UNIT;
+
+        $lineWidth = $this->getLineWidth();
+
+        $contents->setLineWidth($mmToUserUnit * $lineWidth);
+        
+        $contents->appendRectangle($mmToUserUnit * $x, $mmToUserUnit * $y, $mmToUserUnit * $width, $mmToUserUnit * $height);
 
         $strokingColors = $this->getStrokingColor();
         $nonStrokingColors = $this->getNonStrokingColor();
 
-        if ($strokingColors) {
-            $contents->setStrokingSpace($this->getStrokingColorSpace());
-            $contents->setStrokingColor(...$strokingColors);
+        if ($strokingColors && $nonStrokingColors) {
+            $contents->fillAndStroke();
+        } else if ($strokingColors) {
+            $contents->stroke();
+        } else {
+            $contents->fill();
         }
-        if ($nonStrokingColors) {
-            $contents->setNonStrokingSpace($this->getNonStrokingColorSpace());
-            $contents->setNonStrokingColor(...$nonStrokingColors);
-        }
-        $contents->beginPath($this->getX(), $this->getY());
-        $contents->appendRectangle($this->getX(), $this->getY(), $this->getWidth(), $this->getHeight());
-        $contents->closeFillAndStroke();
 
         $contents->restore();
         
