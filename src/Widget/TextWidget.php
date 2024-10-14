@@ -42,6 +42,151 @@ class TextWidget extends BaseWidget
     protected int $renderingMode = RenderingMode::FILL;
 
     /**
+     * Horizontal scaling.
+     *
+     * @var float
+     */
+    protected float $horizontalScaling = 0;
+
+    /**
+     * Text rise.
+     *
+     * @var float
+     */
+    protected float $textRise = 0;
+
+    /**
+     * Word spacing.
+     *
+     * @var float
+     */
+    protected float $wordSpacing = 0;
+
+    /**
+     * Text leading.
+     *
+     * @var float
+     */
+    protected float $textLeading = 0;
+
+    /**
+     * Character spacing.
+     *
+     * @var float
+     */
+    protected float $characterSpacing = 0;
+
+    /**
+     * Set text rise.
+     *
+     * @param float $textRise
+     * @return TextWidget
+     */
+    public function setTextRise(float $textRise): TextWidget
+    {
+        $this->textRise = $textRise;
+        return $this;
+    }
+
+    /**
+     * Get text rise.
+     *
+     * @return float
+     */
+    public function getTextRise(): float
+    {
+        return $this->textRise;
+    }
+
+    /**
+     * Set word spacing.
+     *
+     * @param float $wordSpacing
+     * @return TextWidget
+     */
+    public function setWordSpacing(float $wordSpacing): TextWidget
+    {
+        $this->wordSpacing = $wordSpacing;
+        return $this;
+    }
+
+    /**
+     * Get word spacing.
+     *
+     * @return float
+     */
+    public function getWordSpacing(): float
+    {
+        return $this->wordSpacing;
+    }
+
+    /**
+     * Set text leading.
+     *
+     * @param float $textLeading
+     * @return TextWidget
+     */
+    public function setTextLeading(float $textLeading): TextWidget
+    {
+        $this->textLeading = $textLeading;
+        return $this;
+    }
+
+    /**
+     * Get text leading.
+     *
+     * @return float
+     */
+    public function getTextLeading(): float
+    {
+        return $this->textLeading;
+    }
+
+    /**
+     * Set character spacing.
+     *
+     * @param float $characterSpacing
+     * @return TextWidget
+     */
+    public function setCharacterSpacing(float $characterSpacing): TextWidget
+    {
+        $this->characterSpacing = $characterSpacing;
+        return $this;
+    }
+
+    /**
+     * Get character spacing.
+     *
+     * @return float
+     */
+    public function getCharacterSpacing(): float
+    {
+        return $this->characterSpacing;
+    }
+
+    /**
+     * Set horizontal scaling.
+     *
+     * @param float $horizontalScaling
+     * @return TextWidget
+     */
+    public function setHorizontalScaling(float $horizontalScaling): TextWidget
+    {
+        $this->horizontalScaling = $horizontalScaling;
+        return $this;
+    }
+
+    /**
+     * Get horizontal scaling.
+     *
+     * @return float
+     */
+    public function getHorizontalScaling(): float
+    {
+        return $this->horizontalScaling;
+    }
+
+    /**
      * Set rendering mode.
      *
      * @param int $renderingMode
@@ -135,7 +280,6 @@ class TextWidget extends BaseWidget
         $page = $this->getPage();
         $fontName = $this->getBaseFont();
 
-
         $trueFont = Factory::create('\Papier\Type\Type1FontType', null, true)->setBaseFont($fontName);
 
         $trueFont->setName(sprintf('F%d', $trueFont->getNumber()));
@@ -181,6 +325,32 @@ class TextWidget extends BaseWidget
         if ($nonStrokingColors) {
             $contents->setNonStrokingSpace($this->getNonStrokingColorSpace());
             $contents->setNonStrokingColor(...$nonStrokingColors);
+        }
+
+        $textRise = $this->getTextRise();
+        $textLeading = $this->getTextLeading();
+        $horizontalScaling = $this->getHorizontalScaling();
+        $wordSpacing = $this->getWordSpacing();
+        $characterSpacing = $this->getCharacterSpacing();
+
+        if ($characterSpacing) {
+            $contents->setCharacterSpacing($mmToUserUnit * $characterSpacing);
+        }
+
+        if ($textRise) {
+            $contents->setTextRise($mmToUserUnit * $textRise);
+        }
+
+        if ($textLeading) {
+            $contents->setTextLeading($mmToUserUnit * $textLeading);
+        }
+
+        if ($horizontalScaling) {
+            $contents->setHorizontalScaling($mmToUserUnit * $horizontalScaling);
+        }
+
+        if ($wordSpacing) {
+            $contents->setWordSpacing($mmToUserUnit * $wordSpacing);
         }
 
         $contents->setTextRenderingMode($renderingMode);
