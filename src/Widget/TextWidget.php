@@ -35,13 +35,6 @@ class TextWidget extends BaseWidget
     protected string $text;
 
     /**
-     * Rendering mode.
-     *
-     * @var int
-     */
-    protected int $renderingMode = RenderingMode::FILL;
-
-    /**
      * Horizontal scaling.
      *
      * @var float
@@ -75,6 +68,35 @@ class TextWidget extends BaseWidget
      * @var float
      */
     protected float $characterSpacing = 0;
+
+    /**
+     * Rendering mode.
+     *
+     * @var int
+     */
+    protected int $renderingMode = RenderingMode::FILL;
+
+    /**
+     * Set rendering mode.
+     *
+     * @param int $renderingMode
+     * @return TextWidget
+     */
+    public function setRenderingMode(int $renderingMode): TextWidget
+    {
+        $this->renderingMode = $renderingMode;
+        return $this;
+    }
+
+    /**
+     * Get rendering mode.
+     *
+     * @return int
+     */
+    public function getRenderingMode(): int
+    {
+        return $this->renderingMode;
+    }
 
     /**
      * Set text rise.
@@ -187,28 +209,6 @@ class TextWidget extends BaseWidget
     }
 
     /**
-     * Set rendering mode.
-     *
-     * @param int $renderingMode
-     * @return TextWidget
-     */
-    public function setRenderingMode(int $renderingMode): TextWidget
-    {
-        $this->renderingMode = $renderingMode;
-        return $this;
-    }
-
-    /**
-     * Get rendering mode.
-     *
-     * @return int
-     */
-    public function getRenderingMode(): int
-    {
-        return $this->renderingMode;
-    }
-
-    /**
      * Set text.
      *
      * @param string $text
@@ -275,7 +275,7 @@ class TextWidget extends BaseWidget
         return $this->fontSize;
     }
 
-    function format(): BaseWidget
+    function format(): TextWidget
     {
         $page = $this->getPage();
         $fontName = $this->getBaseFont();
@@ -314,18 +314,7 @@ class TextWidget extends BaseWidget
         $contents->beginText();
         $contents->setFont($trueFont->getName(), $mmToUserUnit * $fontSize);
 
-        $strokingColors = $this->getStrokingColor();
-        $nonStrokingColors = $this->getNonStrokingColor();
-
-        if ($strokingColors) {
-            $contents->setStrokingSpace($this->getStrokingColorSpace());
-            $contents->setStrokingColor(...$strokingColors);
-        }
-
-        if ($nonStrokingColors) {
-            $contents->setNonStrokingSpace($this->getNonStrokingColorSpace());
-            $contents->setNonStrokingColor(...$nonStrokingColors);
-        }
+        $this->applyColors($contents);
 
         $textRise = $this->getTextRise();
         $textLeading = $this->getTextLeading();

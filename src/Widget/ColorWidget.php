@@ -2,6 +2,9 @@
 
 namespace Papier\Widget;
 
+use Papier\Text\RenderingMode;
+use Papier\Type\ContentStreamType;
+
 trait ColorWidget
 {
     /**
@@ -118,5 +121,23 @@ trait ColorWidget
     public function getNonStrokingColorSpace(): string
     {
         return $this->nonStrokingColorSpace;
+    }
+
+    public function applyColors(ContentStreamType &$contents): static
+    {
+        $strokingColors = $this->getStrokingColor();
+        $nonStrokingColors = $this->getNonStrokingColor();
+
+        if ($strokingColors) {
+            $contents->setStrokingSpace($this->getStrokingColorSpace());
+            $contents->setStrokingColor(...$strokingColors);
+        }
+
+        if ($nonStrokingColors) {
+            $contents->setNonStrokingSpace($this->getNonStrokingColorSpace());
+            $contents->setNonStrokingColor(...$nonStrokingColors);
+        }
+
+        return $this;
     }
 }
