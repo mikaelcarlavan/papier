@@ -16,6 +16,7 @@ use Papier\Type\PageObjectType;
 use Papier\Type\ViewerPreferencesDictionaryType;
 use Papier\Validator\NumbersArrayValidator;
 use Papier\Validator\NumberValidator;
+use Papier\Widget\DrawWidget;
 use Papier\Widget\ImageWidget;
 use Papier\Widget\RectangleWidget;
 use Papier\Widget\TextWidget;
@@ -173,6 +174,20 @@ class Papier
     public function createRectangleWidget(): RectangleWidget
     {
         $widget = new RectangleWidget();
+        $widget->setPage($this->getCurrentPage());
+
+        $this->widgets[] = $widget;
+        return $widget;
+    }
+
+    /**
+     * Create Bezier widget.
+     *
+     * @return DrawWidget
+     */
+    public function createDrawWidget(): DrawWidget
+    {
+        $widget = new DrawWidget();
         $widget->setPage($this->getCurrentPage());
 
         $this->widgets[] = $widget;
