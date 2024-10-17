@@ -5,7 +5,7 @@ namespace Papier\Widget;
 use Papier\Text\RenderingMode;
 use Papier\Type\ContentStreamType;
 
-trait ColorWidget
+trait Colors
 {
     /**
      * The non-stroking colour space
@@ -39,7 +39,7 @@ trait ColorWidget
      * Set stroking colour.
      *
      * @param mixed $colors
-     * @return ColorWidget
+     * @return Colors
      */
     public function setStrokingColor(...$colors): static
     {
@@ -61,7 +61,7 @@ trait ColorWidget
      * Set non-stroking colour.
      *
      * @param mixed $colors
-     * @return ColorWidget
+     * @return Colors
      */
     public function setNonStrokingColor(...$colors): static
     {
@@ -83,7 +83,7 @@ trait ColorWidget
      * Set stroking colour space.
      *
      * @param string $space
-     * @return ColorWidget
+     * @return Colors
      */
     public function setStrokingColorSpace(string $space): static
     {
@@ -105,7 +105,7 @@ trait ColorWidget
      * Set non-stroking colour space.
      *
      * @param string $space
-     * @return ColorWidget
+     * @return Colors
      */
     public function setNonStrokingColorSpace(string $space): static
     {
