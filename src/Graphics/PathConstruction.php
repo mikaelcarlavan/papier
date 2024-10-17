@@ -219,7 +219,7 @@ trait PathConstruction
      */
     private function checkBezierComponents(array $components): bool
     {
-        if (is_array($components) && count($components) > 0) {
+        if (count($components) > 0) {
             foreach ($components as $key => $component) {
                 if (!NumberValidator::isValid($component)) {
                     throw new InvalidArgumentException("$key is incorrect. See ".__CLASS__." class's documentation for possible values.");
