@@ -11,7 +11,7 @@ use Papier\Type\ImageType;
 
 class TextWidget extends BaseWidget
 {
-    use ColorWidget;
+    use Colors;
 
     /**
      * Text's font name.

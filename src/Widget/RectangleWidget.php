@@ -10,7 +10,8 @@ use InvalidArgumentException;
 
 class RectangleWidget extends BaseWidget
 {
-    use ColorWidget;
+    use Colors;
+    use LineWidth;
 
     /**
      * The width of the widget
@@ -25,35 +26,6 @@ class RectangleWidget extends BaseWidget
      * @var float
      */
     protected float $height = 0;
-
-    /**
-     * Line width.
-     *
-     * @var float
-     */
-    protected float $lineWidth = 0;
-
-    /**
-     * Set line's width.
-     *
-     * @param  float  $lineWidth
-     * @return RectangleWidget
-     */
-    public function setLineWidth(float $lineWidth): RectangleWidget
-    {
-        $this->lineWidth = $lineWidth;
-        return $this;
-    }
-
-    /**
-     * Get line's cap width.
-     *
-     * @return float
-     */
-    public function getLineWidth(): float
-    {
-        return $this->lineWidth;
-    }
 
     /**
      * Set widget's width.
