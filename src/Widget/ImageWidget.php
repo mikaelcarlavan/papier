@@ -23,6 +23,8 @@ use InvalidArgumentException;
 
 class ImageWidget extends BaseWidget
 {
+    use Position;
+
     /**
      * Name of image.
      *

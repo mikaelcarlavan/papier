@@ -10,8 +10,9 @@ use InvalidArgumentException;
 
 class RectangleWidget extends BaseWidget
 {
-    use Colors;
+    use Color;
     use LineWidth;
+    use Position;
 
     /**
      * The width of the widget

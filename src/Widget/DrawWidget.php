@@ -6,7 +6,7 @@ use Papier\Papier;
 
 class DrawWidget extends BaseWidget
 {
-    use Colors;
+    use Color;
     use LineWidth;
 
     /**
