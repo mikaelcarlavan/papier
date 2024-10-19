@@ -12,6 +12,8 @@ use Papier\Stream\TextStream;
 use Papier\Text\RenderingMode;
 use Papier\Type\ArrayType;
 use Papier\Type\ContentStreamType;
+use Papier\Type\FileSpecificationDictionaryType;
+use Papier\Type\FileSpecificationStringType;
 use Papier\Type\ImageType;
 use Papier\Validator\ArrayValidator;
 use Papier\Validator\BooleanValidator;
@@ -270,7 +272,14 @@ class ImageWidget extends BaseWidget
 
         $image->setWidth($width);
         $image->setHeight($height);
-        $image->setContent(file_get_contents($this->getSource()));
+
+        if ($this->getSource()) {
+            $image->setContent(file_get_contents($this->getSource()));
+            if ($mime == 'image/jpeg') {
+                $image->setFilter(FilterType::DCT_DECODE);
+            }
+        }
+
 
         if ($channels == 3) {
             $image->setColorSpace(DeviceColourSpace::RGB);
@@ -281,10 +290,6 @@ class ImageWidget extends BaseWidget
         }
 
         $image->setBitsPerComponent($bitsPerComponent);
-
-        if ($mime == 'image/jpeg') {
-            $image->setFilter(FilterType::DCT_DECODE);
-        }
 
         $contents = $this->getContents();
 
@@ -318,8 +323,8 @@ class ImageWidget extends BaseWidget
         $skewX = $this->getSkewX() * $mmToUserUnit;
         $skewY = $this->getSkewY() * $mmToUserUnit;
 
-        $contents->setCompression(FilterType::FLATE_DECODE);
         $contents->save();
+        $contents->setCompression(FilterType::FLATE_DECODE);
         $contents->setCTM($w, $skewX, $skewY, $h, $x, $y);
         $contents->paintXObject($this->getName());
         $contents->restore();
