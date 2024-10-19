@@ -36,7 +36,7 @@ class FileSpecificationDictionaryType extends DictionaryObject
     {
         $value = Factory::create('Papier\Type\FileSpecificationStringType', $f);
 
-        $this->setEntry('FS', $value);
+        $this->setEntry('F', $value);
         return $this;
     } 
 
@@ -135,6 +135,7 @@ class FileSpecificationDictionaryType extends DictionaryObject
         return $this;
     }
 
+
     /**
      * Format object's value.
      *
@@ -142,15 +143,17 @@ class FileSpecificationDictionaryType extends DictionaryObject
      */
     public function format(): string
     {
-        $type = Factory::create('Papier\Type\NameType', 'Filespec');
-        $this->setEntry('Type', $type);
-
         if (!$this->hasEntry('F') && !$this->hasEntry('UF')) {
             throw new RuntimeException("UF and F are missing. See ".__CLASS__." class's documentation for possible values.");
         }
 
         if ($this->hasEntry('RF') && !$this->hasEntry('EF')) {
             throw new RuntimeException("EF is missing. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        if ($this->hasEntry('EF') || $this->hasEntry('RF')) {
+            $type = Factory::create('Papier\Type\NameType', 'Filespec');
+            $this->setEntry('Type', $type);
         }
 
         return parent::format();

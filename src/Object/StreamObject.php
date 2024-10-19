@@ -4,6 +4,7 @@ namespace Papier\Object;
 
 use Papier\Factory\Factory;
 
+use Papier\Type\FileSpecificationDictionaryType;
 use Papier\Type\FileSpecificationStringType;
 
 use Papier\Validator\StringValidator;
@@ -46,7 +47,7 @@ class StreamObject extends DictionaryObject
             }
         }
 
-        return $stream;
+        return $stream ?? '';
     }
 
     /**
@@ -147,10 +148,10 @@ class StreamObject extends DictionaryObject
     /**
      * Set file specification.
      *
-     * @param  FileSpecificationStringType $f
+     * @param  FileSpecificationDictionaryType $f
      * @return StreamObject
      */
-    public function setF(FileSpecificationStringType $f): StreamObject
+    public function setF(FileSpecificationDictionaryType $f): StreamObject
     {
         $this->setEntry('F', $f);
         return $this;
@@ -222,13 +223,13 @@ class StreamObject extends DictionaryObject
         $this->setEntry('Length', $length);
 
         $value = parent::format();
-        
+
+        $value .= self::EOL_MARKER;
+        $value .= 'stream' .self::EOL_MARKER;
         if (!empty($stream)) {
-            $value .= self::EOL_MARKER;
-            $value .= 'stream' .self::EOL_MARKER;
             $value .= $stream .self::EOL_MARKER;
-            $value .= 'endstream';
         }
+        $value .= 'endstream';
 
         return $value;
     }
