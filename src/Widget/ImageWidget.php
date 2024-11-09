@@ -28,7 +28,7 @@ use InvalidArgumentException;
 
 class ImageWidget extends BaseWidget
 {
-    use Position;
+    use Transformation;
 
 
     /**
@@ -352,18 +352,29 @@ class ImageWidget extends BaseWidget
             $heightInUI = $height;
         }
 
-        $w = $withInUI * $mmToUserUnit;
-        $h = $heightInUI * $mmToUserUnit;
+        $image->setWidth($width);
+        $image->setHeight($height);
 
-        $x = $this->getX() * $mmToUserUnit;
-        $y = $this->getY() * $mmToUserUnit;
+        $transformationMatrix = $this->getTransformationMatrix();
 
-        $skewX = $this->getSkewX() * $mmToUserUnit;
-        $skewY = $this->getSkewY() * $mmToUserUnit;
+        // For Images, CTM shall contain dimensions and not multiply factors
+        $scaleX = $transformationMatrix->getData(0, 0); // Is equal to 1 if no scale applied
+        $scaleY = $transformationMatrix->getData(1, 1); // IS equal to 1 if no scale applied
+
+        $this->scale($scaleX * $withInUI * $mmToUserUnit, $scaleY * $heightInUI * $mmToUserUnit);
+
+        $transformationMatrix = $this->getTransformationMatrix();
 
         $contents->save();
+        $contents->setCTM(
+            $transformationMatrix->getData(0, 0),
+            $transformationMatrix->getData(0, 1),
+            $transformationMatrix->getData(1, 0),
+            $transformationMatrix->getData(1, 1),
+            $transformationMatrix->getData(2, 0),
+            $transformationMatrix->getData(2, 1)
+        );
         $contents->setCompression(FilterType::FLATE_DECODE);
-        $contents->setCTM($w, $skewX, $skewY, $h, $x, $y);
         $contents->paintXObject($this->getName());
         $contents->restore();
 

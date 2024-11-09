@@ -13,6 +13,7 @@ use Papier\Util\Matrix;
 class TextWidget extends BaseWidget
 {
     use Color;
+    use Transformation;
 
     /**
      * Text's font name.
@@ -76,23 +77,6 @@ class TextWidget extends BaseWidget
      * @var int
      */
     protected int $renderingMode = RenderingMode::FILL;
-
-    /**
-     * Transformation matrix.
-     *
-     * @var Matrix
-     */
-    protected Matrix $transformationMatrix;
-
-    /**
-     * Create a new TextWidget instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->transformationMatrix = Matrix::eye(3);
-    }
 
     /**
      * Set rendering mode.
@@ -291,124 +275,6 @@ class TextWidget extends BaseWidget
     public function getFontSize(): float
     {
         return $this->fontSize;
-    }
-
-    /**
-     * Get transformation matrix.
-     *
-     * @return Matrix
-     */
-    public function getTransformationMatrix(): Matrix
-    {
-        return $this->transformationMatrix;
-    }
-
-    /**
-     * Set transformation matrix.
-     *
-     * @param Matrix $transformationMatrix
-     * @return TextWidget
-     */
-    public function setTransformationMatrix(Matrix $transformationMatrix): TextWidget
-    {
-        $this->transformationMatrix = $transformationMatrix;
-        return $this;
-    }
-
-    /**
-     * Add scaling
-     *
-     * @param float $x
-     * @param float $y
-     * @return TextWidget
-     */
-    public function scale(float $x, float $y): TextWidget
-    {
-        $matrix = new Matrix(3, 3);
-        $matrix->setData(0, 0, $x);
-        $matrix->setData(1, 1, $y);
-        $matrix->setData(2, 2, 1.0);
-
-        $transformation = $this->getTransformationMatrix();
-        $transformation = $transformation->dot($matrix);
-        $this->setTransformationMatrix($transformation);
-
-        return $this;
-    }
-
-    /**
-     * Add skew
-     *
-     * @param float $a
-     * @param float $b
-     * @return TextWidget
-     */
-    public function skew(float $a, float $b): TextWidget
-    {
-        $radA = $a * 2 * pi() / 360;
-        $radB = $b * 2 * pi() / 360;
-
-        $matrix = new Matrix(3, 3);
-        $matrix->setData(0, 0, 1.0);
-        $matrix->setData(0, 1, tan($radA));
-        $matrix->setData(1, 0, tan($radB));
-        $matrix->setData(1, 1, 1.0);
-        $matrix->setData(2, 2, 1.0);
-
-        $transformation = $this->getTransformationMatrix();
-        $transformation = $transformation->dot($matrix);
-        $this->setTransformationMatrix($transformation);
-
-        return $this;
-    }
-
-    /**
-     * Add translation
-     *
-     * @param float $x
-     * @param float $y
-     * @return TextWidget
-     */
-    public function translate(float $x, float $y): TextWidget
-    {
-        $mmToUserUnit = Papier::MM_TO_USER_UNIT;
-
-        $matrix = new Matrix(3, 3);
-        $matrix->setData(0, 0, 1.0);
-        $matrix->setData(1, 1, 1.0);
-        $matrix->setData(2, 0, $mmToUserUnit * $x);
-        $matrix->setData(2, 1, $mmToUserUnit * $y);
-        $matrix->setData(2, 2, 1.0);
-
-        $transformation = $this->getTransformationMatrix();
-        $transformation = $transformation->dot($matrix);
-        $this->setTransformationMatrix($transformation);
-
-        return $this;
-    }
-
-    /**
-     * Add rotation (in deg)
-     *
-     * @param float $angle
-     * @return TextWidget
-     */
-    public function rotate(float $angle): TextWidget
-    {
-        $radians = $angle * 2 * pi() / 360;
-
-        $matrix = new Matrix(3, 3);
-        $matrix->setData(0, 0, cos($radians));
-        $matrix->setData(0, 1, sin($radians));
-        $matrix->setData(1, 0, -sin($radians));
-        $matrix->setData(1, 1, cos($radians));
-        $matrix->setData(2, 2, 1.0);
-
-        $transformation = $this->getTransformationMatrix();
-        $transformation = $transformation->dot($matrix);
-        $this->setTransformationMatrix($transformation);
-
-        return $this;
     }
 
     function format(): TextWidget
