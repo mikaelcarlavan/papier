@@ -5,7 +5,10 @@ namespace Papier\Widget;
 use Papier\Document\ProcedureSet;
 use Papier\Factory\Factory;
 use Papier\Filter\FilterType;
+use Papier\Filter\Params\FlateDecodeParams;
+use Papier\Filter\Predictor;
 use Papier\Graphics\DeviceColourSpace;
+use Papier\Helpers\ImageHelper;
 use Papier\Object\StringObject;
 use Papier\Papier;
 use Papier\Stream\TextStream;
@@ -26,6 +29,14 @@ use InvalidArgumentException;
 class ImageWidget extends BaseWidget
 {
     use Position;
+
+
+    /**
+     * Valid mimes for image.
+     *
+     * @var array
+     */
+    protected array $validMimes = ['image/jpeg', 'image/png'];
 
     /**
      * Name of image.
@@ -206,6 +217,25 @@ class ImageWidget extends BaseWidget
      */
     public function setSource(string $source): void
     {
+        if (empty($source)) {
+            throw new InvalidArgumentException("Source is empty. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        if (!file_exists($source)) {
+            throw new InvalidArgumentException("Source not found. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        if (!is_file($source)) {
+            throw new InvalidArgumentException("Source is not a file. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $dimensions = getimagesize($source);
+        $mime = $dimensions['mime'] ?? null;
+
+        if (!in_array($mime, $this->validMimes)) {
+            throw new InvalidArgumentException("Source is not valid. See ".__CLASS__." class's documentation for possible values.");
+        }
+
         $this->source = $source;
     }
 
@@ -273,12 +303,21 @@ class ImageWidget extends BaseWidget
         $image->setWidth($width);
         $image->setHeight($height);
 
-        if ($this->getSource()) {
-            $image->setContent(file_get_contents($this->getSource()));
-            if ($mime == 'image/jpeg') {
-                $image->setFilter(FilterType::DCT_DECODE);
-            }
+        if ($mime == 'image/jpeg') {
+            $image->setFilter(FilterType::DCT_DECODE);
+        } else if ($mime == 'image/png') {
+            $image->setFilter(FilterType::FLATE_DECODE);
+
+            $params = new FlateDecodeParams();
+            $params->setPredictor(Predictor::PNG_OPTIMUM);
+            $params->setColumns($width);
+            $params->setBitsPerComponent($bitsPerComponent);
+            $params->setColors($channels);
+
+            $image->setDecodeParms($params);
         }
+
+        $image->setContent(ImageHelper::getDataFromSource($this->getSource()));
 
 
         if ($channels == 3) {
