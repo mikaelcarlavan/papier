@@ -7,7 +7,7 @@ Papier is a low-level PHP library for generating PDF files. It implements the IS
 Although these are excellent libraries, they don't allow you to use the many features offered by the PDF format.
 
 ## What can be done with Papier ?
-The library is growing every day; for the moment Papier can be used to write text, draw shapes and display images and graphics.
+The library is growing every day; for the moment Papier can be used to write texts, draw shapes and display images and graphics.
 
 ## Example usage
 ```php
