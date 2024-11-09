@@ -19,7 +19,7 @@ $pdf->getHeader()->setVersion(3);
 $page = $pdf->addPage([210, 297]);
 
 $image = $pdf->createImageWidget()->setPage($page);
-$image->setSource('unsplash.jpg');
+$image->setSource('https://images.unsplash.com/photo-1709468864471-a378b7435d03');
 $image->setWidth(210);
 
 $text = $pdf->createTextWidget()->setPage($page);
@@ -29,8 +29,7 @@ $text->setRenderingMode(RenderingMode::STROKE);
 $text->setText('Hello World !');
 $text->setBaseFont('Helvetica');
 $text->setFontSize(12);
-$text->setY(100);
-$text->setX(100);
+$text->translate(100, 100);
 
 $page = $pdf->addPage([210, 297]);
 
