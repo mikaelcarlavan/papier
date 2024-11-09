@@ -221,13 +221,13 @@ class ImageWidget extends BaseWidget
             throw new InvalidArgumentException("Source is empty. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        if (!file_exists($source)) {
+        /*if (!file_exists($source)) {
             throw new InvalidArgumentException("Source not found. See ".__CLASS__." class's documentation for possible values.");
         }
 
         if (!is_file($source)) {
             throw new InvalidArgumentException("Source is not a file. See ".__CLASS__." class's documentation for possible values.");
-        }
+        }*/
 
         $dimensions = getimagesize($source);
         $mime = $dimensions['mime'] ?? null;
