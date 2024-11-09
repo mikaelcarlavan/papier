@@ -259,12 +259,11 @@ class ImageWidget extends BaseWidget
         $page = $this->getPage();
         $resources = $page->getResources();
 
+        $image = Factory::create('\Papier\Type\ImageType', null, true);
+        $this->setName(sprintf('Im%d', $image->getNumber()));
+
         if (!$resources->hasEntry('XObject')) {
-            $image = Factory::create('\Papier\Type\ImageType', null, true);
-
-            $this->setName(sprintf('Im%d', $image->getNumber()));
-
-            $xObject = Factory::create('\Papier\Type\DictionaryType')->setEntry($this->getName(), $image);
+            $xObject = Factory::create('\Papier\Type\DictionaryType');
             $resources->setEntry('XObject', $xObject);
         }
 
@@ -298,7 +297,7 @@ class ImageWidget extends BaseWidget
         }
 
         $xObject = $resources->getEntry('XObject');
-        $image = $xObject->getEntry($this->getName());
+        $xObject->setEntry($this->getName(), $image);
 
         $image->setWidth($width);
         $image->setHeight($height);
