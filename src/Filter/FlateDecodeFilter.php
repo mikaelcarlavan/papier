@@ -18,6 +18,7 @@ class FlateDecodeFilter extends Filter
      */
     public static function process(string $stream, DictionaryObject $param = null): string
     {
+        // Decode params always set a "decode" filter, so we actually need to "encode" stream
         return FlateFilter::encode($stream, $param);
     }
 }
