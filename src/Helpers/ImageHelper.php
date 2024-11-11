@@ -2,9 +2,9 @@
 
 namespace Papier\Helpers;
 
-use http\Exception\InvalidArgumentException;
 use Papier\Filter\FilterType;
 use Papier\Widget\ImageWidget;
+use InvalidArgumentException;
 
 class ImageHelper
 {
@@ -55,7 +55,7 @@ class ImageHelper
 
         $header = $stream->read(8);
         // PNG signature, check https://en.wikipedia.org/wiki/PNG
-        if ($header != hex2bin("89504e470d0a1a0a")) {
+        if ($header != "\x89\x50\x4e\x47\x0d\x0a\x1a\x0a") {
             throw new InvalidArgumentException("Source is not a valid PNG file. See ".__CLASS__." class's documentation for possible values.");
         }
 
