@@ -12,7 +12,7 @@ class HexadecimalStringType extends StringObject
      *
      * @return string
      */
-    public function format()
+    public function format(): string
     {
         $chars = str_split($this->getValue());
 
