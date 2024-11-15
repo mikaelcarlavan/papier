@@ -3,30 +3,34 @@
 namespace Papier\Helpers;
 
 use Papier\Filter\FilterType;
+use Papier\Filter\FlateDecodeFilter;
+use Papier\Filter\FlateFilter;
 use Papier\Widget\ImageWidget;
 use InvalidArgumentException;
 
 class ImageHelper
 {
     /**
-     * Read file and returns image data.
+     * Read file and returns image colors and transparency.
      *
      * @param string $file
-     * @return string|null
-     */
-    public static function getDataFromSource(string $file): ?string
-    {
+     * @return array
+	 */
+    public static function getDataFromSource(string $file): array
+	{
         $dimensions = getimagesize($file);
 
         $mime = $dimensions['mime'] ?? null;
 
+		$data = null;
+		$mask = null;
         if ($mime == 'image/jpeg') {
-            return ImageHelper::getDataFromJPEG($file);
+            $data = ImageHelper::getDataFromJPEG($file);
         } else if ($mime == 'image/png') {
-            return ImageHelper::getDataFromPNG($file);
+			list($data, $mask) = ImageHelper::getDataFromPNG($file);
         }
 
-        return null;
+        return array($data, $mask);
     }
 
     /**
@@ -41,13 +45,13 @@ class ImageHelper
     }
 
     /**
-     * Read PNG file and returns compressed data.
+     * Read PNG file and returns compressed colors and transparency.
      *
      * @param string $file
-     * @return string|null
-     */
-    public static function getDataFromPNG(string $file): ?string
-    {
+     * @return array
+	 */
+    public static function getDataFromPNG(string $file): array
+	{
         $data = null;
 
         // Open
@@ -76,6 +80,7 @@ class ImageHelper
         $interlaceMethod = $stream->unpackByte();
 
         $crc = $stream->read(4);
+		$pixels = $width * $height;
 
         while ($type != 'IEND') {
             $length = $stream->unpackInteger();
@@ -92,6 +97,36 @@ class ImageHelper
 
         $stream->close();
 
-        return $data;
+		$mask = null;
+
+		// Image has a transparency channel
+		if ($colorType >= 4) {
+			$colors = null;
+			$data = FlateFilter::decode($data);
+
+			$bytesPerPixel = $colorType == 4 ? 2 : 4;
+
+			$pixel = 0;
+			for ($row = 0; $row < $height; $row++) {
+				$colors .= $data[$pixel]; // Filter type
+				$mask .= $data[$pixel]; // Filter type
+				$pixel++;
+				// Data
+				for ($column = 0; $column < $width; $column++) {
+					for ($color = 0; $color < $bytesPerPixel - 1; $color++) {
+						$colors .= $data[$pixel];
+						$pixel++;
+					}
+
+					$mask .= $data[$pixel];
+					$pixel++;
+				}
+			}
+
+			$data = FlateFilter::encode($colors);
+			$mask = FlateFilter::encode($mask);
+		}
+
+        return array($data, $mask);
     }
 }

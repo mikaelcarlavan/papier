@@ -316,8 +316,35 @@ class ImageWidget extends BaseWidget
             $image->setDecodeParms($params);
         }
 
-        $image->setContent(ImageHelper::getDataFromSource($this->getSource()));
+		list($data, $mask) = ImageHelper::getDataFromSource($this->getSource());
+        $image->setContent($data);
 
+		if ($mask) {
+			// Add new image as mask
+			$sMask = Factory::create('\Papier\Type\ImageType', null, true);
+
+			$sMask->setWidth($width);
+			$sMask->setHeight($height);
+
+			if ($mime == 'image/png') {
+				$sMask->setFilter(FilterType::FLATE_DECODE);
+
+				$maskParams = new FlateDecodeParams();
+				$maskParams->setPredictor(Predictor::PNG_OPTIMUM);
+				$maskParams->setColumns($width);
+				$maskParams->setBitsPerComponent($bitsPerComponent);
+				$maskParams->setColors(1);
+
+				$sMask->setDecodeParms($maskParams);
+				$sMask->setColorSpace(DeviceColourSpace::GRAY);
+			}
+
+
+			$sMask->setBitsPerComponent($bitsPerComponent);
+			$sMask->setContent($mask);
+
+			$image->setSMask($sMask);
+		}
 
         if ($channels == 3) {
             $image->setColorSpace(DeviceColourSpace::RGB);
