@@ -6,6 +6,7 @@ use Papier\Document\ProcedureSet;
 use Papier\Factory\Factory;
 use Papier\Papier;
 use Papier\Text\RenderingMode;
+use Papier\Type\ArrayType;
 
 
 class TextWidget extends BaseWidget
@@ -284,7 +285,8 @@ class TextWidget extends BaseWidget
 
         $trueFont->setName(sprintf('F%d', $trueFont->getNumber()));
 
-        $font = Factory::create('\Papier\Type\DictionaryType')->setEntry($trueFont->getName(), $trueFont);
+        $font = Factory::create('\Papier\Type\DictionaryType');
+		$font->setEntry($trueFont->getName(), $trueFont);
 
         $resources = $page->getResources();
         $resources->setEntry('Font', $font);
@@ -294,6 +296,7 @@ class TextWidget extends BaseWidget
             $resources->setEntry('ProcSet', $procset);
         }
 
+		/** @var ArrayType $procset */
         $procset = $resources->getEntry('ProcSet');
 
         if (!$procset->has(ProcedureSet::TEXT)) {

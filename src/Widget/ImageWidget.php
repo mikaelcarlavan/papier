@@ -10,6 +10,8 @@ use Papier\Filter\Predictor;
 use Papier\Graphics\DeviceColourSpace;
 use Papier\Helpers\ImageHelper;
 use Papier\Papier;
+use Papier\Type\ArrayType;
+use Papier\Type\DictionaryType;
 use Papier\Validator\NumberValidator;
 use InvalidArgumentException;
 
@@ -21,7 +23,7 @@ class ImageWidget extends BaseWidget
     /**
      * Valid mimes for image.
      *
-     * @var array
+     * @var array<string>
      */
     protected array $validMimes = ['image/jpeg', 'image/png'];
 
@@ -261,6 +263,7 @@ class ImageWidget extends BaseWidget
 
         $dimensions = getimagesize($this->getSource());
 
+		/** @var ArrayType $procset */
         $procset = $resources->getEntry('ProcSet');
         $channels = $dimensions['channels'] ?? 3;
         $bitsPerComponent = $dimensions['bits'] ?? 8;
