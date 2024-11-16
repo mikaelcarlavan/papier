@@ -27,7 +27,7 @@ class CalGrayColourSpaceDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("WhitePoint is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('NumbersArray', $whitepoint);
+        $value = Factory::create('Papier\Type\NumbersArrayType', $whitepoint);
 
         $this->setEntry('WhitePoint', $value);
         return $this;
@@ -46,7 +46,7 @@ class CalGrayColourSpaceDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("BlackPoint is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('NumbersArray', $blackpoint);
+        $value = Factory::create('Papier\Type\NumbersArrayType', $blackpoint);
 
         $this->setEntry('BlackPoint', $value);
         return $this;

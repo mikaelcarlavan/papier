@@ -144,8 +144,7 @@ class PageTreeNodeType extends DictionaryType
     public function getMediaBox(): RectangleType
     {
         if (!$this->hasEntry('MediaBox')) {
-            $mediabox = Factory::create('Papier\Type\RectangleType');
-            $this->setMediaBox($mediabox);
+            $this->setMediaBox([0, 0, 0, 0]);
         }
 
         return $this->getEntry('MediaBox');
@@ -178,8 +177,7 @@ class PageTreeNodeType extends DictionaryType
     public function getCropBox(): RectangleType
     {
         if (!$this->hasEntry('CropBox')) {
-            $cropbox = Factory::create('Papier\Type\RectangleType');
-            $this->setCropBox($cropbox);
+            $this->setCropBox([0, 0, 0, 0]);
         }
 
         return $this->getEntry('CropBox');

@@ -23,7 +23,7 @@ class CalRGBColourSpaceDictionaryType extends CalGrayColourSpaceDictionaryType
             throw new InvalidArgumentException("Matrix is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('NumbersArray', $matrix);
+        $value = Factory::create('Papier\Type\NumbersArrayType', $matrix);
 
         $this->setEntry('Matrix', $value);
         return $this;
