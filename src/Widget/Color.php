@@ -39,7 +39,7 @@ trait Color
      * Set stroking colour.
      *
      * @param mixed $colors
-     * @return Color
+     * @return static
      */
     public function setStrokingColor(...$colors): static
     {
@@ -61,7 +61,7 @@ trait Color
      * Set non-stroking colour.
      *
      * @param mixed $colors
-     * @return Color
+     * @return static
      */
     public function setNonStrokingColor(...$colors): static
     {
@@ -83,7 +83,7 @@ trait Color
      * Set stroking colour space.
      *
      * @param string $space
-     * @return Color
+     * @return static
      */
     public function setStrokingColorSpace(string $space): static
     {
@@ -105,7 +105,7 @@ trait Color
      * Set non-stroking colour space.
      *
      * @param string $space
-     * @return Color
+     * @return static
      */
     public function setNonStrokingColorSpace(string $space): static
     {
@@ -123,6 +123,12 @@ trait Color
         return $this->nonStrokingColorSpace;
     }
 
+	/**
+	 * Set colors to content stream.
+	 *
+	 * @param ContentStreamType $contents
+	 * @return static
+	 */
     public function applyColors(ContentStreamType &$contents): static
     {
         $strokingColors = $this->getStrokingColor();

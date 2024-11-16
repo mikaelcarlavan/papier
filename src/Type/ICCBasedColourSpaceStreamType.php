@@ -7,6 +7,7 @@ use Papier\Object\ArrayObject;
 
 
 use Papier\Validator\ColourComponentsValidator;
+use Papier\Validator\NumbersArrayValidator;
 use Papier\Validator\StringValidator;
 
 
@@ -23,7 +24,7 @@ class ICCBasedColourSpaceStreamType extends StreamObject
      *  
      * @param int $N
      * @return ICCBasedColourSpaceStreamType
-     *@throws InvalidArgumentException if the provided argument is not of type 'int'.
+     * @throws InvalidArgumentException if the provided argument is not of type 'int'.
      */
     public function setN(int $N): ICCBasedColourSpaceStreamType
     {

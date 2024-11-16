@@ -2,7 +2,7 @@
 
 namespace Papier\Type;
 
-class LimitsArrayType extends ArrayObject
+class LimitsArrayType extends ArrayType
 {
 
     /**

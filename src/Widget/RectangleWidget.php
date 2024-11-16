@@ -6,7 +6,6 @@ use Papier\Factory\Factory;
 use Papier\Graphics\LineCapStyle;
 use Papier\Papier;
 use Papier\Validator\NumberValidator;
-use InvalidArgumentException;
 
 class RectangleWidget extends BaseWidget
 {

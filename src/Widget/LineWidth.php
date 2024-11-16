@@ -15,9 +15,9 @@ trait LineWidth
      * Set line's width.
      *
      * @param  float  $lineWidth
-     * @return RectangleWidget
+     * @return static
      */
-    public function setLineWidth(float $lineWidth): RectangleWidget
+    public function setLineWidth(float $lineWidth): static
     {
         $this->lineWidth = $lineWidth;
         return $this;

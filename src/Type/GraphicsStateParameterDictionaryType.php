@@ -5,11 +5,12 @@ namespace Papier\Type;
 use Papier\Object\DictionaryObject;
 use Papier\Object\ArrayObject;
 use Papier\Object\NameObject;
-use Papier\OBject\FunctionObject;
-use Papier\OBject\StreamObject;
+use Papier\Object\FunctionObject;
+use Papier\Object\StreamObject;
 
 use Papier\Factory\Factory;
 
+use Papier\Validator\BooleanValidator;
 use Papier\Validator\NumberValidator;
 use Papier\Validator\LineCapStyleValidator;
 use Papier\Validator\LineJoinStyleValidator;
@@ -24,10 +25,10 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
      * Set line width.
      *  
      * @param  mixed  $lw
+     * @return GraphicsStateParameterDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
-     * @return \Papier\Type\GraphicsStateParameterDictionaryType
      */
-    public function setLW($lw)
+    public function setLW($lw): GraphicsStateParameterDictionaryType
     {
         if (!NumberValidator::isValid($lw)) {
             throw new InvalidArgumentException("LW is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -42,10 +43,10 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
      * Set line cap style.
      *  
      * @param  mixed  $lc
+     * @return GraphicsStateParameterDictionaryType
      * @throws InvalidArgumentException if the provided argument is not a valid line cap style.
-     * @return \Papier\Type\GraphicsStateParameterDictionaryType
-     */
-    public function setLC($lc)
+	 */
+    public function setLC($lc): GraphicsStateParameterDictionaryType
     {
         if (!LineCapStyleValidator::isValid($lc)) {
             throw new InvalidArgumentException("LC is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -60,10 +61,10 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
      * Set line join style.
      *  
      * @param  mixed  $lj
+     * @return GraphicsStateParameterDictionaryType
      * @throws InvalidArgumentException if the provided argument is not a valid line join style.
-     * @return \Papier\Type\GraphicsStateParameterDictionaryType
-     */
-    public function setLJ($lj)
+	 */
+    public function setLJ($lj): GraphicsStateParameterDictionaryType
     {
         if (!LineJoinStyleValidator::isValid($lj)) {
             throw new InvalidArgumentException("LJ is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -78,10 +79,10 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
      * Set miter limit.
      *  
      * @param  mixed  $ml
+     * @return GraphicsStateParameterDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
-     * @return \Papier\Type\GraphicsStateParameterDictionaryType
-     */
-    public function setML($ml)
+	 */
+    public function setML($ml): GraphicsStateParameterDictionaryType
     {
         if (!NumberValidator::isValid($ml)) {
             throw new InvalidArgumentException("ML is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -96,15 +97,11 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
      * Set dash pattern.
      *  
      * @param  \Papier\Object\ArrayObject  $d
+     * @return GraphicsStateParameterDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
-     * @return \Papier\Type\GraphicsStateParameterDictionaryType
-     */
-    public function setD($d)
+	 */
+    public function setD(ArrayObject $d): GraphicsStateParameterDictionaryType
     {
-        if (!$d instanceof ArrayObject) {
-            throw new InvalidArgumentException("D is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('D', $d);
         return $this;
     }
@@ -113,10 +110,10 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
      * Set name of rendering intent.
      *  
      * @param  string  $ri
+     * @return GraphicsStateParameterDictionaryType
      * @throws InvalidArgumentException if the provided argument is not a valid rendering intent.
-     * @return \Papier\Type\GraphicsStateParameterDictionaryType
-     */
-    public function setRI($ri)
+	 */
+    public function setRI($ri): GraphicsStateParameterDictionaryType
     {
         if (!RenderingIntentValidator::isValid($ri)) {
             throw new InvalidArgumentException("RI is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -131,15 +128,11 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
      * Set overprint.
      *  
      * @param  bool $op
+     * @return GraphicsStateParameterDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'bool'.
-     * @return \Papier\Type\GraphicsStateParameterDictionaryType
-     */
-    public function setOP($op)
+	 */
+    public function setOP(bool $op): GraphicsStateParameterDictionaryType
     {
-        if (!BooleanValidator::isValid($op)) {
-            throw new InvalidArgumentException("OP is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('Papier\Type\BooleanType', $op);
 
         $this->setEntry('OP', $value);
@@ -151,10 +144,10 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
      * Set overprint mode.
      *  
      * @param  int  $opm
+     * @return GraphicsStateParameterDictionaryType
      * @throws InvalidArgumentException if the provided argument is not a valid overprint mode.
-     * @return \Papier\Type\GraphicsStateParameterDictionaryType
-     */
-    public function setOPM($opm)
+	 */
+    public function setOPM($opm): GraphicsStateParameterDictionaryType
     {
         if (!OverprintModeValidator::isValid($opm)) {
             throw new InvalidArgumentException("OPM is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -169,15 +162,11 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
      * Set font.
      *  
      * @param  \Papier\Object\ArrayObject  $font
+     * @return GraphicsStateParameterDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject'.
-     * @return \Papier\Type\GraphicsStateParameterDictionaryType
-     */
-    public function setFont($font)
+	 */
+    public function setFont(ArrayObject $font): GraphicsStateParameterDictionaryType
     {
-        if (!$font instanceof ArrayObject) {
-            throw new InvalidArgumentException("Font is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('Font', $font);
         return $this;
     }
@@ -185,16 +174,12 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
     /**
      * Set black-generation function.
      *  
-     * @param  \Papier\Object\FunctionObject  $bg
-     * @throws InvalidArgumentException if the provided argument is not of type 'FunctionObject'.
-     * @return \Papier\Type\GraphicsStateParameterDictionaryType
+     * @param FunctionObject $bg
+     * @return GraphicsStateParameterDictionaryType
+	 * @throws InvalidArgumentException if the provided argument is not of type 'FunctionObject'.
      */
-    public function setBG($bg)
+	public function setBG(FunctionObject $bg): GraphicsStateParameterDictionaryType
     {
-        if (!$bg instanceof FunctionObject) {
-            throw new InvalidArgumentException("BG is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('BG', $bg);
         return $this;
     }
@@ -204,9 +189,9 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
      *  
      * @param  mixed  $bg
      * @throws InvalidArgumentException if the provided argument is not of type 'FunctionObject' or 'NameObject'.
-     * @return \Papier\Type\GraphicsStateParameterDictionaryType
-     */
-    public function setBG2($bg)
+     * @return GraphicsStateParameterDictionaryType
+	 */
+	public function setBG2($bg): GraphicsStateParameterDictionaryType
     {
         if (!$bg instanceof FunctionObject && !$bg instanceof NameObject) {
             throw new InvalidArgumentException("BG is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -223,16 +208,12 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
     /**
      * Set undercolor-removal function.
      *  
-     * @param  \Papier\Object\FunctionObject  $ucr
-     * @throws InvalidArgumentException if the provided argument is not of type 'FunctionObject'.
-     * @return \Papier\Type\GraphicsStateParameterDictionaryType
+     * @param FunctionObject $ucr
+     * @return GraphicsStateParameterDictionaryType
+	 * @throws InvalidArgumentException if the provided argument is not of type 'FunctionObject'.
      */
-    public function setUCR($ucr)
+	public function setUCR(FunctionObject $ucr): GraphicsStateParameterDictionaryType
     {
-        if (!$ucr instanceof FunctionObject) {
-            throw new InvalidArgumentException("UCR is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('UCR', $ucr);
         return $this;
     }
@@ -242,15 +223,15 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
      *  
      * @param  mixed  $ucr
      * @throws InvalidArgumentException if the provided argument is not of type 'FunctionObject' or 'NameObject'.
-     * @return \Papier\Type\GraphicsStateParameterDictionaryType
-     */
-    public function setUCR2($ucr)
+     * @return GraphicsStateParameterDictionaryType
+	 */
+	public function setUCR2($ucr): GraphicsStateParameterDictionaryType
     {
         if (!$ucr instanceof FunctionObject && !$ucr instanceof NameObject) {
             throw new InvalidArgumentException("UCR is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        if ($ucr instanceof NameObject && $urc->getValue() != 'Default') {
+        if ($ucr instanceof NameObject && $ucr->getValue() != 'Default') {
             throw new InvalidArgumentException("UCR is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
   
@@ -263,9 +244,9 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
      *  
      * @param  mixed  $tr
      * @throws InvalidArgumentException if the provided argument is not of type 'FunctionObject' or 'NameObject' or 'ArrayObject'.
-     * @return \Papier\Type\GraphicsStateParameterDictionaryType
-     */
-    public function setTR($tr)
+     * @return GraphicsStateParameterDictionaryType
+	 */
+	public function setTR($tr): GraphicsStateParameterDictionaryType
     {
         if (!$tr instanceof FunctionObject && !$tr instanceof NameObject && !$tr instanceof ArrayObject) {
             throw new InvalidArgumentException("TR is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -284,9 +265,9 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
      *  
      * @param  mixed  $tr
      * @throws InvalidArgumentException if the provided argument is not of type 'FunctionObject' or 'NameObject' or 'ArrayObject'.
-     * @return \Papier\Type\GraphicsStateParameterDictionaryType
-     */
-    public function setTR2($tr)
+     * @return GraphicsStateParameterDictionaryType
+	 */
+	public function setTR2($tr): GraphicsStateParameterDictionaryType
     {
         if (!$tr instanceof FunctionObject && !$tr instanceof NameObject && !$tr instanceof ArrayObject) {
             throw new InvalidArgumentException("TR is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -305,11 +286,11 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
      *  
      * @param  mixed  $ht
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject' or 'StreamObject' or 'NameObject'.
-     * @return \Papier\Type\GraphicsStateParameterDictionaryType
-     */
-    public function setHT($ht)
+     * @return GraphicsStateParameterDictionaryType
+	 */
+	public function setHT($ht): GraphicsStateParameterDictionaryType
     {
-        if (!$ht instanceof DictionaryObject && !$ht instanceof StreamObject && !$ht instanceof NameObject) {
+        if (!$ht instanceof DictionaryObject && !$ht instanceof NameObject) {
             throw new InvalidArgumentException("HT is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
@@ -322,9 +303,9 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
      *  
      * @param  mixed  $fl
      * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
-     * @return \Papier\Type\GraphicsStateParameterDictionaryType
-     */
-    public function setFL($fl)
+     * @return GraphicsStateParameterDictionaryType
+	 */
+	public function setFL($fl): GraphicsStateParameterDictionaryType
     {
         if (!NumberValidator::isValid($fl)) {
             throw new InvalidArgumentException("FL is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -340,9 +321,9 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
      *  
      * @param  mixed  $sm
      * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
-     * @return \Papier\Type\GraphicsStateParameterDictionaryType
-     */
-    public function setSM($sm)
+     * @return GraphicsStateParameterDictionaryType
+	 */
+	public function setSM($sm): GraphicsStateParameterDictionaryType
     {
         if (!NumberValidator::isValid($sm)) {
             throw new InvalidArgumentException("SM is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -358,14 +339,10 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
      *  
      * @param  bool $sa
      * @throws InvalidArgumentException if the provided argument is not of type 'bool'.
-     * @return \Papier\Type\GraphicsStateParameterDictionaryType
-     */
-    public function setSA($sa)
+     * @return GraphicsStateParameterDictionaryType
+	 */
+	public function setSA(bool $sa): GraphicsStateParameterDictionaryType
     {
-        if (!BooleanValidator::isValid($sa)) {
-            throw new InvalidArgumentException("SA is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('Papier\Type\BooleanType', $sa);
 
         $this->setEntry('SA', $value);
@@ -377,9 +354,9 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
      *  
      * @param  mixed  $bm
      * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject' or 'NameObject'.
-     * @return \Papier\Type\GraphicsStateParameterDictionaryType
-     */
-    public function setBM($bm)
+     * @return GraphicsStateParameterDictionaryType
+	 */
+	public function setBM($bm): GraphicsStateParameterDictionaryType
     {
         if (!$bm instanceof ArrayObject && !$bm instanceof NameObject) {
             throw new InvalidArgumentException("BM is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -394,9 +371,9 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
      *  
      * @param  mixed  $smask
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject' or 'NameObject'.
-     * @return \Papier\Type\GraphicsStateParameterDictionaryType
-     */
-    public function setSMask($smask)
+     * @return GraphicsStateParameterDictionaryType
+	 */
+	public function setSMask($smask): GraphicsStateParameterDictionaryType
     {
         if (!$smask instanceof DictionaryObject && !$smask instanceof NameObject) {
             throw new InvalidArgumentException("SMask is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -411,9 +388,9 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
      *  
      * @param  mixed $ca
      * @throws InvalidArgumentException if the provided argument is not of type 'int' or 'float'.
-     * @return \Papier\Type\GraphicsStateParameterDictionaryType
-     */
-    public function setCA($ca)
+     * @return GraphicsStateParameterDictionaryType
+	 */
+	public function setCA($ca): GraphicsStateParameterDictionaryType
     {
         if (!NumberValidator::isValid($ca)) {
             throw new InvalidArgumentException("CA is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -431,14 +408,10 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
      *  
      * @param  bool $ais
      * @throws InvalidArgumentException if the provided argument is not of type 'bool'.
-     * @return \Papier\Type\GraphicsStateParameterDictionaryType
-     */
-    public function setAIS($ais)
+     * @return GraphicsStateParameterDictionaryType
+	 */
+	public function setAIS(bool $ais): GraphicsStateParameterDictionaryType
     {
-        if (!BooleanValidator::isValid($ais)) {
-            throw new InvalidArgumentException("AIS is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $value = Factory::create('Papier\Type\BooleanType', $ais);
 
         $this->setEntry('AIS', $value);
@@ -450,15 +423,11 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
      *  
      * @param  bool $tk
      * @throws InvalidArgumentException if the provided argument is not of type 'bool'.
-     * @return \Papier\Type\GraphicsStateParameterDictionaryType
-     */
-    public function setTK($tk)
+     * @return GraphicsStateParameterDictionaryType
+	 */
+	public function setTK(bool $tk): GraphicsStateParameterDictionaryType
     {
-        if (!BooleanValidator::isValid($tk)) {
-            throw new InvalidArgumentException("TK is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        $value = Factory::create('Papier\Type\BooleanType', $sa);
+        $value = Factory::create('Papier\Type\BooleanType', $tk);
 
         $this->setEntry('TK', $value);
         return $this;
@@ -468,8 +437,8 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
      *
      * @return string
      */
-    public function format()
-    {
+    public function format(): string
+	{
         $type = Factory::create('Papier\Type\NameType', 'ExtGState');
         $this->setEntry('Type', $type);
 

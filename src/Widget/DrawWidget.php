@@ -29,11 +29,11 @@ class DrawWidget extends BaseWidget
     /**
      * Add point to path.
      *
-     * @param $x1
-     * @param $y1
+     * @param float $x1
+     * @param float $y1
      * @return DrawWidget
      */
-    public function addPoint($x1, $y1): DrawWidget
+    public function addPoint(float $x1, float $y1): DrawWidget
     {
         $this->path[] = [
             'x' => $x1,
@@ -46,13 +46,13 @@ class DrawWidget extends BaseWidget
     /**
      * Add point to path using destination point as control point
      *
-     * @param $x1
-     * @param $y1
-     * @param $x3
-     * @param $y3
+     * @param float $x1
+     * @param float $y1
+     * @param float $x3
+     * @param float $y3
      * @return DrawWidget
      */
-    public function addPointWithFinalPointAsControlPoint($x1, $y1, $x3, $y3): DrawWidget
+    public function addPointWithFinalPointAsControlPoint(float $x1, float $y1, float $x3, float $y3): DrawWidget
     {
         $this->path[] = [
             'x' => $x3,
@@ -71,13 +71,13 @@ class DrawWidget extends BaseWidget
     /**
      * Add point to path using current point as control point
      *
-     * @param $x2
-     * @param $y2
-     * @param $x3
-     * @param $y3
+     * @param float $x2
+     * @param float $y2
+     * @param float $x3
+     * @param float $y3
      * @return DrawWidget
      */
-    public function addPointWithInitialPointAsControlPoint($x2, $y2, $x3, $y3): DrawWidget
+    public function addPointWithInitialPointAsControlPoint(float $x2, float $y2, float $x3, float $y3): DrawWidget
     {
         $this->path[] = [
             'x' => $x3,
@@ -96,15 +96,15 @@ class DrawWidget extends BaseWidget
     /**
      * Add point to path.
      *
-     * @param $x1
-     * @param $y1
-     * @param $x2
-     * @param $y2
-     * @param $x3
-     * @param $y3
+     * @param float $x1
+     * @param float $y1
+     * @param float $x2
+     * @param float $y2
+     * @param float $x3
+     * @param float $y3
      * @return DrawWidget
      */
-    public function addPointWithControlPoints($x1, $y1, $x2, $y2, $x3, $y3): DrawWidget
+    public function addPointWithControlPoints(float $x1, float $y1, float $x2, float $y2, float $x3, float $y3): DrawWidget
     {
         $this->path[] = [
             'x' => $x3,

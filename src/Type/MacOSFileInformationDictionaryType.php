@@ -5,6 +5,7 @@ namespace Papier\Type;
 use Papier\Object\DictionaryObject;
 use Papier\Object\NameObject;
 
+use Papier\Object\StreamObject;
 use Papier\Validator\StringValidator;
 
 use Papier\Factory\Factory;
@@ -21,7 +22,7 @@ class MacOSFileInformationDictionaryType extends DictionaryObject
      * @throws InvalidArgumentException if the provided argument is not of type 'string'.
      * @return MacOSFileInformationDictionaryType
      */
-    public function setSubtype($subtype): MacOSFileInformationDictionaryType
+    public function setSubtype(string $subtype): MacOSFileInformationDictionaryType
     {
         if (!StringValidator::isValid($subtype)) {
             throw new InvalidArgumentException("Subtype is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -67,10 +68,6 @@ class MacOSFileInformationDictionaryType extends DictionaryObject
      */
     public function setResFork(StreamObject $resfork): MacOSFileInformationDictionaryType
     {
-        if (!$resfork instanceof StreamObject) {
-            throw new InvalidArgumentException("ResFork is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('ResFork', $resfork);
         return $this;
     }

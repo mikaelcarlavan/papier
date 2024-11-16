@@ -14,6 +14,7 @@ use Papier\Graphics\PatternType;
 
 
 use InvalidArgumentException;
+use Papier\Validator\NumbersArrayValidator;
 use RuntimeException;
 
 class ShadingPatternDictionaryType extends PatternDictionaryType
@@ -21,16 +22,12 @@ class ShadingPatternDictionaryType extends PatternDictionaryType
     /**
      * Set shading.
      *  
-     * @param  mixed  $shading
+     * @param  DictionaryObject  $shading
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject' or 'StreamObject'.
      * @return ShadingPatternDictionaryType
      */
-    public function setShading($shading): ShadingPatternDictionaryType
+    public function setShading(DictionaryObject $shading): ShadingPatternDictionaryType
     {
-        if (!$shading instanceof DictionaryObject && !$shading instanceof StreamObject) {
-            throw new InvalidArgumentException("Shading is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('Shading', $shading);
         return $this;
     } 

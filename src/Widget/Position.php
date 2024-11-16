@@ -3,6 +3,7 @@
 namespace Papier\Widget;
 
 use Papier\Validator\NumberValidator;
+use InvalidArgumentException;
 
 trait Position
 {
