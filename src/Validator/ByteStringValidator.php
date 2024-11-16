@@ -15,7 +15,7 @@ class ByteStringValidator extends StringValidator
         $isValid = parent::isValid($value);
 
         if ($isValid) {
-            $isValid = $isValid & strlen($value) == 1;
+            $isValid =  strlen($value) == 1;
         }
 
         return $isValid;
