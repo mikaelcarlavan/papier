@@ -9,7 +9,7 @@ class PageLayoutValidator extends StringValidator
     /**
      * Page layouts.
      *
-     * @var array
+     * @var array<string>
      */
     const PAGE_LAYOUTS = array(
         PageLayout::SINGLE_PAGE_LAYOUT,

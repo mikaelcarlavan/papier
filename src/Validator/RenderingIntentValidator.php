@@ -9,7 +9,7 @@ class RenderingIntentValidator extends StringValidator
     /**
      * Rendering intents.
      *
-     * @var array
+     * @var array<string>
      */
     const RENDERING_INTENTS = array(
         RenderingIntent::ABSOLUTE_COLORIMETRIC,

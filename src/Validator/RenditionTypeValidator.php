@@ -11,7 +11,7 @@ class RenditionTypeValidator implements Validator
     /**
      * Paint types.
      *
-     * @var array
+     * @var array<string>
      */
     const RENDITION_TYPES = array(
         RenditionType::MEDIA_RENDITION_TYPE,

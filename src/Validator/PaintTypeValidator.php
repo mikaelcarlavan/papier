@@ -11,7 +11,7 @@ class PaintTypeValidator implements Validator
     /**
      * Paint types.
      *
-     * @var array
+     * @var array<int>
      */
     const PAINT_TYPES = array(
         PaintType::COLOURED_TILING_PATTERN,

@@ -9,7 +9,7 @@ class BitsPerComponentValidator implements Validator
     /**
      * Bits per component allowed values.
      *
-     * @var array
+     * @var array<int>
      */
     const BITS_PER_COMPONENT = array(
         1, 2, 4, 8, 12, 16

@@ -9,7 +9,7 @@ class PrintScalingValidator extends StringValidator
     /**
      * Page scaling types.
      *
-     * @var array
+     * @var array<string>
      */
     const PRINT_SCALING_TYPES = array(
         PrintScaling::NONE,

@@ -11,7 +11,7 @@ class PredictorValidator implements Validator
     /**
      * Predictor allowed values.
      *
-     * @var array
+     * @var array<int>
      */
     const PREDICTORS = array(
         Predictor::NONE,

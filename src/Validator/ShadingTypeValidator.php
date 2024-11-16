@@ -11,7 +11,7 @@ class ShadingTypeValidator implements Validator
     /**
      * Shading types.
      *
-     * @var array
+     * @var array<int>
      */
     const SHADING_TYPES = array(
         ShadingType::FUNCTION_BASED,

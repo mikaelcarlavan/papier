@@ -11,7 +11,7 @@ class TilingTypeValidator implements Validator
     /**
      * Tiling types.
      *
-     * @var array
+     * @var array<int>
      */
     const TILING_TYPES = array(
         TilingType::CONSTANT_SPACING,

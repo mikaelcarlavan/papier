@@ -11,7 +11,7 @@ class OverprintModeValidator implements Validator
     /**
      * Overprint modes.
      *
-     * @var array
+     * @var array<int>
      */
     const OVERPRINT_MODES = array(
         OverprintMode::NONZERO_MODE,

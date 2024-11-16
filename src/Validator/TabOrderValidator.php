@@ -9,7 +9,7 @@ class TabOrderValidator extends StringValidator
     /**
      * Tab orders.
      *
-     * @var array
+     * @var array<string>
      */
     const TAB_ORDERS = array(
         TabOrder::ROW,

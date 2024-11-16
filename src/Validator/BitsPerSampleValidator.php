@@ -9,7 +9,7 @@ class BitsPerSampleValidator implements Validator
     /**
      * Bits per sample allowed values.
      *
-     * @var array
+     * @var array<int>
      */
     const BITS_PER_SAMPLE = array(
         1, 2, 4, 8, 12, 16, 24, 32

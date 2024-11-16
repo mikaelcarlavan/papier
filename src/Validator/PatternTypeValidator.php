@@ -11,7 +11,7 @@ class PatternTypeValidator implements Validator
     /**
      * Pattern types.
      *
-     * @var array
+     * @var array<int>
      */
     const PATTERN_TYPES = array(
         PatternType::TILING_PATTERN,

@@ -11,7 +11,7 @@ class FunctionTypeValidator implements Validator
     /**
      * Function types.
      *
-     * @var array
+     * @var array<int>
      */
     const FUNCTION_TYPES = array(
         FunctionType::SAMPLED,

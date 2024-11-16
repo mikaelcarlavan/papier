@@ -9,7 +9,7 @@ class BitsPerCoordinateValidator implements Validator
     /**
      * Bits per coordinate allowed values.
      *
-     * @var array
+     * @var array<int>
      */
     const BITS_PER_COORDINATEE = array(
         1, 2, 4, 8, 12, 16, 24, 32

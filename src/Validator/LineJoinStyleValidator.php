@@ -11,7 +11,7 @@ class LineJoinStyleValidator implements Validator
     /**
      * Line join styles.
      *
-     * @var array
+     * @var array<int>
      */
     const LINE_JOIN_STYLES = array(
         LineJoinStyle::MITER_JOIN,

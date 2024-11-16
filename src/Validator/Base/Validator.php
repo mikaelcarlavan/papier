@@ -7,7 +7,7 @@ interface Validator
     /**
      * Test if given string is valid for validator
      * 
-     * @param  string  $value
+     * @param  string|array  $value
      * @return bool
      */
     public static function isValid($value);

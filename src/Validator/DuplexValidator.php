@@ -9,7 +9,7 @@ class DuplexValidator extends StringValidator
     /**
      * Duplex types.
      *
-     * @var array
+     * @var array<string>
      */
     const DUPLEX_TYPES = array(
         Duplex::SIMPLEX,

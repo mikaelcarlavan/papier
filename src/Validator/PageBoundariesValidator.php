@@ -9,7 +9,7 @@ class PageBoundariesValidator extends StringValidator
     /**
      * Page boundaries types.
      *
-     * @var array
+     * @var array<string>
      */
     const PAGE_BOUNDARIES_TYPES = array(
         PageBoundaries::MEDIA_BOX,

@@ -9,7 +9,7 @@ class EncodingValidator extends StringValidator
     /**
      * Encodings.
      *
-     * @var array
+     * @var array<string>
      */
     const ENCODINGS = array(
         Encoding::MAC_ROMAN,

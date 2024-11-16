@@ -12,7 +12,7 @@ class ColourComponentsValidator implements Validator
     /**
      * Number of components allowed values.
      *
-     * @var array
+     * @var array<int>
      */
     const COMPONENTS_VALUES = array(
         ColourComponents::ONE,

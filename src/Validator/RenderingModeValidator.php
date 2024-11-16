@@ -11,7 +11,7 @@ class RenderingModeValidator implements Validator
     /**
      * Rendering modes.
      *
-     * @var array
+     * @var array<int>
      */
     const RENDERING_MODES = array(
         RenderingMode::FILL,

@@ -9,7 +9,7 @@ class PageModeValidator extends StringValidator
     /**
      * Page modes.
      *
-     * @var array
+     * @var array<string>
      */
     const PAGE_MODES = array(
         PageMode::USE_NONE_MODE,

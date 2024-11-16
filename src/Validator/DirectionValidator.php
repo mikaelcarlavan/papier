@@ -9,7 +9,7 @@ class DirectionValidator extends StringValidator
     /**
      * Directions.
      *
-     * @var array
+     * @var array<string>
      */
     const DIRECTIONS = array(
         Direction::LEFT_TO_RIGHT,

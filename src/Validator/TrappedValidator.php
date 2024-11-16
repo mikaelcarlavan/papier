@@ -9,7 +9,7 @@ class TrappedValidator extends StringValidator
     /**
      * Trapped values.
      *
-     * @var array
+     * @var array<string>
      */
     const TRAPPED_VALUES = array(
         Trapped::TRUE,

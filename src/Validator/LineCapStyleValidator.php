@@ -11,7 +11,7 @@ class LineCapStyleValidator implements Validator
     /**
      * Line cap styles.
      *
-     * @var array
+     * @var array<int>
      */
     const LINE_CAP_STYLES = array(
         LineCapStyle::BUTT_CAP,

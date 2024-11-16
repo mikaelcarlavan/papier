@@ -9,7 +9,7 @@ class BitsPerFlagValidator implements Validator
     /**
      * Bits per flag allowed values.
      *
-     * @var array
+     * @var array<int>
      */
     const BITS_PER_FLAG = array(
         2, 4, 8

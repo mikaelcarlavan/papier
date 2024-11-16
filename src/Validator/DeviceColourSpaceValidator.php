@@ -9,7 +9,7 @@ class DeviceColourSpaceValidator extends StringValidator
     /**
      * Device colour spaces.
      *
-     * @var array
+     * @var array<string>
      */
     const DEVICE_COLOUR_SPACES = array(
         DeviceColourSpace::GRAY,
