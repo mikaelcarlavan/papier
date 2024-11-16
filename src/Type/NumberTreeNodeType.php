@@ -16,7 +16,8 @@ class NumberTreeNodeType extends TreeNodeType
      */
     public function addKid(): NumberTreeNodeType
     {
-        $node = Factory::create('NumberTreeNode', null, true);
+		/** @var NumberTreeNodeType $node */
+		$node = Factory::create('Papier\Type\NumberTreeNodeType', null, true);
         $this->getKids()->append($node);
 
         return $node;
@@ -78,11 +79,7 @@ class NumberTreeNodeType extends TreeNodeType
      * @return array
      */    
     protected function collectNums(TreeNodeType $node): array
-    {        
-        if (!$node instanceof TreeNodeType) {
-            throw new InvalidArgumentException("Node is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }  
-
+    {
         $objects = array();
 
         if ($node->hasEntry('Nums')) {
@@ -111,8 +108,8 @@ class NumberTreeNodeType extends TreeNodeType
     {
         if (!$this->isRoot()) {
             // Compute limits
-            $limits = Factory::create('LimitsArray');
-
+			/** @var LimitsArrayType $limits */
+			$limits = Factory::create('Papier\Type\LimitsArrayType');
             $objects = $this->collectNums($this);
 
             if (count($objects)) {

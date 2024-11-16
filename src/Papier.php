@@ -28,7 +28,7 @@ class Papier
      *
      * @var float
      */
-    const DEFAULT_DPI = 72;
+    const DEFAULT_DPI = 72.0;
 
     /**
      * Convert factor from mm to user unit
@@ -218,13 +218,12 @@ class Papier
         return $page;
     }
 
-    /**
-     * Add page to PDF's content.
-     *
-     * @param array $dimensions Dimensions (width and height) of the page in millimeters.
-     * @param float $dpi Resolution of the page (72 by default, i.e. 72 points par inch).
-     * @return PageObjectType
-     */
+	/**
+	 * Add page to PDF's content.
+	 *
+	 * @param array $dimensions Dimensions (width and height) of the page in millimeters.
+	 * @return PageObjectType
+	 */
     public function addPage(array $dimensions): PageObjectType
     {
         $page = $this->getBody()->addPage();
@@ -247,11 +246,11 @@ class Papier
         return $body->getDocumentCatalog()->getViewerPreferences();
     }
 
-    /**
-     * Get viewer preferences.
-     *
-     * @return ViewerPreferencesDictionaryType
-     */
+	/**
+	 * Get widgets.
+	 *
+	 * @return array
+	 */
     private function getWidgets(): array
     {
         return $this->widgets;

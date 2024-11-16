@@ -14,7 +14,9 @@ class NameTreeType extends TreeType
     public function getRoot(): NameTreeNodeType
     {
         if (!$this->hasEntry('Root')) {
-            $root = Factory::create('NameTreeNode', null, true)->setRoot();
+			/** @var NameTreeNodeType $root */
+            $root = Factory::create('Papier\Type\NameTreeNodeType', null, true);
+			$root->setRoot();
             $this->setEntry('Root', $root);
         }
 

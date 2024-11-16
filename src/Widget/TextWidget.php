@@ -281,18 +281,18 @@ class TextWidget extends BaseWidget
         $page = $this->getPage();
         $fontName = $this->getBaseFont();
 
-        $trueFont = Factory::create('\Papier\Type\Type1FontType', null, true)->setBaseFont($fontName);
+        $trueFont = Factory::create('Papier\Type\Type1FontType', null, true)->setBaseFont($fontName);
 
         $trueFont->setName(sprintf('F%d', $trueFont->getNumber()));
 
-        $font = Factory::create('\Papier\Type\DictionaryType');
+        $font = Factory::create('Papier\Type\DictionaryType');
 		$font->setEntry($trueFont->getName(), $trueFont);
 
         $resources = $page->getResources();
         $resources->setEntry('Font', $font);
 
         if (!$resources->hasEntry('ProcSet')) {
-            $procset = Factory::create('\Papier\Type\ArrayType', null, true);
+            $procset = Factory::create('Papier\Type\ArrayType', null, true);
             $resources->setEntry('ProcSet', $procset);
         }
 
@@ -300,7 +300,7 @@ class TextWidget extends BaseWidget
         $procset = $resources->getEntry('ProcSet');
 
         if (!$procset->has(ProcedureSet::TEXT)) {
-            $text = Factory::create('\Papier\Type\NameType', ProcedureSet::TEXT);
+            $text = Factory::create('Papier\Type\NameType', ProcedureSet::TEXT);
             $procset->append($text);
         }
 

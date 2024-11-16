@@ -29,7 +29,7 @@ class Matrix
     protected array $data = [];
 
     /**
-     * Create a new Matrice instance.
+     * Create a new Matrix instance.
      *
      * @param int $rows
      * @param int $columns
@@ -175,7 +175,7 @@ class Matrix
      * @param Matrix $t
      * @return Matrix
      */
-    public function dot(Matrix $t): static
+    public function dot(Matrix $t): Matrix
     {
         $mRows = $this->getRows();
         $tColumns = $t->getColumns();
@@ -213,7 +213,7 @@ class Matrix
      * @param int $size
      * @return Matrix
      */
-    public static function eye(int $size): static
+    public static function eye(int $size): Matrix
     {
         $matrix = new Matrix($size, $size);
 

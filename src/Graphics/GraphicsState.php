@@ -161,7 +161,7 @@ trait GraphicsState
             throw new InvalidArgumentException("DP is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $state = sprintf('%s %s d', Factory::create('IntegersArray', $da)->format(), Factory::create('Papier\Type\NumberType', $dp)->format());
+        $state = sprintf('%s %s d', Factory::create('Papier\Type\IntegersArrayType', $da)->format(), Factory::create('Papier\Type\NumberType', $dp)->format());
         return $this->addToContent($state);
     }
 

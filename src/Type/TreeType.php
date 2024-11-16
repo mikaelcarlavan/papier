@@ -14,7 +14,9 @@ class TreeType extends DictionaryType
     public function getRoot(): TreeNodeType
     {
         if (!$this->hasEntry('Root')) {
-            $root = Factory::create('TreeNode', null, true)->setRoot();
+			/** @var TreeNodeType $root */
+            $root = Factory::create('Papier\Type\TreeNodeType', null, true);
+			$root->setRoot();
             $this->setEntry('Root', $root);
         }
 

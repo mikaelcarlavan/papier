@@ -144,7 +144,7 @@ class ImageWidget extends BaseWidget
      * Set widget's height.
      *
      * @param  float  $height
-     * @return BaseWidget
+     * @return ImageWidget
      * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int' and positive.
      */
     public function setHeight(float $height): ImageWidget
@@ -248,16 +248,16 @@ class ImageWidget extends BaseWidget
         $page = $this->getPage();
         $resources = $page->getResources();
 
-        $image = Factory::create('\Papier\Type\ImageType', null, true);
+        $image = Factory::create('Papier\Type\ImageType', null, true);
         $this->setName(sprintf('Im%d', $image->getNumber()));
 
         if (!$resources->hasEntry('XObject')) {
-            $xObject = Factory::create('\Papier\Type\DictionaryType');
+            $xObject = Factory::create('Papier\Type\DictionaryType');
             $resources->setEntry('XObject', $xObject);
         }
 
         if (!$resources->hasEntry('ProcSet')) {
-            $procset = Factory::create('\Papier\Type\ArrayType', null, true);
+            $procset = Factory::create('Papier\Type\ArrayType', null, true);
             $resources->setEntry('ProcSet', $procset);
         }
 
@@ -274,15 +274,15 @@ class ImageWidget extends BaseWidget
         $ratio = $height > 0 ? $width / $height : 1;
 
         if (!$procset->has(ProcedureSet::GRAPHICS)) {
-            $graphics = Factory::create('\Papier\Type\NameType', ProcedureSet::GRAPHICS);
+            $graphics = Factory::create('Papier\Type\NameType', ProcedureSet::GRAPHICS);
             $procset->append($graphics);
         }
 
         if ($channels == 1 && !$procset->has(ProcedureSet::GRAYSCALE_IMAGES)) {
-            $imageb = Factory::create('\Papier\Type\NameType', ProcedureSet::GRAYSCALE_IMAGES);
+            $imageb = Factory::create('Papier\Type\NameType', ProcedureSet::GRAYSCALE_IMAGES);
             $procset->append($imageb);
         } elseif (!$procset->has(ProcedureSet::COLOUR_IMAGES)) {
-            $imagec = Factory::create('\Papier\Type\NameType', ProcedureSet::COLOUR_IMAGES);
+            $imagec = Factory::create('Papier\Type\NameType', ProcedureSet::COLOUR_IMAGES);
             $procset->append($imagec);
         }
 
@@ -311,7 +311,7 @@ class ImageWidget extends BaseWidget
 
 		if ($mask) {
 			// Add new image as mask
-			$sMask = Factory::create('\Papier\Type\ImageType', null, true);
+			$sMask = Factory::create('Papier\Type\ImageType', null, true);
 
 			$sMask->setWidth($width);
 			$sMask->setHeight($height);

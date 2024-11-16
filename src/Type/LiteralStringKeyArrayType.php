@@ -21,7 +21,8 @@ class LiteralStringKeyArrayType extends DictionaryObject
         $value = '';
         if (is_array($objects)) {
             foreach ($objects as $key => $object) {
-                $name = Factory::create('LiteralString', $key);
+				/** @var LiteralStringType $name */
+                $name = Factory::create('Papier\Type\LiteralStringType', $key);
                 $value .= $name->format() .' '. $object->write();
             }
         }

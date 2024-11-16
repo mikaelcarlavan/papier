@@ -15,14 +15,14 @@ class LZWFilter extends Filter
     /**
      * End-of-data marker.
      *
-     * @var string
+     * @var int
      */
     const EOD_MARKER = 257;
 
     /**
      * Clear-table marker.
      *
-     * @var string
+     * @var int
      */
     const CT_MARKER = 256;
 
