@@ -95,11 +95,11 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
     /**
      * Set object for given key.
      *
-     * @param  string  $key
+     * @param  mixed  $key
      * @param  mixed  $object
      * @return DictionaryObject
      */
-    protected function setObjectForKey(string $key, mixed $object): DictionaryObject
+    protected function setObjectForKey(mixed $key, mixed $object): DictionaryObject
     {
         $objects = $this->getObjects();
         $objects[$key] = $object;

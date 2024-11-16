@@ -16,7 +16,7 @@ class LabColourSpaceDictionaryType extends DictionaryObject
     /**
      * Set white point.
      * 
-     * @param array $whitepoint
+     * @param array<float> $whitepoint
      * @return LabColourSpaceDictionaryType
      * @throws InvalidArgumentException if the provided argument is not an array of type 'int' or 'float'.
      */
@@ -35,7 +35,7 @@ class LabColourSpaceDictionaryType extends DictionaryObject
     /**
      * Set black point.
      * 
-     * @param array $blackpoint
+     * @param array<float> $blackpoint
      * @return LabColourSpaceDictionaryType
      * @throws InvalidArgumentException if the provided argument is not an array of type 'int' or 'float'.
      */
@@ -54,7 +54,7 @@ class LabColourSpaceDictionaryType extends DictionaryObject
     /**
      * Set range.
      * 
-     * @param array $range
+     * @param array<float> $range
      * @return LabColourSpaceDictionaryType
      * @throws InvalidArgumentException if the provided argument is not an array of type 'int' or 'float'.
      */

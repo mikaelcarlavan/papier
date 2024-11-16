@@ -254,7 +254,7 @@ class ViewerPreferencesDictionaryType extends DictionaryType
     /**
      * Set print page range.
      *  
-     * @param array $range
+     * @param array<int> $range
      * @return ViewerPreferencesDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'array' and if element of the array is not of type 'int'.
      */

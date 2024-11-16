@@ -143,7 +143,7 @@ class TreeNodeType extends DictionaryType
      * Get names from node
      *
      * @param  TreeNodeType  $node
-     * @return array
+     * @return array<string>
      */    
     protected function collectNames(TreeNodeType $node): array
     {

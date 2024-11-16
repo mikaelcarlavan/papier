@@ -77,7 +77,7 @@ class NumberTreeNodeType extends TreeNodeType
      * Get nums from node.
      *
      * @param  TreeNodeType  $node
-     * @return array
+     * @return array<int>
      */    
     protected function collectNums(TreeNodeType $node): array
     {

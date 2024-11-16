@@ -57,7 +57,7 @@ class FileSpecificationDictionaryType extends DictionaryObject
     /**
      * Set digital identifier of the page's parent web capture content set.
      *  
-     * @param array $id
+     * @param array<string> $id
      * @return FileSpecificationDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'array' or if each element of the array is not of type 'string'.
      */

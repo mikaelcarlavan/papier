@@ -60,7 +60,7 @@ class ICCBasedColourSpaceStreamType extends StreamObject
      /**
      * Set the range of colour components.
      *  
-     * @param array $range
+     * @param array<float> $range
      * @return ICCBasedColourSpaceStreamType
      * @throws InvalidArgumentException if the provided argument is not an array of type 'int' or 'float'.
      */

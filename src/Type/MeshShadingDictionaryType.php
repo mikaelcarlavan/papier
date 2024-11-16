@@ -76,7 +76,7 @@ class MeshShadingDictionaryType extends ShadingDictionaryType
     /**
      * Set map from vertex coordinates and colour components to the appropriate ranges of values.
      *
-     * @param  array  $decode
+     * @param  array<float>  $decode
      * @return MeshShadingDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'array' and if each element of the provided argument is not of type 'int' or 'float.
      */

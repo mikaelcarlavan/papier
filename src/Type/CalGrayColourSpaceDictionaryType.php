@@ -17,7 +17,7 @@ class CalGrayColourSpaceDictionaryType extends DictionaryObject
     /**
      * Set white point.
      * 
-     * @param array $whitepoint
+     * @param array<float> $whitepoint
      * @return CalGrayColourSpaceDictionaryType
      * @throws InvalidArgumentException if the provided argument is not an 3 length array of type 'int' or 'float'.
      */
@@ -36,7 +36,7 @@ class CalGrayColourSpaceDictionaryType extends DictionaryObject
     /**
      * Set black point.
      * 
-     * @param array $blackpoint
+     * @param array<float> $blackpoint
      * @return CalGrayColourSpaceDictionaryType
      * @throws InvalidArgumentException if the provided argument is not an 3 length array of type 'int' or 'float'.
      */
