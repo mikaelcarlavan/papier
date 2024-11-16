@@ -124,7 +124,7 @@ class TilingPatternDictionaryType extends PatternDictionaryType
     public function getResources(): DictionaryType
     {
         if (!$this->hasEntry('Resources')) {
-            $resources = Factory::create('Dictionary');
+            $resources = Factory::create('Papier\Type\DictionaryType');
             $this->setResources($resources);
         }
 
@@ -144,7 +144,7 @@ class TilingPatternDictionaryType extends PatternDictionaryType
             throw new InvalidArgumentException("Matrix is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('NumbersArray', $matrix);
+        $value = Factory::create('Papier\Type\NumbersArrayType', $matrix);
 
         $this->setEntry('Matrix', $value);
         return $this;

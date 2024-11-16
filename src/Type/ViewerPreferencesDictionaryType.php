@@ -264,7 +264,7 @@ class ViewerPreferencesDictionaryType extends DictionaryType
             throw new InvalidArgumentException("PrintPageRange is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('IntegersArray', $range);
+        $value = Factory::create('Papier\Type\IntegersArrayType', $range);
         $this->setEntry('PrintPageRange', $value);
         return $this;
     }

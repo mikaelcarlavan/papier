@@ -26,7 +26,7 @@ class ByteStringsArrayType extends ArrayType
         $objects = $this->getObjects();
 
         foreach ($value as $i => $val) {
-            $object = Factory::create('ByteString', $val);
+            $object = Factory::create('Papier\Type\ByteStringsArrayType', $val);
             $objects[$i] = $object;
         }
 

@@ -70,7 +70,7 @@ class ICCBasedColourSpaceStreamType extends StreamObject
             throw new InvalidArgumentException("Range is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('NumbersArray', $range);
+        $value = Factory::create('Papier\Type\NumbersArrayType', $range);
 
         $this->setEntry('Range', $value);
         return $this;

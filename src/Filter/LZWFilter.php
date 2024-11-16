@@ -148,7 +148,7 @@ class LZWFilter extends Filter
         $codes[] = self::EOD_MARKER;
 
         // Determine the initial bit width, typically starting at 9 bits
-        $bitWidth = ceil(log($currentCode, 2));
+        $bitWidth = intval(ceil(log($currentCode, 2)));
         $binaryString = '';
 
         foreach ($codes as $code) {
@@ -162,7 +162,7 @@ class LZWFilter extends Filter
         }
 
         // Pad the binary string to make it a multiple of 8 bits (1 byte)
-        $binaryString = str_pad($binaryString, ceil(strlen($binaryString) / 8) * 8, "0", STR_PAD_RIGHT);
+        $binaryString = str_pad($binaryString, intval(ceil(strlen($binaryString) / 8) * 8), "0", STR_PAD_RIGHT);
 
         // Pack the binary string into bytes
         $out = '';

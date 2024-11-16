@@ -20,6 +20,7 @@ use Papier\Widget\DrawWidget;
 use Papier\Widget\ImageWidget;
 use Papier\Widget\RectangleWidget;
 use Papier\Widget\TextWidget;
+use InvalidArgumentException;
 
 class Papier
 {
@@ -228,8 +229,16 @@ class Papier
     {
         $page = $this->getBody()->addPage();
 
+		if (!NumbersArrayValidator::isValid($dimensions, 2)) {
+			throw new InvalidArgumentException("Dimensions is incorrect. See ".__CLASS__." class's documentation for possible values.");
+		}
+
         $mmToUserUnit = Papier::MM_TO_USER_UNIT;
-        $page->setMediaBox([0, 0, $mmToUserUnit * $dimensions[0], $mmToUserUnit * $dimensions[1]]);
+		$dimensions = [0, 0, $mmToUserUnit * $dimensions[0], $mmToUserUnit * $dimensions[1]];
+
+		$mediabox = Factory::create('Papier\Type\RectangleType', $dimensions);
+
+		$page->setMediaBox($mediabox);
 
         return $page;
     }

@@ -120,19 +120,13 @@ class PageTreeNodeType extends DictionaryType
     /**
      * Set boundaries of the physical medium on which the page shall be displayed or printed.
      *
-     * @param array $mediabox
+     * @param RectangleType $mediabox
      * @return PageTreeNodeType
      * @throws InvalidArgumentException if the provided argument is not of type 'array'.
      */
-    public function setMediaBox(array $mediabox): PageTreeNodeType
+    public function setMediaBox(RectangleType $mediabox): PageTreeNodeType
     {
-        if (!NumbersArrayValidator::isValid($mediabox, 4)) {
-            throw new InvalidArgumentException("MediaBox is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        $value = Factory::create('Papier\Type\RectangleType', $mediabox);
-
-        $this->setEntry('MediaBox', $value);
+        $this->setEntry('MediaBox', $mediabox);
         return $this;
     }
 
@@ -154,19 +148,13 @@ class PageTreeNodeType extends DictionaryType
     /**
      * Set the visible region of default user space.
      *
-     * @param array $cropbox
+     * @param RectangleType $cropbox
      * @return PageTreeNodeType
      * @throws InvalidArgumentException if the provided argument is not of type 'array'.
      */
-    public function setCropBox(array $cropbox): PageTreeNodeType
+    public function setCropBox(RectangleType $cropbox): PageTreeNodeType
     {
-        if (!NumbersArrayValidator::isValid($cropbox, 4)) {
-            throw new InvalidArgumentException("CropBox is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        $value = Factory::create('Papier\Type\RectangleType', $cropbox);
-
-        $this->setEntry('CropBox', $value);
+        $this->setEntry('CropBox', $cropbox);
         return $this;
     }
 

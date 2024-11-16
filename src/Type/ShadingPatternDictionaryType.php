@@ -46,7 +46,7 @@ class ShadingPatternDictionaryType extends PatternDictionaryType
             throw new InvalidArgumentException("Matrix is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Array', $matrix);
+        $value = Factory::create('Papier\Type\ArrayType', $matrix);
 
         $this->setEntry('Matrix', $value);
         return $this;

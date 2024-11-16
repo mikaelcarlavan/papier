@@ -160,10 +160,11 @@ class Matrix
             }
         }
 
+		$digits = intval($digits);
         for ($i = 0; $i < $rows; $i++) {
             echo "|";
             for ($j = 0; $j < $columns; $j++) {
-                echo " ".str_pad($this->getData($i, $j), $digits, " ", STR_PAD_LEFT)." |";
+                echo " ".str_pad((string)$this->getData($i, $j), $digits, " ", STR_PAD_LEFT)." |";
             }
             echo "\r\n";
         }

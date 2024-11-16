@@ -51,7 +51,7 @@ class DocumentCatalogType extends DictionaryType
     public function getExtensions(): ExtensionsDictionaryType
     {
         if (!$this->hasEntry('Extensions')) {
-            $value = Factory::create('ExtensionsDictionary', null, true);
+            $value = Factory::create('Papier\Type\ExtensionsDictionaryType', null, true);
             $this->setExtensions($value);
         }
 
@@ -298,7 +298,7 @@ class DocumentCatalogType extends DictionaryType
             throw new InvalidArgumentException("Lang is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('String', $lang);
+        $value = Factory::create('Papier\Type\StringType', $lang);
 
         $this->setEntry('Lang', $value);
         return $this;
