@@ -61,9 +61,9 @@ class Factory
     /**
      * Get instance of factory.
      *
-     * @return Factory|null
+     * @return Factory
      */
-    private static function getInstance(): ?Factory
+    private static function getInstance(): Factory
     {
         if (is_null(self::$instance)) {
             self::$instance = new Factory();  

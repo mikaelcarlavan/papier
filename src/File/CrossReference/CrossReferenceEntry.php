@@ -65,7 +65,6 @@ class CrossReferenceEntry extends BaseObject
      *  
      * @param bool $free
      * @return CrossReferenceEntry
-     * @throws InvalidArgumentException if the provided argument does not inherit 'bool'.
      */
     public function setFree(bool $free = true): CrossReferenceEntry
     {

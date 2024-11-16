@@ -17,11 +17,9 @@ class HexadecimalStringType extends StringObject
         $chars = str_split($this->getValue());
 
         $value = '';
-        if (is_array($chars)) {
-            foreach ($chars as $char) {
-                $value .= str_pad(dechex(ord($char)), 2, "0", STR_PAD_LEFT);
-            }
-        }
+		foreach ($chars as $char) {
+			$value .= str_pad(dechex(ord($char)), 2, "0", STR_PAD_LEFT);
+		}
 
         return '<' .$value. '>';
     }

@@ -44,11 +44,9 @@ class CrossReferenceTable extends ArrayObject
         $objects = $this->getSections();
 
         $value = '';
-        if (is_array($objects)) {
-            foreach ($objects as $object) {
-                $value .= $object->write();
-            }
-        }
+		foreach ($objects as $object) {
+			$value .= $object->write();
+		}
 
         return rtrim($value);
     }

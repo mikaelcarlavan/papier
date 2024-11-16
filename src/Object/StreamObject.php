@@ -4,6 +4,7 @@ namespace Papier\Object;
 
 use Papier\Factory\Factory;
 
+use Papier\Type\DictionaryType;
 use Papier\Type\FileSpecificationDictionaryType;
 use Papier\Type\FileSpecificationStringType;
 
@@ -131,16 +132,12 @@ class StreamObject extends DictionaryObject
     /**
      * Set decode parameters.
      *  
-     * @param  mixed  $parms
+     * @param  DictionaryType  $parms
      * @return StreamObject
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject' or 'ArrayObject'.
      */
-    public function setDecodeParms($parms): StreamObject
+    public function setDecodeParms(DictionaryType $parms): StreamObject
     {
-        if (!$parms instanceof DictionaryObject && !$parms instanceof ArrayObject) {
-            throw new InvalidArgumentException("DecodeParms is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('DecodeParms', $parms);
         return $this;
     } 
@@ -179,16 +176,12 @@ class StreamObject extends DictionaryObject
     /**
      * Set file decode parameters.
      *  
-     * @param  mixed  $parms
+     * @param  ArrayObject  $parms
      * @return StreamObject
      * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject' or 'ArrayObject'.
      */
-    public function setFDecodeParms($parms): StreamObject
+    public function setFDecodeParms(ArrayObject $parms): StreamObject
     {
-        if (!$parms instanceof DictionaryObject && !$parms instanceof ArrayObject) {
-            throw new InvalidArgumentException("FDecodeParms is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('FDecodeParms', $parms);
         return $this;
     } 

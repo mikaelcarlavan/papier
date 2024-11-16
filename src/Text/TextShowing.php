@@ -17,29 +17,31 @@ trait TextShowing
      * Show a text string.
      *  
      * @param   string   $text
-     * @return mixed
+     * @return static
      * @throws InvalidArgumentException if the provided arguments are not of type 'string'.
      */
-    public function showText(string $text)
+    public function showText(string $text): static
     {
         if (!StringValidator::isValid($text)) {
             throw new InvalidArgumentException("Text is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
   
         $state = sprintf('%s Tj', Factory::create('Papier\Type\LiteralStringType', $text)->format());
-        return $this->addToContent($state);
+		$this->addToContent($state);
+        return $this;
     }
 
     /**
      * Move to next line and show a text string.
      *  
      * @param string $text
-     * @return mixed
+     * @return static
      */
-    public function moveToNextLineAndShowText(string $text)
+    public function moveToNextLineAndShowText(string $text): static
     {
         $state = sprintf('%s \'', Factory::create('Papier\Type\LiteralStringType', $text)->format());
-        return $this->addToContent($state);
+		$this->addToContent($state);
+        return $this;
     }
 
     /**
@@ -50,9 +52,9 @@ trait TextShowing
      * @param   mixed   $ac
      * @throws InvalidArgumentException if the $text argument is not of type 'string'.
      * @throws InvalidArgumentException if the $aw and $ac arguments are not of type 'int' or 'float'.
-     * @return mixed
+     * @return static
      */
-    public function moveToNextLineAndShowTextWithSpacing(string $text, $aw, $ac)
+    public function moveToNextLineAndShowTextWithSpacing(string $text, $aw, $ac): static
     {
         if (!StringValidator::isValid($text)) {
             throw new InvalidArgumentException("Text is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -72,22 +74,20 @@ trait TextShowing
             Factory::create('Papier\Type\LiteralStringType', $text)->format()
         );
 
-        return $this->addToContent($state);
+		$this->addToContent($state);
+        return $this;
     }
 
     /**
      * Show one or more texts.
      *  
      * @param  ArrayObject   $texts
-     * @return mixed
+     * @return static
      */
-    public function showTexts(ArrayObject $texts)
+    public function showTexts(ArrayObject $texts): static
     {
-        if (!$texts instanceof ArrayObject) {
-            throw new InvalidArgumentException("Texts is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-  
         $state = sprintf('%s TJ', $texts->format());
-        return $this->addToContent($state);
+		$this->addToContent($state);
+        return $this;
     }
 }

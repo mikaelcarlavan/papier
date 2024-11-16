@@ -158,7 +158,7 @@ class PageObjectType extends DictionaryType
         if (!NumbersArrayValidator::isValid($bleedbox, 4)) {
             throw new InvalidArgumentException("BleedBox is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
-
+		/** @var RectangleType $value */
         $value = Factory::create('Papier\Type\RectangleType', $bleedbox);
 
         $this->setEntry('BleedBox', $value);
@@ -257,10 +257,6 @@ class PageObjectType extends DictionaryType
      */
     public function setBoxColorInfo(DictionaryObject $boxcolorinfo): PageObjectType
     {
-        if (!$boxcolorinfo instanceof DictionaryObject) {
-            throw new InvalidArgumentException("BoxColorInfo is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         $this->setEntry('BoxColorInfo', $boxcolorinfo);
         return $this;
     }

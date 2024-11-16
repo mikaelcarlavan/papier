@@ -47,7 +47,7 @@ class ASCII85Filter extends Filter
         $groups = str_split($value, 5);
 
         $result = '';
-        if (is_array($groups) && count($groups) > 0) {
+        if (count($groups) > 0) {
             foreach ($groups as $i => $group) {
 
                 $data = (85 ** 4) * (ord($group[0]) - 33) + (85 ** 3)  * (ord($group[1]) - 33) + (85 ** 2) * (ord($group[2]) - 33) +  (85) * (ord($group[3]) - 33) + (ord($group[4]) - 33);
@@ -67,7 +67,7 @@ class ASCII85Filter extends Filter
             throw new RuntimeException("Value is empty. See ".__CLASS__." class's documentation for possible values.");         
         }
 
-        return $pad > 0 ? substr($result, 0, -$pad) : $result;
+        return substr($result, 0, -$pad);
     }
 
     /**
@@ -92,7 +92,7 @@ class ASCII85Filter extends Filter
         $groups = str_split($value, 4);
 
         $result = '';
-        if (is_array($groups) && count($groups) > 0) {
+        if (count($groups) > 0) {
             foreach ($groups as $i => $group) {
 
                 $data = (256 ** 3) * ord($group[0]) + (256 ** 2)  * ord($group[1]) + 256 * ord($group[2]) +  ord($group[3]);
@@ -110,7 +110,7 @@ class ASCII85Filter extends Filter
             }
         }
 
-        $result = $pad > 0 ? substr($result, 0, -$pad) : $result;
+        $result = substr($result, 0, -$pad);
         return $result . self::EOD_MARKER;
     }
 }
