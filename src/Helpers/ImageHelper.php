@@ -104,7 +104,7 @@ class ImageHelper
 			$colors = null;
 			$data = FlateFilter::decode($data);
 
-			$bytesPerPixel = $colorType == 4 ? 2 : 4;
+			$channels = $colorType == 4 ? 2 : 4; // Gray + alpha or RBG + alpha
 
 			$pixel = 0;
 			for ($row = 0; $row < $height; $row++) {
@@ -113,7 +113,7 @@ class ImageHelper
 				$pixel++;
 				// Data
 				for ($column = 0; $column < $width; $column++) {
-					for ($color = 0; $color < $bytesPerPixel - 1; $color++) {
+					for ($color = 0; $color < $channels - 1; $color++) {
 						$colors .= $data[$pixel];
 						$pixel++;
 					}
