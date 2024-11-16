@@ -85,7 +85,8 @@ class TreeNodeType extends DictionaryType
             throw new RunTimeException("Names is already present. See ".__CLASS__." class's documentation for possible values.");  
         }
 
-        return $this->setEntry('Kids', $kids);
+		$this->setEntry('Kids', $kids);
+        return $this;
     }
 
     /**
@@ -101,7 +102,8 @@ class TreeNodeType extends DictionaryType
             throw new RunTimeException("Kids is already present. See ".__CLASS__." class's documentation for possible values.");  
         }
 
-        return $this->setEntry('Names', $names);
+		$this->setEntry('Names', $names);
+        return $this;
     } 
 
     /**
@@ -132,7 +134,8 @@ class TreeNodeType extends DictionaryType
      */
     protected function setLimits(LimitsArrayType $limits): TreeNodeType
     {
-        return $this->setEntry('Limits', $limits);
+		$this->setEntry('Limits', $limits);
+        return $this;
     } 
 
 

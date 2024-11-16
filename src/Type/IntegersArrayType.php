@@ -30,6 +30,8 @@ class IntegersArrayType extends ArrayType
             $objects[$i] = $object;
         }
 
-        return parent::setValue($objects);
+		parent::setValue($objects);
+
+        return $this;
     } 
 }

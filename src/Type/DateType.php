@@ -25,8 +25,9 @@ class DateType extends IntegerObject
         }
 
         $timestamp = $value instanceof DateTime ? $value->format('U') : strtotime($value);
+		parent::setValue(intval($timestamp));
 
-        return parent::setValue(intval($timestamp));
+        return $this;
     } 
 
      /**

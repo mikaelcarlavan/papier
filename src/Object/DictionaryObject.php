@@ -210,7 +210,8 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
      */
     public function clearObjects(): DictionaryObject
     {
-        return $this->clearValue();
+		$this->clearValue();
+        return $this;
     }
 
     /**

@@ -19,7 +19,8 @@ class ExtensionsDictionaryType extends DictionaryObject
      */
     public function addExtension(string $name): DeveloperExtensionDictionaryType
     {
-        $extension = Factory::create('DeveloperExtensionDictionary');
+		/** @var DeveloperExtensionDictionaryType $extension */
+        $extension = Factory::create('Papier\Type\DeveloperExtensionDictionaryType');
 
         $this->setEntry($name, $extension);
         return $extension;

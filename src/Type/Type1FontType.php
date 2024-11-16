@@ -39,7 +39,8 @@ class Type1FontType extends DictionaryType
     public function setName(string $name): Type1FontType
     {
         $value = Factory::create('Papier\Type\NameType', $name);
-        return $this->setEntry('Name', $value);
+		$this->setEntry('Name', $value);
+        return $this;
     }
 
     /**
@@ -51,7 +52,8 @@ class Type1FontType extends DictionaryType
     public function setBaseFont(string $name): Type1FontType
     {
         $value = Factory::create('Papier\Type\NameType', $name);
-        return $this->setEntry('BaseFont', $value);
+		$this->setEntry('BaseFont', $value);
+        return $this;
     }
 
     /**
@@ -63,7 +65,8 @@ class Type1FontType extends DictionaryType
     public function setFirstChar(int $fc): Type1FontType
     {
         $value = Factory::create('Papier\Type\IntegerType', $fc);
-        return $this->setEntry('FirstChar', $value);
+		$this->setEntry('FirstChar', $value);
+        return $this;
     }
 
     /**
@@ -75,7 +78,8 @@ class Type1FontType extends DictionaryType
     public function setLastChar(int $lc): Type1FontType
     {
         $value = Factory::create('Papier\Type\IntegerType', $lc);
-        return $this->setEntry('LastChar', $value);
+		$this->setEntry('LastChar', $value);
+        return $this;
     }
 
     /**
@@ -86,7 +90,8 @@ class Type1FontType extends DictionaryType
      */
     public function setWidths(ArrayObject $widths): Type1FontType
     {
-        return $this->setEntry('Widths', $widths);
+		$this->setEntry('Widths', $widths);
+        return $this;
     }
 
     /**
@@ -97,7 +102,8 @@ class Type1FontType extends DictionaryType
      */
     public function setFontDescriptor(DictionaryObject $fd): Type1FontType
     {
-        return $this->setEntry('FontDescriptor', $fd);
+		$this->setEntry('FontDescriptor', $fd);
+        return $this;
     }
 
     /**
@@ -120,8 +126,9 @@ class Type1FontType extends DictionaryType
         }
 
         $value = $encoding instanceof DictionaryObject ? $encoding : Factory::create('Papier\Type\NameType', $encoding);
-        
-        return $this->setEntry('Encoding', $value);
+
+		$this->setEntry('Encoding', $value);
+        return $this;
     }
 
     /**
@@ -132,7 +139,8 @@ class Type1FontType extends DictionaryType
      */
     public function setToUnicode(StreamObject $tounicode): Type1FontType
     {
-        return $this->setEntry('ToUnicode', $tounicode);
+		$this->setEntry('ToUnicode', $tounicode);
+        return $this;
     }
 
     /**

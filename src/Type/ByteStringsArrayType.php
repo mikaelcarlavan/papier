@@ -15,7 +15,7 @@ class ByteStringsArrayType extends ArrayType
     *
     * @param mixed $value
     * @return ByteStringsArrayType
-    *@throws InvalidArgumentException if the provided argument is not an array of 'string'.
+    * @throws InvalidArgumentException if the provided argument is not an array of 'string'.
     */
     public function setValue(mixed $value): ByteStringsArrayType
     {
@@ -30,6 +30,7 @@ class ByteStringsArrayType extends ArrayType
             $objects[$i] = $object;
         }
 
-        return parent::setValue($objects);
+		parent::setValue($objects);
+        return $this;
     } 
 }

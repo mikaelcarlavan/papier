@@ -14,7 +14,7 @@ class FileHeader extends BaseObject
      *
      * @var bool
      */
-    private $binaryData = false;  
+    private bool $binaryData = false;
 
     /**
      * Format header's content.
@@ -62,9 +62,9 @@ class FileHeader extends BaseObject
     /**
      * Get if file has binary data.
      *
-     * @return int
+     * @return bool
      */
-    protected function hasBinaryData()
+    protected function hasBinaryData(): bool
     {
         return $this->binaryData;
     }

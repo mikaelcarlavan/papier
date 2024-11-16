@@ -49,7 +49,8 @@ class NumberTreeNodeType extends TreeNodeType
             throw new RunTimeException("Kids is already present. See ".__CLASS__." class's documentation for possible values.");  
         }
 
-        return $this->setEntry('Nums', $nums);
+		$this->setEntry('Nums', $nums);
+        return $this;
     } 
 
     /**

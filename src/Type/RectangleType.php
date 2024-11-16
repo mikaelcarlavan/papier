@@ -27,7 +27,9 @@ class RectangleType extends NumbersArrayType
         $objects = $this->getObjects();
         $objects[0] = $value;
 
-        return $this->setObjects($objects);
+		$this->setObjects($objects);
+
+        return $this;
     } 
     
     
@@ -49,7 +51,9 @@ class RectangleType extends NumbersArrayType
         $objects = $this->getObjects();
         $objects[1] = $value;
 
-        return $this->setObjects($objects);
+		$this->setObjects($objects);
+
+        return $this;
     } 
 
     /**
@@ -70,7 +74,8 @@ class RectangleType extends NumbersArrayType
         $objects = $this->getObjects();
         $objects[2] = $value;
 
-        return $this->setObjects($objects);
+		$this->setObjects($objects);
+        return $this;
     } 
 
     /**
@@ -91,6 +96,7 @@ class RectangleType extends NumbersArrayType
         $objects = $this->getObjects();
         $objects[3] = $value;
 
-        return $this->setObjects($objects);
+		$this->setObjects($objects);
+        return $this;
     }
 }

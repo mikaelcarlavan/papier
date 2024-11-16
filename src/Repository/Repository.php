@@ -38,8 +38,8 @@ class Repository extends ArrayObject
     {
         $objects = $this->getObjects();
         $objects[$object->getNumber()] = $object;
-
-        return $this->setObjects($objects);
+		$this->setObjects($objects);
+        return $this;
     }
 
     /**
@@ -52,7 +52,7 @@ class Repository extends ArrayObject
     {
         $objects = $this->getObjects();
         unset($objects[$object->getNumber()]);
-
-        return $this->setObjects($objects);
+		$this->setObjects($objects);
+        return $this;
     }
 }

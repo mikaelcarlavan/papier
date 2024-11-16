@@ -12,7 +12,7 @@ class StringObject extends IndirectObject
     *
     * @param mixed $value
     * @return StringObject
-    *@throws InvalidArgumentException if the provided argument is not of type 'string'.
+    * @throws InvalidArgumentException if the provided argument is not of type 'string'.
     */
     public function setValue(mixed $value): StringObject
     {
@@ -20,7 +20,8 @@ class StringObject extends IndirectObject
             throw new InvalidArgumentException("String is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        return parent::setValue($value);
+		parent::setValue($value);
+        return $this;
     } 
 
     /**

@@ -105,8 +105,9 @@ class ArrayObject extends DictionaryObject
     {
         $objects = $this->getObjects();
         $objects[] = $object;
+		$this->setObjects($objects);
 
-        return $this->setObjects($objects);
+        return $this;
     }
 
     /**
