@@ -26,7 +26,7 @@ class FunctionBasedShadingDictionaryType extends ShadingDictionaryType
             throw new InvalidArgumentException("Domain is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\ArrayType', $domain);
+        $value = Factory::create('Array', $domain);
 
         $this->setEntry('Domain', $value);
         return $this;
@@ -45,7 +45,7 @@ class FunctionBasedShadingDictionaryType extends ShadingDictionaryType
             throw new InvalidArgumentException("Matrix is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\NumbersArrayType', $matrix);
+        $value = Factory::create('NumbersArray', $matrix);
 
         $this->setEntry('Matrix', $value);
         return $this;

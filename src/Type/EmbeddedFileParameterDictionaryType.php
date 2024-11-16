@@ -84,7 +84,7 @@ class EmbeddedFileParameterDictionaryType extends DictionaryObject
      */
     public function setCheckSum(string $checksum): EmbeddedFileParameterDictionaryType
     {
-        $value = Factory::create('Papier\Type\LiteralStringType', $checksum);
+        $value = Factory::create('LiteralString', $checksum);
 
         $this->setEntry('CheckSum', $value);
         return $this;

@@ -66,7 +66,7 @@ class NumberTreeNodeType extends TreeNodeType
         }
 
         if (!$this->hasEntry('Nums')) {
-            $nums = Factory::create('Papier\Type\IntegersArrayType');
+            $nums = Factory::create('IntegerKeyArray');
             $this->setEntry('Nums', $nums);
         }
 

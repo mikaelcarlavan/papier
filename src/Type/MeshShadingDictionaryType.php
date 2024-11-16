@@ -86,7 +86,7 @@ class MeshShadingDictionaryType extends ShadingDictionaryType
             throw new InvalidArgumentException("Decode is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\NumbersArrayType', $decode);
+        $value = Factory::create('NumbersArray', $decode);
 
         $this->setEntry('Decode', $value);
         return $this;

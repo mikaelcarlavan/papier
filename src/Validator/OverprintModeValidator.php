@@ -22,7 +22,7 @@ class OverprintModeValidator implements Validator
      /**
      * Test if given parameter is a valid overprint mode.
      * 
-     * @param  int  $value
+     * @param  string  $value
      * @return bool
      */
     public static function isValid($value): bool

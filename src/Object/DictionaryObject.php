@@ -110,10 +110,10 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
     /**
      * Get value for given key.
      *  
-     * @param  mixed  $key
+     * @param  string  $key
      * @return mixed
      */
-    protected function getObjectForKey(mixed $key): mixed
+    protected function getObjectForKey(string $key): mixed
     {
         $objects = $this->getObjects();
         return $objects[$key] ?? new NullObject();
@@ -150,10 +150,10 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
     /**
      * Get entry from dictionary.
      *      
-     * @param  mixed  $key
+     * @param  string  $key
      * @return mixed
      */
-    public function getEntry(mixed $key)
+    public function getEntry(string $key)
     {
         return $this->getObjectForKey($key);
     }

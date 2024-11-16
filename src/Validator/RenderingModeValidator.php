@@ -28,7 +28,7 @@ class RenderingModeValidator implements Validator
      /**
      * Test if given parameter is a valid rendering mode.
      * 
-     * @param  mixed  $value
+     * @param  string  $value
      * @return bool
      */
     public static function isValid($value): bool

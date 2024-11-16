@@ -107,10 +107,10 @@ class TilingPatternDictionaryType extends PatternDictionaryType
     /**
      * Set resources.
      *  
-     * @param  DictionaryType  $resources
+     * @param  DictionaryObject  $resources
      * @return TilingPatternDictionaryType
      */
-    public function setResources(DictionaryType $resources): TilingPatternDictionaryType
+    public function setResources(DictionaryObject $resources): TilingPatternDictionaryType
     {
         $this->setEntry('Resources', $resources);
         return $this;
@@ -124,7 +124,7 @@ class TilingPatternDictionaryType extends PatternDictionaryType
     public function getResources(): DictionaryType
     {
         if (!$this->hasEntry('Resources')) {
-            $resources = Factory::create('Papier\Type\DictionaryType');
+            $resources = Factory::create('Dictionary');
             $this->setResources($resources);
         }
 
@@ -144,7 +144,7 @@ class TilingPatternDictionaryType extends PatternDictionaryType
             throw new InvalidArgumentException("Matrix is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\NumbersArrayType', $matrix);
+        $value = Factory::create('NumbersArray', $matrix);
 
         $this->setEntry('Matrix', $value);
         return $this;

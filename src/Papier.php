@@ -13,8 +13,6 @@ use Papier\File\CrossReference;
 use Papier\Object\NullObject;
 use Papier\Type\DocumentInformationDictionaryType;
 use Papier\Type\PageObjectType;
-use Papier\Type\RectangleType;
-use Papier\Type\TreeNodeType;
 use Papier\Type\ViewerPreferencesDictionaryType;
 use Papier\Validator\NumbersArrayValidator;
 use Papier\Validator\NumberValidator;
@@ -231,14 +229,7 @@ class Papier
         $page = $this->getBody()->addPage();
 
         $mmToUserUnit = Papier::MM_TO_USER_UNIT;
-		/** @var RectangleType $mediabox */
-		$mediabox = Factory::create('Papier\Type\RectangleType');
-		$mediabox->setLowerLeftX(0);
-		$mediabox->setLowerLeftY(0);
-		$mediabox->setUpperRightX($mmToUserUnit * $dimensions[0]);
-		$mediabox->setUpperRightY($mmToUserUnit * $dimensions[1]);
-
-		$page->setMediaBox($mediabox);
+        $page->setMediaBox([0, 0, $mmToUserUnit * $dimensions[0], $mmToUserUnit * $dimensions[1]]);
 
         return $page;
     }

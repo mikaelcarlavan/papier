@@ -29,7 +29,7 @@ class RadialShadingDictionaryType extends ShadingDictionaryType
             throw new InvalidArgumentException("Coords is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\NumbersArrayType', $coords);
+        $value = Factory::create('NumbersArray', $coords);
 
         $this->setEntry('Coords', $value);
         return $this;
@@ -48,7 +48,7 @@ class RadialShadingDictionaryType extends ShadingDictionaryType
             throw new InvalidArgumentException("Domain is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\NumbersArrayType', $domain);
+        $value = Factory::create('NumbersArray', $domain);
 
         $this->setEntry('Domain', $value);
         return $this;
@@ -79,7 +79,7 @@ class RadialShadingDictionaryType extends ShadingDictionaryType
             throw new InvalidArgumentException("Extend is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\BooleansArrayType', $extend);
+        $value = Factory::create('BooleansArray', $extend);
 
         $this->setEntry('Extend', $value);
         return $this;

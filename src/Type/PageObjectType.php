@@ -81,13 +81,19 @@ class PageObjectType extends DictionaryType
     /**
      * Set boundaries of the physical medium on which the page shall be displayed or printed.
      *  
-     * @param RectangleType $mediabox
+     * @param array $mediabox
      * @return PageObjectType
      * @throws InvalidArgumentException if the provided argument is not of type 'array'.
      */
-    public function setMediaBox(RectangleType $mediabox): PageObjectType
+    public function setMediaBox(array $mediabox): PageObjectType
     {
-        $this->setEntry('MediaBox', $mediabox);
+        if (!NumbersArrayValidator::isValid($mediabox, 4)) {
+            throw new InvalidArgumentException("MediaBox is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $value = Factory::create('Papier\Type\RectangleType', $mediabox);
+        
+        $this->setEntry('MediaBox', $value);
         return $this;
     }
 
@@ -100,7 +106,7 @@ class PageObjectType extends DictionaryType
     {
         if (!$this->hasEntry('MediaBox')) {
             $mediabox = Factory::create('Papier\Type\RectangleType');
-            $this->setMediaBox($mediabox);
+            $this->setMediaBox($mediabox->getObjects());
         }
 
         return $this->getEntry('MediaBox');
@@ -109,13 +115,19 @@ class PageObjectType extends DictionaryType
     /**
      * Set the visible region of default user space.
      *  
-     * @param RectangleType $cropbox
+     * @param array $cropbox
      * @return PageObjectType
      * @throws InvalidArgumentException if the provided argument is not of type 'array'.
      */
-    public function setCropBox(RectangleType $cropbox): PageObjectType
+    public function setCropBox(array $cropbox): PageObjectType
     {
-        $this->setEntry('CropBox', $cropbox);
+        if (!NumbersArrayValidator::isValid($cropbox, 4)) {
+            throw new InvalidArgumentException("CropBox is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $value = Factory::create('Papier\Type\RectangleType', $cropbox);
+
+        $this->setEntry('CropBox', $value);
         return $this;
     }
 
@@ -137,13 +149,19 @@ class PageObjectType extends DictionaryType
     /**
      * Set region to which the contents of the page shall be clipped when output in a production enviroment.
      *  
-     * @param RectangleType $bleedbox
+     * @param array $bleedbox
      * @return PageObjectType
      * @throws InvalidArgumentException if the provided argument is not of type 'array'.
      */
-    public function setBleedBox(RectangleType $bleedbox): PageObjectType
+    public function setBleedBox(array $bleedbox): PageObjectType
     {
-        $this->setEntry('BleedBox', $bleedbox);
+        if (!NumbersArrayValidator::isValid($bleedbox, 4)) {
+            throw new InvalidArgumentException("BleedBox is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+		/** @var RectangleType $value */
+        $value = Factory::create('Papier\Type\RectangleType', $bleedbox);
+
+        $this->setEntry('BleedBox', $value);
         return $this;
     }
 
@@ -165,13 +183,19 @@ class PageObjectType extends DictionaryType
     /**
      * Set intended dimensions of the finished page after trimming.
      *  
-     * @param RectangleType $trimbox
+     * @param array $trimbox
      * @return PageObjectType
      * @throws InvalidArgumentException if the provided argument is not of type 'array'.
      */
-    public function setTrimBox(RectangleType $trimbox): PageObjectType
+    public function setTrimBox(array $trimbox): PageObjectType
     {
-        $this->setEntry('TrimBox', $trimbox);
+        if (!NumbersArrayValidator::isValid($trimbox, 4)) {
+            throw new InvalidArgumentException("TrimBox is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $value = Factory::create('Papier\Type\RectangleType', $trimbox);
+
+        $this->setEntry('TrimBox', $value);
         return $this;
     }
 
@@ -193,13 +217,19 @@ class PageObjectType extends DictionaryType
     /**
      * Set extend of the page's meaningful content.
      *  
-     * @param RectangleType $artbox
+     * @param array $artbox
      * @return PageObjectType
      * @throws InvalidArgumentException if the provided argument is not of type 'array'.
      */
-    public function setArtBox(RectangleType $artbox): PageObjectType
+    public function setArtBox(array $artbox): PageObjectType
     {
-        $this->setEntry('ArtBox', $artbox);
+        if (!NumbersArrayValidator::isValid($artbox, 4)) {
+            throw new InvalidArgumentException("ArtBox is incorrect. See ".__CLASS__." class's documentation for possible values.");
+        }
+
+        $value = Factory::create('Papier\Type\RectangleType', $artbox);
+
+        $this->setEntry('ArtBox', $value);
         return $this;
     }
 
