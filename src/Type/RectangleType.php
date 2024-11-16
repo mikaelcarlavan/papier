@@ -23,11 +23,7 @@ class RectangleType extends NumbersArrayType
         }
 
         $value = Factory::create('Papier\Type\NumberType', $coordinate);
-
-        $objects = $this->getObjects();
-        $objects[0] = $value;
-
-		$this->setObjects($objects);
+		$this->setObjectForKey(0, $value);
 
         return $this;
     } 
@@ -47,11 +43,7 @@ class RectangleType extends NumbersArrayType
         }
 
         $value = Factory::create('Papier\Type\NumberType', $coordinate);
-
-        $objects = $this->getObjects();
-        $objects[1] = $value;
-
-		$this->setObjects($objects);
+		$this->setObjectForKey(1, $value);
 
         return $this;
     } 
@@ -70,11 +62,7 @@ class RectangleType extends NumbersArrayType
         }
 
         $value = Factory::create('Papier\Type\NumberType', $coordinate);
-
-        $objects = $this->getObjects();
-        $objects[2] = $value;
-
-		$this->setObjects($objects);
+		$this->setObjectForKey(2, $value);
         return $this;
     } 
 
@@ -92,11 +80,7 @@ class RectangleType extends NumbersArrayType
         }
 
         $value = Factory::create('Papier\Type\NumberType', $coordinate);
-
-        $objects = $this->getObjects();
-        $objects[3] = $value;
-
-		$this->setObjects($objects);
+		$this->setObjectForKey(3, $value);
         return $this;
     }
 }
