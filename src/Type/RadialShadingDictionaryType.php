@@ -19,7 +19,7 @@ class RadialShadingDictionaryType extends ShadingDictionaryType
     /**
      * Set centers and radii of the starting and ending circles.
      *  
-     * @param array $coords
+     * @param array<float> $coords
      * @return RadialShadingDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'array'.
      */
@@ -38,7 +38,7 @@ class RadialShadingDictionaryType extends ShadingDictionaryType
     /**
      * Set limiting values.
      *  
-     * @param array $domain
+     * @param array<float> $domain
      * @return RadialShadingDictionaryType
      *@throws InvalidArgumentException if the provided argument is not of type 'array'.
      */
@@ -69,7 +69,7 @@ class RadialShadingDictionaryType extends ShadingDictionaryType
     /**
      * Allow extension of the shading beyond the starting and ending circles.
      *  
-     * @param  array  $extend
+     * @param  array<bool>  $extend
      * @return RadialShadingDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'array'.
      */
