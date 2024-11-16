@@ -9,21 +9,8 @@ use Papier\Filter\Params\FlateDecodeParams;
 use Papier\Filter\Predictor;
 use Papier\Graphics\DeviceColourSpace;
 use Papier\Helpers\ImageHelper;
-use Papier\Object\StringObject;
 use Papier\Papier;
-use Papier\Stream\TextStream;
-use Papier\Text\RenderingMode;
-use Papier\Type\ArrayType;
-use Papier\Type\ContentStreamType;
-use Papier\Type\FileSpecificationDictionaryType;
-use Papier\Type\FileSpecificationStringType;
-use Papier\Type\ImageType;
-use Papier\Validator\ArrayValidator;
-use Papier\Validator\BooleanValidator;
-use Papier\Validator\IntegerValidator;
 use Papier\Validator\NumberValidator;
-use Papier\Validator\RenderingModeValidator;
-use Papier\Validator\StringValidator;
 use InvalidArgumentException;
 
 class ImageWidget extends BaseWidget

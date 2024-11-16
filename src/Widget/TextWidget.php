@@ -6,8 +6,6 @@ use Papier\Document\ProcedureSet;
 use Papier\Factory\Factory;
 use Papier\Papier;
 use Papier\Text\RenderingMode;
-use Papier\Type\ImageType;
-use Papier\Util\Matrix;
 
 
 class TextWidget extends BaseWidget
