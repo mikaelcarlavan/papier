@@ -8,6 +8,9 @@ use Iterator;
 use Papier\Factory\Factory;
 use Papier\Validator\ArrayValidator;
 
+/**
+ * @implements Iterator<mixed, mixed>
+ */
 class DictionaryObject extends IndirectObject implements Countable, Iterator
 {
     /**
@@ -195,7 +198,7 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
     /**
      * Get keys.
      *  
-     * @return array
+     * @return array<mixed>
      */
     public function getKeys(): array
     {
@@ -217,7 +220,7 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
     /**
      * Set objects.
      * 
-     * @param   array   $objects
+     * @param  array<BaseObject>   $objects
      * @return DictionaryObject
      * @throws InvalidArgumentException if the provided argument is not an array of 'IndirectObject'.
      */
@@ -225,12 +228,6 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
     {
         if (!ArrayValidator::isValid($objects)) {
             throw new InvalidArgumentException("Object's list is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        foreach ($objects as $object) {
-            if (!$object instanceof BaseObject) {
-                throw new InvalidArgumentException("Object is incorrect. See ".__CLASS__." class's documentation for possible values.");
-            }
         }
         
         $this->setValue($objects);

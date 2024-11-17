@@ -20,6 +20,7 @@ use Papier\Widget\DrawWidget;
 use Papier\Widget\ImageWidget;
 use Papier\Widget\RectangleWidget;
 use Papier\Widget\TextWidget;
+use Papier\Widget\BaseWidget;
 use InvalidArgumentException;
 
 class Papier
@@ -68,7 +69,7 @@ class Papier
     /**
      * Widgets
      *
-     * @var array
+     * @var array<BaseWidget>
      */
     private array $widgets = [];
 
@@ -222,7 +223,7 @@ class Papier
 	/**
 	 * Add page to PDF's content.
 	 *
-	 * @param array $dimensions Dimensions (width and height) of the page in millimeters.
+	 * @param array<float> $dimensions Dimensions (width and height) of the page in millimeters.
 	 * @return PageObjectType
 	 */
     public function addPage(array $dimensions): PageObjectType
@@ -258,7 +259,7 @@ class Papier
 	/**
 	 * Get widgets.
 	 *
-	 * @return array
+	 * @return array<BaseWidget>
 	 */
     private function getWidgets(): array
     {

@@ -52,7 +52,7 @@ class FileHelper
      * @param string $mode
      * @return FileHelper
      */
-    public function open(string $file, string $mode = 'r')
+    public function open(string $file, string $mode = 'r'): FileHelper
     {
         $stream = fopen($file, $mode);
         if (!$stream) {
@@ -74,7 +74,14 @@ class FileHelper
         $this->stream = null;
     }
 
-    public function read($length) {
+	/**
+	 * Read bytes from file
+	 *
+	 * @param int $length
+	 * @return mixed
+	 */
+    public function read(int $length): mixed
+	{
         try {
             return fread($this->getStream(), $length);
         } catch (\Exception $e) {
@@ -82,7 +89,13 @@ class FileHelper
         }
     }
 
-    public function unpackInteger() {
+	/**
+	 * Unpack integer from stream
+	 *
+	 * @return int
+	 */
+    public function unpackInteger(): int
+	{
         try {
             $chunk = fread($this->getStream(), 4);
             $values = unpack("N", $chunk);
@@ -92,7 +105,13 @@ class FileHelper
         }
     }
 
-    public function unpackByte() {
+	/**
+	 * Unpack byte from stream
+	 *
+	 * @return mixed
+	 */
+    public function unpackByte(): mixed
+	{
         try {
             $chunk = fread($this->getStream(), 1);
             $values = unpack("C", $chunk);

@@ -26,7 +26,7 @@ class CrossReferenceSubsection extends ArrayObject
     /**
      * Get subsections.
      *  
-     * @return array
+     * @return array<CrossReferenceEntry>
      */
     public function getEntries(): array
     {

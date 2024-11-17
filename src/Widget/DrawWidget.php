@@ -12,14 +12,14 @@ class DrawWidget extends BaseWidget
     /**
      * The path
      *
-     * @var array
+     * @var array<mixed>
      */
     protected array $path = [];
 
     /**
      * Get path.
      *
-     * @return array
+     * @return array<mixed>
      */
     public function getPath(): array
     {

@@ -2,6 +2,7 @@
 
 namespace Papier\Graphics;
 
+use Papier\Validator\NumbersArrayValidator;
 use Papier\Validator\NumberValidator;
 use Papier\Validator\LineCapStyleValidator;
 use Papier\Validator\LineJoinStyleValidator;
@@ -145,7 +146,7 @@ trait GraphicsState
     /**
      * Set line dash pattern.
      *
-     * @param array $da
+     * @param array<int> $da
      * @param mixed $dp
      * @return mixed
      * @throws InvalidArgumentException if the $da argument is not an array of 'int'.
@@ -215,19 +216,15 @@ trait GraphicsState
     /**
      * Check CTM components.
      *
-     * @param array $components
+     * @param array<float> $components
      * @return bool
      * @throws InvalidArgumentException if one of the provided argument is not 'float' or 'int'.
      */
     private function checkCTMComponents(array $components): bool
     {
-        if (count($components) > 0) {
-            foreach ($components as $key => $component) {
-                if (!NumberValidator::isValid($component)) {
-                    throw new InvalidArgumentException("$key is incorrect. See ".__CLASS__." class's documentation for possible values.");
-                }
-            }
-        }
+		if (!NumbersArrayValidator::isValid($components)) {
+			throw new InvalidArgumentException("Components is incorrect. See ".__CLASS__." class's documentation for possible values.");
+		}
 
         return true;
     }

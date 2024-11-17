@@ -27,7 +27,7 @@ class CrossReferenceTable extends ArrayObject
     /**
      * Get subsections.
      *  
-     * @return array
+     * @return array<CrossReferenceSection>
      */
     public function getSections(): array
     {

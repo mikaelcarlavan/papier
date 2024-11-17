@@ -13,7 +13,7 @@ class CalRGBColourSpaceDictionaryType extends CalGrayColourSpaceDictionaryType
     /**
      * Set interpolation matrix.
      * 
-     * @param array $matrix
+     * @param array<float> $matrix
      * @return CalRGBColourSpaceDictionaryType
      * @throws InvalidArgumentException if the provided argument is not a 9 length array of type 'int' or 'float'.
      */

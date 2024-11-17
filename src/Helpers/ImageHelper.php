@@ -14,7 +14,7 @@ class ImageHelper
      * Read file and returns image colors and transparency.
      *
      * @param string $file
-     * @return array
+     * @return array<mixed>
 	 */
     public static function getDataFromSource(string $file): array
 	{
@@ -48,7 +48,7 @@ class ImageHelper
      * Read PNG file and returns compressed colors and transparency.
      *
      * @param string $file
-     * @return array
+     * @return array<mixed>
 	 */
     public static function getDataFromPNG(string $file): array
 	{

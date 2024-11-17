@@ -36,7 +36,7 @@ class ShadingPatternDictionaryType extends PatternDictionaryType
     /**
      * Set pattern matrix.
      *  
-     * @param array $matrix
+     * @param array<float> $matrix
      * @return ShadingPatternDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'array'.
      */

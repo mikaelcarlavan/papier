@@ -16,7 +16,7 @@ class FunctionBasedShadingDictionaryType extends ShadingDictionaryType
     /**
      * Set domain.
      *  
-     * @param  array $domain
+     * @param  array<mixed> $domain
      * @throws InvalidArgumentException if the provided argument is not of type 'array'.
      * @return FunctionBasedShadingDictionaryType
      */
@@ -35,7 +35,7 @@ class FunctionBasedShadingDictionaryType extends ShadingDictionaryType
     /**
      * Set transformation matrix.
      *  
-     * @param  array  $matrix
+     * @param  array<float>  $matrix
      * @throws InvalidArgumentException if the provided argument is not of type 'array'.
      * @return FunctionBasedShadingDictionaryType
      */
