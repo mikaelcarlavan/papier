@@ -17,7 +17,7 @@ class BooleansArrayValidator extends ArrayValidator
 
         if ($isValid) {
             foreach ($value as $number) {
-                $isValid = $isValid & BooleanValidator::isValid($number);
+                $isValid = $isValid && BooleanValidator::isValid($number);
             }
         }
 

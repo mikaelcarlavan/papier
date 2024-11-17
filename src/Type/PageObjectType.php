@@ -252,13 +252,12 @@ class PageObjectType extends DictionaryType
     /**
      * Get contents.
      *
-     * @param  bool  $stream
-     * @return ContentStreamType|ArrayType
+     * @return ContentStreamType
      */
-    public function getContents(bool $stream = true): ContentStreamType|ArrayType
+    public function getContents(): ContentStreamType
     {
         if (!$this->hasEntry('Contents')) {
-            $contents = $stream ? Factory::create('Papier\Type\ContentStreamType', null, true) : Factory::create('Papier\Type\ArrayType', null, true);
+            $contents = Factory::create('Papier\Type\ContentStreamType', null, true);
             $this->setContents($contents);
         }
 

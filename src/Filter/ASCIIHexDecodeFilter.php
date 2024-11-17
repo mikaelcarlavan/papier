@@ -12,9 +12,9 @@ class ASCIIHexDecodeFilter extends Filter
      *
      * @param string $stream
      * @param DictionaryObject|null $param
-     * @return string
+     * @return string|bool
      */
-    public static function process(string $stream, DictionaryObject $param = null): string
+    public static function process(string $stream, DictionaryObject $param = null): string|bool
     {
         return ASCIIHexFilter::encode($stream, $param);
     }

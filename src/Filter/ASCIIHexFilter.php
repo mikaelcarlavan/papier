@@ -22,9 +22,9 @@ class ASCIIHexFilter extends Filter
      *
      * @param string $stream
      * @param DictionaryObject|null $param
-     * @return string
+     * @return string|bool
      */
-    public static function decode(string $stream, DictionaryObject $param = null): string
+    public static function decode(string $stream, DictionaryObject $param = null): string|bool
     {
         $stream = trim($stream);
         $marker = substr($stream, -strlen(self::EOD_MARKER));

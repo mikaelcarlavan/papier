@@ -37,11 +37,11 @@ class ImageHelper
      * Read JPG/JPEG file and returns compressed data.
      *
      * @param string $file
-     * @return string
+     * @return string|bool
      */
-    public static function getDataFromJPEG(string $file): string
+    public static function getDataFromJPEG(string $file): string|bool
     {
-        return file_get_contents($file);
+		return file_get_contents($file);
     }
 
     /**
@@ -104,27 +104,30 @@ class ImageHelper
 			$colors = null;
 			$data = FlateFilter::decode($data);
 
-			$channels = $colorType == 4 ? 2 : 4; // Gray + alpha or RBG + alpha
+			if ($data !== false) {
+				$channels = $colorType == 4 ? 2 : 4; // Gray + alpha or RBG + alpha
+				$data = str_split((string)$data);
 
-			$pixel = 0;
-			for ($row = 0; $row < $height; $row++) {
-				$colors .= $data[$pixel]; // Filter type
-				$mask .= $data[$pixel]; // Filter type
-				$pixel++;
-				// Data
-				for ($column = 0; $column < $width; $column++) {
-					for ($color = 0; $color < $channels - 1; $color++) {
-						$colors .= $data[$pixel];
+				$pixel = 0;
+				for ($row = 0; $row < $height; $row++) {
+					$colors .= $data[$pixel]; // Filter type
+					$mask .= $data[$pixel]; // Filter type
+					$pixel++;
+					// Data
+					for ($column = 0; $column < $width; $column++) {
+						for ($color = 0; $color < $channels - 1; $color++) {
+							$colors .= $data[$pixel];
+							$pixel++;
+						}
+
+						$mask .= $data[$pixel];
 						$pixel++;
 					}
-
-					$mask .= $data[$pixel];
-					$pixel++;
 				}
-			}
 
-			$data = FlateFilter::encode($colors);
-			$mask = FlateFilter::encode($mask);
+				$data = FlateFilter::encode($colors);
+				$mask = FlateFilter::encode($mask);
+			}
 		}
 
         return array($data, $mask);

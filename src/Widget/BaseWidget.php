@@ -4,6 +4,7 @@ namespace Papier\Widget;
 
 
 use Papier\Object\BaseObject;
+use Papier\Type\ArrayType;
 use Papier\Type\ContentStreamType;
 use Papier\Type\PageObjectType;
 use Papier\Validator\NumberValidator;

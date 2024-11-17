@@ -17,7 +17,7 @@ class NumbersArrayValidator extends ArrayValidator
 
         if ($isValid) {
             foreach ($value as $number) {
-                $isValid = $isValid & NumberValidator::isValid($number);
+                $isValid = $isValid && NumberValidator::isValid($number);
             }
         }
 

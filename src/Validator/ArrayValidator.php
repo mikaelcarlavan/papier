@@ -17,7 +17,7 @@ class ArrayValidator implements Validator
         $isValid = is_array($value);
 
         if ($size > 0) {
-            $isValid = $isValid & (count($value) == $size);
+            $isValid = $isValid && (count($value) == $size);
         }
 
         return $isValid;

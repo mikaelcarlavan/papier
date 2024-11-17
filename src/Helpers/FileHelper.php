@@ -3,6 +3,7 @@
 namespace Papier\Helpers;
 
 use InvalidArgumentException;
+use Papier\Validator\IntegerValidator;
 
 class FileHelper
 {
@@ -82,6 +83,10 @@ class FileHelper
 	 */
     public function read(int $length): mixed
 	{
+		if (!IntegerValidator::isValid($length) || $length < 1) {
+			throw new InvalidArgumentException("File is not a valid. See ".__CLASS__." class's documentation for possible values.");
+		}
+
         try {
             return fread($this->getStream(), $length);
         } catch (\Exception $e) {
@@ -98,9 +103,15 @@ class FileHelper
 	{
         try {
             $chunk = fread($this->getStream(), 4);
-            $values = unpack("N", $chunk);
-            return array_shift($values);
-        } catch (\Exception $e) {
+			if ($chunk !== false) {
+				$values = unpack("N", $chunk);
+				if (is_array($values)) {
+					return array_shift($values);
+				}
+			}
+
+			throw new InvalidArgumentException("Incorrect unpacked value. See ".__CLASS__." class's documentation for possible values.");
+		} catch (\Exception $e) {
             throw new InvalidArgumentException($e->getMessage());
         }
     }
@@ -114,8 +125,14 @@ class FileHelper
 	{
         try {
             $chunk = fread($this->getStream(), 1);
-            $values = unpack("C", $chunk);
-            return array_shift($values);
+			if ($chunk !== false) {
+				$values = unpack("C", $chunk);
+				if (is_array($values)) {
+					return array_shift($values);
+				}
+			}
+
+			throw new InvalidArgumentException("Incorrect unpacked byte. See ".__CLASS__." class's documentation for possible values.");
         } catch (\Exception $e) {
             throw new InvalidArgumentException($e->getMessage());
         }

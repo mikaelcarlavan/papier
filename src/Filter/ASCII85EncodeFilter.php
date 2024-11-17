@@ -12,9 +12,9 @@ class ASCII85EncodeFilter extends Filter
      *
      * @param string $value
      * @param DictionaryObject|null $param
-     * @return string
+     * @return string|bool
      */
-    public static function process(string $value, DictionaryObject $param = null): string
+    public static function process(string $value, DictionaryObject $param = null): string|bool
     {
         return ASCII85Filter::decode($value, $param);
     }

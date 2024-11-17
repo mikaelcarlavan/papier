@@ -17,7 +17,7 @@ class ByteStringsArrayValidator extends ArrayValidator
 
         if ($isValid) {
             foreach ($value as $string) {
-                $isValid = $isValid & ByteStringValidator::isValid($string);
+                $isValid = $isValid && ByteStringValidator::isValid($string);
             }
         }
 
