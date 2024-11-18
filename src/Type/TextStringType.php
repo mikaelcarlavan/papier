@@ -9,11 +9,11 @@ class TextStringType extends LiteralStringType
     /**
      * Get object's value.
      *
-     * @return string
+     * @return ?string
      */
-    protected function getValue(): string
+    protected function getValue(): ?string
     {
         $value = parent::getValue();
-        return Encoding::toUTF16BE($value);
+        return is_null($value) ? $value : Encoding::toUTF16BE($value);
     }
 }

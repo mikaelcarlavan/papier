@@ -30,16 +30,16 @@ class ImageWidget extends BaseWidget
     /**
      * Name of image.
      *
-     * @var string|null
+     * @var string
      */
-    protected ?string $name = null;
+    protected string $name;
 
     /**
      * Source of image.
      *
-     * @var string|null
+     * @var string
      */
-    protected ?string $source = null;
+    protected string $source;
 
     /**
      * The width of the widget
@@ -261,7 +261,8 @@ class ImageWidget extends BaseWidget
             $resources->setEntry('ProcSet', $procset);
         }
 
-        $dimensions = getimagesize($this->getSource());
+		$source = $this->getSource();
+        $dimensions = getimagesize($source);
 
 		/** @var ArrayType $procset */
         $procset = $resources->getEntry('ProcSet');
@@ -286,8 +287,9 @@ class ImageWidget extends BaseWidget
             $procset->append($imagec);
         }
 
+		$name = $this->getName();
         $xObject = $resources->getEntry('XObject');
-        $xObject->setEntry($this->getName(), $image);
+        $xObject->setEntry($name, $image);
 
         $image->setWidth($width);
         $image->setHeight($height);
@@ -306,7 +308,7 @@ class ImageWidget extends BaseWidget
             $image->setDecodeParms($params);
         }
 
-		list($data, $mask) = ImageHelper::getDataFromSource($this->getSource());
+		list($data, $mask) = ImageHelper::getDataFromSource($source);
         $image->setContent($data);
 
 		if ($mask) {

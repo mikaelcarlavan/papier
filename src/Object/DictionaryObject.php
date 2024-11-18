@@ -86,10 +86,10 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
     /**
      * Check if object has given key.
      *  
-     * @param  string  $key
+     * @param  mixed  $key
      * @return bool
      */
-    public function hasEntry(string $key): bool
+    public function hasEntry(mixed $key): bool
     {
         $objects = $this->getObjects();
         return isset($objects[$key]);
@@ -126,11 +126,11 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
     /**
      * Set entry for given key.
      *      
-     * @param  string  $key
+     * @param  mixed  $key
      * @param  mixed  $object
      * @return DictionaryObject
      */
-    public function setEntry(string $key, mixed $object): DictionaryObject
+    public function setEntry(mixed $key, mixed $object): DictionaryObject
     {
         $this->setObjectForKey($key, $object);
         return $this;

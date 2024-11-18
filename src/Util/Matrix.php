@@ -122,9 +122,9 @@ class Matrix
     /**
      * Get maximum value of matrix.
      *
-     * @return float
+     * @return ?float
      */
-    protected function getMax(): float
+    protected function getMax(): ?float
     {
         $rows = $this->getRows();
         $columns = $this->getColumns();

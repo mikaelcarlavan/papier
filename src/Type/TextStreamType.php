@@ -8,11 +8,11 @@ class TextStreamType extends StreamType
      /**
      * Get object's content.
      *  
-     * @return string
+     * @return ?string
      */
-    protected function getContent(): string
+    protected function getContent(): ?string
     {
         $content = parent::getcontent();
-        return Encoding::toUTF16BE($content);
+        return is_null($content) ? $content : Encoding::toUTF16BE($content);
     } 
 }
