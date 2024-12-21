@@ -1,58 +1,58 @@
 <?php
 
-namespace Papier\Widget;
+namespace Papier\Component;
 
 use Papier\Factory\Factory;
 use Papier\Graphics\LineCapStyle;
 use Papier\Papier;
 use Papier\Validator\NumberValidator;
 
-class RectangleWidget extends BaseWidget
+class RectangleComponent extends BaseComponent
 {
     use Color;
     use LineWidth;
     use Position;
 
     /**
-     * The width of the widget
+     * The width of the component
      *
      * @var float
      */
     protected float $width = 0;
 
     /**
-     * The height of the widget
+     * The height of the component
      *
      * @var float
      */
     protected float $height = 0;
 
     /**
-     * Set widget's width.
+     * Set component's width.
      *
      * @param  float  $width
-     * @return RectangleWidget
+     * @return RectangleComponent
      */
-    public function setWidth(float $width): RectangleWidget
+    public function setWidth(float $width): RectangleComponent
     {
         $this->width = $width;
         return $this;
     }
 
     /**
-     * Set widget's height.
+     * Set component's height.
      *
      * @param  float  $height
-     * @return RectangleWidget
+     * @return RectangleComponent
      */
-    public function setHeight(float $height): RectangleWidget
+    public function setHeight(float $height): RectangleComponent
     {
         $this->height = $height;
         return $this;
     }
 
     /**
-     * Get widget's width.
+     * Get component's width.
      *
      * @return float
      */
@@ -62,7 +62,7 @@ class RectangleWidget extends BaseWidget
     }
 
     /**
-     * Get widget's height.
+     * Get component's height.
      *
      * @return float
      */
@@ -71,7 +71,7 @@ class RectangleWidget extends BaseWidget
         return $this->height;
     }
 
-    function format(): RectangleWidget
+    function format(): RectangleComponent
     {
         $contents = $this->getContents();
         $contents->save();

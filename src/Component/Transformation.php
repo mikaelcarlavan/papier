@@ -1,6 +1,6 @@
 <?php
 
-namespace Papier\Widget;
+namespace Papier\Component;
 
 use Papier\Papier;
 use Papier\Util\Matrix;
@@ -32,9 +32,9 @@ trait Transformation
      * Set transformation matrix.
      *
      * @param Matrix $transformationMatrix
-     * @return BaseWidget
+     * @return BaseComponent
      */
-    public function setTransformationMatrix(Matrix $transformationMatrix): BaseWidget
+    public function setTransformationMatrix(Matrix $transformationMatrix): BaseComponent
     {
         $this->transformationMatrix = $transformationMatrix;
         return $this;
@@ -45,9 +45,9 @@ trait Transformation
      *
      * @param float $x
      * @param float $y
-     * @return BaseWidget
+     * @return BaseComponent
      */
-    public function scale(float $x, float $y): BaseWidget
+    public function scale(float $x, float $y): BaseComponent
     {
         $matrix = new Matrix(3, 3);
         $matrix->setData(0, 0, $x);
@@ -66,9 +66,9 @@ trait Transformation
      *
      * @param float $a
      * @param float $b
-     * @return BaseWidget
+     * @return BaseComponent
      */
-    public function skew(float $a, float $b): BaseWidget
+    public function skew(float $a, float $b): BaseComponent
     {
         $radA = $a * 2 * pi() / 360;
         $radB = $b * 2 * pi() / 360;
@@ -92,9 +92,9 @@ trait Transformation
      *
      * @param float $x
      * @param float $y
-     * @return BaseWidget
+     * @return BaseComponent
      */
-    public function translate(float $x, float $y): BaseWidget
+    public function translate(float $x, float $y): BaseComponent
     {
         $mmToUserUnit = Papier::MM_TO_USER_UNIT;
 
@@ -116,9 +116,9 @@ trait Transformation
      * Add rotation (in deg)
      *
      * @param float $angle
-     * @return BaseWidget
+     * @return BaseComponent
      */
-    public function rotate(float $angle): BaseWidget
+    public function rotate(float $angle): BaseComponent
     {
         $radians = $angle * 2 * pi() / 360;
 

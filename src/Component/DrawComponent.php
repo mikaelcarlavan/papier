@@ -1,10 +1,10 @@
 <?php
 
-namespace Papier\Widget;
+namespace Papier\Component;
 
 use Papier\Papier;
 
-class DrawWidget extends BaseWidget
+class DrawComponent extends BaseComponent
 {
     use Color;
     use LineWidth;
@@ -12,14 +12,14 @@ class DrawWidget extends BaseWidget
     /**
      * The path
      *
-     * @var array<mixed>
+     * @var array{x: float, y: float, ctrl?: array{intial?: array{x: float, y: float}, final?: array{x: float, y: float}}}
      */
     protected array $path = [];
 
     /**
      * Get path.
      *
-     * @return array<mixed>
+     * @return array{x: float, y: float, ctrl?: array{intial?: array{x: float, y: float}, final?: array{x: float, y: float}}}
      */
     public function getPath(): array
     {
@@ -31,9 +31,9 @@ class DrawWidget extends BaseWidget
      *
      * @param float $x1
      * @param float $y1
-     * @return DrawWidget
+     * @return DrawComponent
      */
-    public function addPoint(float $x1, float $y1): DrawWidget
+    public function addPoint(float $x1, float $y1): DrawComponent
     {
         $this->path[] = [
             'x' => $x1,
@@ -50,9 +50,9 @@ class DrawWidget extends BaseWidget
      * @param float $y1
      * @param float $x3
      * @param float $y3
-     * @return DrawWidget
+     * @return DrawComponent
      */
-    public function addPointWithFinalPointAsControlPoint(float $x1, float $y1, float $x3, float $y3): DrawWidget
+    public function addPointWithFinalPointAsControlPoint(float $x1, float $y1, float $x3, float $y3): DrawComponent
     {
         $this->path[] = [
             'x' => $x3,
@@ -75,9 +75,9 @@ class DrawWidget extends BaseWidget
      * @param float $y2
      * @param float $x3
      * @param float $y3
-     * @return DrawWidget
+     * @return DrawComponent
      */
-    public function addPointWithInitialPointAsControlPoint(float $x2, float $y2, float $x3, float $y3): DrawWidget
+    public function addPointWithInitialPointAsControlPoint(float $x2, float $y2, float $x3, float $y3): DrawComponent
     {
         $this->path[] = [
             'x' => $x3,
@@ -102,9 +102,9 @@ class DrawWidget extends BaseWidget
      * @param float $y2
      * @param float $x3
      * @param float $y3
-     * @return DrawWidget
+     * @return DrawComponent
      */
-    public function addPointWithControlPoints(float $x1, float $y1, float $x2, float $y2, float $x3, float $y3): DrawWidget
+    public function addPointWithControlPoints(float $x1, float $y1, float $x2, float $y2, float $x3, float $y3): DrawComponent
     {
         $this->path[] = [
             'x' => $x3,
@@ -124,7 +124,7 @@ class DrawWidget extends BaseWidget
         return $this;
     }
 
-    function format(): DrawWidget
+    function format(): DrawComponent
     {
         $contents = $this->getContents();
         $contents->save();
@@ -142,9 +142,10 @@ class DrawWidget extends BaseWidget
             }
 
             foreach ($points as $point) {
+				$point = (array)$point;
                 if (isset($point['ctrl'])) {
-                    $ctrl = $point['ctrl'];
-                    if (isset($ctrl['initial']) && $ctrl['final']) {
+                    $ctrl = (array)$point['ctrl'];
+                    if (isset($ctrl['initial']) && isset($ctrl['final'])) {
                         $initialPoint = $ctrl['initial'];
                         $finalPoint = $ctrl['final'];
 

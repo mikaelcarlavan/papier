@@ -1,6 +1,6 @@
 <?php
 
-namespace Papier\Widget;
+namespace Papier\Component;
 
 use Papier\Document\ProcedureSet;
 use Papier\Factory\Factory;
@@ -15,7 +15,7 @@ use Papier\Type\DictionaryType;
 use Papier\Validator\NumberValidator;
 use InvalidArgumentException;
 
-class ImageWidget extends BaseWidget
+class ImageComponent extends BaseComponent
 {
     use Transformation;
 
@@ -42,41 +42,41 @@ class ImageWidget extends BaseWidget
     protected string $source;
 
     /**
-     * The width of the widget
+     * The width of the component
      *
      * @var float
      */
     protected float $width = 0;
 
     /**
-     * The height of the widget
+     * The height of the component
      *
      * @var float
      */
     protected float $height = 0;
 
     /**
-     * The horizontal skewing of the widget
+     * The horizontal skewing of the component
      *
      * @var float
      */
     protected float $skewX = 0;
 
     /**
-     * The vertical skewing of the widget
+     * The vertical skewing of the component
      *
      * @var float
      */
     protected float $skewY = 0;
 
     /**
-     * Set widget's horizontal skewing.
+     * Set component's horizontal skewing.
      *
      * @param  float  $skewX
-     * @return BaseWidget
+     * @return BaseComponent
      * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int' and positive.
      */
-    public function setSkewX(float $skewX): BaseWidget
+    public function setSkewX(float $skewX): BaseComponent
     {
         if (!NumberValidator::isValid($skewX)) {
             throw new InvalidArgumentException("SkewX is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -87,13 +87,13 @@ class ImageWidget extends BaseWidget
     }
 
     /**
-     * Set widget's vertical skewing.
+     * Set component's vertical skewing.
      *
      * @param  float  $skewY
-     * @return BaseWidget
+     * @return BaseComponent
      * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int' and positive.
      */
-    public function setSkewY(float $skewY): BaseWidget
+    public function setSkewY(float $skewY): BaseComponent
     {
         if (!NumberValidator::isValid($skewY)) {
             throw new InvalidArgumentException("SkewY is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -104,7 +104,7 @@ class ImageWidget extends BaseWidget
     }
 
     /**
-     * Get widget's horizontal skewing.
+     * Get component's horizontal skewing.
      *
      * @return float
      */
@@ -114,7 +114,7 @@ class ImageWidget extends BaseWidget
     }
 
     /**
-     * Get widget's vertical skewing.
+     * Get component's vertical skewing.
      *
      * @return float
      */
@@ -124,13 +124,13 @@ class ImageWidget extends BaseWidget
     }
 
     /**
-     * Set widget's width.
+     * Set component's width.
      *
      * @param  float  $width
-     * @return ImageWidget
+     * @return ImageComponent
      * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int' and positive.
      */
-    public function setWidth(float $width): ImageWidget
+    public function setWidth(float $width): ImageComponent
     {
         if (!NumberValidator::isValid($width, 0.0)) {
             throw new InvalidArgumentException("Width is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -141,13 +141,13 @@ class ImageWidget extends BaseWidget
     }
 
     /**
-     * Set widget's height.
+     * Set component's height.
      *
      * @param  float  $height
-     * @return ImageWidget
+     * @return ImageComponent
      * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int' and positive.
      */
-    public function setHeight(float $height): ImageWidget
+    public function setHeight(float $height): ImageComponent
     {
         if (!NumberValidator::isValid($height, 0.0)) {
             throw new InvalidArgumentException("Height is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -158,7 +158,7 @@ class ImageWidget extends BaseWidget
     }
 
     /**
-     * Get widget's width.
+     * Get component's width.
      *
      * @return float
      */
@@ -168,7 +168,7 @@ class ImageWidget extends BaseWidget
     }
 
     /**
-     * Get widget's height.
+     * Get component's height.
      *
      * @return float
      */
@@ -239,11 +239,11 @@ class ImageWidget extends BaseWidget
     }
 
     /**
-     * Format widget's content.
+     * Format component's content.
      *
-     * @return ImageWidget
+     * @return ImageComponent
      */
-    public function format(): ImageWidget
+    public function format(): ImageComponent
     {
         $page = $this->getPage();
         $resources = $page->getResources();
@@ -288,6 +288,7 @@ class ImageWidget extends BaseWidget
         }
 
 		$name = $this->getName();
+		/** @var DictionaryType $xObject */
         $xObject = $resources->getEntry('XObject');
         $xObject->setEntry($name, $image);
 

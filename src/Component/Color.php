@@ -1,6 +1,6 @@
 <?php
 
-namespace Papier\Widget;
+namespace Papier\Component;
 
 use Papier\Text\RenderingMode;
 use Papier\Type\ContentStreamType;

@@ -21,12 +21,12 @@ $pdf->getHeader()->setVersion(3);
 
 $page = $pdf->addPage([210, 297]);
 
-$image = $pdf->createImageWidget()->setPage($page);
+$image = $pdf->createImageComponent()->setPage($page);
 $image->setSource('https://images.unsplash.com/photo-1709468864471-a378b7435d03');
 $image->setWidth(20);
 $image->translate(10, 10);
 
-$text = $pdf->createTextWidget()->setPage($page);
+$text = $pdf->createTextComponent()->setPage($page);
 $text->setNonStrokingColor(1, 0, 0);
 $text->setNonStrokingColorSpace(DeviceColourSpace::RGB);
 $text->setRenderingMode(RenderingMode::STROKE);
@@ -37,7 +37,7 @@ $text->translate(100, 100);
 
 $page = $pdf->addPage([210, 297]);
 
-$draw = $pdf->createDrawWidget()->setPage($page);
+$draw = $pdf->createDrawComponent()->setPage($page);
 $draw->setNonStrokingColor(0.4, 0, 0.4);
 $draw->setStrokingColor(0.9, 0, 0);
 $draw->setStrokingColorSpace(DeviceColourSpace::RGB);

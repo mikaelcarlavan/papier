@@ -1,6 +1,6 @@
 <?php
 
-namespace Papier\Widget;
+namespace Papier\Component;
 
 use Papier\Document\ProcedureSet;
 use Papier\Factory\Factory;
@@ -9,10 +9,38 @@ use Papier\Text\RenderingMode;
 use Papier\Type\ArrayType;
 
 
-class TextWidget extends BaseWidget
+class TextComponent extends BaseComponent
 {
     use Color;
     use Transformation;
+
+	/**
+	 * Helvetica font
+	 *
+	 * @var string
+	 */
+	const HELVETICA_FONT = 'Helvetica';
+
+	/**
+	 * Helvetica font
+	 *
+	 * @var string
+	 */
+	const COURIER_FONT = 'Courier';
+
+	/**
+	 * Symbol font
+	 *
+	 * @var string
+	 */
+	const SYMBOL_FONT = 'Symbol';
+
+	/**
+	 * Times font
+	 *
+	 * @var string
+	 */
+	const TIMES_FONT = 'Times';
 
     /**
      * Text's font name.
@@ -29,7 +57,7 @@ class TextWidget extends BaseWidget
     protected float $fontSize = 10;
 
     /**
-     * Text of widget.
+     * Text of component.
      *
      * @var string
      */
@@ -81,9 +109,9 @@ class TextWidget extends BaseWidget
      * Set rendering mode.
      *
      * @param int $renderingMode
-     * @return TextWidget
+     * @return TextComponent
      */
-    public function setRenderingMode(int $renderingMode): TextWidget
+    public function setRenderingMode(int $renderingMode): TextComponent
     {
         $this->renderingMode = $renderingMode;
         return $this;
@@ -103,9 +131,9 @@ class TextWidget extends BaseWidget
      * Set text rise.
      *
      * @param float $textRise
-     * @return TextWidget
+     * @return TextComponent
      */
-    public function setTextRise(float $textRise): TextWidget
+    public function setTextRise(float $textRise): TextComponent
     {
         $this->textRise = $textRise;
         return $this;
@@ -125,9 +153,9 @@ class TextWidget extends BaseWidget
      * Set word spacing.
      *
      * @param float $wordSpacing
-     * @return TextWidget
+     * @return TextComponent
      */
-    public function setWordSpacing(float $wordSpacing): TextWidget
+    public function setWordSpacing(float $wordSpacing): TextComponent
     {
         $this->wordSpacing = $wordSpacing;
         return $this;
@@ -147,9 +175,9 @@ class TextWidget extends BaseWidget
      * Set text leading.
      *
      * @param float $textLeading
-     * @return TextWidget
+     * @return TextComponent
      */
-    public function setTextLeading(float $textLeading): TextWidget
+    public function setTextLeading(float $textLeading): TextComponent
     {
         $this->textLeading = $textLeading;
         return $this;
@@ -169,9 +197,9 @@ class TextWidget extends BaseWidget
      * Set character spacing.
      *
      * @param float $characterSpacing
-     * @return TextWidget
+     * @return TextComponent
      */
-    public function setCharacterSpacing(float $characterSpacing): TextWidget
+    public function setCharacterSpacing(float $characterSpacing): TextComponent
     {
         $this->characterSpacing = $characterSpacing;
         return $this;
@@ -191,9 +219,9 @@ class TextWidget extends BaseWidget
      * Set horizontal scaling.
      *
      * @param float $horizontalScaling
-     * @return TextWidget
+     * @return TextComponent
      */
-    public function setHorizontalScaling(float $horizontalScaling): TextWidget
+    public function setHorizontalScaling(float $horizontalScaling): TextComponent
     {
         $this->horizontalScaling = $horizontalScaling;
         return $this;
@@ -213,9 +241,9 @@ class TextWidget extends BaseWidget
      * Set text.
      *
      * @param string $text
-     * @return TextWidget
+     * @return TextComponent
      */
-    public function setText(string $text): TextWidget
+    public function setText(string $text): TextComponent
     {
         $this->text = $text;
         return $this;
@@ -235,9 +263,9 @@ class TextWidget extends BaseWidget
      * Set basefont (PostScript) name.
      *
      * @param string $fontName
-     * @return TextWidget
+     * @return TextComponent
      */
-    public function setBaseFont(string $fontName): TextWidget
+    public function setBaseFont(string $fontName): TextComponent
     {
         $this->fontName = $fontName;
         return $this;
@@ -258,9 +286,9 @@ class TextWidget extends BaseWidget
      * Set font's size.
      *
      * @param float $fontSize
-     * @return TextWidget
+     * @return TextComponent
      */
-    public function setFontSize(float $fontSize): TextWidget
+    public function setFontSize(float $fontSize): TextComponent
     {
         $this->fontSize = $fontSize;
         return $this;
@@ -276,7 +304,7 @@ class TextWidget extends BaseWidget
         return $this->fontSize;
     }
 
-    function format(): TextWidget
+    function format(): TextComponent
     {
         $page = $this->getPage();
         $fontName = $this->getBaseFont();

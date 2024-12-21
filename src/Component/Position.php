@@ -1,6 +1,6 @@
 <?php
 
-namespace Papier\Widget;
+namespace Papier\Component;
 
 use Papier\Validator\NumberValidator;
 use InvalidArgumentException;
@@ -8,21 +8,21 @@ use InvalidArgumentException;
 trait Position
 {
     /**
-     * The horizontal position of the widget
+     * The horizontal position of the component
      *
      * @var float
      */
     protected float $x = 0;
 
     /**
-     * The vertical position of the widget
+     * The vertical position of the component
      *
      * @var float
      */
     protected float $y = 0;
 
     /**
-     * Set widget's horizontal position.
+     * Set component's horizontal position.
      *
      * @param  float  $x
      * @return static
@@ -39,7 +39,7 @@ trait Position
     }
 
     /**
-     * Set widget's vertical position.
+     * Set component's vertical position.
      *
      * @param  float  $y
      * @return static
@@ -57,7 +57,7 @@ trait Position
 
 
     /**
-     * Set widget's position.
+     * Set component's position.
      *
      * @param  float  $x
      * @param  float  $y
@@ -70,7 +70,7 @@ trait Position
     }
 
     /**
-     * Get widget's horizontal position.
+     * Get component's horizontal position.
      *
      * @return float
      */
@@ -80,7 +80,7 @@ trait Position
     }
 
     /**
-     * Get widget's vertical position.
+     * Get component's vertical position.
      *
      * @return float
      */

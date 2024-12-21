@@ -1,6 +1,6 @@
 <?php
 
-namespace Papier\Widget;
+namespace Papier\Component;
 
 
 use Papier\Object\BaseObject;
@@ -11,29 +11,29 @@ use Papier\Validator\NumberValidator;
 use InvalidArgumentException;
 use Papier\Papier;
 
-abstract class BaseWidget
+abstract class BaseComponent
 {
     /**
-     * The parent of the widget
+     * The parent of the component
      *
      * @var PageObjectType
      */
     protected PageObjectType $page;
 
     /**
-     * Set widget's page.
+     * Set component's page.
      *
      * @param  PageObjectType  $page
-     * @return BaseWidget
+     * @return BaseComponent
      */
-    public function setPage(PageObjectType $page): BaseWidget
+    public function setPage(PageObjectType $page): BaseComponent
     {
         $this->page = $page;
         return $this;
     }
 
     /**
-     * Get widget's page.
+     * Get component's page.
      *
      * @return PageObjectType
      */
@@ -54,9 +54,9 @@ abstract class BaseWidget
     }
 
     /**
-     * Format widget's content.
+     * Format component's content.
      *
-     * @return BaseWidget
+     * @return BaseComponent
      */
-    abstract function format(): BaseWidget;
+    abstract function format(): BaseComponent;
 }
