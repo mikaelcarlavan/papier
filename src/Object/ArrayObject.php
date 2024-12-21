@@ -158,7 +158,7 @@ class ArrayObject extends DictionaryObject
         $objects = $this->getObjects();
         $value = '';
 
-        if (is_array($objects) && count($objects) > 0) {
+        if (count($objects) > 0) {
             foreach ($objects as $object) {
                 $value .= ' '.$object->write(false);
             }         

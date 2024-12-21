@@ -69,25 +69,43 @@ class StitchingFunctionType extends FunctionObject
             throw new RuntimeException("Bounds is missing. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $k = count($this->getEntry('Functions'));
+		/** @var ArrayObject $functions */
+		$functions = $this->getEntry('Functions');
+		/** @var ArrayObject $bounds */
+		$bounds = $this->getEntry('Bounds');
+		/** @var ArrayObject $encode */
+		$encode = $this->getEntry('Encode');
 
-        if (count($this->getEntry('Bounds')) != ($k - 1)) {
+        $k = count($functions);
+
+        if (count($bounds) != ($k - 1)) {
             throw new RuntimeException("Bounds size is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        if (count($this->getEntry('Encode')) != (2 * $k)) {
+        if (count($encode) != (2 * $k)) {
             throw new RuntimeException("Encode size is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        if (count($this->getEntry('Domain')) != 2) {
-            throw new RuntimeException("Domain size is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
+		// Domain is mandatory here but check in parent method
+		// Only test if entry is available and compliant
+		if ($this->hasEntry('Domain')) {
+			/** @var ArrayObject $domain */
+			$domain = $this->getEntry('Domain');
 
-        $domains = $this->getEntry('Domain')->getValue();
+			if (count($domain) != 2) {
+				throw new RuntimeException("Domain size is incorrect. See ".__CLASS__." class's documentation for possible values.");
+			}
 
-        if ($domains->first() > min($this->getEntry('Bounds')->getValue()) || $domains->last() < max($this->getEntry('Bounds')->getValue())) {
-            throw new RuntimeException("Domain is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
+			/** @var array<mixed> $value */
+			$value = $bounds->getValue();
+			if (count($value) > 0) {
+				if ($domain->first() > min($value) || $domain->last() < max($value)) {
+					throw new RuntimeException("Domain is incorrect. See ".__CLASS__." class's documentation for possible values.");
+				}
+			} else {
+				throw new RuntimeException("Bounds size is incorrect. See ".__CLASS__." class's documentation for possible values.");
+			}
+		}
 
         return parent::format();
     }

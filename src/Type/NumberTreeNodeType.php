@@ -66,31 +66,37 @@ class NumberTreeNodeType extends TreeNodeType
         }
 
         if (!$this->hasEntry('Nums')) {
-            $nums = Factory::create('Papier\Type\IntegersArrayType');
+            $nums = Factory::create('Papier\Type\IntegerKeyArrayType');
             $this->setEntry('Nums', $nums);
         }
 
-        return $this->getEntry('Nums');
+		/** @var IntegerKeyArrayType $nums */
+		$nums = $this->getEntry('Nums');
+        return $nums;
     }
 
     /**
      * Get nums from node.
      *
      * @param  TreeNodeType  $node
-     * @return array<int>
+     * @return array<mixed>
      */    
     protected function collectNums(TreeNodeType $node): array
     {
         $objects = array();
 
         if ($node->hasEntry('Nums')) {
-            $nums = $node->getEntry('Nums')->getKeys();
-            $objects = array_merge($objects, $nums);
+			/** @var IntegerKeyArrayType $nums */
+            $nums = $node->getEntry('Nums');
+			/** @var array<mixed> $keys */
+			$keys = $nums->getKeys();
+			$objects = array_merge($objects, $keys);
         } else {
+			/** @var ArrayType $kids */
             $kids = $node->getEntry('Kids');
-            
             if (count($kids) > 0) {
                 foreach ($kids as $kid) {
+					/** @var TreeNodeType $kid */
                     $nums = $this->collectNums($kid);
                     $objects = array_merge($objects, $nums);
                 }

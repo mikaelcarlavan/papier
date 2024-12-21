@@ -33,7 +33,9 @@ class PageTreeNodeType extends DictionaryType
      */
     public function getParent(): PageTreeNodeType
     {
-        return $this->getEntry('Parent');
+		/** @var PageTreeNodeType $parent */
+		$parent = $this->getEntry('Parent');
+		return $parent;
     } 
 
     /**
@@ -48,7 +50,9 @@ class PageTreeNodeType extends DictionaryType
             $this->setEntry('Kids', $kids);
         }
 
-        return $this->getEntry('Kids');
+		/** @var ArrayType $kids */
+		$kids = $this->getEntry('Kids');
+        return $kids;
     }
 
     
@@ -114,7 +118,9 @@ class PageTreeNodeType extends DictionaryType
             $this->setResources($resources);
         }
 
-        return $this->getEntry('Resources');
+		/** @var DictionaryType $resources */
+		$resources = $this->getEntry('Resources');
+		return $resources;
     }
 
     /**
@@ -142,7 +148,9 @@ class PageTreeNodeType extends DictionaryType
             $this->setMediaBox($mediabox);
         }
 
-        return $this->getEntry('MediaBox');
+		/** @var RectangleType $mediaBox */
+		$mediaBox = $this->getEntry('MediaBox');
+        return $mediaBox;
     }
 
     /**
@@ -170,7 +178,9 @@ class PageTreeNodeType extends DictionaryType
             $this->setCropBox($cropbox);
         }
 
-        return $this->getEntry('CropBox');
+		/** @var RectangleType $cropBox */
+		$cropBox = $this->getEntry('CropBox');
+        return $cropBox;
     }
 
     /**

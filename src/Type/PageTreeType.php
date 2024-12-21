@@ -3,6 +3,7 @@
 namespace Papier\Type;
 
 use Papier\Factory\Factory;
+use Papier\Object\ArrayObject;
 
 class PageTreeType extends DictionaryType
 { 
@@ -18,7 +19,9 @@ class PageTreeType extends DictionaryType
             $this->setEntry('Node', $node);
         }
 
-        return $this->getEntry('Node');
+		/** @var PageTreeNodeType $node */
+		$node = $this->getEntry('Node');
+        return $node;
     }
 
     /**

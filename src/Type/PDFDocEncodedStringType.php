@@ -11,6 +11,7 @@ class PDFDocEncodedStringType extends StringType
      */
     protected function getValue(): mixed
     {
+		/** @var string $value */
         $value = parent::getValue();
         return mb_convert_encoding($value, 'ISO-8859-1');
     }

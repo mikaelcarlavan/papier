@@ -106,13 +106,27 @@ class SampledFunctionType extends FunctionObject
             throw new RuntimeException("BitsPerSample is missing. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        if ($this->hasEntry('Encode') && count($this->getEntry('Encode')) != count($this->getEntry('Domain')) ) {
-            throw new RuntimeException("Encode size is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
+		if ($this->hasEntry('Encode') && $this->hasEntry('Domain') ) {
+			/** @var ArrayObject $domain */
+			$domain = $this->getEntry('Domain');
+			/** @var ArrayObject $encode */
+			$encode = $this->getEntry('Encode');
 
-        if ($this->hasEntry('Decode') && count($this->getEntry('Decode')) != count($this->getEntry('Range')) ) {
-            throw new RuntimeException("Decode size is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
+			if (count($encode) != count($domain) ) {
+				throw new RuntimeException("Encode size is incorrect. See ".__CLASS__." class's documentation for possible values.");
+			}
+		}
+
+		if ($this->hasEntry('Decode') && $this->hasEntry('Range') ) {
+			/** @var ArrayObject $range */
+			$range = $this->getEntry('Range');
+			/** @var ArrayObject $decode */
+			$decode = $this->getEntry('Decode');
+
+			if (count($decode) != count($range) ) {
+				throw new RuntimeException("Decode size is incorrect. See ".__CLASS__." class's documentation for possible values.");
+			}
+		}
 
         return parent::format();
     }

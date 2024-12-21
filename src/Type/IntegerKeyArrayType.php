@@ -20,12 +20,11 @@ class IntegerKeyArrayType extends DictionaryObject
         $objects = $this->getObjects();
         
         $value = '';
-        if (is_array($objects)) {
-            foreach ($objects as $key => $object) {
-                $name = Factory::create('Papier\Type\IntegerType', $key);
-                $value .= $name->format() .' '. $object->write();
-            }
-        }
+		foreach ($objects as $key => $object) {
+			/** @var IntegerType $object */
+			$name = Factory::create('Papier\Type\IntegerType', $key);
+			$value .= $name->format() .' '. $object->write();
+		}
 
         return '[' .$value. ']';
     }

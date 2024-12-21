@@ -23,6 +23,7 @@ class ByteStringsArrayType extends ArrayType
             throw new InvalidArgumentException("Array is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
+		/** @var ByteStringsArrayType $value */
         $objects = $this->getObjects();
 
         foreach ($value as $i => $val) {

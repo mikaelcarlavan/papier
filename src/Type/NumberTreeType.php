@@ -19,7 +19,9 @@ class NumberTreeType extends TreeType
             $this->setEntry('Root', $root);
         }
 
-        return $this->getEntry('Root');
+		/** @var NumberTreeNodeType $root */
+		$root = $this->getEntry('Root');
+        return $root;
     }
 
     /**

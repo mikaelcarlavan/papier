@@ -20,7 +20,9 @@ class NameTreeType extends TreeType
             $this->setEntry('Root', $root);
         }
 
-        return $this->getEntry('Root');
+		/** @var NameTreeNodeType $root */
+		$root = $this->getEntry('Root');
+        return $root;
     }
     
     /**

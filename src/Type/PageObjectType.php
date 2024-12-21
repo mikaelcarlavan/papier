@@ -36,7 +36,9 @@ class PageObjectType extends DictionaryType
       */
     public function getParent(): PageObjectType
     {
-        return $this->getEntry('Parent');
+		/** @var PageObjectType $parent */
+		$parent = $this->getEntry('Parent');
+        return $parent;
     } 
 
     /**
@@ -75,7 +77,9 @@ class PageObjectType extends DictionaryType
             $this->setResources($resources);
         }
 
-        return $this->getEntry('Resources');
+		/** @var DictionaryType $resources */
+		$resources = $this->getEntry('Resources');
+        return $resources;
     }
     
     /**
@@ -99,11 +103,13 @@ class PageObjectType extends DictionaryType
     public function getMediaBox(): RectangleType
     {
         if (!$this->hasEntry('MediaBox')) {
-            $mediabox = Factory::create('Papier\Type\RectangleType');
-            $this->setMediaBox($mediabox);
+            $mediaBox = Factory::create('Papier\Type\RectangleType');
+            $this->setMediaBox($mediaBox);
         }
 
-        return $this->getEntry('MediaBox');
+		/** @var RectangleType $mediaBox */
+		$mediaBox = $this->getEntry('MediaBox');
+        return $mediaBox;
     }
 
     /**
@@ -127,11 +133,13 @@ class PageObjectType extends DictionaryType
     public function getCropBox(): RectangleType
     {
         if (!$this->hasEntry('CropBox')) {
-            $cropbox = Factory::create('Papier\Type\RectangleType');
-            $this->setCropBox($cropbox);
+			$cropBox = Factory::create('Papier\Type\RectangleType');
+            $this->setCropBox($cropBox);
         }
 
-        return $this->getEntry('CropBox');
+		/** @var RectangleType $cropBox */
+		$cropBox = $this->getEntry('CropBox');
+        return $cropBox;
     }
 
     /**
@@ -155,11 +163,13 @@ class PageObjectType extends DictionaryType
     public function getBleedBox(): RectangleType
     {
         if (!$this->hasEntry('BleedBox')) {
-            $bleedbox = Factory::create('Papier\Type\RectangleType');
-            $this->setBleedBox($bleedbox);
+            $bleedBox = Factory::create('Papier\Type\RectangleType');
+            $this->setBleedBox($bleedBox);
         }
 
-        return $this->getEntry('BleedBox');
+		/** @var RectangleType $bleedBox */
+		$bleedBox = $this->getEntry('BleedBox');
+        return $bleedBox;
     }
 
     /**
@@ -183,11 +193,13 @@ class PageObjectType extends DictionaryType
     public function getTrimBox(): RectangleType
     {
         if (!$this->hasEntry('TrimBox')) {
-            $trimbox = Factory::create('Papier\Type\RectangleType');
-            $this->setTrimBox($trimbox);
+            $trimBox = Factory::create('Papier\Type\RectangleType');
+            $this->setTrimBox($trimBox);
         }
 
-        return $this->getEntry('TrimBox');
+		/** @var RectangleType $trimBox */
+		$trimBox = $this->getEntry('TrimBox');
+        return $trimBox;
     }
 
     /**
@@ -211,11 +223,13 @@ class PageObjectType extends DictionaryType
     public function getArtBox(): RectangleType
     {
         if (!$this->hasEntry('ArtBox')) {
-            $artbox = Factory::create('Papier\Type\RectangleType');
-            $this->setArtBox($artbox);
+            $artBox = Factory::create('Papier\Type\RectangleType');
+            $this->setArtBox($artBox);
         }
 
-        return $this->getEntry('ArtBox');
+		/** @var RectangleType $artBox */
+		$artBox = $this->getEntry('ArtBox');
+        return $artBox;
     }
 
     /**
@@ -261,7 +275,9 @@ class PageObjectType extends DictionaryType
             $this->setContents($contents);
         }
 
-        return $this->getEntry('Contents');
+		/** @var ContentStreamType $contents */
+		$contents = $this->getEntry('Contents');
+        return $contents;
     }
 
     /**

@@ -19,13 +19,12 @@ class LiteralStringKeyArrayType extends DictionaryObject
         $objects = $this->getObjects();
         
         $value = '';
-        if (is_array($objects)) {
-            foreach ($objects as $key => $object) {
-				/** @var LiteralStringType $name */
-                $name = Factory::create('Papier\Type\LiteralStringType', $key);
-                $value .= $name->format() .' '. $object->write();
-            }
-        }
+		foreach ($objects as $key => $object) {
+			/** @var LiteralStringType $object */
+			/** @var LiteralStringType $name */
+			$name = Factory::create('Papier\Type\LiteralStringType', $key);
+			$value .= $name->format() .' '. $object->write();
+		}
 
         return '[' .$value. ']';
     }

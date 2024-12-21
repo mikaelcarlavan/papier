@@ -51,7 +51,9 @@ class NameTreeNodeType extends TreeNodeType
             $this->setEntry('Names', $names);
         }
 
-        return $this->getEntry('Names');
+		/** @var LiteralStringKeyArrayType $names */
+		$names = $this->getEntry('Names');
+        return $names;
     }
 
     /**

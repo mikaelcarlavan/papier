@@ -24,14 +24,14 @@ trait Color
     /**
      * The non-stroking colour
      *
-     * @var array<int>
+     * @var array<float>
      */
     protected array $nonStrokingColor = [];
 
     /**
      * The stroking colour
      *
-     * @var array<int>
+     * @var array<float>
      */
     protected array $strokingColor = [];
 
@@ -50,7 +50,7 @@ trait Color
     /**
      * Get stroking colour.
      *
-     * @return array<int>
+     * @return array<float>
      */
     public function getStrokingColor(): array
     {
@@ -72,7 +72,7 @@ trait Color
     /**
      * Get non-stroking colour.
      *
-     * @return array<int>
+     * @return array<float>
      */
     public function getNonStrokingColor(): array
     {

@@ -2,6 +2,7 @@
 
 namespace Papier\Type;
 
+use Papier\Object\BaseObject;
 use Papier\Validator\IntegersArrayValidator;
 
 use Papier\Factory\Factory;
@@ -23,6 +24,7 @@ class IntegersArrayType extends ArrayType
             throw new InvalidArgumentException("Array is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
+		/** @var IntegersArrayType $value */
         $objects = $this->getObjects();
 
         foreach ($value as $i => $val) {

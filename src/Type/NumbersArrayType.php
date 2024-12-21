@@ -24,7 +24,8 @@ class NumbersArrayType extends ArrayType
 
         $objects = $this->getObjects();
 
-        foreach ($value as $i => $val) {
+		/** @var array<mixed> $value */
+		foreach ($value as $i => $val) {
             $object = Factory::create('Papier\Type\NumberType', $val);
             $objects[$i] = $object;
         }

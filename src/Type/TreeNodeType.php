@@ -147,7 +147,7 @@ class TreeNodeType extends DictionaryType
      * Get names from node
      *
      * @param  TreeNodeType  $node
-     * @return array<string>
+     * @return array<mixed>
      */    
     protected function collectNames(TreeNodeType $node): array
     {
@@ -156,11 +156,13 @@ class TreeNodeType extends DictionaryType
         if ($node->hasEntry('Names')) {
 			/** @var LiteralStringKeyArrayType $names */
 			$names = $node->getEntry('Names');
-            $objects = array_merge($objects, $names->getKeys());
+			/** @var array<mixed> $keys */
+			$keys = $names->getKeys();
+            $objects = array_merge($objects, $keys);
         } else {
 			/** @var ArrayType $kids */
             $kids = $node->getEntry('Kids');
-			$kids = $kids->getObjects();
+			// $kids = $kids->getObjects();
             if (count($kids)) {
                 foreach ($kids as $kid) {
 					/** @var TreeNodeType $kid */
@@ -180,7 +182,7 @@ class TreeNodeType extends DictionaryType
      */
     public function format(): string
     {
-		/** @var array $value */
+		/** @var array<mixed> $value */
         $value = $this->getValue();    
         asort($value);
         $this->setValue($value);

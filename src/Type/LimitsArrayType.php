@@ -2,6 +2,8 @@
 
 namespace Papier\Type;
 
+use Papier\Object\BaseObject;
+
 class LimitsArrayType extends ArrayType
 {
 
@@ -12,13 +14,12 @@ class LimitsArrayType extends ArrayType
      */
     public function format(): string
     {
-        $objects = $this->getObjects() ?? array();
+        $objects = $this->getObjects();
         $value = '';
-        if (is_array($objects)) {
-            foreach ($objects as $object) {
-                $value .= ' '.$object->format();
-            }
-        }
+		foreach ($objects as $object) {
+			/** @var BaseObject $object */
+			$value .= ' '.$object->format();
+		}
 
         return '[' .trim($value). ']';
     }
