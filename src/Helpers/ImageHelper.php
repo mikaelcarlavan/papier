@@ -5,7 +5,7 @@ namespace Papier\Helpers;
 use Papier\Filter\FilterType;
 use Papier\Filter\FlateDecodeFilter;
 use Papier\Filter\FlateFilter;
-use Papier\Widget\ImageWidget;
+use Papier\Component\ImageComponent;
 use InvalidArgumentException;
 
 class ImageHelper
