@@ -16,11 +16,11 @@ use Papier\Type\PageObjectType;
 use Papier\Type\ViewerPreferencesDictionaryType;
 use Papier\Validator\NumbersArrayValidator;
 use Papier\Validator\NumberValidator;
-use Papier\Widget\DrawWidget;
-use Papier\Widget\ImageWidget;
-use Papier\Widget\RectangleWidget;
-use Papier\Widget\TextWidget;
-use Papier\Widget\BaseWidget;
+use Papier\Component\DrawComponent;
+use Papier\Component\ImageComponent;
+use Papier\Component\RectangleComponent;
+use Papier\Component\TextComponent;
+use Papier\Component\BaseComponent;
 use InvalidArgumentException;
 
 class Papier
@@ -38,6 +38,7 @@ class Papier
      * @var float
      */
     const MM_TO_USER_UNIT = self::DEFAULT_DPI / 25.4;
+
     /**
      * Number of decimals for real numbers
      *
@@ -67,11 +68,11 @@ class Papier
     private FileTrailer $trailer;
 
     /**
-     * Widgets
+     * Components
      *
-     * @var array<BaseWidget>
+     * @var array<BaseComponent>
      */
-    private array $widgets = [];
+    private array $components = [];
 
     /**
      * Create a new Papier instance.
@@ -140,63 +141,65 @@ class Papier
     }
 
     /**
-     * Create image widget.
+     * Create image component.
      *
-     * @return ImageWidget
+     * @return ImageComponent
      */
-    public function createImageWidget(): ImageWidget
+    public function createImageComponent(): ImageComponent
     {
-        $widget = new ImageWidget();
-        $widget->setPage($this->getCurrentPage());
-
-        $this->widgets[] = $widget;
-        return $widget;
-    }
+		return $this->createComponent('Papier\Component\ImageComponent');
+	}
 
     /**
-     * Create text widget.
+     * Create text component.
      *
-     * @return TextWidget
+     * @return TextComponent
      */
-    public function createTextWidget(): TextWidget
+    public function createTextComponent(): TextComponent
     {
-        $widget = new TextWidget();
-        $widget->setPage($this->getCurrentPage());
-
-        $this->widgets[] = $widget;
-        return $widget;
-    }
+		return $this->createComponent('Papier\Component\TextComponent');
+	}
 
 
     /**
-     * Create rectangle widget.
+     * Create rectangle component.
      *
-     * @return RectangleWidget
+     * @return RectangleComponent
      */
-    public function createRectangleWidget(): RectangleWidget
+    public function createRectangleComponent(): RectangleComponent
     {
-        $widget = new RectangleWidget();
-        $widget->setPage($this->getCurrentPage());
-
-        $this->widgets[] = $widget;
-        return $widget;
-    }
+		return $this->createComponent('Papier\Component\RectangleComponent');
+	}
 
     /**
-     * Create Bezier widget.
+     * Create Bezier component.
      *
-     * @return DrawWidget
+     * @return DrawComponent
      */
-    public function createDrawWidget(): DrawWidget
+    public function createDrawComponent(): DrawComponent
     {
-        $widget = new DrawWidget();
-        $widget->setPage($this->getCurrentPage());
-
-        $this->widgets[] = $widget;
-        return $widget;
+        return $this->createComponent('Papier\Component\DrawComponent');
     }
 
-    /**
+
+	/**
+	 * Create a new component of type
+	 *
+	 * @template T
+	 * @param class-string<T> $class
+	 * @return T
+	 * @throws InvalidArgumentException if the provided type's object does not exist.
+	 */
+	public function createComponent(string $class): BaseComponent
+	{
+		$component = Factory::create($class);
+		$component->setPage($this->getCurrentPage());
+
+		$this->components[] = $component;
+		return $component;
+	}
+
+	/**
      * Set current PDF's page.
      *
      * @param int $page
@@ -257,13 +260,13 @@ class Papier
     }
 
 	/**
-	 * Get widgets.
+	 * Get components.
 	 *
-	 * @return array<BaseWidget>
+	 * @return array<BaseComponent>
 	 */
-    private function getWidgets(): array
+    private function getComponents(): array
     {
-        return $this->widgets;
+        return $this->components;
     }
 
     /**
@@ -273,12 +276,12 @@ class Papier
      */
     public function build(): string
     {
-        // Build widgets
-        $widgets = $this->getWidgets();
+        // Build components
+        $components = $this->getComponents();
 
-        if (count($widgets)) {
-            foreach ($widgets as $widget) {
-                $widget->format();
+        if (count($components)) {
+            foreach ($components as $component) {
+                $component->format();
             }
         }
 
