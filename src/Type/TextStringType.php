@@ -13,6 +13,7 @@ class TextStringType extends LiteralStringType
      */
     protected function getValue(): ?string
     {
+		/** @var string|null $value */
         $value = parent::getValue();
         return is_null($value) ? $value : Encoding::toUTF16BE($value);
     }

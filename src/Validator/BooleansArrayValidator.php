@@ -16,7 +16,8 @@ class BooleansArrayValidator extends ArrayValidator
         $isValid = parent::isValid($value, $size);
 
         if ($isValid) {
-            foreach ($value as $number) {
+			/** @var array<mixed> $value */
+			foreach ($value as $number) {
                 $isValid = $isValid && BooleanValidator::isValid($number);
             }
         }

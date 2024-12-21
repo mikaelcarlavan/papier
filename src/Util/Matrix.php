@@ -24,7 +24,7 @@ class Matrix
     /**
      * Data
      *
-     * @var array<mixed>
+     * @var array<array<float>>
      */
     protected array $data = [];
 

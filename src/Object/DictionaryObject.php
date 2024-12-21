@@ -187,9 +187,9 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
     /**
      * Get objects.
      *  
-     * @return mixed
+     * @return array
      */
-    public function getObjects(): mixed
+    public function getObjects(): array
     {
         $objects = $this->getValue();
         return is_array($objects) ? $objects : array($objects);

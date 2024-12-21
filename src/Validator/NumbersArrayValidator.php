@@ -16,6 +16,7 @@ class NumbersArrayValidator extends ArrayValidator
         $isValid = parent::isValid($value, $size);
 
         if ($isValid) {
+			/** @var array<mixed> $value */
             foreach ($value as $number) {
                 $isValid = $isValid && NumberValidator::isValid($number);
             }

@@ -15,6 +15,13 @@ class NumberValidator implements Validator
      */
     public static function isValid($value, mixed $min = null, mixed $max = null): bool
     {
-        return RealValidator::isValid($value, $min, $max) || IntegerValidator::isValid($value, $min, $max);
-    }
+		$isValid = is_numeric($value);
+		if (is_numeric($min) && $isValid) {
+			$isValid = ($value >= $min);
+		}
+		if (is_numeric($max) && $isValid) {
+			$isValid = ($value <= $max);
+		}
+		return $isValid;
+	}
 }

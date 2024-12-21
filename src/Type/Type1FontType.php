@@ -26,6 +26,7 @@ class Type1FontType extends DictionaryType
      */
     public function getName(): ?string
     {
+		/** @var string|null $value */
         $value = $this->getEntryValue('Name');
         return $value;
     }
@@ -119,7 +120,8 @@ class Type1FontType extends DictionaryType
             throw new InvalidArgumentException("Encoding is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        if (!$encoding instanceof DictionaryObject) {
+        if (StringValidator::isValid($encoding)) {
+			/** @var string $encoding */
             if (!EncodingValidator::isValid($encoding)) {
                 throw new InvalidArgumentException("Encoding is incorrect. See ".__CLASS__." class's documentation for possible values.");
             }

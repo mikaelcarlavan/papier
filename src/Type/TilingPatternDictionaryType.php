@@ -107,10 +107,10 @@ class TilingPatternDictionaryType extends PatternDictionaryType
     /**
      * Set resources.
      *  
-     * @param  DictionaryObject  $resources
+     * @param  DictionaryType  $resources
      * @return TilingPatternDictionaryType
      */
-    public function setResources(DictionaryObject $resources): TilingPatternDictionaryType
+    public function setResources(DictionaryType $resources): TilingPatternDictionaryType
     {
         $this->setEntry('Resources', $resources);
         return $this;
@@ -128,7 +128,9 @@ class TilingPatternDictionaryType extends PatternDictionaryType
             $this->setResources($resources);
         }
 
-        return $this->getEntry('Resources');
+		/** @var DictionaryType $resources */
+		$resources = $this->getEntry('Resources');
+        return $resources;
     }  
     
     /**

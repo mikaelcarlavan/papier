@@ -20,7 +20,9 @@ class TreeType extends DictionaryType
             $this->setEntry('Root', $root);
         }
 
-        return $this->getEntry('Root');
+		/** @var TreeNodeType $root */
+		$root = $this->getEntry('Root');
+        return $root;
     }
     
     /**

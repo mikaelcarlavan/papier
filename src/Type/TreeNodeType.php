@@ -55,7 +55,9 @@ class TreeNodeType extends DictionaryType
             $this->setEntry('Kids', $kids);
         }
 
-        return $this->getEntry('Kids');
+		/** @var ArrayType $kids */
+		$kids = $this->getEntry('Kids');
+        return $kids;
     }
 
     
@@ -123,7 +125,9 @@ class TreeNodeType extends DictionaryType
             $this->setEntry('Names', $names);
         }
 
-        return $this->getEntry('Names');
+		/** @var LiteralStringKeyArrayType $names */
+		$names = $this->getEntry('Names');
+        return $names;
     }
 
     /**
@@ -150,13 +154,16 @@ class TreeNodeType extends DictionaryType
         $objects = array();
 
         if ($node->hasEntry('Names')) {
-            $names = $node->getEntry('Names')->getKeys();
-            $objects = array_merge($objects, $names);
+			/** @var LiteralStringKeyArrayType $names */
+			$names = $node->getEntry('Names');
+            $objects = array_merge($objects, $names->getKeys());
         } else {
+			/** @var ArrayType $kids */
             $kids = $node->getEntry('Kids');
-            
-            if (count($kids) > 0) {
+			$kids = $kids->getObjects();
+            if (count($kids)) {
                 foreach ($kids as $kid) {
+					/** @var TreeNodeType $kid */
                     $names = $this->collectNames($kid);
                     $objects = array_merge($objects, $names);
                 }
@@ -173,6 +180,7 @@ class TreeNodeType extends DictionaryType
      */
     public function format(): string
     {
+		/** @var array $value */
         $value = $this->getValue();    
         asort($value);
         $this->setValue($value);

@@ -16,7 +16,8 @@ class ByteStringsArrayValidator extends ArrayValidator
         $isValid = parent::isValid($value, $size);
 
         if ($isValid) {
-            foreach ($value as $string) {
+			/** @var array<mixed> $value */
+			foreach ($value as $string) {
                 $isValid = $isValid && ByteStringValidator::isValid($string);
             }
         }

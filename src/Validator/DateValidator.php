@@ -10,7 +10,7 @@ class DateValidator implements Validator
      /**
      * Test if given parameter is a valid date.
      * 
-     * @param  mixed  $value
+     * @param  DateTime|string  $value
      * @return bool
      */
     public static function isValid($value): bool
