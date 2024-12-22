@@ -2,6 +2,7 @@
 
 namespace Papier\Component;
 
+use Papier\Component\Base\BaseComponent;
 use Papier\Papier;
 use Papier\Util\Matrix;
 

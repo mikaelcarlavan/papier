@@ -2,6 +2,7 @@
 
 namespace Papier\Component;
 
+use Papier\Component\Base\BaseComponent;
 use Papier\Document\ProcedureSet;
 use Papier\Factory\Factory;
 use Papier\Papier;

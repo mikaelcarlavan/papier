@@ -2,10 +2,8 @@
 
 namespace Papier\Component;
 
-use Papier\Factory\Factory;
-use Papier\Graphics\LineCapStyle;
+use Papier\Component\Base\BaseComponent;
 use Papier\Papier;
-use Papier\Validator\NumberValidator;
 
 class RectangleComponent extends BaseComponent
 {

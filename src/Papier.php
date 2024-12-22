@@ -2,26 +2,21 @@
 
 namespace Papier;
 
-use Papier\Document\ProcedureSet;
-use Papier\Factory\Factory;
-use Papier\File\FileHeader;
-use Papier\File\FileTrailer;
-use Papier\File\FileBody;
-
-use Papier\File\CrossReference;
-
-use Papier\Object\NullObject;
-use Papier\Type\DocumentInformationDictionaryType;
-use Papier\Type\PageObjectType;
-use Papier\Type\ViewerPreferencesDictionaryType;
-use Papier\Validator\NumbersArrayValidator;
-use Papier\Validator\NumberValidator;
+use InvalidArgumentException;
+use Papier\Component\Base\BaseComponent;
 use Papier\Component\DrawComponent;
 use Papier\Component\ImageComponent;
 use Papier\Component\RectangleComponent;
 use Papier\Component\TextComponent;
-use Papier\Component\BaseComponent;
-use InvalidArgumentException;
+use Papier\Factory\Factory;
+use Papier\File\CrossReference;
+use Papier\File\FileBody;
+use Papier\File\FileHeader;
+use Papier\File\FileTrailer;
+use Papier\Type\DocumentInformationDictionaryType;
+use Papier\Type\PageObjectType;
+use Papier\Type\ViewerPreferencesDictionaryType;
+use Papier\Validator\NumbersArrayValidator;
 
 class Papier
 {

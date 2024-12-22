@@ -3,13 +3,7 @@
 namespace Papier\Factory;
 
 use InvalidArgumentException;
-use Papier\Component\BaseComponent;
-use Papier\Object\BaseObject;
 use Papier\Object\IndirectObject;
-use Papier\Type\ArrayType;
-use Papier\Type\ASCIIStringType;
-use Papier\Type\DictionaryType;
-use Papier\Type\NameType;
 
 class Factory
 {

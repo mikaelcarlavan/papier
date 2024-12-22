@@ -2,6 +2,8 @@
 
 namespace Papier\Component;
 
+use InvalidArgumentException;
+use Papier\Component\Base\BaseComponent;
 use Papier\Document\ProcedureSet;
 use Papier\Factory\Factory;
 use Papier\Filter\FilterType;
@@ -13,7 +15,6 @@ use Papier\Papier;
 use Papier\Type\ArrayType;
 use Papier\Type\DictionaryType;
 use Papier\Validator\NumberValidator;
-use InvalidArgumentException;
 
 class ImageComponent extends BaseComponent
 {
