@@ -2,7 +2,9 @@
 
 namespace Papier\Component;
 
+use Papier\Component\Base\BaseComponent;
 use Papier\Papier;
+use Papier\Util\Point;
 
 class DrawComponent extends BaseComponent
 {
@@ -12,14 +14,14 @@ class DrawComponent extends BaseComponent
     /**
      * The path
      *
-     * @var array<array{x: float, y:float, ctrl?: array{initial?: array{x:float, y:float}, final?: array{x:float, y:float}}}>
+     * @var array<array{point: Point, ctrl?: array{initial?: Point, final?: Point}}>
      */
     protected array $path = [];
 
     /**
      * Get path.
      *
-     * @return array<array{x: float, y:float, ctrl?: array{initial?: array{x:float, y:float}, final?: array{x:float, y:float}}}>
+     * @return array<array{point: Point, ctrl?: array{initial?: Point, final?: Point}}>
      */
     public function getPath(): array
     {
@@ -35,10 +37,13 @@ class DrawComponent extends BaseComponent
      */
     public function addPoint(float $x1, float $y1): DrawComponent
     {
+		$p = new Point();
+		$p->setXY($x1, $y1);
+
         $this->path[] = [
-            'x' => $x1,
-            'y' => $y1
-        ];
+			'point' => $p
+		];
+
 
         return $this;
     }
@@ -54,14 +59,16 @@ class DrawComponent extends BaseComponent
      */
     public function addPointWithFinalPointAsControlPoint(float $x1, float $y1, float $x3, float $y3): DrawComponent
     {
+		$point = new Point();
+		$point->setXY($x3, $y3);
+
+		$final = new Point();
+		$final->setXY($x1, $y1);
+
         $this->path[] = [
-            'x' => $x3,
-            'y' => $y3,
+            'point' => $point,
             'ctrl' => [
-                'final' => [
-                    'x' => $x1,
-                    'y' => $y1
-                ]
+                'final' => $final
             ]
         ];
 
@@ -79,14 +86,16 @@ class DrawComponent extends BaseComponent
      */
     public function addPointWithInitialPointAsControlPoint(float $x2, float $y2, float $x3, float $y3): DrawComponent
     {
+		$point = new Point();
+		$point->setXY($x3, $y3);
+
+		$initial = new Point();
+		$initial->setXY($x2, $y2);
+
         $this->path[] = [
-            'x' => $x3,
-            'y' => $y3,
+            'point' => $point,
             'ctrl' => [
-                'initial' => [
-                    'x' => $x2,
-                    'y' => $y2
-                ]
+                'initial' => $initial
             ]
         ];
 
@@ -106,20 +115,22 @@ class DrawComponent extends BaseComponent
      */
     public function addPointWithControlPoints(float $x1, float $y1, float $x2, float $y2, float $x3, float $y3): DrawComponent
     {
-        $this->path[] = [
-            'x' => $x3,
-            'y' => $y3,
-            'ctrl' => [
-                'initial' => [
-                    'x' => $x1,
-                    'y' => $y1
-                ],
-                'final' => [
-                    'x' => $x2,
-                    'y' => $y2
-                ]
-            ]
-        ];
+		$point = new Point();
+		$point->setXY($x3, $y3);
+
+		$initial = new Point();
+		$initial->setXY($x1, $y1);
+
+		$final = new Point();
+		$final->setXY($x2, $y2);
+
+		$this->path[] = [
+			'point' => $point,
+			'ctrl' => [
+				'initial' => $initial,
+				'final' => $final
+			]
+		];
 
         return $this;
     }
@@ -137,26 +148,30 @@ class DrawComponent extends BaseComponent
 
         if (count($points)) {
 			$point = array_shift($points);
-			$contents->beginPath($mmToUserUnit * $point['x'], $mmToUserUnit * $point['y']);
+			/** @var Point $p */
+			$p = $point['point'];
+			$contents->beginPath($mmToUserUnit * $p->getX(), $mmToUserUnit * $p->getY());
 
             foreach ($points as $point) {
 				if (isset($point['ctrl'])) {
 					$ctrl = (array)$point['ctrl'];
                     if (isset($ctrl['initial']) && isset($ctrl['final'])) {
+						/** @var Point $initialPoint */
+						/** @var Point $finalPoint */
                         $initialPoint = $ctrl['initial'];
                         $finalPoint = $ctrl['final'];
-                        $contents->appendCubicBezier($mmToUserUnit * $point['x'], $mmToUserUnit * $point['y'], $mmToUserUnit * $initialPoint['x'], $mmToUserUnit * $initialPoint['y'], $mmToUserUnit * $finalPoint['x'], $mmToUserUnit * $finalPoint['y']);
+                        $contents->appendCubicBezier($mmToUserUnit * $p->getX(), $mmToUserUnit * $p->getY(), $mmToUserUnit * $initialPoint->getX(), $mmToUserUnit * $initialPoint->getY(), $mmToUserUnit * $finalPoint->getX(), $mmToUserUnit * $finalPoint->getY());
                     } else if (isset($ctrl['initial'])) {
-                        $initialPoint = $ctrl['initial'];
-
-                        $contents->appendCubicBezier2a($mmToUserUnit * $point['x'], $mmToUserUnit * $point['y'], $mmToUserUnit * $initialPoint['x'], $mmToUserUnit * $initialPoint['y']);
+						/** @var Point $initialPoint */
+						$initialPoint = $ctrl['initial'];
+                        $contents->appendCubicBezier2a($mmToUserUnit * $p->getX(), $mmToUserUnit * $p->getY(), $mmToUserUnit * $initialPoint->getX(), $mmToUserUnit * $initialPoint->getY());
                     } else if (isset($ctrl['final'])) {
-                        $finalPoint = $ctrl['final'];
-
-                        $contents->appendCubicBezier2b($mmToUserUnit * $point['x'], $mmToUserUnit * $point['y'], $mmToUserUnit * $finalPoint['x'], $mmToUserUnit * $finalPoint['y']);
+						/** @var Point $finalPoint */
+						$finalPoint = $ctrl['final'];
+                        $contents->appendCubicBezier2b($mmToUserUnit * $p->getX(), $mmToUserUnit * $p->getY(), $mmToUserUnit * $finalPoint->getX(), $mmToUserUnit * $finalPoint->getY());
                     }
                 } else {
-                    $contents->appendSegment($mmToUserUnit * $point['x'], $mmToUserUnit * $point['y']);
+                    $contents->appendSegment($mmToUserUnit * $p->getX(), $mmToUserUnit * $p->getY());
                 }
             }
         }
