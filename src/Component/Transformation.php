@@ -19,7 +19,7 @@ trait Transformation
      *
      * @return Matrix
      */
-    public function getTransformationMatrix(): Matrix
+	private function getTransformationMatrix(): Matrix
     {
         if (!$this->transformationMatrix) {
             $this->transformationMatrix = Matrix::eye(3);
@@ -34,7 +34,7 @@ trait Transformation
      * @param Matrix $transformationMatrix
      * @return BaseComponent
      */
-    public function setTransformationMatrix(Matrix $transformationMatrix): BaseComponent
+    private function setTransformationMatrix(Matrix $transformationMatrix): BaseComponent
     {
         $this->transformationMatrix = $transformationMatrix;
         return $this;

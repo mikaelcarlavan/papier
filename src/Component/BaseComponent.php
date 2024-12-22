@@ -47,7 +47,7 @@ abstract class BaseComponent
      *
      * @return ContentStreamType
      */
-    public function getContents(): ContentStreamType
+    protected function getContents(): ContentStreamType
     {
         $page = $this->getPage();
         return $page->getContents();
