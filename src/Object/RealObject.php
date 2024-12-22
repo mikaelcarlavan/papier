@@ -21,9 +21,10 @@ class RealObject extends IndirectObject
             throw new InvalidArgumentException("Real is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        // Convert from scientific notation
-        $value = number_format($value, Papier::MAX_DECIMALS);
-        parent::setValue($value);
+		/** @var float $value */
+		// Convert from scientific notation
+        $formattedValue = number_format($value, Papier::MAX_DECIMALS);
+        parent::setValue($formattedValue);
         return $this;
     }    
 }

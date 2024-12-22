@@ -29,11 +29,11 @@ class EmbeddedFileParameterDictionaryType extends DictionaryObject
     /**
      * Set creation date.
      * 
-     * @param  mixed  $date
-     * @throws InvalidArgumentException if the provided argument is not a valid date.
+     * @param \DateTime|string $date
      * @return EmbeddedFileParameterDictionaryType
+     *@throws InvalidArgumentException if the provided argument is not a valid date.
      */
-    public function setCreationDate($date): EmbeddedFileParameterDictionaryType
+    public function setCreationDate(\DateTime|string $date): EmbeddedFileParameterDictionaryType
     {
         if (!DateValidator::isValid($date)) {
             throw new InvalidArgumentException("CreationDate is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -48,11 +48,11 @@ class EmbeddedFileParameterDictionaryType extends DictionaryObject
     /**
      * Set modification date.
      * 
-     * @param   mixed  $date
-     * @throws InvalidArgumentException if the provided argument is not a valid date.
+     * @param \DateTime|string $date
      * @return EmbeddedFileParameterDictionaryType
+     *@throws InvalidArgumentException if the provided argument is not a valid date.
      */
-    public function setModDate($date): EmbeddedFileParameterDictionaryType
+    public function setModDate(\DateTime|string $date): EmbeddedFileParameterDictionaryType
     {
         if (!DateValidator::isValid($date)) {
             throw new InvalidArgumentException("ModDate is incorrect. See ".__CLASS__." class's documentation for possible values.");

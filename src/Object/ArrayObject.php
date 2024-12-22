@@ -11,6 +11,7 @@ class ArrayObject extends DictionaryObject
      */
     public function first(): IndirectObject
     {
+		/** @var array<IndirectObject> $objects */
         $objects = $this->getObjects();
         $keys = $this->getKeys();
 
@@ -24,6 +25,7 @@ class ArrayObject extends DictionaryObject
      */
     public function last(): IndirectObject
     {
+		/** @var array<IndirectObject> $objects */
         $objects = $this->getObjects();
         $keys = $this->getKeys();
         
@@ -38,6 +40,7 @@ class ArrayObject extends DictionaryObject
      */
     public function has(string $value): bool
     {
+		/** @var array<IndirectObject> $objects */
         $objects = $this->getObjects();
         if (count($objects)) {
             foreach ($objects as $object) {
@@ -57,6 +60,7 @@ class ArrayObject extends DictionaryObject
      */
     public function current() : IndirectObject
     {
+		/** @var array<IndirectObject> $objects */
         $objects = $this->getObjects();
         return $objects[$this->position];
     }
@@ -79,6 +83,7 @@ class ArrayObject extends DictionaryObject
      */
     public function valid(): bool
     {
+		/** @var array<IndirectObject> $objects */
         $objects = $this->getObjects();
         return isset($objects[$this->position]);
     }
@@ -90,6 +95,7 @@ class ArrayObject extends DictionaryObject
      */
     public function count(): int
     {
+		/** @var array<IndirectObject> $objects */
         $objects = $this->getObjects();
         return count($objects);
     }
@@ -103,6 +109,7 @@ class ArrayObject extends DictionaryObject
      */
     public function append(IndirectObject $object): ArrayObject
     {
+		/** @var array<IndirectObject> $objects */
         $objects = $this->getObjects();
         $objects[] = $object;
 		$this->setObjects($objects);
@@ -124,10 +131,11 @@ class ArrayObject extends DictionaryObject
     /**
      * Shift object from array.
      *
-     * @return IndirectObject
+     * @return IndirectObject|null
      */
-    public function shift(): IndirectObject
+    public function shift(): IndirectObject|null
     {
+		/** @var array<IndirectObject> $objects */
         $objects = $this->getObjects();
         $object = array_shift($objects);
         $this->setObjects($objects);
@@ -137,10 +145,11 @@ class ArrayObject extends DictionaryObject
     /**
      * Pop object from array.
      *
-     * @return IndirectObject
+     * @return IndirectObject|null
      */
-    public function pop(): IndirectObject
+    public function pop(): IndirectObject|null
     {
+		/** @var array<IndirectObject> $objects */
         $objects = $this->getObjects();
         $object = array_pop($objects);
         $this->setObjects($objects);
@@ -155,12 +164,13 @@ class ArrayObject extends DictionaryObject
      */
     public function format(): string
     {
+		/** @var array<IndirectObject> $objects */
         $objects = $this->getObjects();
         $value = '';
 
         if (count($objects) > 0) {
             foreach ($objects as $object) {
-                $value .= ' '.$object->write(false);
+                $value .= ' '.$object->write();
             }         
         }
 

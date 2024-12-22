@@ -31,6 +31,7 @@ class CommentObject extends BaseObject
      */
     public function format(): string
     {
+		/** @var string $value */
         $value = $this->getValue();
 
         $trans = array('%' => '\%');

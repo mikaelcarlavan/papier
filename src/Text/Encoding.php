@@ -46,8 +46,9 @@ class Encoding
     {
         $out = "\xFE\xFF";
         $i = 1;
+		/** @var array<int>|false $characters */
         $characters = unpack("C*", $value);
-		if (is_array($characters)) {
+		if ($characters) {
 			while ($i <= count($characters)) {
 				$firstByteCharacter = $characters[$i++];
 

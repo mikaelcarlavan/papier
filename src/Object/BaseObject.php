@@ -35,7 +35,9 @@ abstract class BaseObject
      */
     public function format(): string
     {
-        return $this->getValue();
+		/** @var string $value */
+		$value = $this->getValue();
+		return $value;
     }
 
     /**

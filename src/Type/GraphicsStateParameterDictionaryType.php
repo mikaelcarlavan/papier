@@ -42,11 +42,11 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
     /**
      * Set line cap style.
      *  
-     * @param  mixed  $lc
+     * @param  int  $lc
      * @return GraphicsStateParameterDictionaryType
      * @throws InvalidArgumentException if the provided argument is not a valid line cap style.
 	 */
-    public function setLC($lc): GraphicsStateParameterDictionaryType
+    public function setLC(int $lc): GraphicsStateParameterDictionaryType
     {
         if (!LineCapStyleValidator::isValid($lc)) {
             throw new InvalidArgumentException("LC is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -60,11 +60,11 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
     /**
      * Set line join style.
      *  
-     * @param  mixed  $lj
+     * @param  int  $lj
      * @return GraphicsStateParameterDictionaryType
      * @throws InvalidArgumentException if the provided argument is not a valid line join style.
 	 */
-    public function setLJ($lj): GraphicsStateParameterDictionaryType
+    public function setLJ(int $lj): GraphicsStateParameterDictionaryType
     {
         if (!LineJoinStyleValidator::isValid($lj)) {
             throw new InvalidArgumentException("LJ is incorrect. See ".__CLASS__." class's documentation for possible values.");

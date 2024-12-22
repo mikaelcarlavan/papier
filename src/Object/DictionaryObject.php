@@ -6,6 +6,7 @@ use Countable;
 use InvalidArgumentException;
 use Iterator;
 use Papier\Factory\Factory;
+use Papier\Type\IntegerType;
 use Papier\Validator\ArrayValidator;
 
 /**
@@ -169,6 +170,7 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
      */
     public function getEntryValue(string $key): mixed
     {
+		/** @var BaseObject $object */
         $object = $this->getObjectForKey($key);
         return $object->getValue();
     }
@@ -187,12 +189,13 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
     /**
      * Get objects.
      *  
-     * @return array
+     * @return array<int|string, BaseObject>
      */
     public function getObjects(): array
     {
+		/** @var array<int|string, BaseObject> $objects */
         $objects = $this->getValue();
-        return is_array($objects) ? $objects : array($objects);
+        return $objects;
     }
 
     /**
@@ -220,7 +223,7 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
     /**
      * Set objects.
      * 
-     * @param  array<BaseObject>   $objects
+     * @param  array<mixed>   $objects
      * @return DictionaryObject
      * @throws InvalidArgumentException if the provided argument is not an array of 'IndirectObject'.
      */

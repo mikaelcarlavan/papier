@@ -31,6 +31,7 @@ class StringObject extends IndirectObject
      */
     public function format(): string
     {
+		/** @var string $value */
         $value = $this->getValue();
 
         $trans = array('(' => '\(', ')' => '\)', '\\' => '\\\\');

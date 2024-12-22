@@ -147,7 +147,9 @@ class Papier
      */
     public function createImageComponent(): ImageComponent
     {
-		return $this->createComponent('Papier\Component\ImageComponent');
+		/** @var ImageComponent $component */
+		$component = $this->createComponent('Papier\Component\ImageComponent');
+		return $component;
 	}
 
     /**
@@ -157,7 +159,9 @@ class Papier
      */
     public function createTextComponent(): TextComponent
     {
-		return $this->createComponent('Papier\Component\TextComponent');
+		/** @var TextComponent $component */
+		$component = $this->createComponent('Papier\Component\TextComponent');
+		return $component;
 	}
 
 
@@ -168,7 +172,9 @@ class Papier
      */
     public function createRectangleComponent(): RectangleComponent
     {
-		return $this->createComponent('Papier\Component\RectangleComponent');
+		/** @var RectangleComponent $component */
+		$component = $this->createComponent('Papier\Component\RectangleComponent');
+		return $component;
 	}
 
     /**
@@ -178,14 +184,16 @@ class Papier
      */
     public function createDrawComponent(): DrawComponent
     {
-        return $this->createComponent('Papier\Component\DrawComponent');
+		/** @var DrawComponent $component */
+		$component = $this->createComponent('Papier\Component\DrawComponent');
+		return $component;
     }
 
 
 	/**
 	 * Create a new component of type
 	 *
-	 * @template T
+	 * @template T of BaseComponent
 	 * @param class-string<T> $class
 	 * @return T
 	 * @throws InvalidArgumentException if the provided type's object does not exist.

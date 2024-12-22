@@ -101,11 +101,11 @@ class DocumentInformationDictionaryType extends DictionaryObject
     /**
      * Set creation date.
      *
-     * @param  mixed  $date
+     * @param  \DateTime|string  $date
      * @return DocumentInformationDictionaryType
      * @throws InvalidArgumentException if the provided argument is not a valid date.
      */
-    public function setCreationDate($date): DocumentInformationDictionaryType
+    public function setCreationDate(\DateTime|string $date): DocumentInformationDictionaryType
     {
         if (!DateValidator::isValid($date)) {
             throw new InvalidArgumentException("CreationDate is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -120,11 +120,11 @@ class DocumentInformationDictionaryType extends DictionaryObject
     /**
      * Set modification date.
      * 
-     * @param   mixed  $date
+     * @param  \DateTime|string  $date
      * @return DocumentInformationDictionaryType
      *@throws InvalidArgumentException if the provided argument is not a valid date.
      */
-    public function setModDate($date): DocumentInformationDictionaryType
+    public function setModDate(\DateTime|string $date): DocumentInformationDictionaryType
     {
         if (!DateValidator::isValid($date)) {
             throw new InvalidArgumentException("ModDate is incorrect. See ".__CLASS__." class's documentation for possible values.");

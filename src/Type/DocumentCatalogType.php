@@ -51,11 +51,13 @@ class DocumentCatalogType extends DictionaryType
     public function getExtensions(): ExtensionsDictionaryType
     {
         if (!$this->hasEntry('Extensions')) {
-            $value = Factory::create('Papier\Type\ExtensionsDictionaryType', null, true);
-            $this->setExtensions($value);
+			$extensions = Factory::create('Papier\Type\ExtensionsDictionaryType', null, true);
+            $this->setExtensions($extensions);
         }
 
-        return $this->getEntry('Extensions');
+		/** @var ExtensionsDictionaryType $extensions */
+		$extensions = $this->getEntry('Extensions');
+        return $extensions;
     }
 
     /**
@@ -126,11 +128,13 @@ class DocumentCatalogType extends DictionaryType
     public function getViewerPreferences(): ViewerPreferencesDictionaryType
     {
         if (!$this->hasEntry('ViewerPreferences')) {
-            $value = Factory::create('Papier\Type\ViewerPreferencesDictionaryType', null, true);
-            $this->setViewerPreferences($value);
+            $viewerPreferences = Factory::create('Papier\Type\ViewerPreferencesDictionaryType', null, true);
+            $this->setViewerPreferences($viewerPreferences);
         }
 
-        return $this->getEntry('ViewerPreferences');
+		/** @var ViewerPreferencesDictionaryType $viewerPreferences */
+		$viewerPreferences = $this->getEntry('ViewerPreferences');
+        return $viewerPreferences;
     } 
 
     /**

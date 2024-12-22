@@ -2,6 +2,7 @@
 
 namespace Papier\Object;
 
+use Papier\Type\IntegerType;
 use Papier\Validator\FunctionTypeValidator;
 
 use Papier\Functions\FunctionType;
@@ -118,9 +119,11 @@ class FunctionObject extends StreamObject
             throw new RuntimeException("Domain is missing. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $type = $this->getEntry('FunctionType')->getValue();
-
-        if (($type == FunctionType::SAMPLED || $type == FunctionType::POSTSCRIPT_CALCULATOR) && !$this->hasEntry('Range')) {
+		/** @var IntegerType $type */
+		$type = $this->getEntry('FunctionType');
+		/** @var int $value */
+		$value = $type->getValue();
+        if (($value == FunctionType::SAMPLED || $value == FunctionType::POSTSCRIPT_CALCULATOR) && !$this->hasEntry('Range')) {
             throw new RuntimeException("Range is missing. See ".__CLASS__." class's documentation for possible values.");
         }
 

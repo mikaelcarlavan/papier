@@ -14,7 +14,9 @@ class HexadecimalStringType extends StringObject
      */
     public function format(): string
     {
-        $chars = str_split($this->getValue());
+		/** @var string $value */
+		$value = $this->getValue();
+        $chars = str_split($value);
 
         $value = '';
 		foreach ($chars as $char) {

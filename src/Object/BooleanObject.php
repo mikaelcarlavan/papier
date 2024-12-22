@@ -50,7 +50,9 @@ class BooleanObject extends IndirectObject
      */
     public function isTrue(): bool
     {
-        return $this->getValue();
+		/** @var bool $value */
+		$value = $this->getValue();
+        return $value;
     }
     
     /**
@@ -70,6 +72,7 @@ class BooleanObject extends IndirectObject
      */
     public function format(): string
     {
+		/** @var bool $value */
         $value = $this->getValue();
         return $value ? 'true' : 'false';
     }

@@ -27,7 +27,8 @@ class NameObject extends IndirectObject
      */
     public function format(): string
     {
-        $value = $this->getValue();
+		/** @var string $value */
+		$value = $this->getValue();
 
         $trans = array(
             ' ' => '#20', '(' => '#28', ')' => '#29', '#' => '#23', '<' => '#3C', '>' => '#3E', 

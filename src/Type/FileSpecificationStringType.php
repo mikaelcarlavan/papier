@@ -14,7 +14,8 @@ class FileSpecificationStringType extends StringObject
      */
     public function getConvertedValue(): string
     {
-        $value = $this->getValue();
+		/** @var string $value */
+		$value = $this->getValue();
 
         // Check if network resource is present
         if (strpos($value, ':\\') !== false) { 

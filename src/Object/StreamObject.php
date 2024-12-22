@@ -35,12 +35,14 @@ class StreamObject extends DictionaryObject
      */
     private function getStream(): string
     {
+		/** @var string|null $stream */
         $stream = $this->getContent();
         $compression = $this->getCompression();
 
         if (!is_null($compression)) {
             $class = 'Papier\Filter\\'.$compression.'Filter';
             if (class_exists($class)) {
+				/** @var string|bool $stream */
                 $stream = $class::process($stream);
                 $this->setFilter($compression);
             } else {
@@ -48,7 +50,7 @@ class StreamObject extends DictionaryObject
             }
         }
 
-        return $stream ?? '';
+        return is_string($stream) ? $stream : '';
     }
 
     /**
@@ -58,7 +60,9 @@ class StreamObject extends DictionaryObject
      */
     protected function getContent(): ?string
     {
-        return $this->content;
+		$content = $this->content;
+		/** @var string|null $content */
+        return $content;
     }
 
     /**

@@ -106,7 +106,7 @@ trait TextPositioning
     /**
      * Check matrix components.
      *
-     * @param array<float> $components
+     * @param array<string, mixed> $components
      * @return bool
      * @throws InvalidArgumentException if one of the provided argument is not 'float' or 'int'.
      */

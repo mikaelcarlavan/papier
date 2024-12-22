@@ -11,28 +11,26 @@ use Papier\Factory\Factory;
 
 use InvalidArgumentException;
 
-class CollectionSubitemDictionaryType extends DictionaryObject
+class CollectionSubItemDictionaryType extends DictionaryObject
 {
     /**
      * Set data.
      *  
      * @param  mixed  $d
-     * @return CollectionSubitemDictionaryType
+     * @return CollectionSubItemDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'int', 'float', 'date' or 'string'.
      */
-    public function setD($d): CollectionSubitemDictionaryType
+    public function setD($d): CollectionSubItemDictionaryType
     {
-        if (!NumberValidator::isValid($d) && !StringValidator::isValid($d) && !DateValidator::isValid($d)) {
-            throw new InvalidArgumentException("D is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
         if (NumberValidator::isValid($d)) {
             $value = Factory::create('Papier\Type\IntegerType', $d);
         } else if (StringValidator::isValid($d)) {
             $value = Factory::create('Papier\Type\TextStringType', $d);
-        } else {
+        } else if (DateValidator::isValid($d)) {
             $value = Factory::create('Papier\Type\DateType', $d);
-        }
+        } else {
+			throw new InvalidArgumentException("D is incorrect. See ".__CLASS__." class's documentation for possible values.");
+		}
 
         $this->setEntry('D', $value);
         return $this;
@@ -42,10 +40,10 @@ class CollectionSubitemDictionaryType extends DictionaryObject
      * Set prefix.
      *  
      * @param string $p
-     * @return CollectionSubitemDictionaryType
+     * @return CollectionSubItemDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'string'.
      */
-    public function setP(string $p): CollectionSubitemDictionaryType
+    public function setP(string $p): CollectionSubItemDictionaryType
     {
         $value = Factory::create('Papier\Type\TextStringType', $p);
 

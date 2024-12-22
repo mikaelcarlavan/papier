@@ -2,6 +2,7 @@
 
 namespace Papier\Type;
 
+use Papier\Object\BaseObject;
 use Papier\Object\StreamObject;
 use Papier\Object\ArrayObject;
 use Papier\Object\DictionaryObject;
@@ -107,13 +108,13 @@ class ImageType extends StreamObject
     /**
      * Set image mask.
      *  
-     * @param bool $imagemask
+     * @param bool $imageMask
      * @return ImageType
      * @throws InvalidArgumentException if the provided argument is not of type 'bool'.
      */
-    public function setImageMask(bool $imagemask): ImageType
+    public function setImageMask(bool $imageMask): ImageType
     {
-        $value = Factory::create('Papier\Type\BooleanType', $imagemask);
+        $value = Factory::create('Papier\Type\BooleanType', $imageMask);
         $this->setEntry('ImageMask', $value);
         return $this;
     }
@@ -303,17 +304,32 @@ class ImageType extends StreamObject
             throw new RuntimeException("Height is missing. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        if ($this->hasEntry('ColorSpace') && $this->getEntry('ColorSpace')->getValue() == 'Pattern') {
-            throw new RuntimeException("ColorSpace is incompatible. See ".__CLASS__." class's documentation for possible values.");
-        }
+		if ($this->hasEntry('ColorSpace')) {
+			/** @var BaseObject $colorSpace */
+			$colorSpace = $this->getEntry('ColorSpace');
 
-        if ($this->hasEntry('ImageMask') && $this->getEntry('ImageMask')->isTrue() && $this->hasEntry('Mask')) {
-            throw new RuntimeException("Mask is not allowed. See ".__CLASS__." class's documentation for possible values.");
-        }
+			if ($colorSpace->getValue() == 'Pattern') {
+				throw new RuntimeException("ColorSpace is incompatible. See ".__CLASS__." class's documentation for possible values.");
+			}
+		}
 
-        if ($this->hasEntry('ImageMask') && $this->getEntry('ImageMask')->isTrue() && $this->hasEntry('BitsPerComponent') && $this->getEntry('BitsPerComponent')->getValue() == 1) {
-            throw new RuntimeException("BitsPerComponent is incompatible. See ".__CLASS__." class's documentation for possible values.");
-        }
+
+		if ($this->hasEntry('ImageMask')) {
+			/** @var BooleanType $imageMask */
+			$imageMask = $this->getEntry('ImageMask');
+
+			if ($imageMask->isTrue() && $this->hasEntry('Mask')) {
+				throw new RuntimeException("Mask is not allowed. See ".__CLASS__." class's documentation for possible values.");
+			}
+
+			if ($imageMask->isTrue() && $this->hasEntry('BitsPerComponent')) {
+				/** @var IntegerType $bitsPerComponent */
+				$bitsPerComponent = $this->getEntry('BitsPerComponent');
+				if ($bitsPerComponent->getValue() == 1) {
+					throw new RuntimeException("BitsPerComponent is incompatible. See ".__CLASS__." class's documentation for possible values.");
+				}
+			}
+		}
 
         /*
         if ($this->hasEntry('Filter') && $this->getEntry('Filter')->has(FilterType::JPX_DECODE)) {
