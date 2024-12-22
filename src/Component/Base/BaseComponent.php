@@ -1,15 +1,10 @@
 <?php
 
-namespace Papier\Component;
+namespace Papier\Component\Base;
 
 
-use Papier\Object\BaseObject;
-use Papier\Type\ArrayType;
 use Papier\Type\ContentStreamType;
 use Papier\Type\PageObjectType;
-use Papier\Validator\NumberValidator;
-use InvalidArgumentException;
-use Papier\Papier;
 
 abstract class BaseComponent
 {
