@@ -43,7 +43,8 @@ trait Color
      */
     public function setStrokingColor(...$colors): static
     {
-        $this->strokingColor = $colors;
+		/** @phpstan-ignore assign.propertyType */
+		$this->strokingColor = $colors;
         return $this;
     }
 
@@ -65,6 +66,7 @@ trait Color
      */
     public function setNonStrokingColor(...$colors): static
     {
+		/** @phpstan-ignore assign.propertyType */
         $this->nonStrokingColor = $colors;
         return $this;
     }
