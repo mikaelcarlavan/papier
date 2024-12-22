@@ -193,16 +193,15 @@ class Papier
 	/**
 	 * Create a new component of type
 	 *
-	 * @template T of BaseComponent
+	 * @template T
 	 * @param class-string<T> $class
-	 * @return T
+	 * @return BaseComponent
 	 * @throws InvalidArgumentException if the provided type's object does not exist.
 	 */
-	public function createComponent(string $class): BaseComponent
+	public function createComponent(string $class)
 	{
+		/** @var BaseComponent $component */
 		$component = Factory::create($class);
-		$component->setPage($this->getCurrentPage());
-
 		$this->components[] = $component;
 		return $component;
 	}

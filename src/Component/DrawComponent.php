@@ -12,14 +12,14 @@ class DrawComponent extends BaseComponent
     /**
      * The path
      *
-     * @var array{x: float, y: float, ctrl?: array{intial?: array{x: float, y: float}, final?: array{x: float, y: float}}}
+     * @var array<array{x: float, y:float, ctrl?: array{initial?: array{x:float, y:float}, final?: array{x:float, y:float}}}>
      */
     protected array $path = [];
 
     /**
      * Get path.
      *
-     * @return array{x: float, y: float, ctrl?: array{intial?: array{x: float, y: float}, final?: array{x: float, y: float}}}
+     * @return array<array{x: float, y:float, ctrl?: array{initial?: array{x:float, y:float}, final?: array{x:float, y:float}}}>
      */
     public function getPath(): array
     {
@@ -136,19 +136,15 @@ class DrawComponent extends BaseComponent
         $mmToUserUnit = Papier::MM_TO_USER_UNIT;
 
         if (count($points)) {
-            $point = array_shift($points);
-            if (is_array($point)) {
-                $contents->beginPath($mmToUserUnit * $point['x'], $mmToUserUnit * $point['y']);
-            }
+			$point = array_shift($points);
+			$contents->beginPath($mmToUserUnit * $point['x'], $mmToUserUnit * $point['y']);
 
             foreach ($points as $point) {
-				$point = (array)$point;
-                if (isset($point['ctrl'])) {
-                    $ctrl = (array)$point['ctrl'];
+				if (isset($point['ctrl'])) {
+					$ctrl = (array)$point['ctrl'];
                     if (isset($ctrl['initial']) && isset($ctrl['final'])) {
                         $initialPoint = $ctrl['initial'];
                         $finalPoint = $ctrl['final'];
-
                         $contents->appendCubicBezier($mmToUserUnit * $point['x'], $mmToUserUnit * $point['y'], $mmToUserUnit * $initialPoint['x'], $mmToUserUnit * $initialPoint['y'], $mmToUserUnit * $finalPoint['x'], $mmToUserUnit * $finalPoint['y']);
                     } else if (isset($ctrl['initial'])) {
                         $initialPoint = $ctrl['initial'];

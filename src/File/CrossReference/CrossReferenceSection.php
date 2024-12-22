@@ -9,13 +9,13 @@ class CrossReferenceSection extends ArrayObject
     /**
      * Add new subsection.
      *  
-     * @return CrossReferenceSubsection
+     * @return CrossReferenceSubSection
      */
-    public function addSubsection(): CrossReferenceSubsection
+    public function addSubsection(): CrossReferenceSubSection
     {
         $objects = $this->getSubsections();
 
-        $object = new CrossReferenceSubsection();
+        $object = new CrossReferenceSubSection();
         $objects[] = $object;
 
         $this->setObjects($objects);
@@ -26,11 +26,13 @@ class CrossReferenceSection extends ArrayObject
     /**
      * Get subsections.
      *  
-     * @return array<CrossReferenceSubsection>
+     * @return array<CrossReferenceSubSection>
      */
     public function getSubsections(): array
     {
-        return $this->getObjects();
+		/** @var array<CrossReferenceSubSection> $objects */
+		$objects = $this->getObjects();
+		return $objects;
     }  
 
     /**

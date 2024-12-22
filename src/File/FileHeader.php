@@ -9,6 +9,13 @@ use Papier\Validator\VersionValidator;
 
 class FileHeader extends BaseObject
 {
+	/**
+	 * Default version.
+	 *
+	 * @var int
+	 */
+	const DEFAULT_VERSION = 4;
+
     /**
      * Bool which indicates if file has binary data.
      *
@@ -39,7 +46,8 @@ class FileHeader extends BaseObject
      */
     protected function getVersion(): int
     {
-        return $this->getValue() ?? 0;
+		$value = $this->getValue();
+        return is_int($value) ? $value : self::DEFAULT_VERSION;
     }
 
     /**

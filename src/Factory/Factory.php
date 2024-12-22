@@ -3,6 +3,9 @@
 namespace Papier\Factory;
 
 use InvalidArgumentException;
+use Papier\Component\BaseComponent;
+use Papier\Object\BaseObject;
+use Papier\Object\IndirectObject;
 use Papier\Type\ArrayType;
 use Papier\Type\ASCIIStringType;
 use Papier\Type\DictionaryType;
@@ -44,13 +47,14 @@ class Factory
 
         $object = new $class();
 
-        if ($isIndirect) {
+        if ($isIndirect && $object instanceof IndirectObject) {
             $object->setNumber($instance::$number);
             $object->setIndirect();
             $instance::$number++;
         }
                
         if (!is_null($value)) {
+			/** @phpstan-ignore method.nonObject  */
             $object->setValue($value);
         }
 

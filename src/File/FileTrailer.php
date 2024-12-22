@@ -27,10 +27,10 @@ class FileTrailer extends DictionaryObject
      *
      * @var int
      */
-    private $crossReferenceOffset = 0;
+    private int $crossReferenceOffset = 0;
 
     /**
-     * Get trailer's cross reference offset.
+     * Get trailer's cross-reference offset.
      *
      * @return int
      */
@@ -147,7 +147,9 @@ class FileTrailer extends DictionaryObject
             $this->setInfo($value);
         }
 
-        return $this->getEntry('Info');
+		/** @var DocumentInformationDictionaryType $info */
+		$info = $this->getEntry('Info');
+        return $info;
     } 
 
     /**

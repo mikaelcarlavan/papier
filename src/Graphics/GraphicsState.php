@@ -112,11 +112,11 @@ trait GraphicsState
     /**
      * Set line join style.
      *  
-     * @param  mixed  $lj
+     * @param  int  $lj
      * @return mixed
      * @throws InvalidArgumentException if the provided argument is not a valid line join style.
      */
-    public function setLineJoinStyle($lj)
+    public function setLineJoinStyle(int $lj)
     {
         if (!LineJoinStyleValidator::isValid($lj)) {
             throw new InvalidArgumentException("LJ is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -216,13 +216,13 @@ trait GraphicsState
     /**
      * Check CTM components.
      *
-     * @param array<float> $components
+     * @param array<string, mixed> $components
      * @return bool
      * @throws InvalidArgumentException if one of the provided argument is not 'float' or 'int'.
      */
     private function checkCTMComponents(array $components): bool
     {
-		if (!NumbersArrayValidator::isValid($components)) {
+		if (!NumbersArrayValidator::isValid(array_values($components))) {
 			throw new InvalidArgumentException("Components is incorrect. See ".__CLASS__." class's documentation for possible values.");
 		}
 

@@ -10,7 +10,7 @@ class FileHelper
     /**
      * Resource.
      *
-     * @var mixed
+     * @var ?resource
      */
     protected mixed $stream;
 
@@ -39,7 +39,7 @@ class FileHelper
     /**
      * Get stream.
      *
-     * @return mixed
+     * @return resource|null
      */
     public function getStream(): mixed
     {
@@ -71,7 +71,11 @@ class FileHelper
      */
     public function close()
     {
-        fclose($this->getStream());
+		$stream = $this->getStream();
+		if (is_resource($stream)) {
+			fclose($stream);
+		}
+
         $this->stream = null;
     }
 
@@ -79,16 +83,21 @@ class FileHelper
 	 * Read bytes from file
 	 *
 	 * @param int $length
-	 * @return mixed
+	 * @return false|string
 	 */
-    public function read(int $length): mixed
+    public function read(int $length): false|string
 	{
 		if (!IntegerValidator::isValid($length) || $length < 1) {
 			throw new InvalidArgumentException("File is not a valid. See ".__CLASS__." class's documentation for possible values.");
 		}
 
         try {
-            return fread($this->getStream(), $length);
+			$stream = $this->getStream();
+			if (is_resource($stream)) {
+				return fread($stream, $length);
+			} else {
+				return false;
+			}
         } catch (\Exception $e) {
             throw new InvalidArgumentException($e->getMessage());
         }
@@ -102,11 +111,19 @@ class FileHelper
     public function unpackInteger(): int
 	{
         try {
-            $chunk = fread($this->getStream(), 4);
-			if ($chunk !== false) {
-				$values = unpack("N", $chunk);
-				if (is_array($values)) {
-					return array_shift($values);
+			$stream = $this->getStream();
+			if (is_resource($stream)) {
+				$chunk = fread($stream, 4);
+				if ($chunk !== false) {
+					/** @var array<int>|false $values */
+					$values = unpack("N", $chunk);
+					if (is_array($values)) {
+						/** @var int|null $value */
+						$value = array_shift($values);
+						if (!is_null($value)) {
+							return $value;
+						}
+					}
 				}
 			}
 
@@ -124,11 +141,19 @@ class FileHelper
     public function unpackByte(): mixed
 	{
         try {
-            $chunk = fread($this->getStream(), 1);
-			if ($chunk !== false) {
-				$values = unpack("C", $chunk);
-				if (is_array($values)) {
-					return array_shift($values);
+			$stream = $this->getStream();
+			if (is_resource($stream)) {
+				$chunk = fread($stream, 1);
+				if ($chunk !== false) {
+					/** @var array<int>|false $values */
+					$values = unpack("C", $chunk);
+					if (is_array($values)) {
+						/** @var mixed $value */
+						$value = array_shift($values);
+						if (!is_null($value)) {
+							return $value;
+						}
+					}
 				}
 			}
 

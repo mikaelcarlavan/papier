@@ -4,6 +4,7 @@ namespace Papier\File;
 
 use Papier\Factory\Factory;
 use Papier\Object\BaseObject;
+use Papier\Object\IndirectObject;
 use Papier\Repository\Repository;
 use Papier\Type\DocumentCatalogType;
 use Papier\Type\PageObjectType;
@@ -90,6 +91,7 @@ class FileBody extends BaseObject
     public function format(): string
     {
 
+		/** @var array<IndirectObject> $objects */
         $objects = Repository::getInstance()->getObjects();
 
         $crossReference = CrossReference::getInstance();
@@ -103,14 +105,12 @@ class FileBody extends BaseObject
 
         $content = '';
 
-        if (count($objects) > 0) {
-            foreach ($objects as $object) {
-                $subsection->addEntry()->setOffset($offset);
-                $obj = $object->getObject();
-                $content .= $obj;
-                $offset += strlen($obj);
-            }
-        }
+		foreach ($objects as $object) {
+			$subsection->addEntry()->setOffset($offset);
+			$obj = $object->getObject();
+			$content .= $obj;
+			$offset += strlen($obj);
+		}
 
         return $content;
     }

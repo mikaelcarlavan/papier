@@ -214,13 +214,13 @@ trait PathConstruction
     /**
      * Check Bézier components.
      *
-     * @param array<float> $components
+     * @param array<string, mixed> $components
      * @return bool
      * @throws InvalidArgumentException if one of the provided argument is not 'float' or 'int'.
      */
     private function checkBezierComponents(array $components): bool
     {
-		if (!NumbersArrayValidator::isValid($components)) {
+		if (!NumbersArrayValidator::isValid(array_values($components))) {
 			throw new InvalidArgumentException("Components is incorrect. See ".__CLASS__." class's documentation for possible values.");
 		}
 

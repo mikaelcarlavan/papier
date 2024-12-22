@@ -151,11 +151,12 @@ class LZWFilter extends Filter
         $bitWidth = intval(ceil(log($currentCode, 2)));
         $binaryString = '';
 
+		/** @var array<int> $codes */
         foreach ($codes as $code) {
             // Convert each code to binary with padded width
             $binaryString .= str_pad(decbin($code), $bitWidth, "0", STR_PAD_LEFT);
 
-            // Increase bit width if dictionary size exceeds current width capacity
+            // Increase the bit width if dictionary size exceeds current width capacity
             if ($currentCode > pow(2, $bitWidth)) {
                 $bitWidth++;
             }

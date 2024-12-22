@@ -31,7 +31,9 @@ class CrossReferenceTable extends ArrayObject
      */
     public function getSections(): array
     {
-        return $this->getObjects();
+		/** @var array<CrossReferenceSection> $objects */
+		$objects = $this->getObjects();
+        return $objects;
     }  
 
     /**
