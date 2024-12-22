@@ -153,6 +153,9 @@ class DrawComponent extends BaseComponent
 			$contents->beginPath($mmToUserUnit * $p->getX(), $mmToUserUnit * $p->getY());
 
             foreach ($points as $point) {
+				/** @var Point $p */
+				$p = $point['point'];
+
 				if (isset($point['ctrl'])) {
 					$ctrl = (array)$point['ctrl'];
                     if (isset($ctrl['initial']) && isset($ctrl['final'])) {
