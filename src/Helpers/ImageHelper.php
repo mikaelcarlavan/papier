@@ -56,22 +56,24 @@ class ImageHelper
 
         // Open
         $stream = FileHelper::getInstance()->open($file);
+		$stream->setBigEndian();
 
         $header = $stream->read(8);
+
         // PNG signature, check https://en.wikipedia.org/wiki/PNG
         if ($header != "\x89\x50\x4e\x47\x0d\x0a\x1a\x0a") {
             throw new InvalidArgumentException("Source is not a valid PNG file. See ".__CLASS__." class's documentation for possible values.");
         }
 
         // Read first chunk (should be IHDR type)
-        $length = $stream->unpackInteger(); // Should be equal to 13
+        $length = $stream->unpackUnsignedInteger(); // Should be equal to 13
         $type = $stream->read(4);
         if ($type != "IHDR") {
             throw new InvalidArgumentException("Source is not a valid PNG file. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $width = $stream->unpackInteger();
-        $height = $stream->unpackInteger();
+		$width = $stream->unpackUnsignedInteger();
+        $height = $stream->unpackUnsignedInteger();
         $bitDepth = $stream->unpackByte();
         $colorType = $stream->unpackByte();
 
@@ -83,7 +85,7 @@ class ImageHelper
 		$pixels = $width * $height;
 
         while ($type != 'IEND') {
-            $length = $stream->unpackInteger();
+            $length = $stream->unpackUnsignedInteger();
             $type = $stream->read(4);
 
             if ($type == 'IDAT') { // Data
