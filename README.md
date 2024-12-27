@@ -12,9 +12,12 @@ Papier supports the following:
 - JPEG and PNG with transparency images.
 - RGB and CMYK colors spaces for texts.
 - Texts and images can be transformed (rotation, translation, skew).
+- True type fonts are supported
 
 ## Example usage
 ```php
+
+$pathToFontFile = 'Pacifico-Regular.ttf';
 
 $pdf = new Papier();
 $pdf->getHeader()->setVersion(3);
@@ -22,18 +25,28 @@ $pdf->getHeader()->setVersion(3);
 $page = $pdf->addPage([210, 297]);
 
 $image = $pdf->createImageComponent()->setPage($page);
-$image->setSource('https://images.unsplash.com/photo-1709468864471-a378b7435d03');
+$image->setSource('unsplash.jpg');
+$image->setWidth(210);
+
+$image = $pdf->createImageComponent()->setPage($page);
+$image->setSource('unsplash.png');
 $image->setWidth(20);
 $image->translate(10, 10);
 
+$font = Factory::create('Papier\Type\TrueTypeFontType', null, true);
+$font->load($pathToFontFile);
+
 $text = $pdf->createTextComponent()->setPage($page);
 $text->setNonStrokingColor(1, 0, 0);
+$text->setStrokingColor(0, 1, 0);
 $text->setNonStrokingColorSpace(DeviceColourSpace::RGB);
-$text->setRenderingMode(RenderingMode::STROKE);
+$text->setStrokingColorSpace(DeviceColourSpace::RGB);
+$text->setRenderingMode(RenderingMode::FILL_THEN_STROKE);
 $text->setText('Hello World !');
-$text->setBaseFont('Helvetica');
+$text->setFont($font);
 $text->setFontSize(12);
 $text->translate(100, 100);
+
 
 $page = $pdf->addPage([210, 297]);
 
