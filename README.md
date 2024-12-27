@@ -17,7 +17,7 @@ Papier supports the following:
 ## Example usage
 ```php
 
-$pathToFontFile = 'Pacifico-Regular.ttf';
+$pathToFontFile = 'Lato.ttf';
 
 $pdf = new Papier();
 $pdf->getHeader()->setVersion(3);
