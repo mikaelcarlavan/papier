@@ -6,6 +6,7 @@ use InvalidArgumentException;
 use Papier\Factory\Factory;
 use Papier\Font\TrueType\TrueTypeFontHeadTable;
 use Papier\Font\TrueType\TrueTypeFontHorizontalHeaderTable;
+use Papier\Font\TrueType\TrueTypeFontNameTable;
 use Papier\Font\TrueType\TrueTypeFontOS2Table;
 use Papier\Helpers\TrueTypeFontFileHelper;
 use Papier\Type\Base\ArrayType;
@@ -200,17 +201,24 @@ class TrueTypeFontType extends FontType
 			$fd->setCapHeight($table->getSCapHeight());
 		}
 
-		$fontName = 'Pacifico';
+		// OS/2 table
+		if (isset($tables['name'])) {
+			$table = new TrueTypeFontNameTable();
+			$table->setHelper($stream);
+			$table->setOffset($tables['name']['offset']);
+			$table->parse();
+
+			$fd->setFontName($table->getPostscriptName());
+			$this->setBaseFont($table->getPostscriptName());
+		}
 
 		$fd->setItalicAngle(0);
 		$fd->setStemV(80);
 		$fd->setFlags(0);
 
 		$fd->setFontFile2($fontBBoxStream);
-		$fd->setFontName($fontName);
 
 		$this->setFontDescriptor($fd);
-		$this->setBaseFont($fontName);
 
 		return $this;
 	}
