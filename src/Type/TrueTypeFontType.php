@@ -220,6 +220,8 @@ class TrueTypeFontType extends FontType
 
 		$this->setFontDescriptor($fd);
 
+		$stream->close();
+		
 		return $this;
 	}
 
