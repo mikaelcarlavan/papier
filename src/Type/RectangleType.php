@@ -94,7 +94,7 @@ class RectangleType extends NumbersArrayType
 	/**
 	 * Get object's numbers
 	 *
-	 * @return array
+	 * @return array<mixed>
 	 */
 	public function getValues(): array
 	{

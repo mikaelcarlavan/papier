@@ -4,6 +4,7 @@ namespace Papier\Font\TrueType;
 
 use InvalidArgumentException;
 use Papier\Font\TrueType\Base\TrueTypeFontTable;
+use Papier\Helpers\TrueTypeFontFileHelper;
 use Papier\Validator\IntegerValidator;
 use Papier\Validator\RealValidator;
 
@@ -119,6 +120,7 @@ class TrueTypeFontMaxProfileTable extends TrueTypeFontTable
 	 */
 	public function parse(): void
 	{
+		/** @var TrueTypeFontFileHelper $stream */
 		$stream = $this->getHelper();
 
 		$offset = $this->getOffset();

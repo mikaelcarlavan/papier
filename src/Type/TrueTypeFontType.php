@@ -201,15 +201,18 @@ class TrueTypeFontType extends FontType
 			$fd->setCapHeight($table->getSCapHeight());
 		}
 
-		// OS/2 table
+		// Name table
 		if (isset($tables['name'])) {
 			$table = new TrueTypeFontNameTable();
 			$table->setHelper($stream);
 			$table->setOffset($tables['name']['offset']);
 			$table->parse();
 
-			$fd->setFontName($table->getPostscriptName());
-			$this->setBaseFont($table->getPostscriptName());
+			$name = $table->getPostscriptName();
+			if (!is_null($name)) {
+				$fd->setFontName($name);
+				$this->setBaseFont($name);
+			}
 		}
 
 		$fd->setItalicAngle(0);
@@ -221,7 +224,7 @@ class TrueTypeFontType extends FontType
 		$this->setFontDescriptor($fd);
 
 		$stream->close();
-		
+
 		return $this;
 	}
 

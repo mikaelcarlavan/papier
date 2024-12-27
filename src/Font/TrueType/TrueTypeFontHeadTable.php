@@ -4,6 +4,7 @@ namespace Papier\Font\TrueType;
 use DateTime;
 use InvalidArgumentException;
 use Papier\Font\TrueType\Base\TrueTypeFontTable;
+use Papier\Helpers\TrueTypeFontFileHelper;
 use Papier\Validator\IntegerValidator;
 use Papier\Validator\RealValidator;
 
@@ -134,6 +135,7 @@ class TrueTypeFontHeadTable extends TrueTypeFontTable
 	 */
 	public function parse(): void
 	{
+		/** @var TrueTypeFontFileHelper $stream */
 		$stream = $this->getHelper();
 
 		$offset = $this->getOffset();

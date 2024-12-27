@@ -144,7 +144,7 @@ class TrueTypeFontTable
 	 * Extract table's data
 	 *
 	 */
-	public function parse()
+	public function parse(): void
 	{
 
 	}

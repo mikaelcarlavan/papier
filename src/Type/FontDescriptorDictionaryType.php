@@ -104,7 +104,7 @@ class FontDescriptorDictionaryType extends DictionaryType
 	/**
 	 * Set font bounding box.
 	 *
-	 * @param array $fontBBox
+	 * @param array<mixed> $fontBBox
 	 * @return FontDescriptorDictionaryType
 	 */
 	public function setFontBBox(array $fontBBox): FontDescriptorDictionaryType

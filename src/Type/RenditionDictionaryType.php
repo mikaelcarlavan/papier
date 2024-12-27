@@ -4,37 +4,21 @@ namespace Papier\Type;
 
 use InvalidArgumentException;
 use Papier\Factory\Factory;
-use Papier\Object\DictionaryObject;
-use Papier\Object\RenditionObject;
 use Papier\Type\Base\DictionaryType;
 use Papier\Validator\RenditionTypeValidator;
 
-class RenditionType extends DictionaryType
+class RenditionDictionaryType extends DictionaryType
 {
-    /**
-     * Media rendition type
-     *
-     * @var string
-     */
-    const MEDIA_RENDITION_TYPE = 'MR';
-
-    /**
-     * Selector rendition type
-     *
-     * @var string
-     */
-    const SELECTOR_RENDITION_TYPE = 'SR';
-
     /**
      * Set rendition type.
      *
      * @param string $type
-     * @return RenditionType
+     * @return RenditionDictionaryType
      */
-    public function setS(string $type): RenditionType
+    public function setS(string $type): RenditionDictionaryType
     {
         if (!RenditionTypeValidator::isValid($type)) {
-            throw new InvalidArgumentException("RenditionType is incorrect. See ".__CLASS__." class's documentation for possible values.");
+            throw new InvalidArgumentException("RenditionDictionaryType is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $value = Factory::create('Papier\Type\Base\NameType', $type);
@@ -48,9 +32,9 @@ class RenditionType extends DictionaryType
      * Set rendition name.
      *
      * @param  string  $N
-     * @return RenditionType
+     * @return RenditionDictionaryType
      */
-    public function setN(string $N): RenditionType
+    public function setN(string $N): RenditionDictionaryType
     {
         $value = Factory::create('Papier\Type\Base\NameType', $N);
         $this->setEntry('N', $value);
@@ -60,10 +44,10 @@ class RenditionType extends DictionaryType
     /**
      * Set "mush-honored" parameters.
      *
-     * @param  DictionaryObject  $MH
-     * @return RenditionType
+     * @param  DictionaryType  $MH
+     * @return RenditionDictionaryType
      */
-    public function setMH(DictionaryObject $MH): RenditionType
+    public function setMH(DictionaryType $MH): RenditionDictionaryType
     {
         $this->setEntry('MH', $MH);
         return $this;
@@ -72,10 +56,10 @@ class RenditionType extends DictionaryType
     /**
      * Set "best-effort" parameters.
      *
-     * @param  DictionaryObject  $BE
-     * @return RenditionType
+     * @param  DictionaryType  $BE
+     * @return RenditionDictionaryType
      */
-    public function setBE(DictionaryObject $BE): RenditionType
+    public function setBE(DictionaryType $BE): RenditionDictionaryType
     {
         $this->setEntry('BE', $BE);
         return $this;
@@ -88,7 +72,7 @@ class RenditionType extends DictionaryType
      */
     public function format(): string
     {
-        $type = Factory::create('Papier\Type\Base\NameType', 'Type');
+        $type = Factory::create('Papier\Type\Base\NameType', 'Rendition');
         $this->setEntry('Type', $type);
 
         return parent::format();

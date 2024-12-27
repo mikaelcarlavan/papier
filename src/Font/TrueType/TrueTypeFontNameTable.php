@@ -3,6 +3,7 @@
 namespace Papier\Font\TrueType;
 
 use Papier\Font\TrueType\Base\TrueTypeFontTable;
+use Papier\Helpers\TrueTypeFontFileHelper;
 use Papier\Validator\IntegerValidator;
 use InvalidArgumentException;
 use Papier\Validator\StringValidator;
@@ -157,6 +158,7 @@ class TrueTypeFontNameTable extends TrueTypeFontTable
 	 */
 	public function parse(): void
 	{
+		/** @var TrueTypeFontFileHelper $stream */
 		$stream = $this->getHelper();
 
 		$offset = $this->getOffset();
@@ -187,7 +189,6 @@ class TrueTypeFontNameTable extends TrueTypeFontTable
 			if ($nameID == self::POSTSCRIPT_NAME_ID) {
 				$this->setPostscriptName($value);
 			}
-
 
 			$stream->setOffset($position);
 		}

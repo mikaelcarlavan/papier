@@ -3,7 +3,8 @@
 namespace Papier\Validator;
 
 use Papier\Graphics\PaintType;
-use Papier\Type\RenditionType;
+use Papier\Multimedia\Rendition;
+use Papier\Type\RenditionDictionaryType;
 use Papier\Validator\Base\Validator;
 
 class RenditionTypeValidator implements Validator
@@ -14,8 +15,8 @@ class RenditionTypeValidator implements Validator
      * @var array<string>
      */
     const RENDITION_TYPES = array(
-        RenditionType::MEDIA_RENDITION_TYPE,
-        RenditionType::SELECTOR_RENDITION_TYPE,
+        Rendition::MEDIA_RENDITION_TYPE,
+		Rendition::SELECTOR_RENDITION_TYPE,
     );
 
 
