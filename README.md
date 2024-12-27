@@ -12,7 +12,7 @@ Papier supports the following:
 - JPEG and PNG with transparency images.
 - RGB and CMYK colors spaces for texts.
 - Texts and images can be transformed (rotation, translation, skew).
-- True type fonts are supported
+- True type fonts are supported.
 
 ## Example usage
 ```php
