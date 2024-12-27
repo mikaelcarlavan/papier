@@ -2,19 +2,18 @@
 
 namespace Papier\Type;
 
-use Papier\Object\BaseObject;
-use Papier\Object\StreamObject;
-use Papier\Object\ArrayObject;
-use Papier\Object\DictionaryObject;
-
-use Papier\Validator\StringValidator;
-use Papier\Validator\BitsPerComponentValidator;
-use Papier\Validator\RenderingIntentValidator;
-use Papier\Validator\NumbersArrayValidator;
-
-use Papier\Factory\Factory;
-
 use InvalidArgumentException;
+use Papier\Factory\Factory;
+use Papier\Object\ArrayObject;
+use Papier\Object\BaseObject;
+use Papier\Object\DictionaryObject;
+use Papier\Object\StreamObject;
+use Papier\Type\Base\BooleanType;
+use Papier\Type\Base\IntegerType;
+use Papier\Validator\BitsPerComponentValidator;
+use Papier\Validator\NumbersArrayValidator;
+use Papier\Validator\RenderingIntentValidator;
+use Papier\Validator\StringValidator;
 use RuntimeException;
 
 class ImageType extends StreamObject
@@ -28,7 +27,7 @@ class ImageType extends StreamObject
      */
     public function setWidth(int $width): ImageType
     {
-        $value = Factory::create('Papier\Type\IntegerType', $width);
+        $value = Factory::create('Papier\Type\Base\IntegerType', $width);
 
         $this->setEntry('Width', $value);
         return $this;
@@ -43,7 +42,7 @@ class ImageType extends StreamObject
     public function setHeight(int $height): ImageType
     {
 
-        $value = Factory::create('Papier\Type\IntegerType', $height);
+        $value = Factory::create('Papier\Type\Base\IntegerType', $height);
 
         $this->setEntry('Height', $value);
         return $this;
@@ -62,7 +61,7 @@ class ImageType extends StreamObject
             throw new InvalidArgumentException("ColorSpace is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = $space instanceof ArrayObject ? $space : Factory::create('Papier\Type\NameType', $space);
+        $value = $space instanceof ArrayObject ? $space : Factory::create('Papier\Type\Base\NameType', $space);
 
         $this->setEntry('ColorSpace', $value);
         return $this;
@@ -81,7 +80,7 @@ class ImageType extends StreamObject
             throw new InvalidArgumentException("BitsPerComponent is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\IntegerType', $bits);
+        $value = Factory::create('Papier\Type\Base\IntegerType', $bits);
 
         $this->setEntry('BitsPerComponent', $value);
         return $this;
@@ -100,7 +99,7 @@ class ImageType extends StreamObject
             throw new InvalidArgumentException("Intent is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\NameType', $intent);
+        $value = Factory::create('Papier\Type\Base\NameType', $intent);
         $this->setEntry('Intent', $value);
         return $this;
     }
@@ -114,7 +113,7 @@ class ImageType extends StreamObject
      */
     public function setImageMask(bool $imageMask): ImageType
     {
-        $value = Factory::create('Papier\Type\BooleanType', $imageMask);
+        $value = Factory::create('Papier\Type\Base\BooleanType', $imageMask);
         $this->setEntry('ImageMask', $value);
         return $this;
     }
@@ -163,7 +162,7 @@ class ImageType extends StreamObject
      */
     public function setInterpolate(bool $interpolate = true): ImageType
     {
-        $value = Factory::create('Papier\Type\BooleanType', $interpolate);
+        $value = Factory::create('Papier\Type\Base\BooleanType', $interpolate);
 
         $this->setEntry('Interpolate', $value);
         return $this;
@@ -201,7 +200,7 @@ class ImageType extends StreamObject
      */
     public function setSMaskInData(int $indata): ImageType
     {
-        $value = Factory::create('Papier\Type\IntegerType', $indata);
+        $value = Factory::create('Papier\Type\Base\IntegerType', $indata);
 
         $this->setEntry('SMaskInData', $value);
         return $this;
@@ -215,9 +214,9 @@ class ImageType extends StreamObject
      */
     public function setName(string $name): ImageType
     {
-        $value = Factory::create('Papier\Type\NameType', $name);
+        $value = Factory::create('Papier\Type\Base\NameType', $name);
 
-        $this->setEntry('Papier\Type\NameType', $value);
+        $this->setEntry('Papier\Type\Base\NameType', $value);
         return $this;
     }
 
@@ -229,7 +228,7 @@ class ImageType extends StreamObject
      */
     public function setStructParent(int $struct): ImageType
     {
-        $value = Factory::create('Papier\Type\IntegerType', $struct);
+        $value = Factory::create('Papier\Type\Base\IntegerType', $struct);
 
         $this->setEntry('StructParent', $value);
         return $this;
@@ -290,10 +289,10 @@ class ImageType extends StreamObject
      */
     public function format(): string
     {
-        $type = Factory::create('Papier\Type\NameType', 'XObject');
+        $type = Factory::create('Papier\Type\Base\NameType', 'XObject');
         $this->setEntry('Type', $type);
 
-        $subtype = Factory::create('Papier\Type\NameType', 'Image');
+        $subtype = Factory::create('Papier\Type\Base\NameType', 'Image');
         $this->setEntry('Subtype', $subtype);
 
         if (!$this->hasEntry('Width')) {

@@ -2,12 +2,10 @@
 
 namespace Papier\Type;
 
-use Papier\Object\BaseObject;
-use Papier\Validator\IntegersArrayValidator;
-
-use Papier\Factory\Factory;
-
 use InvalidArgumentException;
+use Papier\Factory\Factory;
+use Papier\Type\Base\ArrayType;
+use Papier\Validator\IntegersArrayValidator;
 
 class IntegersArrayType extends ArrayType
 {
@@ -28,7 +26,7 @@ class IntegersArrayType extends ArrayType
         $objects = $this->getObjects();
 
         foreach ($value as $i => $val) {
-            $object = Factory::create('Papier\Type\IntegerType', $val);
+            $object = Factory::create('Papier\Type\Base\IntegerType', $val);
             $objects[$i] = $object;
         }
 

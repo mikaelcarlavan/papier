@@ -3,16 +3,15 @@
 namespace Papier\Type;
 
 
-use Papier\Validator\PageModeValidator;
+use InvalidArgumentException;
+use Papier\Factory\Factory;
+use Papier\Type\Base\DictionaryType;
+use Papier\Validator\DirectionValidator;
+use Papier\Validator\DuplexValidator;
 use Papier\Validator\IntegersArrayValidator;
 use Papier\Validator\PageBoundariesValidator;
+use Papier\Validator\PageModeValidator;
 use Papier\Validator\PrintScalingValidator;
-use Papier\Validator\DuplexValidator;
-use Papier\Validator\DirectionValidator;
-
-use Papier\Factory\Factory;
-
-use InvalidArgumentException;
 
 class ViewerPreferencesDictionaryType extends DictionaryType
 {
@@ -24,7 +23,7 @@ class ViewerPreferencesDictionaryType extends DictionaryType
      */
     public function setHideToolbar(bool $hidetoolbar): ViewerPreferencesDictionaryType
     {
-        $value = Factory::create('Papier\Type\BooleanType', $hidetoolbar);
+        $value = Factory::create('Papier\Type\Base\BooleanType', $hidetoolbar);
         $this->setEntry('HideToolbar', $value);
         return $this;
     }
@@ -37,7 +36,7 @@ class ViewerPreferencesDictionaryType extends DictionaryType
      */
     public function setHideMenubar(bool $hidemenubar): ViewerPreferencesDictionaryType
     {
-        $value = Factory::create('Papier\Type\BooleanType', $hidemenubar);
+        $value = Factory::create('Papier\Type\Base\BooleanType', $hidemenubar);
         $this->setEntry('HideMenubar', $value);
         return $this;
     }
@@ -50,7 +49,7 @@ class ViewerPreferencesDictionaryType extends DictionaryType
      */
     public function setHideWindowsUI(bool $hidewindowsui): ViewerPreferencesDictionaryType
     {
-        $value = Factory::create('Papier\Type\BooleanType', $hidewindowsui);
+        $value = Factory::create('Papier\Type\Base\BooleanType', $hidewindowsui);
         $this->setEntry('HideWindowsUI', $value);
         return $this;
     }
@@ -63,7 +62,7 @@ class ViewerPreferencesDictionaryType extends DictionaryType
      */
     public function setFitWindow(bool $fitwindow): ViewerPreferencesDictionaryType
     {
-        $value = Factory::create('Papier\Type\BooleanType', $fitwindow);
+        $value = Factory::create('Papier\Type\Base\BooleanType', $fitwindow);
         $this->setEntry('FitWindow', $value);
         return $this;
     }
@@ -76,7 +75,7 @@ class ViewerPreferencesDictionaryType extends DictionaryType
      */
     public function setCenterWindow(bool $centerwindow): ViewerPreferencesDictionaryType
     {
-        $value = Factory::create('Papier\Type\BooleanType', $centerwindow);
+        $value = Factory::create('Papier\Type\Base\BooleanType', $centerwindow);
         $this->setEntry('CenterWindow', $value);
         return $this;
     }
@@ -89,7 +88,7 @@ class ViewerPreferencesDictionaryType extends DictionaryType
      */
     public function setDisplayDocTitle(bool $display): ViewerPreferencesDictionaryType
     {
-        $value = Factory::create('Papier\Type\BooleanType', $display);
+        $value = Factory::create('Papier\Type\Base\BooleanType', $display);
         $this->setEntry('DisplayDocTitle', $value);
         return $this;
     }
@@ -107,7 +106,7 @@ class ViewerPreferencesDictionaryType extends DictionaryType
             throw new InvalidArgumentException("NonFullScreenPageMode is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\NameType', $mode);
+        $value = Factory::create('Papier\Type\Base\NameType', $mode);
         $this->setEntry('NonFullScreenPageMode', $value);
         return $this;
     }
@@ -125,7 +124,7 @@ class ViewerPreferencesDictionaryType extends DictionaryType
             throw new InvalidArgumentException("Direction is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\NameType', $direction);
+        $value = Factory::create('Papier\Type\Base\NameType', $direction);
         $this->setEntry('Direction', $value);
         return $this;
     }
@@ -143,7 +142,7 @@ class ViewerPreferencesDictionaryType extends DictionaryType
             throw new InvalidArgumentException("ViewArea is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\NameType', $area);
+        $value = Factory::create('Papier\Type\Base\NameType', $area);
         $this->setEntry('ViewArea', $value);
         return $this;
     }
@@ -161,7 +160,7 @@ class ViewerPreferencesDictionaryType extends DictionaryType
             throw new InvalidArgumentException("ViewClip is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\NameType', $clip);
+        $value = Factory::create('Papier\Type\Base\NameType', $clip);
         $this->setEntry('ViewClip', $value);
         return $this;
     }
@@ -179,7 +178,7 @@ class ViewerPreferencesDictionaryType extends DictionaryType
             throw new InvalidArgumentException("PrintArea is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\NameType', $area);
+        $value = Factory::create('Papier\Type\Base\NameType', $area);
         $this->setEntry('PrintArea', $value);
         return $this;
     }
@@ -197,7 +196,7 @@ class ViewerPreferencesDictionaryType extends DictionaryType
             throw new InvalidArgumentException("PrintClip is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\NameType', $clip);
+        $value = Factory::create('Papier\Type\Base\NameType', $clip);
         $this->setEntry('PrintClip', $value);
         return $this;
     }
@@ -215,7 +214,7 @@ class ViewerPreferencesDictionaryType extends DictionaryType
             throw new InvalidArgumentException("PrintScaling is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\NameType', $scaling);
+        $value = Factory::create('Papier\Type\Base\NameType', $scaling);
         $this->setEntry('PrintScaling', $value);
         return $this;
     }
@@ -233,7 +232,7 @@ class ViewerPreferencesDictionaryType extends DictionaryType
             throw new InvalidArgumentException("Duplex is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\NameType', $duplex);
+        $value = Factory::create('Papier\Type\Base\NameType', $duplex);
         $this->setEntry('Duplex', $value);
         return $this;
     }
@@ -246,7 +245,7 @@ class ViewerPreferencesDictionaryType extends DictionaryType
      */
     public function setPickTrayByPDFSize(bool $pick): ViewerPreferencesDictionaryType
     {
-        $value = Factory::create('Papier\Type\BooleanType', $pick);
+        $value = Factory::create('Papier\Type\Base\BooleanType', $pick);
         $this->setEntry('PickTrayByPDFSize', $value);
         return $this;
     }
@@ -277,7 +276,7 @@ class ViewerPreferencesDictionaryType extends DictionaryType
      */
     public function setNumCopies(int $num): ViewerPreferencesDictionaryType
     {
-        $value = Factory::create('Papier\Type\IntegerType', $num);
+        $value = Factory::create('Papier\Type\Base\IntegerType', $num);
         $this->setEntry('NumCopies', $value);
         return $this;
     }

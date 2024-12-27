@@ -2,9 +2,9 @@
 
 namespace Papier\Type;
 
-use Papier\Object\DictionaryObject;
-
 use Papier\Factory\Factory;
+use Papier\Object\DictionaryObject;
+use Papier\Type\Base\IntegerType;
 
 
 class IntegerKeyArrayType extends DictionaryObject
@@ -22,7 +22,7 @@ class IntegerKeyArrayType extends DictionaryObject
         $value = '';
 		foreach ($objects as $key => $object) {
 			/** @var IntegerType $object */
-			$name = Factory::create('Papier\Type\IntegerType', $key);
+			$name = Factory::create('Papier\Type\Base\IntegerType', $key);
 			$value .= $name->format() .' '. $object->write();
 		}
 

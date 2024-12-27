@@ -2,18 +2,15 @@
 
 namespace Papier\Type;
 
-use Papier\Object\DictionaryObject;
-use Papier\Object\ArrayObject;
-use Papier\Object\StreamObject;
-
-use Papier\Validator\NumberValidator;
-use Papier\Validator\TabOrderValidator;
-use Papier\Validator\NumbersArrayValidator;
-
-use Papier\Factory\Factory;
-
-
 use InvalidArgumentException;
+use Papier\Factory\Factory;
+use Papier\Object\ArrayObject;
+use Papier\Object\DictionaryObject;
+use Papier\Object\StreamObject;
+use Papier\Type\Base\DateType;
+use Papier\Type\Base\DictionaryType;
+use Papier\Validator\TabOrderValidator;
+
 
 class PageObjectType extends DictionaryType
 {
@@ -73,7 +70,7 @@ class PageObjectType extends DictionaryType
     public function getResources(): DictionaryType
     {
         if (!$this->hasEntry('Resources')) {
-            $resources = Factory::create('Papier\Type\DictionaryType');
+            $resources = Factory::create('Papier\Type\Base\DictionaryType');
             $this->setResources($resources);
         }
 
@@ -288,7 +285,7 @@ class PageObjectType extends DictionaryType
      */
     public function setRotate(int $rotate): PageObjectType
     {
-        $value = Factory::create('Papier\Type\IntegerType', $rotate);
+        $value = Factory::create('Papier\Type\Base\IntegerType', $rotate);
 
         $this->setEntry('Rotate', $value);
         return $this;
@@ -413,7 +410,7 @@ class PageObjectType extends DictionaryType
      */
     public function setStructParents(int $struct): PageObjectType
     {
-        $value = Factory::create('Papier\Type\IntegerType', $struct);
+        $value = Factory::create('Papier\Type\Base\IntegerType', $struct);
 
         $this->setEntry('StructParents', $value);
         return $this;
@@ -470,7 +467,7 @@ class PageObjectType extends DictionaryType
             throw new InvalidArgumentException("Tabs is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\NameType', $tabs);
+        $value = Factory::create('Papier\Type\Base\NameType', $tabs);
         $this->setEntry('Tabs', $value);
         return $this;
     }
@@ -533,7 +530,7 @@ class PageObjectType extends DictionaryType
      */
     public function format(): string
     {
-        $type = Factory::create('Papier\Type\NameType', 'Page');
+        $type = Factory::create('Papier\Type\Base\NameType', 'Page');
         $this->setEntry('Type', $type);
 
         return parent::format();

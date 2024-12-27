@@ -2,13 +2,11 @@
 
 namespace Papier\Text;
 
-use Papier\Validator\NumberValidator;
-use Papier\Validator\StringValidator;
-use Papier\Validator\RenderingModeValidator;
-
-use Papier\Factory\Factory;
-
 use InvalidArgumentException;
+use Papier\Factory\Factory;
+use Papier\Validator\NumberValidator;
+use Papier\Validator\RenderingModeValidator;
+use Papier\Validator\StringValidator;
 
 trait TextState
 {
@@ -100,7 +98,7 @@ trait TextState
             throw new InvalidArgumentException("Size is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
         
-        $state = sprintf('%s %s Tf', Factory::create('Papier\Type\NameType', $font)->format(), Factory::create('Papier\Type\NumberType', $size)->format());
+        $state = sprintf('%s %s Tf', Factory::create('Papier\Type\Base\NameType', $font)->format(), Factory::create('Papier\Type\NumberType', $size)->format());
         return $this->addToContent($state);
     }
 

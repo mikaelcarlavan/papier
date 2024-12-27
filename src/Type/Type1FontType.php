@@ -2,47 +2,48 @@
 
 namespace Papier\Type;
 
-use Papier\Object\DictionaryObject;
+use InvalidArgumentException;
+use Papier\Factory\Factory;
 use Papier\Object\ArrayObject;
 use Papier\Object\StreamObject;
-
-use Papier\Validator\StringValidator;
-use Papier\Validator\IntegerValidator;
+use Papier\Type\Base\ArrayType;
+use Papier\Type\Base\DictionaryType;
+use Papier\Type\Base\IntegerType;
+use Papier\Type\Base\NameType;
+use Papier\Type\Base\StreamType;
 use Papier\Validator\EncodingValidator;
-
-use Papier\Factory\Factory;
-
-use Papier\Type\DictionaryType;
-
+use Papier\Validator\StringValidator;
 use RuntimeException;
-use InvalidArgumentException;
 
-class Type1FontType extends DictionaryType
+class Type1FontType extends FontType
 {
-    /**
-     * Get name.
-     *
-     * @return string|null
-     */
-    public function getName(): ?string
-    {
-		/** @var string|null $value */
-        $value = $this->getEntryValue('Name');
-        return $value;
-    }
+	/**
+	 * Helvetica font
+	 *
+	 * @var string
+	 */
+	const HELVETICA_FONT = 'Helvetica';
 
-    /**
-     * Set name.
-     *  
-     * @param string $name
-     * @return Type1FontType
-     */
-    public function setName(string $name): Type1FontType
-    {
-        $value = Factory::create('Papier\Type\NameType', $name);
-		$this->setEntry('Name', $value);
-        return $this;
-    }
+	/**
+	 * Helvetica font
+	 *
+	 * @var string
+	 */
+	const COURIER_FONT = 'Courier';
+
+	/**
+	 * Symbol font
+	 *
+	 * @var string
+	 */
+	const SYMBOL_FONT = 'Symbol';
+
+	/**
+	 * Times font
+	 *
+	 * @var string
+	 */
+	const TIMES_FONT = 'Times';
 
     /**
      * Set basefont (PostScript) name.
@@ -52,7 +53,7 @@ class Type1FontType extends DictionaryType
      */
     public function setBaseFont(string $name): Type1FontType
     {
-        $value = Factory::create('Papier\Type\NameType', $name);
+        $value = Factory::create('Papier\Type\Base\NameType', $name);
 		$this->setEntry('BaseFont', $value);
         return $this;
     }
@@ -65,7 +66,7 @@ class Type1FontType extends DictionaryType
      */
     public function setFirstChar(int $fc): Type1FontType
     {
-        $value = Factory::create('Papier\Type\IntegerType', $fc);
+        $value = Factory::create('Papier\Type\Base\IntegerType', $fc);
 		$this->setEntry('FirstChar', $value);
         return $this;
     }
@@ -78,7 +79,7 @@ class Type1FontType extends DictionaryType
      */
     public function setLastChar(int $lc): Type1FontType
     {
-        $value = Factory::create('Papier\Type\IntegerType', $lc);
+        $value = Factory::create('Papier\Type\Base\IntegerType', $lc);
 		$this->setEntry('LastChar', $value);
         return $this;
     }
@@ -86,10 +87,10 @@ class Type1FontType extends DictionaryType
     /**
      * Set widths.
      *  
-     * @param ArrayObject $widths
+     * @param ArrayType $widths
      * @return Type1FontType
      */
-    public function setWidths(ArrayObject $widths): Type1FontType
+    public function setWidths(ArrayType $widths): Type1FontType
     {
 		$this->setEntry('Widths', $widths);
         return $this;
@@ -98,10 +99,10 @@ class Type1FontType extends DictionaryType
     /**
      * Set font descriptor.
      *  
-     * @param  DictionaryObject  $fd
+     * @param  DictionaryType  $fd
      * @return Type1FontType
      */
-    public function setFontDescriptor(DictionaryObject $fd): Type1FontType
+    public function setFontDescriptor(DictionaryType $fd): Type1FontType
     {
 		$this->setEntry('FontDescriptor', $fd);
         return $this;
@@ -111,12 +112,12 @@ class Type1FontType extends DictionaryType
      * Set encoding.
      *  
      * @param  mixed  $encoding
-     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryObject' or 'string'.
+     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryType' or 'string'.
      * @return Type1FontType
      */
     public function setEncoding($encoding): Type1FontType
     {
-        if (!$encoding instanceof DictionaryObject && !StringValidator::isValid($encoding)) {
+        if (!$encoding instanceof DictionaryType && !StringValidator::isValid($encoding)) {
             throw new InvalidArgumentException("Encoding is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
@@ -127,21 +128,21 @@ class Type1FontType extends DictionaryType
             }
         }
 
-        $value = $encoding instanceof DictionaryObject ? $encoding : Factory::create('Papier\Type\NameType', $encoding);
+        $value = $encoding instanceof DictionaryType ? $encoding : Factory::create('Papier\Type\Base\NameType', $encoding);
 
 		$this->setEntry('Encoding', $value);
         return $this;
     }
 
     /**
-     * Set map to unicde values.
+     * Set map to unicode values.
      *  
-     * @param  StreamObject  $tounicode
+     * @param  StreamType  $toUnicode
      * @return Type1FontType
      */
-    public function setToUnicode(StreamObject $tounicode): Type1FontType
+    public function setToUnicode(StreamType $toUnicode): Type1FontType
     {
-		$this->setEntry('ToUnicode', $tounicode);
+		$this->setEntry('ToUnicode', $toUnicode);
         return $this;
     }
 
@@ -152,10 +153,10 @@ class Type1FontType extends DictionaryType
      */
     public function format(): string
     {
-        $type = Factory::create('Papier\Type\NameType', 'Font');
+        $type = Factory::create('Papier\Type\Base\NameType', 'Font');
         $this->setEntry('Type', $type);
 
-        $subtype = Factory::create('Papier\Type\NameType', 'Type1');
+        $subtype = Factory::create('Papier\Type\Base\NameType', 'Type1');
         $this->setEntry('Subtype', $subtype);
 
         if (!$this->hasEntry('Name')) {

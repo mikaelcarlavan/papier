@@ -1,14 +1,11 @@
 <?php
 
-namespace Papier\Type;
-
-use Cassandra\Date;
-use Papier\Object\IntegerObject;
-
-use Papier\Validator\DateValidator;
+namespace Papier\Type\Base;
 
 use DateTime;
 use InvalidArgumentException;
+use Papier\Object\IntegerObject;
+use Papier\Validator\DateValidator;
 
 class DateType extends IntegerObject
 {

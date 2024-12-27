@@ -2,11 +2,10 @@
 
 namespace Papier\Type;
 
-use Papier\Validator\NumbersArrayValidator;
-
-use Papier\Factory\Factory;
-
 use InvalidArgumentException;
+use Papier\Factory\Factory;
+use Papier\Type\Base\ArrayType;
+use Papier\Validator\NumbersArrayValidator;
 
 class NumbersArrayType extends ArrayType
 {
@@ -26,7 +25,7 @@ class NumbersArrayType extends ArrayType
 
 		/** @var array<mixed> $value */
 		foreach ($value as $i => $val) {
-            $object = Factory::create('Papier\Type\NumberType', $val);
+			$object = Factory::create('Papier\Type\NumberType', $val);
             $objects[$i] = $object;
         }
 

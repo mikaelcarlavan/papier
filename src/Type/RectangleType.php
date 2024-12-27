@@ -2,6 +2,8 @@
 
 namespace Papier\Type;
 
+use Papier\Object\BaseObject;
+use Papier\Validator\NumbersArrayValidator;
 use Papier\Validator\NumberValidator;
 use Papier\Factory\Factory;
 
@@ -22,8 +24,9 @@ class RectangleType extends NumbersArrayType
             throw new InvalidArgumentException("Number is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\NumberType', $coordinate);
-		$this->setObjectForKey(0, $value);
+		$values = $this->getValues();
+		$values[0] = $coordinate;
+		$this->setValue($values);
 
         return $this;
     } 
@@ -42,8 +45,9 @@ class RectangleType extends NumbersArrayType
             throw new InvalidArgumentException("Number is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\NumberType', $coordinate);
-		$this->setObjectForKey(1, $value);
+		$values = $this->getValues();
+		$values[1] = $coordinate;
+		$this->setValue($values);
 
         return $this;
     } 
@@ -61,9 +65,10 @@ class RectangleType extends NumbersArrayType
             throw new InvalidArgumentException("Number is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\NumberType', $coordinate);
-		$this->setObjectForKey(2, $value);
-        return $this;
+		$values = $this->getValues();
+		$values[2] = $coordinate;
+		$this->setValue($values);
+		return $this;
     } 
 
     /**
@@ -79,8 +84,42 @@ class RectangleType extends NumbersArrayType
             throw new InvalidArgumentException("Number is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\NumberType', $coordinate);
-		$this->setObjectForKey(3, $value);
+		$values = $this->getValues();
+		$values[3] = $coordinate;
+		$this->setValue($values);
+
         return $this;
     }
+
+	/**
+	 * Get object's numbers
+	 *
+	 * @return array
+	 */
+	public function getValues(): array
+	{
+		$values = [];
+		$objects = $this->getObjects();
+		if (count($objects)) {
+			foreach ($objects as $object) {
+				$values[] = $object->getValue();
+			}
+		}
+		return $values;
+	}
+	/**
+	 * Set object's numbers.
+	 *
+	 * @param mixed $value
+	 * @return RectangleType
+	 */
+	public function setValue(mixed $value): RectangleType
+	{
+		if (!NumbersArrayValidator::isValid($value)) {
+			throw new InvalidArgumentException("Array is incorrect. See ".__CLASS__." class's documentation for possible values.");
+		}
+
+		parent::setValue($value);
+		return $this;
+	}
 }

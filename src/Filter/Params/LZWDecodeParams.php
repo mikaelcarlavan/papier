@@ -3,9 +3,9 @@
 
 namespace Papier\Filter\Params;
 
+use InvalidArgumentException;
 use Papier\Factory\Factory;
 use Papier\Validator\IntegerValidator;
-use InvalidArgumentException;
 
 class LZWDecodeParams extends FlateDecodeParams
 {
@@ -21,7 +21,7 @@ class LZWDecodeParams extends FlateDecodeParams
             throw new InvalidArgumentException("EarlyChange is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\IntegerType', $earlyChange);
+        $value = Factory::create('Papier\Type\Base\IntegerType', $earlyChange);
 
         $this->setEntry('Columns', $value);
         return $this;

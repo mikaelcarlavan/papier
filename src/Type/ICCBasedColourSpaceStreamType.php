@@ -2,19 +2,15 @@
 
 namespace Papier\Type;
 
-use Papier\Object\StreamObject;
+use InvalidArgumentException;
+use Papier\Factory\Factory;
 use Papier\Object\ArrayObject;
-
-
+use Papier\Object\StreamObject;
 use Papier\Validator\ColourComponentsValidator;
 use Papier\Validator\NumbersArrayValidator;
 use Papier\Validator\StringValidator;
-
-
-use Papier\Factory\Factory;
-
-use InvalidArgumentException;
 use RuntimeException;
+
 
 class ICCBasedColourSpaceStreamType extends StreamObject
 {
@@ -32,7 +28,7 @@ class ICCBasedColourSpaceStreamType extends StreamObject
             throw new InvalidArgumentException("N is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\IntegerType', $N);
+        $value = Factory::create('Papier\Type\Base\IntegerType', $N);
 
         $this->setEntry('N', $value);
         return $this;
@@ -51,7 +47,7 @@ class ICCBasedColourSpaceStreamType extends StreamObject
             throw new InvalidArgumentException("Alternate is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = $alternate instanceof ArrayObject ? $alternate : Factory::create('Papier\Type\NameType', $alternate);
+        $value = $alternate instanceof ArrayObject ? $alternate : Factory::create('Papier\Type\Base\NameType', $alternate);
 
         $this->setEntry('Alternate', $value);
         return $this;

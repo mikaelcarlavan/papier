@@ -15,12 +15,19 @@ class FileHelper
      */
     protected mixed $stream;
 
+	/**
+	 * Offset.
+	 *
+	 * @var int
+	 */
+	protected int $offset = 0;
+
     /**
      * Instance of the object.
      *
      * @var ?FileHelper
      */
-    protected static ?FileHelper $instance = null;
+    private static ?FileHelper $instance = null;
 
 	/**
 	 * Endianness of the file.
@@ -76,10 +83,10 @@ class FileHelper
      *
      * @return FileHelper
      */
-    public static function getInstance(): FileHelper
+	public static function getInstance(): FileHelper
     {
         if (is_null(self::$instance)) {
-            self::$instance = new FileHelper();
+			self::$instance = new FileHelper();
         }
 
         return self::$instance;
@@ -106,10 +113,11 @@ class FileHelper
     {
         $stream = fopen($file, $mode);
         if (!$stream) {
-            throw new InvalidArgumentException("File is not a valid. See ".__CLASS__." class's documentation for possible values.");
+            throw new InvalidArgumentException("File is not valid. See ".__CLASS__." class's documentation for possible values.");
         }
 
         $this->stream = $stream;
+		$this->offset = 0;
         return $this;
     }
 
@@ -137,12 +145,13 @@ class FileHelper
     public function read(int $length = 1): false|string
 	{
 		if (!IntegerValidator::isValid($length) || $length < 1) {
-			throw new InvalidArgumentException("File is not a valid. See ".__CLASS__." class's documentation for possible values.");
+			throw new InvalidArgumentException("File is not valid. See ".__CLASS__." class's documentation for possible values.");
 		}
 
         try {
 			$stream = $this->getStream();
 			if (is_resource($stream)) {
+				$this->offset += $length;
 				return fread($stream, $length);
 			} else {
 				return false;
@@ -161,12 +170,17 @@ class FileHelper
 	public function setOffset(int $offset = 0): self
 	{
 		if (!IntegerValidator::isValid($offset) || $offset < 0) {
-			throw new InvalidArgumentException("Ofsset is not a valid. See ".__CLASS__." class's documentation for possible values.");
+			throw new InvalidArgumentException("Offset is not valid. See ".__CLASS__." class's documentation for possible values.");
 		}
 
 		try {
 			$stream = $this->getStream();
-			rewind($stream);
+			if (is_resource($stream)) {
+				rewind($stream);
+			} else {
+				throw new InvalidArgumentException("Stream is not valid. See ".__CLASS__." class's documentation for possible values.");
+			}
+			$this->offset = 0;
 
 			if ($offset > 0) {
 				$this->read($offset);
@@ -178,6 +192,15 @@ class FileHelper
 		return $this;
 	}
 
+	/**
+	 * Get stream's offset
+	 *
+	 * @return int
+	 */
+	public function getOffset(): int
+	{
+		return $this->offset;
+	}
 
 
 	/**
@@ -363,10 +386,10 @@ class FileHelper
 	/**
 	 * Unpack string from stream
 	 *
-	 * @param $n
+	 * @param int $n
 	 * @return string
 	 */
-	public function unpackString($n): string
+	public function unpackString(int $n): string
 	{
 		$str = '';
 		for ($i = 0; $i < $n; $i++) {
@@ -379,10 +402,10 @@ class FileHelper
 	/**
 	 * Unpack data from stream
 	 *
-	 * @param string $type
+	 * @param int $type
 	 * @return int
 	 */
-	public function unpack(string $type = self::UNSIGNED_BYTE_TYPE): int
+	public function unpack(int $type = self::UNSIGNED_BYTE_TYPE): int
 	{
 		$length = $this->length($type);
 		$format = $this->format($type);
@@ -393,7 +416,7 @@ class FileHelper
 			/** @var array<int>|false $values */
 			$values = unpack($format, $chunk);
 			if (is_array($values)) {
-				/** @var mixed $value */
+				/** @var int|null $value */
 				$value = array_shift($values);
 				if (!is_null($value)) {
 					return $value;

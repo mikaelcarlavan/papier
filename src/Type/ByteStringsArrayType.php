@@ -2,11 +2,10 @@
 
 namespace Papier\Type;
 
-use Papier\Validator\ByteStringsArrayValidator;
-
-use Papier\Factory\Factory;
-
 use InvalidArgumentException;
+use Papier\Factory\Factory;
+use Papier\Type\Base\ArrayType;
+use Papier\Validator\ByteStringsArrayValidator;
 
 class ByteStringsArrayType extends ArrayType
 {

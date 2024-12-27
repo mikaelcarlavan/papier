@@ -2,12 +2,10 @@
 
 namespace Papier\Type;
 
+use InvalidArgumentException;
+use Papier\Factory\Factory;
 use Papier\Object\DictionaryObject;
 use Papier\Validator\ByteStringsArrayValidator;
-
-use Papier\Factory\Factory;
-
-use InvalidArgumentException;
 use RuntimeException;
 
 class FileSpecificationDictionaryType extends DictionaryObject
@@ -20,7 +18,7 @@ class FileSpecificationDictionaryType extends DictionaryObject
      */
     public function setFS(string $fs): FileSpecificationDictionaryType
     {
-        $value = Factory::create('Papier\Type\NameType', $fs);
+        $value = Factory::create('Papier\Type\Base\NameType', $fs);
 
         $this->setEntry('FS', $value);
         return $this;
@@ -79,7 +77,7 @@ class FileSpecificationDictionaryType extends DictionaryObject
      */
     public function setV(bool $v): FileSpecificationDictionaryType
     {
-        $value = Factory::create('Papier\Type\BooleanType', $v);
+        $value = Factory::create('Papier\Type\Base\BooleanType', $v);
         $this->setEntry('V', $value);
         return $this;
     }
@@ -152,7 +150,7 @@ class FileSpecificationDictionaryType extends DictionaryObject
         }
 
         if ($this->hasEntry('EF') || $this->hasEntry('RF')) {
-            $type = Factory::create('Papier\Type\NameType', 'Filespec');
+            $type = Factory::create('Papier\Type\Base\NameType', 'Filespec');
             $this->setEntry('Type', $type);
         }
 

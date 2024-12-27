@@ -2,6 +2,8 @@
 
 namespace Papier\Type;
 
+use Papier\Type\Base\StringType;
+
 class PDFDocEncodedStringType extends StringType
 {
      /**

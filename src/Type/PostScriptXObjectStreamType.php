@@ -2,8 +2,9 @@
 
 namespace Papier\Type;
 
-use Papier\Object\StreamObject;
 use Papier\Factory\Factory;
+use Papier\Object\StreamObject;
+use Papier\Type\Base\StreamType;
 
 class PostScriptXObjectStreamType extends StreamType
 {
@@ -26,7 +27,7 @@ class PostScriptXObjectStreamType extends StreamType
      */
     public function format(): string
     {
-        $type = Factory::create('Papier\Type\NameType', 'PS');
+        $type = Factory::create('Papier\Type\Base\NameType', 'PS');
         $this->setEntry('Subtype', $type);
         
         return parent::format();

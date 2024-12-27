@@ -2,12 +2,10 @@
 
 namespace Papier\Type;
 
-use Papier\Object\DictionaryObject;
-
-use Papier\Factory\Factory;
-use Papier\Validator\PatternTypeValidator;
-
 use InvalidArgumentException;
+use Papier\Factory\Factory;
+use Papier\Object\DictionaryObject;
+use Papier\Validator\PatternTypeValidator;
 use RuntimeException;
 
 class PatternDictionaryType extends DictionaryObject
@@ -25,7 +23,7 @@ class PatternDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("PatternType is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\IntegerType', $type);
+        $value = Factory::create('Papier\Type\Base\IntegerType', $type);
 
         $this->setEntry('PatternType', $value);
         return $this;
@@ -42,7 +40,7 @@ class PatternDictionaryType extends DictionaryObject
             throw new RuntimeException("PatternType is missing. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $type = Factory::create('Papier\Type\NameType', 'Pattern');
+        $type = Factory::create('Papier\Type\Base\NameType', 'Pattern');
         $this->setEntry('Type', $type);
 
         return parent::format();

@@ -3,13 +3,12 @@
 
 namespace Papier\Filter\Params;
 
+use InvalidArgumentException;
 use Papier\Factory\Factory;
-use Papier\Type\DictionaryType;
+use Papier\Type\Base\DictionaryType;
 use Papier\Validator\BitsPerComponentValidator;
 use Papier\Validator\IntegerValidator;
 use Papier\Validator\PredictorValidator;
-
-use InvalidArgumentException;
 
 class FlateDecodeParams extends DictionaryType
 {
@@ -25,7 +24,7 @@ class FlateDecodeParams extends DictionaryType
             throw new InvalidArgumentException("Predictor is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\IntegerType', $predictor);
+        $value = Factory::create('Papier\Type\Base\IntegerType', $predictor);
 
         $this->setEntry('Predictor', $value);
         return $this;
@@ -43,7 +42,7 @@ class FlateDecodeParams extends DictionaryType
             throw new InvalidArgumentException("BitsPerComponent is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\IntegerType', $bits);
+        $value = Factory::create('Papier\Type\Base\IntegerType', $bits);
 
         $this->setEntry('BitsPerComponent', $value);
         return $this;
@@ -61,7 +60,7 @@ class FlateDecodeParams extends DictionaryType
             throw new InvalidArgumentException("Colors is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\IntegerType', $colors);
+        $value = Factory::create('Papier\Type\Base\IntegerType', $colors);
 
         $this->setEntry('Colors', $value);
         return $this;
@@ -79,7 +78,7 @@ class FlateDecodeParams extends DictionaryType
             throw new InvalidArgumentException("Columns is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\IntegerType', $columns);
+        $value = Factory::create('Papier\Type\Base\IntegerType', $columns);
 
         $this->setEntry('Columns', $value);
         return $this;

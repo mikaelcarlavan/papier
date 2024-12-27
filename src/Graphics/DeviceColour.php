@@ -2,12 +2,10 @@
 
 namespace Papier\Graphics;
 
-use Papier\Validator\NumberValidator;
-use Papier\Validator\DeviceColourSpaceValidator;
-
-use Papier\Factory\Factory;
-
 use InvalidArgumentException;
+use Papier\Factory\Factory;
+use Papier\Validator\DeviceColourSpaceValidator;
+use Papier\Validator\NumberValidator;
 
 trait DeviceColour
 {
@@ -24,7 +22,7 @@ trait DeviceColour
             throw new InvalidArgumentException("Space is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $state = sprintf('%s CS', Factory::create('Papier\Type\NameType', $space)->format());
+        $state = sprintf('%s CS', Factory::create('Papier\Type\Base\NameType', $space)->format());
         return $this->addToContent($state);
     }
 
@@ -41,7 +39,7 @@ trait DeviceColour
             throw new InvalidArgumentException("Space is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $state = sprintf('%s cs', Factory::create('Papier\Type\NameType', $space)->format());
+        $state = sprintf('%s cs', Factory::create('Papier\Type\Base\NameType', $space)->format());
         return $this->addToContent($state);
     }
 

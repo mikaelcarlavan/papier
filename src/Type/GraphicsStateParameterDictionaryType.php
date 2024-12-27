@@ -2,22 +2,17 @@
 
 namespace Papier\Type;
 
-use Papier\Object\DictionaryObject;
-use Papier\Object\ArrayObject;
-use Papier\Object\NameObject;
-use Papier\Object\FunctionObject;
-use Papier\Object\StreamObject;
-
+use InvalidArgumentException;
 use Papier\Factory\Factory;
-
-use Papier\Validator\BooleanValidator;
-use Papier\Validator\NumberValidator;
+use Papier\Object\ArrayObject;
+use Papier\Object\DictionaryObject;
+use Papier\Object\FunctionObject;
+use Papier\Object\NameObject;
 use Papier\Validator\LineCapStyleValidator;
 use Papier\Validator\LineJoinStyleValidator;
+use Papier\Validator\NumberValidator;
 use Papier\Validator\OverprintModeValidator;
 use Papier\Validator\RenderingIntentValidator;
-
-use InvalidArgumentException;
 
 class GraphicsStateParameterDictionaryType extends DictionaryObject
 {
@@ -52,7 +47,7 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("LC is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\IntegerType', $lc);
+        $value = Factory::create('Papier\Type\Base\IntegerType', $lc);
         $this->setEntry('LC', $value);
         return $this;
     }
@@ -70,7 +65,7 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("LJ is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\IntegerType', $lj);
+        $value = Factory::create('Papier\Type\Base\IntegerType', $lj);
         $this->setEntry('LJ', $value);
         return $this;
     }
@@ -119,7 +114,7 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("RI is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\NameType', $ri);
+        $value = Factory::create('Papier\Type\Base\NameType', $ri);
         $this->setEntry('RI', $value);
         return $this;
     }
@@ -133,7 +128,7 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
 	 */
     public function setOP(bool $op): GraphicsStateParameterDictionaryType
     {
-        $value = Factory::create('Papier\Type\BooleanType', $op);
+        $value = Factory::create('Papier\Type\Base\BooleanType', $op);
 
         $this->setEntry('OP', $value);
         $this->setEntry('op', $value);
@@ -153,7 +148,7 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("OPM is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\IntegerType', $opm);
+        $value = Factory::create('Papier\Type\Base\IntegerType', $opm);
         $this->setEntry('OPM', $value);
         return $this;
     }
@@ -343,7 +338,7 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
 	 */
 	public function setSA(bool $sa): GraphicsStateParameterDictionaryType
     {
-        $value = Factory::create('Papier\Type\BooleanType', $sa);
+        $value = Factory::create('Papier\Type\Base\BooleanType', $sa);
 
         $this->setEntry('SA', $value);
         return $this;
@@ -412,7 +407,7 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
 	 */
 	public function setAIS(bool $ais): GraphicsStateParameterDictionaryType
     {
-        $value = Factory::create('Papier\Type\BooleanType', $ais);
+        $value = Factory::create('Papier\Type\Base\BooleanType', $ais);
 
         $this->setEntry('AIS', $value);
         return $this;
@@ -427,7 +422,7 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
 	 */
 	public function setTK(bool $tk): GraphicsStateParameterDictionaryType
     {
-        $value = Factory::create('Papier\Type\BooleanType', $tk);
+        $value = Factory::create('Papier\Type\Base\BooleanType', $tk);
 
         $this->setEntry('TK', $value);
         return $this;
@@ -439,7 +434,7 @@ class GraphicsStateParameterDictionaryType extends DictionaryObject
      */
     public function format(): string
 	{
-        $type = Factory::create('Papier\Type\NameType', 'ExtGState');
+        $type = Factory::create('Papier\Type\Base\NameType', 'ExtGState');
         $this->setEntry('Type', $type);
 
         return parent::format();

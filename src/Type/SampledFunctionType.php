@@ -2,17 +2,13 @@
 
 namespace Papier\Type;
 
-use Papier\Object\FunctionObject;
-use Papier\Object\ArrayObject;
-
-use Papier\Functions\FunctionType;
-
+use InvalidArgumentException;
 use Papier\Factory\Factory;
-
+use Papier\Functions\FunctionType;
+use Papier\Object\ArrayObject;
+use Papier\Object\FunctionObject;
 use Papier\Validator\BitsPerSampleValidator;
 use Papier\Validator\IntegerValidator;
-
-use InvalidArgumentException;
 use RuntimeException;
 
 class SampledFunctionType extends FunctionObject
@@ -43,7 +39,7 @@ class SampledFunctionType extends FunctionObject
             throw new InvalidArgumentException("BitsPerSample is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\IntegerType', $bits);
+        $value = Factory::create('Papier\Type\Base\IntegerType', $bits);
 
         $this->setEntry('BitsPerSample', $value);
         return $this;
@@ -62,7 +58,7 @@ class SampledFunctionType extends FunctionObject
             throw new InvalidArgumentException("Order is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\IntegerType', $order);
+        $value = Factory::create('Papier\Type\Base\IntegerType', $order);
 
         $this->setEntry('Order', $value);
         return $this;

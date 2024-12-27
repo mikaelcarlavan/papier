@@ -3,7 +3,7 @@
 namespace Papier\Type;
 
 use Papier\Factory\Factory;
-use Papier\Object\ArrayObject;
+use Papier\Type\Base\DictionaryType;
 
 class PageTreeType extends DictionaryType
 { 

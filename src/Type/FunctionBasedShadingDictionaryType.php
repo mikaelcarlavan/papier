@@ -2,13 +2,11 @@
 
 namespace Papier\Type;
 
-use Papier\Object\FunctionObject;
-use Papier\Factory\Factory;
-
-use Papier\Validator\NumbersArrayValidator;
-use Papier\Validator\ArrayValidator;
-
 use InvalidArgumentException;
+use Papier\Factory\Factory;
+use Papier\Object\FunctionObject;
+use Papier\Validator\ArrayValidator;
+use Papier\Validator\NumbersArrayValidator;
 use RuntimeException;
 
 class FunctionBasedShadingDictionaryType extends ShadingDictionaryType
@@ -26,7 +24,7 @@ class FunctionBasedShadingDictionaryType extends ShadingDictionaryType
             throw new InvalidArgumentException("Domain is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\ArrayType', $domain);
+        $value = Factory::create('Papier\Type\Base\ArrayType', $domain);
 
         $this->setEntry('Domain', $value);
         return $this;

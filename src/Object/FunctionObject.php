@@ -2,14 +2,11 @@
 
 namespace Papier\Object;
 
-use Papier\Type\IntegerType;
-use Papier\Validator\FunctionTypeValidator;
-
-use Papier\Functions\FunctionType;
-
-use Papier\Factory\Factory;
-
 use InvalidArgumentException;
+use Papier\Factory\Factory;
+use Papier\Functions\FunctionType;
+use Papier\Type\Base\IntegerType;
+use Papier\Validator\FunctionTypeValidator;
 use RuntimeException;
 
 class FunctionObject extends StreamObject
@@ -28,7 +25,7 @@ class FunctionObject extends StreamObject
             throw new InvalidArgumentException("FunctionType is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\IntegerType', $type);
+        $value = Factory::create('Papier\Type\Base\IntegerType', $type);
 
         $this->setEntry('FunctionType', $value);
         return $this;

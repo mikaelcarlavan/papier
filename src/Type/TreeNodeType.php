@@ -2,9 +2,10 @@
 
 namespace Papier\Type;
 
-use Papier\Object\ArrayObject;
 use Papier\Factory\Factory;
-
+use Papier\Object\ArrayObject;
+use Papier\Type\Base\ArrayType;
+use Papier\Type\Base\DictionaryType;
 use RunTimeException;
 
 class TreeNodeType extends DictionaryType
@@ -51,7 +52,7 @@ class TreeNodeType extends DictionaryType
         }
 
         if (!$this->hasEntry('Kids')) {
-            $kids = Factory::create('Papier\Type\ArrayType');
+            $kids = Factory::create('Papier\Type\Base\ArrayType');
             $this->setEntry('Kids', $kids);
         }
 

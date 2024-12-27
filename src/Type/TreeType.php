@@ -3,6 +3,7 @@
 namespace Papier\Type;
 
 use Papier\Factory\Factory;
+use Papier\Type\Base\DictionaryType;
 
 class TreeType extends DictionaryType
 { 

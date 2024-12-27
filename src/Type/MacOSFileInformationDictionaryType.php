@@ -2,16 +2,11 @@
 
 namespace Papier\Type;
 
+use InvalidArgumentException;
+use Papier\Factory\Factory;
 use Papier\Object\DictionaryObject;
-use Papier\Object\NameObject;
-
 use Papier\Object\StreamObject;
 use Papier\Validator\StringValidator;
-
-use Papier\Factory\Factory;
-
-use InvalidArgumentException;
-use RuntimeException;
 
 class MacOSFileInformationDictionaryType extends DictionaryObject
 {
@@ -33,7 +28,7 @@ class MacOSFileInformationDictionaryType extends DictionaryObject
             $hex.= dechex(ord($s));
         }
 
-        $value = Factory::create('Papier\Type\IntegerType', hexdec($hex));
+        $value = Factory::create('Papier\Type\Base\IntegerType', hexdec($hex));
 
         $this->setEntry('Subtype', $value);
         return $this;
@@ -53,7 +48,7 @@ class MacOSFileInformationDictionaryType extends DictionaryObject
             $hex.= dechex(ord($s));
         }
 
-        $value = Factory::create('Papier\Type\IntegerType', hexdec($hex));
+        $value = Factory::create('Papier\Type\Base\IntegerType', hexdec($hex));
 
         $this->setEntry('Creator', $value);
         return $this;

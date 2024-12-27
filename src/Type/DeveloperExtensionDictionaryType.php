@@ -2,10 +2,9 @@
 
 namespace Papier\Type;
 
+use Papier\Factory\Factory;
 use Papier\Object\DictionaryObject;
 use Papier\Object\NameObject;
-
-use Papier\Factory\Factory;
 
 class DeveloperExtensionDictionaryType extends DictionaryObject
 {
@@ -29,7 +28,7 @@ class DeveloperExtensionDictionaryType extends DictionaryObject
      */
     public function setExtensionLevel(int $level): DeveloperExtensionDictionaryType
     {
-        $value = Factory::create('Papier\Type\IntegerType', $level);
+        $value = Factory::create('Papier\Type\Base\IntegerType', $level);
 
         $this->setEntry('ExtensionLevel', $value);
         return $this;

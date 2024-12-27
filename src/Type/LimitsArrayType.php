@@ -3,6 +3,7 @@
 namespace Papier\Type;
 
 use Papier\Object\BaseObject;
+use Papier\Type\Base\ArrayType;
 
 class LimitsArrayType extends ArrayType
 {

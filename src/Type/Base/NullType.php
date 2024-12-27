@@ -1,6 +1,6 @@
 <?php
 
-namespace Papier\Type;
+namespace Papier\Type\Base;
 
 use Papier\Object\NullObject;
 

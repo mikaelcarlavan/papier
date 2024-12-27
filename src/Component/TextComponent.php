@@ -7,7 +7,9 @@ use Papier\Document\ProcedureSet;
 use Papier\Factory\Factory;
 use Papier\Papier;
 use Papier\Text\RenderingMode;
-use Papier\Type\ArrayType;
+use Papier\Type\Base\ArrayType;
+use Papier\Type\FontType;
+use Papier\Type\Type1FontType;
 
 
 class TextComponent extends BaseComponent
@@ -16,39 +18,11 @@ class TextComponent extends BaseComponent
     use Transformation;
 
 	/**
-	 * Helvetica font
+	 * Text's font.
 	 *
-	 * @var string
+	 * @var FontType
 	 */
-	const HELVETICA_FONT = 'Helvetica';
-
-	/**
-	 * Helvetica font
-	 *
-	 * @var string
-	 */
-	const COURIER_FONT = 'Courier';
-
-	/**
-	 * Symbol font
-	 *
-	 * @var string
-	 */
-	const SYMBOL_FONT = 'Symbol';
-
-	/**
-	 * Times font
-	 *
-	 * @var string
-	 */
-	const TIMES_FONT = 'Times';
-
-    /**
-     * Text's font name.
-     *
-     * @var string
-     */
-    protected string $fontName = 'Helvetica';
+	protected FontType $font;
 
     /**
      * Text's font size.
@@ -261,25 +235,25 @@ class TextComponent extends BaseComponent
     }
 
     /**
-     * Set basefont (PostScript) name.
+     * Set font.
      *
-     * @param string $fontName
+     * @param FontType $font
      * @return TextComponent
      */
-    public function setBaseFont(string $fontName): TextComponent
+    public function setFont(FontType $font): TextComponent
     {
-        $this->fontName = $fontName;
+        $this->font = $font;
         return $this;
     }
 
     /**
-     * Get basefont name.
+     * Get font.
      *
-     * @return string $fontName
+     * @return FontType $font
      */
-    public function getBaseFont(): string
+    public function getFont(): FontType
     {
-        return $this->fontName;
+        return $this->font;
     }
 
 
@@ -308,20 +282,21 @@ class TextComponent extends BaseComponent
     function format(): TextComponent
     {
         $page = $this->getPage();
-        $fontName = $this->getBaseFont();
+        $font = $this->getFont();
 
-        $trueFont = Factory::create('Papier\Type\Type1FontType', null, true)->setBaseFont($fontName);
+		//$trueFont = Factory::create('Papier\Type\Type1FontType', null, true)->setBaseFont(Type1FontType::HELVETICA_FONT);
+		//$trueFont->setName(sprintf('F%d', $trueFont->getNumber()));
 
-        $trueFont->setName(sprintf('F%d', $trueFont->getNumber()));
+		$font->setName(sprintf('F%d', $font->getNumber()));
 
-        $font = Factory::create('Papier\Type\DictionaryType');
-		$font->setEntry($trueFont->getName(), $trueFont);
+        $fontResource = Factory::create('Papier\Type\Base\DictionaryType');
+		$fontResource->setEntry($font->getName(), $font);
 
         $resources = $page->getResources();
-        $resources->setEntry('Font', $font);
+        $resources->setEntry('Font', $fontResource);
 
         if (!$resources->hasEntry('ProcSet')) {
-            $procset = Factory::create('Papier\Type\ArrayType', null, true);
+            $procset = Factory::create('Papier\Type\Base\ArrayType', null, true);
             $resources->setEntry('ProcSet', $procset);
         }
 
@@ -329,7 +304,7 @@ class TextComponent extends BaseComponent
         $procset = $resources->getEntry('ProcSet');
 
         if (!$procset->has(ProcedureSet::TEXT)) {
-            $text = Factory::create('Papier\Type\NameType', ProcedureSet::TEXT);
+            $text = Factory::create('Papier\Type\Base\NameType', ProcedureSet::TEXT);
             $procset->append($text);
         }
 
@@ -342,7 +317,7 @@ class TextComponent extends BaseComponent
         $mmToUserUnit = Papier::MM_TO_USER_UNIT;
 
         $contents->beginText();
-        $contents->setFont($trueFont->getName(), $mmToUserUnit * $fontSize);
+        $contents->setFont($font->getName(), $mmToUserUnit * $fontSize);
 
         $this->applyColors($contents);
 

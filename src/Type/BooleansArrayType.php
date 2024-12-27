@@ -2,11 +2,10 @@
 
 namespace Papier\Type;
 
-use Papier\Validator\BooleansArrayValidator;
-
-use Papier\Factory\Factory;
-
 use InvalidArgumentException;
+use Papier\Factory\Factory;
+use Papier\Type\Base\ArrayType;
+use Papier\Validator\BooleansArrayValidator;
 
 class BooleansArrayType extends ArrayType
 {
@@ -27,7 +26,7 @@ class BooleansArrayType extends ArrayType
         $objects = $this->getObjects();
 
         foreach ($value as $i => $val) {
-            $object = Factory::create('Papier\Type\BooleanType', $val);
+            $object = Factory::create('Papier\Type\Base\BooleanType', $val);
             $objects[$i] = $object;
         }
 

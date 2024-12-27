@@ -39,7 +39,7 @@ class CollectionItemDictionaryType extends DictionaryObject
      */
     public function format(): string
     {
-        $type = Factory::create('Papier\Type\NameType', 'CollectionItem');
+        $type = Factory::create('Papier\Type\Base\NameType', 'CollectionItem');
         $this->setEntry('Type', $type);
 
         return parent::format();

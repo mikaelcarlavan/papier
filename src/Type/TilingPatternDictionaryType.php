@@ -2,17 +2,14 @@
 
 namespace Papier\Type;
 
-use Papier\Object\DictionaryObject;
-
+use InvalidArgumentException;
 use Papier\Factory\Factory;
+use Papier\Graphics\PatternType;
+use Papier\Type\Base\DictionaryType;
+use Papier\Validator\NumbersArrayValidator;
+use Papier\Validator\NumberValidator;
 use Papier\Validator\PaintTypeValidator;
 use Papier\Validator\TilingTypeValidator;
-use Papier\Validator\NumbersArrayValidator;
-
-use Papier\Graphics\PatternType;
-use Papier\Validator\NumberValidator;
-
-use InvalidArgumentException;
 use RuntimeException;
 
 class TilingPatternDictionaryType extends PatternDictionaryType
@@ -30,7 +27,7 @@ class TilingPatternDictionaryType extends PatternDictionaryType
             throw new InvalidArgumentException("PaintType is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\IntegerType', $type);
+        $value = Factory::create('Papier\Type\Base\IntegerType', $type);
 
         $this->setEntry('PaintType', $value);
         return $this;
@@ -49,7 +46,7 @@ class TilingPatternDictionaryType extends PatternDictionaryType
             throw new InvalidArgumentException("TilingType is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\IntegerType', $type);
+        $value = Factory::create('Papier\Type\Base\IntegerType', $type);
 
         $this->setEntry('TilingType', $value);
         return $this;
@@ -124,7 +121,7 @@ class TilingPatternDictionaryType extends PatternDictionaryType
     public function getResources(): DictionaryType
     {
         if (!$this->hasEntry('Resources')) {
-            $resources = Factory::create('Papier\Type\DictionaryType');
+            $resources = Factory::create('Papier\Type\Base\DictionaryType');
             $this->setResources($resources);
         }
 

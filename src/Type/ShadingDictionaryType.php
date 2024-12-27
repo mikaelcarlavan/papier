@@ -2,19 +2,16 @@
 
 namespace Papier\Type;
 
-use Papier\Object\DictionaryObject;
-use Papier\Object\ArrayObject;
-
+use InvalidArgumentException;
 use Papier\Factory\Factory;
-
+use Papier\Object\ArrayObject;
+use Papier\Object\DictionaryObject;
+use Papier\Type\Base\DictionaryType;
 use Papier\Validator\ShadingTypeValidator;
 use Papier\Validator\StringValidator;
-use Papier\Validator\BooleanValidator;
-
-use InvalidArgumentException;
 use RuntimeException;
 
-class ShadingDictionaryType extends DictionaryObject
+class ShadingDictionaryType extends DictionaryType
 {
     /**
      * Set shading type.
@@ -29,7 +26,7 @@ class ShadingDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("ShadingType is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\IntegerType', $type);
+        $value = Factory::create('Papier\Type\Base\IntegerType', $type);
 
         $this->setEntry('ShadingType', $value);
         return $this;
@@ -48,7 +45,7 @@ class ShadingDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("ColorSpace is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = $space instanceof ArrayObject ? $space : Factory::create('Papier\Type\NameType', $space);
+        $value = $space instanceof ArrayObject ? $space : Factory::create('Papier\Type\Base\NameType', $space);
 
         $this->setEntry('ColorSpace', $value);
         return $this;
@@ -86,7 +83,7 @@ class ShadingDictionaryType extends DictionaryObject
      */
     public function setAntiAlias(bool $antialias): ShadingDictionaryType
     {
-        $value = Factory::create('Papier\Type\BooleanType', $antialias);
+        $value = Factory::create('Papier\Type\Base\BooleanType', $antialias);
 
         $this->setEntry('AntiAlias', $value);
         return $this;

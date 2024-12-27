@@ -2,11 +2,8 @@
 
 namespace Papier\Graphics;
 
-use Papier\Validator\StringValidator;
-
-use Papier\Factory\Factory;
-
 use InvalidArgumentException;
+use Papier\Factory\Factory;
 
 trait Shading
 {
@@ -19,7 +16,7 @@ trait Shading
      */
     public function setShading(string $sh)
     {
-        $state = sprintf('%s sh', Factory::create('Papier\Type\NameType', $sh)->format());
+        $state = sprintf('%s sh', Factory::create('Papier\Type\Base\NameType', $sh)->format());
         return $this->addToContent($state);
     } 
 }

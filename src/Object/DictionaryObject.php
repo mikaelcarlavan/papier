@@ -6,7 +6,6 @@ use Countable;
 use InvalidArgumentException;
 use Iterator;
 use Papier\Factory\Factory;
-use Papier\Type\IntegerType;
 use Papier\Validator\ArrayValidator;
 
 /**
@@ -248,7 +247,7 @@ class DictionaryObject extends IndirectObject implements Countable, Iterator
 
         $value = '';
         foreach ($objects as $key => $object) {
-            $name = Factory::create('Papier\Type\NameType', $key);
+			$name = Factory::create('Papier\Type\Base\NameType', $key);
             $value .= $name->format() .' '. $object->write();
         }
 

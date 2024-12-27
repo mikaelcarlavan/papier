@@ -2,6 +2,7 @@
 
 namespace Papier\Type;
 use Papier\Text\Encoding;
+use Papier\Type\Base\StreamType;
 
 class TextStreamType extends StreamType
 {

@@ -2,14 +2,11 @@
 
 namespace Papier\Type;
 
-use Papier\Object\DictionaryObject;
-
+use InvalidArgumentException;
 use Papier\Factory\Factory;
-
+use Papier\Object\DictionaryObject;
 use Papier\Validator\DateValidator;
 use Papier\Validator\TrappedValidator;
-
-use InvalidArgumentException;
 
 class DocumentInformationDictionaryType extends DictionaryObject
 {
@@ -111,7 +108,7 @@ class DocumentInformationDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("CreationDate is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\DateType', $date);
+        $value = Factory::create('Papier\Type\Base\DateType', $date);
 
         $this->setEntry('CreationDate', $value);
         return $this;
@@ -149,7 +146,7 @@ class DocumentInformationDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("Trapped is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\NameType', $trapped);
+        $value = Factory::create('Papier\Type\Base\NameType', $trapped);
 
         $this->setEntry('Trapped', $value);
         return $this;

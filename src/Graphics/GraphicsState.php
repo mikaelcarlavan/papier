@@ -2,16 +2,14 @@
 
 namespace Papier\Graphics;
 
-use Papier\Validator\NumbersArrayValidator;
-use Papier\Validator\NumberValidator;
+use InvalidArgumentException;
+use Papier\Factory\Factory;
+use Papier\Validator\IntegersArrayValidator;
 use Papier\Validator\LineCapStyleValidator;
 use Papier\Validator\LineJoinStyleValidator;
+use Papier\Validator\NumbersArrayValidator;
+use Papier\Validator\NumberValidator;
 use Papier\Validator\RenderingIntentValidator;
-use Papier\Validator\IntegersArrayValidator;
-
-use Papier\Factory\Factory;
-
-use InvalidArgumentException;
 
 trait GraphicsState
 {
@@ -196,7 +194,7 @@ trait GraphicsState
             throw new InvalidArgumentException("RI is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $state = sprintf('%s ri', Factory::create('Papier\Type\NameType', $ri)->format());
+        $state = sprintf('%s ri', Factory::create('Papier\Type\Base\NameType', $ri)->format());
         return $this->addToContent($state);
     } 
 

@@ -2,18 +2,16 @@
 
 namespace Papier\Type;
 
+use InvalidArgumentException;
+use Papier\Factory\Factory;
+use Papier\Object\ArrayObject;
 use Papier\Object\DictionaryObject;
 use Papier\Object\NameObject;
-use Papier\Object\ArrayObject;
 use Papier\Object\StreamObject;
-
+use Papier\Type\Base\DictionaryType;
+use Papier\Validator\BooleanValidator;
 use Papier\Validator\PageLayoutValidator;
 use Papier\Validator\PageModeValidator;
-use Papier\Validator\BooleanValidator;
-
-use Papier\Factory\Factory;
-
-use InvalidArgumentException;
 use Papier\Validator\StringValidator;
 use RuntimeException;
 
@@ -150,7 +148,7 @@ class DocumentCatalogType extends DictionaryType
             throw new InvalidArgumentException("Layout is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\NameType', $layout);
+        $value = Factory::create('Papier\Type\Base\NameType', $layout);
         $this->setEntry('PageLayout', $value);
 
         return $this;
@@ -169,7 +167,7 @@ class DocumentCatalogType extends DictionaryType
             throw new InvalidArgumentException("Mode is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\NameType', $mode);
+        $value = Factory::create('Papier\Type\Base\NameType', $mode);
         $this->setEntry('PageMode', $value);
 
         return $this;
@@ -302,7 +300,7 @@ class DocumentCatalogType extends DictionaryType
             throw new InvalidArgumentException("Lang is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\StringType', $lang);
+        $value = Factory::create('Papier\Type\Base\StringType', $lang);
 
         $this->setEntry('Lang', $value);
         return $this;
@@ -417,7 +415,7 @@ class DocumentCatalogType extends DictionaryType
             throw new InvalidArgumentException("NeedsRendering is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\BooleanType', $needs);
+        $value = Factory::create('Papier\Type\Base\BooleanType', $needs);
         $this->setEntry('NeedsRendering', $value);
         return $this;
     }
@@ -433,7 +431,7 @@ class DocumentCatalogType extends DictionaryType
             throw new RuntimeException("Pages is missing. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $type = Factory::create('Papier\Type\NameType', 'Catalog');
+        $type = Factory::create('Papier\Type\Base\NameType', 'Catalog');
         $this->setEntry('Type', $type);
         
         return parent::format();

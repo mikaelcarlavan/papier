@@ -2,14 +2,11 @@
 
 namespace Papier\Type;
 
+use InvalidArgumentException;
+use Papier\Factory\Factory;
 use Papier\Object\ArrayObject;
 use Papier\Object\DictionaryObject;
-
 use Papier\Validator\StringValidator;
-
-use Papier\Factory\Factory;
-
-use InvalidArgumentException;
 
 class DeviceNProcessDictionaryType extends DictionaryObject
 {
@@ -26,7 +23,7 @@ class DeviceNProcessDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("ColorSpace is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = $space instanceof ArrayObject ? $space : Factory::create('Papier\Type\NameType', $space);
+        $value = $space instanceof ArrayObject ? $space : Factory::create('Papier\Type\Base\NameType', $space);
 
         $this->setEntry('ColorSpace', $value);
         return $this;

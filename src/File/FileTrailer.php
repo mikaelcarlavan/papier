@@ -2,15 +2,13 @@
 
 namespace Papier\File;
 
+use InvalidArgumentException;
+use Papier\Factory\Factory;
+use Papier\Object\ArrayObject;
+use Papier\Object\DictionaryObject;
+use Papier\Repository\Repository;
 use Papier\Type\DocumentInformationDictionaryType;
 use Papier\Validator\IntegerValidator;
-use Papier\Object\DictionaryObject;
-use Papier\Object\ArrayObject;
-
-use Papier\Factory\Factory;
-use Papier\Repository\Repository;
-
-use InvalidArgumentException;
 use RuntimeException;
 
 class FileTrailer extends DictionaryObject
@@ -69,7 +67,7 @@ class FileTrailer extends DictionaryObject
             throw new InvalidArgumentException("Size is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\IntegerType', $size);
+        $value = Factory::create('Papier\Type\Base\IntegerType', $size);
 
         $this->setEntry('Size', $value);
         return $this;
@@ -88,7 +86,7 @@ class FileTrailer extends DictionaryObject
             throw new InvalidArgumentException("Prev is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\IntegerType', $prev);
+        $value = Factory::create('Papier\Type\Base\IntegerType', $prev);
 
         $this->setEntry('Prev', $value);
         return $this;

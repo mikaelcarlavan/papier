@@ -2,20 +2,13 @@
 
 namespace Papier\Type;
 
-use Papier\Object\ArrayObject;
-use Papier\Object\DictionaryObject;
-use Papier\Object\StreamObject;
-
-use Papier\Type\PatternDictionaryType;
-
-use Papier\Factory\Factory;
-
-use Papier\Graphics\PatternType;
-
-
 use InvalidArgumentException;
+use Papier\Factory\Factory;
+use Papier\Graphics\PatternType;
+use Papier\Object\DictionaryObject;
 use Papier\Validator\NumbersArrayValidator;
 use RuntimeException;
+
 
 class ShadingPatternDictionaryType extends PatternDictionaryType
 {
@@ -46,7 +39,7 @@ class ShadingPatternDictionaryType extends PatternDictionaryType
             throw new InvalidArgumentException("Matrix is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\ArrayType', $matrix);
+        $value = Factory::create('Papier\Type\Base\ArrayType', $matrix);
 
         $this->setEntry('Matrix', $value);
         return $this;

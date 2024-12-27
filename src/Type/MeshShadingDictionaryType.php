@@ -2,16 +2,13 @@
 
 namespace Papier\Type;
 
-use Papier\Object\FunctionObject;
-
-use Papier\Factory\Factory;
-
-use Papier\Validator\NumbersArrayValidator;
-use Papier\Validator\BitsPerCoordinateValidator;
-use Papier\Validator\BitsPerComponentValidator;
-use Papier\Validator\BitsPerFlagValidator;
-
 use InvalidArgumentException;
+use Papier\Factory\Factory;
+use Papier\Object\FunctionObject;
+use Papier\Validator\BitsPerComponentValidator;
+use Papier\Validator\BitsPerCoordinateValidator;
+use Papier\Validator\BitsPerFlagValidator;
+use Papier\Validator\NumbersArrayValidator;
 use RuntimeException;
 
 class MeshShadingDictionaryType extends ShadingDictionaryType
@@ -29,7 +26,7 @@ class MeshShadingDictionaryType extends ShadingDictionaryType
             throw new InvalidArgumentException("BitsPerCoordinate is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\IntegerType', $bits);
+        $value = Factory::create('Papier\Type\Base\IntegerType', $bits);
 
         $this->setEntry('BitsPerCoordinate', $value);
         return $this;
@@ -48,7 +45,7 @@ class MeshShadingDictionaryType extends ShadingDictionaryType
             throw new InvalidArgumentException("BitsPerComponent is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\IntegerType', $bits);
+        $value = Factory::create('Papier\Type\Base\IntegerType', $bits);
 
         $this->setEntry('BitsPerComponent', $value);
         return $this;
@@ -67,7 +64,7 @@ class MeshShadingDictionaryType extends ShadingDictionaryType
             throw new InvalidArgumentException("BitsPerFlag is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\IntegerType', $bits);
+        $value = Factory::create('Papier\Type\Base\IntegerType', $bits);
 
         $this->setEntry('BitsPerFlag', $value);
         return $this;

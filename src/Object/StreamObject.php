@@ -2,15 +2,11 @@
 
 namespace Papier\Object;
 
-use Papier\Factory\Factory;
-
-use Papier\Type\DictionaryType;
-use Papier\Type\FileSpecificationDictionaryType;
-use Papier\Type\FileSpecificationStringType;
-
-use Papier\Validator\StringValidator;
-
 use InvalidArgumentException;
+use Papier\Factory\Factory;
+use Papier\Type\Base\DictionaryType;
+use Papier\Type\FileSpecificationDictionaryType;
+use Papier\Validator\StringValidator;
 
 class StreamObject extends DictionaryObject
 {
@@ -127,7 +123,7 @@ class StreamObject extends DictionaryObject
             throw new InvalidArgumentException("Filter is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = $filter instanceof ArrayObject ? $filter : Factory::create('Papier\Type\NameType', $filter);
+        $value = $filter instanceof ArrayObject ? $filter : Factory::create('Papier\Type\Base\NameType', $filter);
 
         $this->setEntry('Filter', $value);
         return $this;
@@ -171,7 +167,7 @@ class StreamObject extends DictionaryObject
             throw new InvalidArgumentException("FFilter is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = $ffilter instanceof ArrayObject ? $ffilter : Factory::create('Papier\Type\NameType', $ffilter);
+        $value = $ffilter instanceof ArrayObject ? $ffilter : Factory::create('Papier\Type\Base\NameType', $ffilter);
 
         $this->setEntry('FFilter', $value);
         return $this;
@@ -199,7 +195,7 @@ class StreamObject extends DictionaryObject
      */
     public function setDL(int $dl): StreamObject
     {
-        $value = Factory::create('Papier\Type\IntegerType', $dl);
+        $value = Factory::create('Papier\Type\Base\IntegerType', $dl);
 
         $this->setEntry('DL', $value);
         return $this;
@@ -215,7 +211,7 @@ class StreamObject extends DictionaryObject
         $stream = $this->getStream();
 
         // Compute length of stream and set it into dictionary
-        $length = Factory::create('Papier\Type\IntegerType', strlen($stream));
+        $length = Factory::create('Papier\Type\Base\IntegerType', strlen($stream));
     
         $this->setEntry('Length', $length);
 

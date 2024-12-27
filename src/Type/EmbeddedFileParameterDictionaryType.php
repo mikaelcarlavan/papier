@@ -2,12 +2,10 @@
 
 namespace Papier\Type;
 
-use Papier\Object\DictionaryObject;
-
-use Papier\Factory\Factory;
-use Papier\Validator\DateValidator;
-
 use InvalidArgumentException;
+use Papier\Factory\Factory;
+use Papier\Object\DictionaryObject;
+use Papier\Validator\DateValidator;
 
 class EmbeddedFileParameterDictionaryType extends DictionaryObject
 {
@@ -20,7 +18,7 @@ class EmbeddedFileParameterDictionaryType extends DictionaryObject
      */
     public function setSize(int $size): EmbeddedFileParameterDictionaryType
     {
-        $value = Factory::create('Papier\Type\IntegerType', $size);
+        $value = Factory::create('Papier\Type\Base\IntegerType', $size);
 
         $this->setEntry('Size', $value);
         return $this;
@@ -39,7 +37,7 @@ class EmbeddedFileParameterDictionaryType extends DictionaryObject
             throw new InvalidArgumentException("CreationDate is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\DateType', $date);
+        $value = Factory::create('Papier\Type\Base\DateType', $date);
 
         $this->setEntry('CreationDate', $value);
         return $this;

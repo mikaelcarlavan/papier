@@ -2,15 +2,13 @@
 
 namespace Papier\Type;
 
-use Papier\Object\DictionaryObject;
-use Papier\Object\ArrayObject;
-
-use Papier\Factory\Factory;
-
 use InvalidArgumentException;
-use Papier\Validator\NumbersArrayValidator;
+use Papier\Factory\Factory;
+use Papier\Object\ArrayObject;
+use Papier\Object\DictionaryObject;
+use Papier\Type\Base\ArrayType;
+use Papier\Type\Base\DictionaryType;
 use RuntimeException;
-use Papier\Document\ProcedureSet;
 
 class PageTreeNodeType extends DictionaryType
 {
@@ -46,7 +44,7 @@ class PageTreeNodeType extends DictionaryType
     public function getKids(): ArrayType
     {
         if (!$this->hasEntry('Kids')) {
-            $kids = Factory::create('Papier\Type\ArrayType');
+            $kids = Factory::create('Papier\Type\Base\ArrayType');
             $this->setEntry('Kids', $kids);
         }
 
@@ -114,7 +112,7 @@ class PageTreeNodeType extends DictionaryType
     public function getResources(): DictionaryType
     {
         if (!$this->hasEntry('Resources')) {
-            $resources = Factory::create('Papier\Type\DictionaryType');
+            $resources = Factory::create('Papier\Type\Base\DictionaryType');
             $this->setResources($resources);
         }
 
@@ -191,7 +189,7 @@ class PageTreeNodeType extends DictionaryType
      */
     public function setRotate(int $rotate): PageTreeNodeType
     {
-        $value = Factory::create('Papier\Type\IntegerType', $rotate);
+        $value = Factory::create('Papier\Type\Base\IntegerType', $rotate);
 
         $this->setEntry('Rotate', $value);
         return $this;
@@ -234,8 +232,8 @@ class PageTreeNodeType extends DictionaryType
             }
         }
 
-        $type = Factory::create('Papier\Type\NameType', 'Pages');
-        $count = Factory::create('Papier\Type\IntegerType', $num);
+        $type = Factory::create('Papier\Type\Base\NameType', 'Pages');
+        $count = Factory::create('Papier\Type\Base\IntegerType', $num);
 
         $this->setEntry('Type', $type);
         $this->setEntry('Count', $count);

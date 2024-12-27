@@ -2,9 +2,8 @@
 
 namespace Papier\Type;
 
-use Papier\Object\DictionaryObject;
-
 use Papier\Factory\Factory;
+use Papier\Object\DictionaryObject;
 
 class DeviceNColourSpaceAttributesDictionaryType extends DictionaryObject
 {
@@ -16,7 +15,7 @@ class DeviceNColourSpaceAttributesDictionaryType extends DictionaryObject
      */
     public function setSubtype(string $subtype): DeviceNColourSpaceAttributesDictionaryType
     {
-        $value = Factory::create('Papier\Type\NameType', $subtype);
+        $value = Factory::create('Papier\Type\Base\NameType', $subtype);
 
         $this->setEntry('Subtype', $value);
         return $this;

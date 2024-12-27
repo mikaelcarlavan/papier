@@ -2,9 +2,8 @@
 
 namespace Papier\Graphics;
 
-use Papier\Factory\Factory;
-
 use InvalidArgumentException;
+use Papier\Factory\Factory;
 
 trait XObject
 {
@@ -17,7 +16,7 @@ trait XObject
      */
     public function paintXObject(string $xobject)
     {
-        $state = sprintf('%s Do', Factory::create('Papier\Type\NameType', $xobject)->format());
+        $state = sprintf('%s Do', Factory::create('Papier\Type\Base\NameType', $xobject)->format());
         return $this->addToContent($state);
     } 
 }

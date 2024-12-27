@@ -2,13 +2,11 @@
 
 namespace Papier\Type;
 
+use InvalidArgumentException;
 use Papier\Factory\Factory;
 use Papier\Object\DictionaryObject;
-use Papier\Object\FunctionObject;
 use Papier\Object\RenditionObject;
-use Papier\Validator\FunctionTypeValidator;
-use Papier\Validator\PaintTypeValidator;
-use InvalidArgumentException;
+use Papier\Type\Base\DictionaryType;
 use Papier\Validator\RenditionTypeValidator;
 
 class RenditionType extends DictionaryType
@@ -39,7 +37,7 @@ class RenditionType extends DictionaryType
             throw new InvalidArgumentException("RenditionType is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\NameType', $type);
+        $value = Factory::create('Papier\Type\Base\NameType', $type);
 
         $this->setEntry('S', $value);
 
@@ -54,7 +52,7 @@ class RenditionType extends DictionaryType
      */
     public function setN(string $N): RenditionType
     {
-        $value = Factory::create('Papier\Type\NameType', $N);
+        $value = Factory::create('Papier\Type\Base\NameType', $N);
         $this->setEntry('N', $value);
         return $this;
     }
@@ -90,7 +88,7 @@ class RenditionType extends DictionaryType
      */
     public function format(): string
     {
-        $type = Factory::create('Papier\Type\NameType', 'Type');
+        $type = Factory::create('Papier\Type\Base\NameType', 'Type');
         $this->setEntry('Type', $type);
 
         return parent::format();

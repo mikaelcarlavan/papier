@@ -2,13 +2,10 @@
 
 namespace Papier\Type;
 
-use Papier\Object\StreamObject;
-
-use Papier\Object\DictionaryObject;
-
-use Papier\Factory\Factory;
-
 use InvalidArgumentException;
+use Papier\Factory\Factory;
+use Papier\Object\DictionaryObject;
+use Papier\Object\StreamObject;
 
 class EmbeddedFileStreamType extends StreamObject
 {
@@ -22,7 +19,7 @@ class EmbeddedFileStreamType extends StreamObject
      */
     public function setSubtype(string $subtype): EmbeddedFileStreamType
     {
-        $value = Factory::create('Papier\Type\NameType', $subtype);
+        $value = Factory::create('Papier\Type\Base\NameType', $subtype);
 
         $this->setEntry('Subtype', $value);
         return $this;
@@ -48,7 +45,7 @@ class EmbeddedFileStreamType extends StreamObject
      */
     public function format(): string
     {
-        $type = Factory::create('Papier\Type\NameType', 'EmbeddedFile');
+        $type = Factory::create('Papier\Type\Base\NameType', 'EmbeddedFile');
         $this->setEntry('Type', $type);
 
         return parent::format();

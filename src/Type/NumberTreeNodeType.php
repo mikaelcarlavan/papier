@@ -3,8 +3,7 @@
 namespace Papier\Type;
 
 use Papier\Factory\Factory;
-
-use InvalidArgumentException;
+use Papier\Type\Base\ArrayType;
 use RunTimeException;
 
 class NumberTreeNodeType extends TreeNodeType
@@ -122,8 +121,8 @@ class NumberTreeNodeType extends TreeNodeType
             if (count($objects)) {
                 sort($objects);
 
-                $first = Factory::create('Papier\Type\IntegerType', array_shift($objects));
-                $last = Factory::create('Papier\Type\IntegerType', array_pop($objects));
+                $first = Factory::create('Papier\Type\Base\IntegerType', array_shift($objects));
+                $last = Factory::create('Papier\Type\Base\IntegerType', array_pop($objects));
                 
                 $limits->append($first);
                 $limits->append($last);

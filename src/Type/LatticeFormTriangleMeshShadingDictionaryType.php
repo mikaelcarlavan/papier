@@ -2,13 +2,10 @@
 
 namespace Papier\Type;
 
-use Papier\Graphics\ShadingType;
-
-use Papier\Factory\Factory;
-
-use Papier\Validator\IntegerValidator;
-
 use InvalidArgumentException;
+use Papier\Factory\Factory;
+use Papier\Graphics\ShadingType;
+use Papier\Validator\IntegerValidator;
 use RuntimeException;
 
 class LatticeFormTriangleMeshShadingDictionaryType extends MeshShadingDictionaryType
@@ -26,7 +23,7 @@ class LatticeFormTriangleMeshShadingDictionaryType extends MeshShadingDictionary
             throw new InvalidArgumentException("VerticesPerRow is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-        $value = Factory::create('Papier\Type\IntegerType', $vertices);
+        $value = Factory::create('Papier\Type\Base\IntegerType', $vertices);
 
         $this->setEntry('VerticesPerRow', $value);
         return $this;

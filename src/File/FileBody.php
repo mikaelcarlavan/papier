@@ -35,12 +35,12 @@ class FileBody extends BaseObject
     {
         $this->documentCatalog = Factory::create('Papier\Type\DocumentCatalogType', null, true);
 
-        $outlines = Factory::create('Papier\Type\DictionaryType', null, true);
+        $outlines = Factory::create('Papier\Type\Base\DictionaryType', null, true);
         
         $pageTree = Factory::create('Papier\Type\PageTreeType');
 
-        $name = Factory::create('Papier\Type\NameType', 'Outlines');
-        $count = Factory::create('Papier\Type\IntegerType', 0);
+        $name = Factory::create('Papier\Type\Base\NameType', 'Outlines');
+        $count = Factory::create('Papier\Type\Base\IntegerType', 0);
 
         $outlines->setEntry('Type', $name);
         $outlines->setEntry('Count', $count);
