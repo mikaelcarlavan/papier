@@ -1,10 +1,9 @@
 <?php
 
-namespace Papier\Font;
-use Papier\Validator\IntegerValidator;
-use Papier\Validator\RealValidator;
-
+namespace Papier\Font\TrueType;
 use InvalidArgumentException;
+use Papier\Font\TrueType\Base\TrueTypeFontTable;
+use Papier\Validator\IntegerValidator;
 use Papier\Validator\StringValidator;
 
 class TrueTypeFontOS2Table extends TrueTypeFontTable

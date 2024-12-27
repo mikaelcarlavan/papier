@@ -1,10 +1,11 @@
 <?php
 
-namespace Papier\Font;
+namespace Papier\Font\TrueType;
 
+use InvalidArgumentException;
+use Papier\Font\TrueType\Base\TrueTypeFontTable;
 use Papier\Validator\IntegerValidator;
 use Papier\Validator\RealValidator;
-use InvalidArgumentException;
 
 class TrueTypeFontMaxProfileTable extends TrueTypeFontTable
 {

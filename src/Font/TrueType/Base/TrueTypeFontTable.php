@@ -1,11 +1,10 @@
 <?php
 
-namespace Papier\Font;
+namespace Papier\Font\TrueType\Base;
 
-use Hoa\File\File;
+use InvalidArgumentException;
 use Papier\Helpers\FileHelper;
 use Papier\Validator\IntegerValidator;
-use InvalidArgumentException;
 
 class TrueTypeFontTable
 {

@@ -2,23 +2,17 @@
 
 namespace Papier\Type;
 
+use InvalidArgumentException;
 use Papier\Factory\Factory;
-use Papier\Font\TrueTypeFontHeadTable;
-use Papier\Font\TrueTypeFontHorizontalHeaderTable;
-use Papier\Font\TrueTypeFontOS2Table;
+use Papier\Font\TrueType\TrueTypeFontHeadTable;
+use Papier\Font\TrueType\TrueTypeFontHorizontalHeaderTable;
+use Papier\Font\TrueType\TrueTypeFontOS2Table;
 use Papier\Helpers\TrueTypeFontFileHelper;
-use Papier\Object\ArrayObject;
-use Papier\Object\DictionaryObject;
-use Papier\Object\StreamObject;
 use Papier\Type\Base\ArrayType;
 use Papier\Type\Base\DictionaryType;
-use Papier\Type\Base\IntegerType;
-use Papier\Type\Base\NameType;
 use Papier\Type\Base\StreamType;
 use Papier\Validator\EncodingValidator;
-use Papier\Validator\NumbersArrayValidator;
 use Papier\Validator\StringValidator;
-use InvalidArgumentException;
 use RuntimeException;
 
 class TrueTypeFontType extends FontType
