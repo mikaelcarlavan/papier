@@ -5,7 +5,6 @@ namespace Papier\Type;
 use InvalidArgumentException;
 use Papier\Factory\Factory;
 use Papier\Object\ArrayObject;
-use Papier\Object\DictionaryObject;
 use Papier\Object\NameObject;
 use Papier\Object\StreamObject;
 use Papier\Type\Base\DictionaryType;
@@ -61,10 +60,10 @@ class DocumentCatalogType extends DictionaryType
     /**
      * Set page tree node (root of document's page tree).
      *  
-     * @param DictionaryObject $pages
+     * @param DictionaryType $pages
      * @return DocumentCatalogType
      */
-    public function setPages(DictionaryObject $pages): DocumentCatalogType
+    public function setPages(DictionaryType $pages): DocumentCatalogType
     {
         $this->setEntry('Pages', $pages);
         return $this;
@@ -85,10 +84,10 @@ class DocumentCatalogType extends DictionaryType
     /**
      * Set document's name dictionary.
      *  
-     * @param DictionaryObject $names
+     * @param DictionaryType $names
      * @return DocumentCatalogType
      */
-    public function setNames(DictionaryObject $names): DocumentCatalogType
+    public function setNames(DictionaryType $names): DocumentCatalogType
     {
         $this->setEntry('Names', $names);
         return $this;
@@ -97,10 +96,10 @@ class DocumentCatalogType extends DictionaryType
     /**
      * Set names and corresponding destinations.
      *  
-     * @param DictionaryObject $dests
+     * @param DictionaryType $dests
      * @return DocumentCatalogType
      */
-    public function setDests(DictionaryObject $dests): DocumentCatalogType
+    public function setDests(DictionaryType $dests): DocumentCatalogType
     {
         $this->setEntry('Dests', $dests);
         return $this;
@@ -109,10 +108,10 @@ class DocumentCatalogType extends DictionaryType
     /**
      * Set viewer preferences.
      *  
-     * @param DictionaryObject $preferences
+     * @param DictionaryType $preferences
      * @return DocumentCatalogType
      */
-    public function setViewerPreferences(DictionaryObject $preferences): DocumentCatalogType
+    public function setViewerPreferences(DictionaryType $preferences): DocumentCatalogType
     {
         $this->setEntry('ViewerPreferences', $preferences);
         return $this;
@@ -176,10 +175,10 @@ class DocumentCatalogType extends DictionaryType
     /**
      * Set outlines.
      *  
-     * @param DictionaryObject $outlines
+     * @param DictionaryType $outlines
      * @return DocumentCatalogType
      */
-    public function setOutlines(DictionaryObject $outlines): DocumentCatalogType
+    public function setOutlines(DictionaryType $outlines): DocumentCatalogType
     {
         $this->setEntry('Outlines', $outlines);
         return $this;
@@ -202,11 +201,11 @@ class DocumentCatalogType extends DictionaryType
      *  
      * @param  mixed  $action
      * @return DocumentCatalogType
-     * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject' or 'DictionaryObject'.
+     * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject' or 'DictionaryType'.
      */
     public function setOpenAction($action): DocumentCatalogType
     {
-        if (!$action instanceof ArrayObject && !$action instanceof DictionaryObject) {
+        if (!$action instanceof ArrayObject && !$action instanceof DictionaryType) {
             throw new InvalidArgumentException("Action is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
@@ -217,10 +216,10 @@ class DocumentCatalogType extends DictionaryType
     /**
      * Set additional actions.
      *  
-     * @param DictionaryObject $aa
+     * @param DictionaryType $aa
      * @return DocumentCatalogType
      */
-    public function setAA(DictionaryObject $aa): DocumentCatalogType
+    public function setAA(DictionaryType $aa): DocumentCatalogType
     {
         $this->setEntry('AA', $aa);
         return $this;
@@ -229,10 +228,10 @@ class DocumentCatalogType extends DictionaryType
     /**
      * Set URI.
      *  
-     * @param  DictionaryObject $uri
+     * @param  DictionaryType $uri
      * @return DocumentCatalogType
      */
-    public function setURI(DictionaryObject $uri): DocumentCatalogType
+    public function setURI(DictionaryType $uri): DocumentCatalogType
     {
         $this->setEntry('URI', $uri);
         return $this;
@@ -241,10 +240,10 @@ class DocumentCatalogType extends DictionaryType
     /**
      * Set interactive form.
      *  
-     * @param  DictionaryObject $form
+     * @param  DictionaryType $form
      * @return DocumentCatalogType
      */
-    public function setAcroForm(DictionaryObject $form): DocumentCatalogType
+    public function setAcroForm(DictionaryType $form): DocumentCatalogType
     {
         $this->setEntry('AcroForm', $form);
         return $this;
@@ -265,10 +264,10 @@ class DocumentCatalogType extends DictionaryType
     /**
      * Set document's structure tree root.
      *  
-     * @param  DictionaryObject $structTreeRoot
+     * @param  DictionaryType $structTreeRoot
      * @return DocumentCatalogType
      */
-    public function setStructTreeRoot(DictionaryObject $structTreeRoot): DocumentCatalogType
+    public function setStructTreeRoot(DictionaryType $structTreeRoot): DocumentCatalogType
     {
         $this->setEntry('StructTreeRoot', $structTreeRoot);
         return $this;
@@ -278,10 +277,10 @@ class DocumentCatalogType extends DictionaryType
     /**
      * Set mark information.
      *  
-     * @param  DictionaryObject $markInfo
+     * @param  DictionaryType $markInfo
      * @return DocumentCatalogType
      */
-    public function setMarkInfo(DictionaryObject $markInfo): DocumentCatalogType
+    public function setMarkInfo(DictionaryType $markInfo): DocumentCatalogType
     {
         $this->setEntry('MarkInfo', $markInfo);
         return $this;
@@ -309,10 +308,10 @@ class DocumentCatalogType extends DictionaryType
     /**
      * Set spider info.
      *  
-     * @param  DictionaryObject $spiderInfo
+     * @param  DictionaryType $spiderInfo
      * @return DocumentCatalogType
      */
-    public function setSpiderInfo(DictionaryObject $spiderInfo): DocumentCatalogType
+    public function setSpiderInfo(DictionaryType $spiderInfo): DocumentCatalogType
     {
         $this->setEntry('SpiderInfo', $spiderInfo);
         return $this;
@@ -333,10 +332,10 @@ class DocumentCatalogType extends DictionaryType
     /**
      * Set piece info.
      *  
-     * @param  DictionaryObject $pieceInfo
+     * @param  DictionaryType $pieceInfo
      * @return DocumentCatalogType
      */
-    public function setPieceInfo(DictionaryObject $pieceInfo): DocumentCatalogType
+    public function setPieceInfo(DictionaryType $pieceInfo): DocumentCatalogType
     {
         $this->setEntry('PieceInfo', $pieceInfo);
         return $this;
@@ -345,10 +344,10 @@ class DocumentCatalogType extends DictionaryType
     /**
      * Set OC properties.
      *  
-     * @param  DictionaryObject $ocProperties
+     * @param  DictionaryType $ocProperties
      * @return DocumentCatalogType
      */
-    public function setOCProperties(DictionaryObject $ocProperties): DocumentCatalogType
+    public function setOCProperties(DictionaryType $ocProperties): DocumentCatalogType
     {
         $this->setEntry('OCProperties', $ocProperties);
         return $this;
@@ -357,10 +356,10 @@ class DocumentCatalogType extends DictionaryType
     /**
      * Set permissions.
      *  
-     * @param  DictionaryObject $perms
+     * @param  DictionaryType $perms
      * @return DocumentCatalogType
      */
-    public function setPerms(DictionaryObject $perms): DocumentCatalogType
+    public function setPerms(DictionaryType $perms): DocumentCatalogType
     {
         $this->setEntry('Perms', $perms);
         return $this;
@@ -369,10 +368,10 @@ class DocumentCatalogType extends DictionaryType
     /**
      * Set legal.
      *  
-     * @param  DictionaryObject $legal
+     * @param  DictionaryType $legal
      * @return DocumentCatalogType
      */
-    public function setLegal(DictionaryObject $legal): DocumentCatalogType
+    public function setLegal(DictionaryType $legal): DocumentCatalogType
     {
         $this->setEntry('Legal', $legal);
         return $this;
@@ -393,10 +392,10 @@ class DocumentCatalogType extends DictionaryType
      /**
      * Set collection.
      *  
-     * @param  DictionaryObject $collection
+     * @param  DictionaryType $collection
      * @return DocumentCatalogType
      */
-    public function setCollection(DictionaryObject $collection): DocumentCatalogType
+    public function setCollection(DictionaryType $collection): DocumentCatalogType
     {
         $this->setEntry('Collection', $collection);
         return $this;
