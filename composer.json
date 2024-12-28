@@ -1,0 +1,28 @@
+{
+    "name": "papier/papier",
+    "description": "Low-level PHP library for generating PDF files",
+    "type": "library",
+    "homepage": "https://papier.io",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mikael Carlavan",
+            "email": "mikael@camina.dev",
+            "homepage": "https://camina.dev",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=8.0",
+        "ext-fileinfo": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~7.0|~6.0|~5.0|~4.8.35",
+        "phpstan/phpstan": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Papier\\": "src/"
+        }
+    }
+}
