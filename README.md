@@ -20,17 +20,13 @@ Papier supports the following:
 $pathToFontFile = 'Lato.ttf';
 
 $pdf = new Papier();
-$pdf->getHeader()->setVersion(3);
+$pdf->getHeader()->setVersion(7);
 
 $page = $pdf->addPage([210, 297]);
 
 $image = $pdf->createImageComponent()->setPage($page);
-$image->setSource('unsplash.jpg');
-$image->setWidth(210);
-
-$image = $pdf->createImageComponent()->setPage($page);
 $image->setSource('unsplash.png');
-$image->setWidth(20);
+$image->setWidth(50);
 $image->translate(10, 10);
 
 $font = Factory::create('Papier\Type\TrueTypeFontType', null, true);
@@ -47,9 +43,6 @@ $text->setFont($font);
 $text->setFontSize(12);
 $text->translate(100, 100);
 
-
-$page = $pdf->addPage([210, 297]);
-
 $draw = $pdf->createDrawComponent()->setPage($page);
 $draw->setNonStrokingColor(0.4, 0, 0.4);
 $draw->setStrokingColor(0.9, 0, 0);
@@ -59,8 +52,17 @@ $draw->addPoint(50, 50);
 $draw->addPointWithControlPoints(150, 5, 74, 120, 150, 150);
 $draw->addPoint(200, 200);
 
+$line = $pdf->createLineComponent()->setPage($page);
+$line->setNonStrokingColor(0.4, 0, 0.4);
+$line->setStrokingColor(0.9, 0, 0);
+$line->setStrokingColorSpace(DeviceColourSpace::RGB);
+$line->setNonStrokingColorSpace(DeviceColourSpace::RGB);
+$line->setStartPoint(45, 80);
+$line->setEndPoint(145, 180);
+$line->setLineWidth(5);
+
 $info = $pdf->getInfo();
-$info->setTitle('Test');
+$info->setTitle('Papier');
 $info->setAuthor('Mikaël Carlavan');
 
 $viewer = $pdf->getViewerPreferences();
