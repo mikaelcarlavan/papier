@@ -15,6 +15,7 @@ use Papier\Papier;
 use Papier\Type\Base\ArrayType;
 use Papier\Type\Base\DictionaryType;
 use Papier\Validator\NumberValidator;
+use Papier\Validator\StringValidator;
 
 class ImageComponent extends BaseComponent
 {
@@ -74,10 +75,10 @@ class ImageComponent extends BaseComponent
      * Set component's horizontal skewing.
      *
      * @param  float  $skewX
-     * @return BaseComponent
+     * @return ImageComponent
      * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int' and positive.
      */
-    public function setSkewX(float $skewX): BaseComponent
+    public function setSkewX(float $skewX): ImageComponent
     {
         if (!NumberValidator::isValid($skewX)) {
             throw new InvalidArgumentException("SkewX is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -91,10 +92,10 @@ class ImageComponent extends BaseComponent
      * Set component's vertical skewing.
      *
      * @param  float  $skewY
-     * @return BaseComponent
+     * @return ImageComponent
      * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int' and positive.
      */
-    public function setSkewY(float $skewY): BaseComponent
+    public function setSkewY(float $skewY): ImageComponent
     {
         if (!NumberValidator::isValid($skewY)) {
             throw new InvalidArgumentException("SkewY is incorrect. See ".__CLASS__." class's documentation for possible values.");
