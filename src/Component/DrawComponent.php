@@ -141,6 +141,8 @@ class DrawComponent extends BaseComponent
         $contents->save();
 
         $this->applyColors($contents);
+		$this->applyWidth($contents);
+
 
         $points = $this->getPath();
 
@@ -151,7 +153,6 @@ class DrawComponent extends BaseComponent
 			/** @var Point $p */
 			$p = $point['point'];
 			$contents->beginPath($mmToUserUnit * $p->getX(), $mmToUserUnit * $p->getY());
-
             foreach ($points as $point) {
 				/** @var Point $p */
 				$p = $point['point'];
