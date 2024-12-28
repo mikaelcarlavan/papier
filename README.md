@@ -16,6 +16,7 @@ Papier supports the following:
 
 ## Example usage
 ```php
+require __DIR__.'/../vendor/autoload.php';
 
 $pathToLocalFontFile = 'Lato-Regular.ttf';
 $pathToLocalImage = 'test.png';
