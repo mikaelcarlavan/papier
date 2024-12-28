@@ -17,7 +17,8 @@ Papier supports the following:
 ## Example usage
 ```php
 
-$pathToFontFile = 'Lato.ttf';
+$pathToLocalFontFile = 'Lato-Regular.ttf';
+$pathToLocalImage = 'test.png';
 
 $pdf = new Papier();
 $pdf->getHeader()->setVersion(7);
@@ -25,12 +26,12 @@ $pdf->getHeader()->setVersion(7);
 $page = $pdf->addPage([210, 297]);
 
 $image = $pdf->createImageComponent()->setPage($page);
-$image->setSource('unsplash.png');
+$image->setSource($pathToLocalImage);
 $image->setWidth(50);
 $image->translate(10, 10);
 
 $font = Factory::create('Papier\Type\TrueTypeFontType', null, true);
-$font->load($pathToFontFile);
+$font->load($pathToLocalFontFile);
 
 $text = $pdf->createTextComponent()->setPage($page);
 $text->setNonStrokingColor(1, 0, 0);
