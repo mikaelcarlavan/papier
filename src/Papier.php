@@ -6,7 +6,7 @@ use InvalidArgumentException;
 use Papier\Component\Base\BaseComponent;
 use Papier\Component\DrawComponent;
 use Papier\Component\ImageComponent;
-use Papier\Component\LineComponent;
+use Papier\Component\SegmentComponent;
 use Papier\Component\RectangleComponent;
 use Papier\Component\TextComponent;
 use Papier\Factory\Factory;
@@ -186,14 +186,14 @@ class Papier
     }
 
 	/**
-	 * Create line component.
+	 * Create segment component.
 	 *
-	 * @return LineComponent
+	 * @return SegmentComponent
 	 */
-	public function createLineComponent(): LineComponent
+	public function createSegmentComponent(): SegmentComponent
 	{
-		/** @var LineComponent $component */
-		$component = $this->createComponent('Papier\Component\LineComponent');
+		/** @var SegmentComponent $component */
+		$component = $this->createComponent('Papier\Component\SegmentComponent');
 		return $component;
 	}
 

@@ -8,7 +8,7 @@ use Papier\Util\Point;
 use Papier\Validator\NumberValidator;
 use InvalidArgumentException;
 
-class LineComponent extends BaseComponent
+class SegmentComponent extends BaseComponent
 {
 	use Color;
 	use LineWidth;
@@ -100,9 +100,9 @@ class LineComponent extends BaseComponent
 	/**
 	 * Format component's content.
 	 *
-	 * @return LineComponent
+	 * @return SegmentComponent
 	 */
-	function format(): LineComponent
+	function format(): SegmentComponent
 	{
 		$contents = $this->getContents();
 		$contents->save();

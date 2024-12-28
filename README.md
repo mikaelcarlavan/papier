@@ -54,7 +54,7 @@ $draw->addPoint(50, 50);
 $draw->addPointWithControlPoints(150, 5, 74, 120, 150, 150);
 $draw->addPoint(200, 200);
 
-$line = $pdf->createLineComponent()->setPage($page);
+$line = $pdf->createSegmentComponent()->setPage($page);
 $line->setNonStrokingColor(0.4, 0, 0.4);
 $line->setStrokingColor(0.9, 0, 0);
 $line->setStrokingColorSpace(DeviceColourSpace::RGB);
