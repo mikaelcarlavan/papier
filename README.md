@@ -1,4 +1,15 @@
 # Papier
+<p align="center">
+    <a href="https://packagist.org/packages/papier/papier">
+        <img src="https://poser.pugx.org/papier/papier/d/total.svg" alt="Total Downloads">
+    </a>
+    <a href="https://packagist.org/packages/papier/papier">
+        <img src="https://poser.pugx.org/papier/papier/v/stable.svg" alt="Latest Stable Version">
+    </a>
+    <a href="https://packagist.org/packages/papier/papier">
+        <img src="https://poser.pugx.org/papier/papier/license.svg" alt="License">
+    </a>
+</p>
 
 ## Introduction
 Papier is a low-level PHP library for generating PDF files. It implements the ISO 32000-1 standard.
@@ -72,4 +83,6 @@ $viewer->setDisplayDocTitle(true);
 
 $pdf->save('test.pdf');
 ```
+## License
+Papier is open-sourced software licensed under the [MIT license](LICENSE.md).
 
