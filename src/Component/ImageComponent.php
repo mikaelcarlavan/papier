@@ -20,7 +20,7 @@ use Papier\Validator\StringValidator;
 class ImageComponent extends BaseComponent
 {
     use Transformation;
-
+	use Size;
 
     /**
      * Valid mimes for image.
@@ -42,20 +42,6 @@ class ImageComponent extends BaseComponent
      * @var string
      */
     protected string $source;
-
-    /**
-     * The width of the component
-     *
-     * @var float
-     */
-    protected float $width = 0;
-
-    /**
-     * The height of the component
-     *
-     * @var float
-     */
-    protected float $height = 0;
 
     /**
      * The horizontal skewing of the component
@@ -123,60 +109,6 @@ class ImageComponent extends BaseComponent
     public function getSkewY(): float
     {
         return $this->skewY;
-    }
-
-    /**
-     * Set component's width.
-     *
-     * @param  float  $width
-     * @return ImageComponent
-     * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int' and positive.
-     */
-    public function setWidth(float $width): ImageComponent
-    {
-        if (!NumberValidator::isValid($width, 0.0)) {
-            throw new InvalidArgumentException("Width is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        $this->width = $width;
-        return $this;
-    }
-
-    /**
-     * Set component's height.
-     *
-     * @param  float  $height
-     * @return ImageComponent
-     * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int' and positive.
-     */
-    public function setHeight(float $height): ImageComponent
-    {
-        if (!NumberValidator::isValid($height, 0.0)) {
-            throw new InvalidArgumentException("Height is incorrect. See ".__CLASS__." class's documentation for possible values.");
-        }
-
-        $this->height = $height;
-        return $this;
-    }
-
-    /**
-     * Get component's width.
-     *
-     * @return float
-     */
-    public function getWidth(): float
-    {
-        return $this->width;
-    }
-
-    /**
-     * Get component's height.
-     *
-     * @return float
-     */
-    public function getHeight(): float
-    {
-        return $this->height;
     }
 
     /**
