@@ -2,6 +2,9 @@
 
 namespace Papier\Component;
 
+use Papier\Papier;
+use Papier\Type\ContentStreamType;
+
 trait LineWidth
 {
     /**
@@ -32,4 +35,22 @@ trait LineWidth
     {
         return $this->lineWidth;
     }
+
+	/**
+	 * Set line with to content stream.
+	 *
+	 * @param ContentStreamType $contents
+	 * @return static
+	 */
+	public function applyWidth(ContentStreamType &$contents): static
+	{
+		$lineWidth = $this->getLineWidth();
+		if ($lineWidth > 0) {
+			$mmToUserUnit = Papier::MM_TO_USER_UNIT;
+
+			$contents->setLineWidth($mmToUserUnit * $lineWidth);
+		}
+
+		return $this;
+	}
 }
