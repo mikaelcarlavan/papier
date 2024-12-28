@@ -37,6 +37,13 @@ class FileHelper
 	protected int $endianness = self::BIG_ENDIAN;
 
 	/**
+	 * Max chunk size
+	 *
+	 * @var int
+	 */
+	const MAX_CHUNK_SIZE = 8192;
+
+	/**
 	 * Unsigned-byte type
 	 *
 	 * @var int
@@ -151,14 +158,26 @@ class FileHelper
         try {
 			$stream = $this->getStream();
 			if (is_resource($stream)) {
-				$this->offset += $length;
-				return fread($stream, $length);
-			} else {
-				return false;
+				$chunk = '';
+				while ($length > 0) {
+					$size = min($length, self::MAX_CHUNK_SIZE);
+					$result = fread($stream, $size);
+					if ($result !== false ) {
+						$chunk .= $result;
+						$length -= $size;
+						$this->offset += $size;
+					} else {
+						return false;
+					}
+				}
+
+				return $chunk;
 			}
         } catch (\Exception $e) {
             throw new InvalidArgumentException($e->getMessage());
         }
+
+		return false;
     }
 
 	/**
@@ -177,6 +196,10 @@ class FileHelper
 			$stream = $this->getStream();
 			if (is_resource($stream)) {
 				fseek($stream, $offset);
+				/*if ($success < 0) {
+					$this->read($offset);
+				}*/
+
 				$this->offset = $offset;
 			} else {
 				throw new InvalidArgumentException("Stream is not valid. See ".__CLASS__." class's documentation for possible values.");
