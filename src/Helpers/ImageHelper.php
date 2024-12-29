@@ -108,7 +108,7 @@ class ImageHelper
 
 			if ($data !== false) {
 				$channels = $colorType == 4 ? 2 : 4; // Gray + alpha or RBG + alpha
-				$data = str_split((string)$data);
+				// $data = str_split((string)$data);
 
 				$pixel = 0;
 				for ($row = 0; $row < $height; $row++) {
