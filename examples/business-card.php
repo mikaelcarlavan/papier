@@ -3,13 +3,8 @@
 
 use Papier\Papier;
 use Papier\Factory\Factory;
-use Papier\Document\ProcedureSet;
 use Papier\Graphics\DeviceColourSpace;
-use Papier\Filter\FilterType;
-use Papier\Filter\LZWFilter;
-use Papier\Type\ImageType;
 use Papier\Text\RenderingMode;
-use Papier\Type\Type1FontType;
 
 /**
  * Papier - Yet another PHP Framework for PDF
