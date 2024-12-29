@@ -17,34 +17,6 @@ use RuntimeException;
 
 class Type1FontType extends FontType
 {
-	/**
-	 * Helvetica font
-	 *
-	 * @var string
-	 */
-	const HELVETICA_FONT = 'Helvetica';
-
-	/**
-	 * Helvetica font
-	 *
-	 * @var string
-	 */
-	const COURIER_FONT = 'Courier';
-
-	/**
-	 * Symbol font
-	 *
-	 * @var string
-	 */
-	const SYMBOL_FONT = 'Symbol';
-
-	/**
-	 * Times font
-	 *
-	 * @var string
-	 */
-	const TIMES_FONT = 'Times';
-
     /**
      * Set basefont (PostScript) name.
      *  
