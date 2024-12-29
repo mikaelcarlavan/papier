@@ -284,18 +284,18 @@ class TextComponent extends BaseComponent
         $page = $this->getPage();
         $font = $this->getFont();
 
-		//$trueFont = Factory::create('Papier\Type\Type1FontType', null, true)->setBaseFont(Type1FontType::HELVETICA_FONT);
-		//$trueFont->setName(sprintf('F%d', $trueFont->getNumber()));
-
 		$font->setName(sprintf('F%d', $font->getNumber()));
 
-        $fontResource = Factory::create('Papier\Type\Base\DictionaryType');
+        $resources = $page->getResources();
+
+		if (!$resources->hasEntry('Font')) {
+			$fontResource = Factory::create('Papier\Type\Base\DictionaryType');
+			$resources->setEntry('Font', $fontResource);
+		}
+		$fontResource = $resources->getEntry('Font');
 		$fontResource->setEntry($font->getName(), $font);
 
-        $resources = $page->getResources();
-        $resources->setEntry('Font', $fontResource);
-
-        if (!$resources->hasEntry('ProcSet')) {
+		if (!$resources->hasEntry('ProcSet')) {
             $procset = Factory::create('Papier\Type\Base\ArrayType', null, true);
             $resources->setEntry('ProcSet', $procset);
         }
