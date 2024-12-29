@@ -44,6 +44,7 @@ $image->translate(10, 10);
 
 $font = Factory::create('Papier\Type\TrueTypeFontType', null, true);
 $font->load($pathToLocalFontFile);
+$font->setEncoding(Encoding::WIN_ANSI);
 
 $text = $pdf->createTextComponent()->setPage($page);
 $text->setNonStrokingColor(1, 0, 0);
@@ -85,3 +86,6 @@ $pdf->save('test.pdf');
 ```
 ## License
 Papier is open-sourced software licensed under the [MIT license](LICENSE.md).
+
+## Known issues
+Accents in text may be displayed incorrectly, depending on the encoding and font used. A different encoding can be used and may work for core fonts. In all cases, work needs to be done on the fonts. We're working on it.
