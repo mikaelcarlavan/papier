@@ -135,6 +135,11 @@ class DrawComponent extends BaseComponent
         return $this;
     }
 
+	/**
+	 * Format component's content.
+	 *
+	 * @return DrawComponent
+	 */
     function format(): DrawComponent
     {
         $contents = $this->getContents();
