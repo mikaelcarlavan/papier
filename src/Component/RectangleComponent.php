@@ -10,65 +10,14 @@ class RectangleComponent extends BaseComponent
     use Color;
     use LineWidth;
     use Position;
+	use Size;
 
-    /**
-     * The width of the component
-     *
-     * @var float
-     */
-    protected float $width = 0;
 
-    /**
-     * The height of the component
-     *
-     * @var float
-     */
-    protected float $height = 0;
-
-    /**
-     * Set component's width.
-     *
-     * @param  float  $width
-     * @return RectangleComponent
-     */
-    public function setWidth(float $width): RectangleComponent
-    {
-        $this->width = $width;
-        return $this;
-    }
-
-    /**
-     * Set component's height.
-     *
-     * @param  float  $height
-     * @return RectangleComponent
-     */
-    public function setHeight(float $height): RectangleComponent
-    {
-        $this->height = $height;
-        return $this;
-    }
-
-    /**
-     * Get component's width.
-     *
-     * @return float
-     */
-    public function getWidth(): float
-    {
-        return $this->width;
-    }
-
-    /**
-     * Get component's height.
-     *
-     * @return float
-     */
-    public function getHeight(): float
-    {
-        return $this->height;
-    }
-
+	/**
+	 * Format component's content.
+	 *
+	 * @return RectangleComponent
+	 */
     function format(): RectangleComponent
     {
         $contents = $this->getContents();
