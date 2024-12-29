@@ -40,6 +40,7 @@ $pathToBoldLatoFontFile = 'fonts/Lato-Bold.ttf';
 $pathToItalicLatoFontFile = 'fonts/Lato-Italic.ttf';
 
 $pathToLogo = 'images/leaf.png';
+$pathToQrCode = 'images/qr-code.png';
 
 $pdf = new Papier();
 $pdf->getHeader()->setVersion(7);
@@ -47,10 +48,10 @@ $pdf->getHeader()->setVersion(7);
 // Front
 $front = $pdf->addPage([89, 51]);
 
-$image = $pdf->createImageComponent()->setPage($front);
-$image->setSource($pathToLogo);
-$image->setWidth(25);
-$image->translate(89/2 - 25/2, 51/2 - 25/2); // Lower-left of page is (0,0) coordinate
+$logo = $pdf->createImageComponent()->setPage($front);
+$logo->setSource($pathToLogo);
+$logo->setWidth(25);
+$logo->translate(89/2 - 25/2, 51/2 - 25/2); // Lower-left of page is (0,0) coordinate
 
 // Back
 $back = $pdf->addPage([89, 51]);
@@ -94,13 +95,19 @@ $email->translate(8, 31);
 // Add nice circles on top-right of the card
 for ($nCircle = 1; $nCircle <= 3; $nCircle++) {
 	$circle = $pdf->createCircleComponent()->setPage($back);
-	$circle->setStrokingColor(0.3 * $nCircle, 0, 0);
+	$circle->setStrokingColor(0.3 * $nCircle, 1 - 0.3 * $nCircle, 0);
 	$circle->setStrokingColorSpace(DeviceColourSpace::RGB);
 	$circle->setRenderingMode(RenderingMode::STROKE);
 	$circle->setCenterPoint(89, 51);
 	$circle->setRadius(5 + $nCircle * 5);
 	$circle->setLineWidth(2.5);
 }
+
+// Add qr code
+$qrCode = $pdf->createImageComponent()->setPage($back);
+$qrCode->setSource($pathToQrCode);
+$qrCode->setWidth(20);
+$qrCode->translate(8, 6); // Lower-left of page is (0,0) coordinate
 
 
 $info = $pdf->getInfo();
