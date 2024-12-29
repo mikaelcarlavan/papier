@@ -26,7 +26,7 @@ trait TextShowing
             throw new InvalidArgumentException("Text is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
   
-        $state = sprintf('%s Tj', Factory::create('Papier\Type\LiteralStringType', $text)->format());
+        $state = sprintf('%s Tj', Factory::create('Papier\Type\TextStringType', $text)->format());
 		$this->addToContent($state);
         return $this;
     }
