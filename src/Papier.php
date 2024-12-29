@@ -4,6 +4,7 @@ namespace Papier;
 
 use InvalidArgumentException;
 use Papier\Component\Base\BaseComponent;
+use Papier\Component\CircleComponent;
 use Papier\Component\DrawComponent;
 use Papier\Component\ImageComponent;
 use Papier\Component\SegmentComponent;
@@ -160,6 +161,17 @@ class Papier
 		return $component;
 	}
 
+	/**
+	 * Create circle component.
+	 *
+	 * @return CircleComponent
+	 */
+	public function createCircleComponent(): CircleComponent
+	{
+		/** @var CircleComponent $component */
+		$component = $this->createComponent('Papier\Component\CircleComponent');
+		return $component;
+	}
 
     /**
      * Create rectangle component.
