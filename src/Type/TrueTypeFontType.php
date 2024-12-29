@@ -241,9 +241,9 @@ class TrueTypeFontType extends FontType
 		$subtype = Factory::create('Papier\Type\Base\NameType', 'TrueType');
 		$this->setEntry('Subtype', $subtype);
 
-		if (!$this->hasEntry('Name')) {
+		/*if (!$this->hasEntry('Name')) {
 			throw new RuntimeException("Name is missing. See ".__CLASS__." class's documentation for possible values.");
-		}
+		}*/
 
 		if (!$this->hasEntry('BaseFont')) {
 			throw new RuntimeException("BaseFont is missing. See ".__CLASS__." class's documentation for possible values.");
