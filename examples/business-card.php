@@ -5,6 +5,7 @@ use Papier\Papier;
 use Papier\Factory\Factory;
 use Papier\Graphics\DeviceColourSpace;
 use Papier\Text\RenderingMode;
+use Papier\Text\Encoding;
 
 /**
  * Papier - Yet another PHP Framework for PDF
@@ -53,18 +54,21 @@ $back = $pdf->addPage([89, 51]);
 
 $boldFont = Factory::create('Papier\Type\TrueTypeFontType', null, true);
 $boldFont->load($pathToBoldLatoFontFile);
+$boldFont->setEncoding(Encoding::WIN_ANSI);
 
 $regularFont = Factory::create('Papier\Type\TrueTypeFontType', null, true);
 $regularFont->load($pathToRegularLatoFontFile);
+$regularFont->setEncoding(Encoding::WIN_ANSI);
 
 $italicFont = Factory::create('Papier\Type\TrueTypeFontType', null, true);
 $italicFont->load($pathToItalicLatoFontFile);
+$italicFont->setEncoding(Encoding::WIN_ANSI);
 
 $name = $pdf->createTextComponent()->setPage($back);
 $name->setNonStrokingColor(0, 0, 0);
 $name->setNonStrokingColorSpace(DeviceColourSpace::RGB);
 $name->setRenderingMode(RenderingMode::FILL);
-$name->setText('Mikael Carlavan');
+$name->setText('Mikaël Carlavan');
 $name->setFont($boldFont);
 $name->setFontSize(5);
 $name->translate(8, 41);

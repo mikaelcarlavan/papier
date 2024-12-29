@@ -6,10 +6,12 @@ use Papier\Component\Base\BaseComponent;
 use Papier\Document\ProcedureSet;
 use Papier\Factory\Factory;
 use Papier\Papier;
+use Papier\Text\Encoding;
 use Papier\Text\RenderingMode;
 use Papier\Type\Base\ArrayType;
 use Papier\Type\FontType;
 use Papier\Type\Type1FontType;
+use RuntimeException;
 
 
 class TextComponent extends BaseComponent
@@ -360,7 +362,24 @@ class TextComponent extends BaseComponent
             $transformationMatrix->getData(2, 1)
         );
 
-        $contents->showText($this->getText());
+		$text = $this->getText();
+
+		if ($font->hasEntry('Encoding')) {
+			$encoding = $font->getEntryValue('Encoding');
+			if ($encoding == Encoding::WIN_ANSI) {
+				$text = mb_convert_encoding($text, 'windows-1252', 'UTF-8');
+			} else if ($encoding == Encoding::MAC_ROMAN) {
+				$text = iconv('UTF-8', 'macintosh', $text);
+			} else {
+				throw new RuntimeException("Encoding not implemented yet. See ".__CLASS__." class's documentation for possible values.");
+			}
+
+			$text = Factory::create('Papier\Type\LiteralStringType', $text)->format();
+		} else {
+			$text = Factory::create('Papier\Type\TextStringType', $text)->format();
+		}
+
+        $contents->showText($text);
         $contents->endText();
 
         $contents->restore();

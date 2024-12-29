@@ -85,6 +85,3 @@ $pdf->save('test.pdf');
 ```
 ## License
 Papier is open-sourced software licensed under the [MIT license](LICENSE.md).
-
-## Known issues
-At the moment, the biggest issue is the incorrect display of accents in texts. Generally speaking, work needs to be done on encoding and font management.

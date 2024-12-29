@@ -6,6 +6,7 @@ use InvalidArgumentException;
 use Papier\Factory\Factory;
 use Papier\Object\ArrayObject;
 use Papier\Object\StreamObject;
+use Papier\Text\Encoding;
 use Papier\Type\Base\ArrayType;
 use Papier\Type\Base\DictionaryType;
 use Papier\Type\Base\IntegerType;
@@ -138,6 +139,12 @@ class Type1FontType extends FontType
         if (!$this->hasEntry('BaseFont')) {
             throw new RuntimeException("BaseFont is missing. See ".__CLASS__." class's documentation for possible values.");
         }
+
+		if ($this->hasEntry('Encoding')) {
+			if ($this->getEntryValue('Encoding') == Encoding::MAC_EXPERT) {
+				throw new RuntimeException("Encoding is incompatible with Type 1 fonts. See ".__CLASS__." class's documentation for possible values.");
+			}
+		}
 
         return parent::format();
     }
