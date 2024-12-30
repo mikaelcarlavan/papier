@@ -25,6 +25,12 @@ Papier supports the following:
 - Texts and images can be transformed (rotation, translation, skew).
 - True type fonts are supported.
 
+## Installation
+You can install Papier via composer using:
+```bash
+composer require papier/papier
+```
+
 ## Example usage
 ```php
 require __DIR__.'/../vendor/autoload.php';
