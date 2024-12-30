@@ -90,6 +90,8 @@ $viewer->setDisplayDocTitle(true);
 
 $pdf->save('test.pdf');
 ```
+More examples can be found in the <strong>examples</strong> directory.
+
 ## License
 Papier is open-sourced software licensed under the [MIT license](LICENSE.md).
 
