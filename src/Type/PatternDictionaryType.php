@@ -5,10 +5,11 @@ namespace Papier\Type;
 use InvalidArgumentException;
 use Papier\Factory\Factory;
 use Papier\Object\DictionaryObject;
+use Papier\Type\Base\DictionaryType;
 use Papier\Validator\PatternTypeValidator;
 use RuntimeException;
 
-class PatternDictionaryType extends DictionaryObject
+class PatternDictionaryType extends DictionaryType
 {
     /**
      * Set pattern type.

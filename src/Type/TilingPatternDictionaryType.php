@@ -55,11 +55,11 @@ class TilingPatternDictionaryType extends PatternDictionaryType
     /**
      * Set boundaries of the pattern's cell bounding box.
      *  
-     * @param RectangleType $bbox
+     * @param RectangleNumbersArrayType $bbox
      * @return TilingPatternDictionaryType
-     * @throws InvalidArgumentException if the provided argument is not of type 'RectangleType'.
+     * @throws InvalidArgumentException if the provided argument is not of type 'RectangleNumbersArrayType'.
      */
-    public function setBBox(RectangleType $bbox): TilingPatternDictionaryType
+    public function setBBox(RectangleNumbersArrayType $bbox): TilingPatternDictionaryType
     {
         $this->setEntry('BBox', $bbox);
         return $this;

@@ -5,11 +5,12 @@ namespace Papier\Type;
 use InvalidArgumentException;
 use Papier\Factory\Factory;
 use Papier\Object\DictionaryObject;
+use Papier\Type\Base\DictionaryType;
 use Papier\Validator\DateValidator;
 use Papier\Validator\NumberValidator;
 use Papier\Validator\StringValidator;
 
-class CollectionSubItemDictionaryType extends DictionaryObject
+class CollectionSubItemDictionaryType extends DictionaryType
 {
     /**
      * Set data.

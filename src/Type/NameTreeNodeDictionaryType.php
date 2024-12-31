@@ -6,16 +6,16 @@ use Papier\Factory\Factory;
 
 use RunTimeException;
 
-class NameTreeNodeType extends TreeNodeType
+class NameTreeNodeDictionaryType extends TreeNodeDictionaryType
 { 
     /**
      * Add kid to node.
      *  
-     * @return NameTreeNodeType
+     * @return NameTreeNodeDictionaryType
      */
-    public function addKid(): NameTreeNodeType
+    public function addKid(): NameTreeNodeDictionaryType
     {
-        $node = Factory::create('Papier\Type\NameTreeNodeType');
+        $node = Factory::create('Papier\Type\NameTreeNodeDictionaryType');
         $this->getKids()->append($node);
 
         return $node;
@@ -26,9 +26,9 @@ class NameTreeNodeType extends TreeNodeType
      *  
      * @param  mixed  $object
      * @param string $key
-     * @return NameTreeNodeType
+     * @return NameTreeNodeDictionaryType
      */
-    public function addName(string $key, $object): NameTreeNodeType
+    public function addName(string $key, $object): NameTreeNodeDictionaryType
     {
         $this->getNames()->setEntry($key, $object);
         return $this;

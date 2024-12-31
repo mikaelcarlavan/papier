@@ -182,7 +182,7 @@ class ImageComponent extends BaseComponent
         $page = $this->getPage();
         $resources = $page->getResources();
 
-        $image = Factory::create('Papier\Type\ImageType', null, true);
+        $image = Factory::create('Papier\Type\ImageStreamType', null, true);
         $this->setName(sprintf('Im%d', $image->getNumber()));
 
         if (!$resources->hasEntry('XObject')) {
@@ -248,7 +248,7 @@ class ImageComponent extends BaseComponent
 
 		if ($mask) {
 			// Add new image as mask
-			$sMask = Factory::create('Papier\Type\ImageType', null, true);
+			$sMask = Factory::create('Papier\Type\ImageStreamType', null, true);
 
 			$sMask->setWidth($width);
 			$sMask->setHeight($height);

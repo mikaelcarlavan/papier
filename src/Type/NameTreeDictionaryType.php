@@ -4,23 +4,23 @@ namespace Papier\Type;
 
 use Papier\Factory\Factory;
 
-class NameTreeType extends TreeType
+class NameTreeDictionaryType extends TreeDictionaryType
 { 
     /**
      * Get root.
      *  
-     * @return NameTreeNodeType
+     * @return NameTreeNodeDictionaryType
      */
-    public function getRoot(): NameTreeNodeType
+    public function getRoot(): NameTreeNodeDictionaryType
     {
         if (!$this->hasEntry('Root')) {
-			/** @var NameTreeNodeType $root */
-            $root = Factory::create('Papier\Type\NameTreeNodeType', null, true);
+			/** @var NameTreeNodeDictionaryType $root */
+            $root = Factory::create('Papier\Type\NameTreeNodeDictionaryType', null, true);
 			$root->setRoot();
             $this->setEntry('Root', $root);
         }
 
-		/** @var NameTreeNodeType $root */
+		/** @var NameTreeNodeDictionaryType $root */
 		$root = $this->getEntry('Root');
         return $root;
     }
@@ -30,9 +30,9 @@ class NameTreeType extends TreeType
      *
      * @param  string  $key
      * @param  mixed  $object
-     * @return NameTreeType
+     * @return NameTreeDictionaryType
      */
-    public function addName(string $key, $object): NameTreeType
+    public function addName(string $key, $object): NameTreeDictionaryType
     {
         $this->getRoot()->addName($key, $object);
         return $this;

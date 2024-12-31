@@ -16,7 +16,7 @@ use Papier\File\FileBody;
 use Papier\File\FileHeader;
 use Papier\File\FileTrailer;
 use Papier\Type\DocumentInformationDictionaryType;
-use Papier\Type\PageObjectType;
+use Papier\Type\PageObjectDictionaryType;
 use Papier\Type\ViewerPreferencesDictionaryType;
 use Papier\Validator\NumbersArrayValidator;
 
@@ -240,11 +240,11 @@ class Papier
     /**
      * Get current PDF's page.
      *
-     * @return PageObjectType
+     * @return PageObjectDictionaryType
      */
-    public function getCurrentPage(): PageObjectType
+    public function getCurrentPage(): PageObjectDictionaryType
     {
-        /** @var PageObjectType $page */
+        /** @var PageObjectDictionaryType $page */
         $page = $this->getBody()->getPageTree()->getKids()->current();
         return $page;
     }
@@ -253,9 +253,9 @@ class Papier
 	 * Add page to PDF's content.
 	 *
 	 * @param array<float> $dimensions Dimensions (width and height) of the page in millimeters.
-	 * @return PageObjectType
+	 * @return PageObjectDictionaryType
 	 */
-    public function addPage(array $dimensions): PageObjectType
+    public function addPage(array $dimensions): PageObjectDictionaryType
     {
         $page = $this->getBody()->addPage();
 
@@ -266,7 +266,7 @@ class Papier
         $mmToUserUnit = Papier::MM_TO_USER_UNIT;
 		$dimensions = [0, 0, $mmToUserUnit * $dimensions[0], $mmToUserUnit * $dimensions[1]];
 
-		$mediabox = Factory::create('Papier\Type\RectangleType', $dimensions);
+		$mediabox = Factory::create('Papier\Type\RectangleNumbersArrayType', $dimensions);
 
 		$page->setMediaBox($mediabox);
 

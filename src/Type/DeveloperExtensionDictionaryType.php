@@ -5,8 +5,9 @@ namespace Papier\Type;
 use Papier\Factory\Factory;
 use Papier\Object\DictionaryObject;
 use Papier\Object\NameObject;
+use Papier\Type\Base\DictionaryType;
 
-class DeveloperExtensionDictionaryType extends DictionaryObject
+class DeveloperExtensionDictionaryType extends DictionaryType
 {
     /**
      * Set base version.

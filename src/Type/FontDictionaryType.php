@@ -5,7 +5,7 @@ namespace Papier\Type;
 use Papier\Factory\Factory;
 use Papier\Type\Base\DictionaryType;
 
-class FontType extends DictionaryType
+class FontDictionaryType extends DictionaryType
 {
 	/**
 	 * Get name.
@@ -23,9 +23,9 @@ class FontType extends DictionaryType
 	 * Set name.
 	 *
 	 * @param string $name
-	 * @return FontType
+	 * @return FontDictionaryType
 	 */
-	public function setName(string $name): FontType
+	public function setName(string $name): FontDictionaryType
 	{
 		$value = Factory::create('Papier\Type\Base\NameType', $name);
 		$this->setEntry('Name', $value);

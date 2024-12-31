@@ -2,7 +2,7 @@
 
 namespace Papier\Helpers;
 
-use Papier\Type\TrueTypeFontType;
+use Papier\Type\TrueTypeFontDictionaryType;
 
 class TrueTypeFontFileHelper extends FileHelper
 {

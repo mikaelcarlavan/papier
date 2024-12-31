@@ -33,7 +33,7 @@ class FileHeader extends BaseObject
         $value = sprintf("%%PDF-1.%d", $this->getVersion());
         if ($this->hasBinaryData()) {
             $chars = array_map('chr', range(128, 131));
-            $comment = Factory::create('Papier\Type\CommentType', implode('', $chars));
+            $comment = Factory::create('Papier\Type\Base\CommentType', implode('', $chars));
             $value .= $comment->format();
         }
         return $value;

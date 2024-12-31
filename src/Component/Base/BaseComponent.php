@@ -4,24 +4,24 @@ namespace Papier\Component\Base;
 
 
 use Papier\Type\ContentStreamType;
-use Papier\Type\PageObjectType;
+use Papier\Type\PageObjectDictionaryType;
 
 abstract class BaseComponent
 {
     /**
      * The parent of the component
      *
-     * @var PageObjectType
+     * @var PageObjectDictionaryType
      */
-    protected PageObjectType $page;
+    protected PageObjectDictionaryType $page;
 
     /**
      * Set component's page.
      *
-     * @param  PageObjectType  $page
+     * @param  PageObjectDictionaryType  $page
      * @return BaseComponent
      */
-    public function setPage(PageObjectType $page): BaseComponent
+    public function setPage(PageObjectDictionaryType $page): BaseComponent
     {
         $this->page = $page;
         return $this;
@@ -30,9 +30,9 @@ abstract class BaseComponent
     /**
      * Get component's page.
      *
-     * @return PageObjectType
+     * @return PageObjectDictionaryType
      */
-    public function getPage(): PageObjectType
+    public function getPage(): PageObjectDictionaryType
     {
         return $this->page;
     }

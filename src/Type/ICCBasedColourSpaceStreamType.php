@@ -6,13 +6,14 @@ use InvalidArgumentException;
 use Papier\Factory\Factory;
 use Papier\Object\ArrayObject;
 use Papier\Object\StreamObject;
+use Papier\Type\Base\StreamType;
 use Papier\Validator\ColourComponentsValidator;
 use Papier\Validator\NumbersArrayValidator;
 use Papier\Validator\StringValidator;
 use RuntimeException;
 
 
-class ICCBasedColourSpaceStreamType extends StreamObject
+class ICCBasedColourSpaceStreamType extends StreamType
 {
  
     /**

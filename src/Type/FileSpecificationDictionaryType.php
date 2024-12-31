@@ -5,10 +5,11 @@ namespace Papier\Type;
 use InvalidArgumentException;
 use Papier\Factory\Factory;
 use Papier\Object\DictionaryObject;
+use Papier\Type\Base\DictionaryType;
 use Papier\Validator\ByteStringsArrayValidator;
 use RuntimeException;
 
-class FileSpecificationDictionaryType extends DictionaryObject
+class FileSpecificationDictionaryType extends DictionaryType
 {
     /**
      * Set file system.

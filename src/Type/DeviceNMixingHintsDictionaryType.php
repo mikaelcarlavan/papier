@@ -5,9 +5,10 @@ namespace Papier\Type;
 use Papier\Object\ArrayObject;
 use Papier\Object\DictionaryObject;
 
+use Papier\Type\Base\DictionaryType;
 use RuntimeException;
 
-class DeviceNMixingHintsDictionaryType extends DictionaryObject
+class DeviceNMixingHintsDictionaryType extends DictionaryType
 {
     /**
      * Set solidities.

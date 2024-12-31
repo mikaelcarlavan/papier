@@ -6,9 +6,10 @@ use InvalidArgumentException;
 use Papier\Factory\Factory;
 use Papier\Object\DictionaryObject;
 use Papier\Object\StreamObject;
+use Papier\Type\Base\DictionaryType;
 use Papier\Validator\StringValidator;
 
-class MacOSFileInformationDictionaryType extends DictionaryObject
+class MacOSFileInformationDictionaryType extends DictionaryType
 {
     /**
      * Set subtype.

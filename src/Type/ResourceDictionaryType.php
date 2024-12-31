@@ -6,8 +6,9 @@ use Papier\Object\DictionaryObject;
 use Papier\Object\ArrayObject;
 
 use InvalidArgumentException;
+use Papier\Type\Base\DictionaryType;
 
-class ResourceDictionaryType extends DictionaryObject
+class ResourceDictionaryType extends DictionaryType
 {
     /**
      * Set graphics state parameter mapping dictionary.

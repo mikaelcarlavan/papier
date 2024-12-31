@@ -109,7 +109,7 @@ class FontDescriptorDictionaryType extends DictionaryType
 	 */
 	public function setFontBBox(array $fontBBox): FontDescriptorDictionaryType
 	{
-		$value = Factory::create('Papier\Type\RectangleType', $fontBBox);
+		$value = Factory::create('Papier\Type\RectangleNumbersArrayType', $fontBBox);
 		$this->setEntry('FontBBox', $value);
 		return $this;
 	}

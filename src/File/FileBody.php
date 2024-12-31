@@ -6,25 +6,25 @@ use Papier\Factory\Factory;
 use Papier\Object\BaseObject;
 use Papier\Object\IndirectObject;
 use Papier\Repository\Repository;
-use Papier\Type\DocumentCatalogType;
-use Papier\Type\PageObjectType;
-use Papier\Type\PageTreeNodeType;
+use Papier\Type\DocumentCatalogDictionaryType;
+use Papier\Type\PageObjectDictionaryType;
+use Papier\Type\PageTreeNodeDictionaryType;
 
 class FileBody extends BaseObject
 {
      /**
      * Page tree
      *
-     * @var PageTreeNodeType
+     * @var PageTreeNodeDictionaryType
      */
-    private PageTreeNodeType $pageTree;
+    private PageTreeNodeDictionaryType $pageTree;
 
      /**
      * Document catalog
      *
-     * @var DocumentCatalogType
+     * @var DocumentCatalogDictionaryType
      */
-    private DocumentCatalogType $documentCatalog;
+    private DocumentCatalogDictionaryType $documentCatalog;
 
     /**
      * Create a new object instance.
@@ -33,12 +33,12 @@ class FileBody extends BaseObject
      */
     public function __construct()
     {
-        $this->documentCatalog = Factory::create('Papier\Type\DocumentCatalogType', null, true);
+        $this->documentCatalog = Factory::create('Papier\Type\DocumentCatalogDictionaryType', null, true);
 
         $outlines = Factory::create('Papier\Type\OutlineDictionaryType', null, true);
 		$outlines->setCount(0);
 
-        $pageTree = Factory::create('Papier\Type\PageTreeType');
+        $pageTree = Factory::create('Papier\Type\PageTreeDictionaryType');
 
         $this->pageTree = $pageTree->getNode();
 
@@ -50,9 +50,9 @@ class FileBody extends BaseObject
     /**
      * Get page tree.
      *
-     * @return PageTreeNodeType
+     * @return PageTreeNodeDictionaryType
      */
-    public function getPageTree(): PageTreeNodeType
+    public function getPageTree(): PageTreeNodeDictionaryType
     {
         return $this->pageTree;
     }
@@ -60,9 +60,9 @@ class FileBody extends BaseObject
     /**
      * Get document catalog.
      *
-     * @return DocumentCatalogType
+     * @return DocumentCatalogDictionaryType
      */
-    public function getDocumentCatalog(): DocumentCatalogType
+    public function getDocumentCatalog(): DocumentCatalogDictionaryType
     {
         return $this->documentCatalog;
     }
@@ -70,9 +70,9 @@ class FileBody extends BaseObject
     /**
      * Add page to body.
      *
-     * @return PageObjectType
+     * @return PageObjectDictionaryType
      */
-    public function addPage(): PageObjectType
+    public function addPage(): PageObjectDictionaryType
     {
         $page = $this->getPageTree()->addObject();
         $page->setParent($this->getPageTree());

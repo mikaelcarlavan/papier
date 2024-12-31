@@ -9,8 +9,8 @@ use Papier\Papier;
 use Papier\Text\Encoding;
 use Papier\Text\RenderingMode;
 use Papier\Type\Base\ArrayType;
-use Papier\Type\FontType;
-use Papier\Type\Type1FontType;
+use Papier\Type\FontDictionaryType;
+use Papier\Type\Type1FontDictionaryType;
 use RuntimeException;
 
 
@@ -22,9 +22,9 @@ class TextComponent extends BaseComponent
 	/**
 	 * Text's font.
 	 *
-	 * @var FontType
+	 * @var FontDictionaryType
 	 */
-	protected FontType $font;
+	protected FontDictionaryType $font;
 
     /**
      * Text's font size.
@@ -239,10 +239,10 @@ class TextComponent extends BaseComponent
     /**
      * Set font.
      *
-     * @param FontType $font
+     * @param FontDictionaryType $font
      * @return TextComponent
      */
-    public function setFont(FontType $font): TextComponent
+    public function setFont(FontDictionaryType $font): TextComponent
     {
         $this->font = $font;
         return $this;
@@ -251,9 +251,9 @@ class TextComponent extends BaseComponent
     /**
      * Get font.
      *
-     * @return FontType $font
+     * @return FontDictionaryType $font
      */
-    public function getFont(): FontType
+    public function getFont(): FontDictionaryType
     {
         return $this->font;
     }

@@ -16,16 +16,16 @@ use Papier\Validator\EncodingValidator;
 use Papier\Validator\StringValidator;
 use RuntimeException;
 
-class TrueTypeFontType extends FontType
+class TrueTypeFontDictionaryType extends FontDictionaryType
 {
 
 	/**
 	 * Set basefont (PostScript) name.
 	 *
 	 * @param string $name
-	 * @return TrueTypeFontType
+	 * @return TrueTypeFontDictionaryType
 	 */
-	public function setBaseFont(string $name): TrueTypeFontType
+	public function setBaseFont(string $name): TrueTypeFontDictionaryType
 	{
 		$value = Factory::create('Papier\Type\Base\NameType', $name);
 		$this->setEntry('BaseFont', $value);
@@ -36,9 +36,9 @@ class TrueTypeFontType extends FontType
 	 * Set first character code.
 	 *
 	 * @param int $fc
-	 * @return TrueTypeFontType
+	 * @return TrueTypeFontDictionaryType
 	 */
-	public function setFirstChar(int $fc): TrueTypeFontType
+	public function setFirstChar(int $fc): TrueTypeFontDictionaryType
 	{
 		$value = Factory::create('Papier\Type\Base\IntegerType', $fc);
 		$this->setEntry('FirstChar', $value);
@@ -49,9 +49,9 @@ class TrueTypeFontType extends FontType
 	 * Set last character code.
 	 *
 	 * @param int $lc
-	 * @return TrueTypeFontType
+	 * @return TrueTypeFontDictionaryType
 	 */
-	public function setLastChar(int $lc): TrueTypeFontType
+	public function setLastChar(int $lc): TrueTypeFontDictionaryType
 	{
 		$value = Factory::create('Papier\Type\Base\IntegerType', $lc);
 		$this->setEntry('LastChar', $value);
@@ -62,9 +62,9 @@ class TrueTypeFontType extends FontType
 	 * Set widths.
 	 *
 	 * @param ArrayType $widths
-	 * @return TrueTypeFontType
+	 * @return TrueTypeFontDictionaryType
 	 */
-	public function setWidths(ArrayType $widths): TrueTypeFontType
+	public function setWidths(ArrayType $widths): TrueTypeFontDictionaryType
 	{
 		$this->setEntry('Widths', $widths);
 		return $this;
@@ -74,9 +74,9 @@ class TrueTypeFontType extends FontType
 	 * Set font descriptor.
 	 *
 	 * @param  FontDescriptorDictionaryType  $fd
-	 * @return TrueTypeFontType
+	 * @return TrueTypeFontDictionaryType
 	 */
-	public function setFontDescriptor(FontDescriptorDictionaryType $fd): TrueTypeFontType
+	public function setFontDescriptor(FontDescriptorDictionaryType $fd): TrueTypeFontDictionaryType
 	{
 		$this->setEntry('FontDescriptor', $fd);
 		return $this;
@@ -103,10 +103,10 @@ class TrueTypeFontType extends FontType
 	 * Set encoding.
 	 *
 	 * @param  mixed  $encoding
-	 * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryType' or 'string'.
-	 * @return TrueTypeFontType
+	 * @return TrueTypeFontDictionaryType
+	 *@throws InvalidArgumentException if the provided argument is not of type 'DictionaryType' or 'string'.
 	 */
-	public function setEncoding($encoding): TrueTypeFontType
+	public function setEncoding($encoding): TrueTypeFontDictionaryType
 	{
 		if (!$encoding instanceof DictionaryType && !StringValidator::isValid($encoding)) {
 			throw new InvalidArgumentException("Encoding is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -129,9 +129,9 @@ class TrueTypeFontType extends FontType
 	 * Set map to unicode values.
 	 *
 	 * @param  StreamType  $toUnicode
-	 * @return TrueTypeFontType
+	 * @return TrueTypeFontDictionaryType
 	 */
-	public function setToUnicode(StreamType $toUnicode): TrueTypeFontType
+	public function setToUnicode(StreamType $toUnicode): TrueTypeFontDictionaryType
 	{
 		$this->setEntry('ToUnicode', $toUnicode);
 		return $this;
@@ -141,9 +141,9 @@ class TrueTypeFontType extends FontType
 	 * Parse font from TTF file.
 	 *
 	 * @param  string  $pathToFontFile
-	 * @return TrueTypeFontType
+	 * @return TrueTypeFontDictionaryType
 	 */
-	public function load(string $pathToFontFile): TrueTypeFontType
+	public function load(string $pathToFontFile): TrueTypeFontDictionaryType
 	{
 		$stream = TrueTypeFontFileHelper::getInstance()->open($pathToFontFile);
 

@@ -6,8 +6,9 @@ use InvalidArgumentException;
 use Papier\Factory\Factory;
 use Papier\Object\DictionaryObject;
 use Papier\Object\StreamObject;
+use Papier\Type\Base\StreamType;
 
-class EmbeddedFileStreamType extends StreamObject
+class EmbeddedFileStreamType extends StreamType
 {
  
     /**

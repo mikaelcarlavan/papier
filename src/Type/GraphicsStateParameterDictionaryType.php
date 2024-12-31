@@ -8,13 +8,14 @@ use Papier\Object\ArrayObject;
 use Papier\Object\DictionaryObject;
 use Papier\Object\FunctionObject;
 use Papier\Object\NameObject;
+use Papier\Type\Base\DictionaryType;
 use Papier\Validator\LineCapStyleValidator;
 use Papier\Validator\LineJoinStyleValidator;
 use Papier\Validator\NumberValidator;
 use Papier\Validator\OverprintModeValidator;
 use Papier\Validator\RenderingIntentValidator;
 
-class GraphicsStateParameterDictionaryType extends DictionaryObject
+class GraphicsStateParameterDictionaryType extends DictionaryType
 {
     /**
      * Set line width.

@@ -4,14 +4,15 @@ namespace Papier\Type;
 
 use InvalidArgumentException;
 use Papier\Factory\Factory;
-use Papier\Functions\FunctionType;
+use Papier\Functions\FunctionType as FuncType;
 use Papier\Object\ArrayObject;
 use Papier\Object\FunctionObject;
+use Papier\Type\Base\FunctionType;
 use Papier\Validator\BitsPerSampleValidator;
 use Papier\Validator\IntegerValidator;
 use RuntimeException;
 
-class SampledFunctionType extends FunctionObject
+class SampledFunctionType extends FunctionType
 {
     
     /**
@@ -96,7 +97,7 @@ class SampledFunctionType extends FunctionObject
      */
     public function format(): string
     {
-        $this->setFunctionType(FunctionType::SAMPLED);
+        $this->setFunctionType(FuncType::SAMPLED);
 
         if (!$this->hasEntry('BitsPerSample')) {
             throw new RuntimeException("BitsPerSample is missing. See ".__CLASS__." class's documentation for possible values.");

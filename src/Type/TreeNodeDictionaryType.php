@@ -8,7 +8,7 @@ use Papier\Type\Base\ArrayType;
 use Papier\Type\Base\DictionaryType;
 use RunTimeException;
 
-class TreeNodeType extends DictionaryType
+class TreeNodeDictionaryType extends DictionaryType
 { 
     /**
      * Define node as root.
@@ -21,9 +21,9 @@ class TreeNodeType extends DictionaryType
      * Set node to be root.
      *  
      * @param bool $root
-     * @return TreeNodeType
+     * @return TreeNodeDictionaryType
      */
-    public function setRoot(bool $root = true): TreeNodeType
+    public function setRoot(bool $root = true): TreeNodeDictionaryType
     {
         $this->root = $root;
         return $this;
@@ -65,11 +65,11 @@ class TreeNodeType extends DictionaryType
     /**
      * Add kid to node.
      *  
-     * @return TreeNodeType
+     * @return TreeNodeDictionaryType
      */
-    public function addKid(): TreeNodeType
+    public function addKid(): TreeNodeDictionaryType
     {
-        $node = Factory::create('Papier\Type\TreeNodeType', null, true);
+        $node = Factory::create('Papier\Type\TreeNodeDictionaryType', null, true);
         $this->getKids()->append($node);
 
         return $node;
@@ -79,11 +79,11 @@ class TreeNodeType extends DictionaryType
      * Set kids.
      *  
      * @param  ArrayObject  $kids
-     * @throws RunTimeException if node already contains 'Names' key.
-     * @return TreeNodeType
+     * @return TreeNodeDictionaryType
+     *@throws RunTimeException if node already contains 'Names' key.
      */
-    protected function setKids(ArrayObject $kids): TreeNodeType
-    {
+    protected function setKids(ArrayObject $kids): TreeNodeDictionaryType
+	{
         if ($this->hasEntry('Names')) {
             throw new RunTimeException("Names is already present. See ".__CLASS__." class's documentation for possible values.");  
         }
@@ -96,11 +96,11 @@ class TreeNodeType extends DictionaryType
      * Set names.
      *  
      * @param  LiteralStringKeyArrayType  $names
-     * @throws RunTimeException if node already contains 'Names' key.
-     * @return TreeNodeType
-     */
-    protected function setNames(LiteralStringKeyArrayType $names): TreeNodeType
-    {
+     * @return TreeNodeDictionaryType
+     *@throws RunTimeException if node already contains 'Names' key.
+	 */
+    protected function setNames(LiteralStringKeyArrayType $names): TreeNodeDictionaryType
+	{
         if ($this->hasEntry('Kids')) {
             throw new RunTimeException("Kids is already present. See ".__CLASS__." class's documentation for possible values.");  
         }
@@ -135,10 +135,10 @@ class TreeNodeType extends DictionaryType
      * Set limits.
      *  
      * @param  LimitsArrayType  $limits
-     * @return TreeNodeType
-     */
-    protected function setLimits(LimitsArrayType $limits): TreeNodeType
-    {
+     * @return TreeNodeDictionaryType
+	 */
+    protected function setLimits(LimitsArrayType $limits): TreeNodeDictionaryType
+	{
 		$this->setEntry('Limits', $limits);
         return $this;
     } 
@@ -147,10 +147,10 @@ class TreeNodeType extends DictionaryType
     /**
      * Get names from node
      *
-     * @param  TreeNodeType  $node
+     * @param  TreeNodeDictionaryType $node
      * @return array<mixed>
      */    
-    protected function collectNames(TreeNodeType $node): array
+    protected function collectNames(TreeNodeDictionaryType $node): array
     {
         $objects = array();
 
@@ -166,7 +166,7 @@ class TreeNodeType extends DictionaryType
 			// $kids = $kids->getObjects();
             if (count($kids)) {
                 foreach ($kids as $kid) {
-					/** @var TreeNodeType $kid */
+					/** @var TreeNodeDictionaryType $kid */
                     $names = $this->collectNames($kid);
                     $objects = array_merge($objects, $names);
                 }

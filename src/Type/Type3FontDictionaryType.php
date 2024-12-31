@@ -17,17 +17,17 @@ use Papier\Validator\StringValidator;
 use InvalidArgumentException;
 use RuntimeException;
 
-class Type3FontType extends FontType
+class Type3FontDictionaryType extends FontDictionaryType
 {
 	/**
 	 * Set font bounding box.
 	 *
-	 * @param RectangleType $fontBBox
-	 * @return Type3FontType
+	 * @param RectangleNumbersArrayType $fontBBox
+	 * @return Type3FontDictionaryType
 	 */
-	public function setFontBBox(RectangleType $fontBBox): Type3FontType
+	public function setFontBBox(RectangleNumbersArrayType $fontBBox): Type3FontDictionaryType
 	{
-		$value = Factory::create('Papier\Type\RectangleType', $fontBBox);
+		$value = Factory::create('Papier\Type\RectangleNumbersArrayType', $fontBBox);
 		$this->setEntry('FontBBox', $value);
 		return $this;
 	}
@@ -36,9 +36,9 @@ class Type3FontType extends FontType
 	 * Set font matrix.
 	 *
 	 * @param array<float> $fontMatrix
-	 * @return Type3FontType
+	 * @return Type3FontDictionaryType
 	 */
-	public function setFontMatrix(array $fontMatrix): Type3FontType
+	public function setFontMatrix(array $fontMatrix): Type3FontDictionaryType
 	{
 		if (!NumbersArrayValidator::isValid($fontMatrix, 6)) {
 			throw new InvalidArgumentException("Font Matrix is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -53,9 +53,9 @@ class Type3FontType extends FontType
 	 * Set char procs.
 	 *
 	 * @param DictionaryType $charProcs
-	 * @return Type3FontType
+	 * @return Type3FontDictionaryType
 	 */
-	public function setCharProcs(DictionaryType $charProcs): Type3FontType
+	public function setCharProcs(DictionaryType $charProcs): Type3FontDictionaryType
 	{
 		$this->setEntry('CharProcs', $charProcs);
 		return $this;
@@ -66,9 +66,9 @@ class Type3FontType extends FontType
 	 * Set first character code.
 	 *
 	 * @param int $fc
-	 * @return Type3FontType
+	 * @return Type3FontDictionaryType
 	 */
-	public function setFirstChar(int $fc): Type3FontType
+	public function setFirstChar(int $fc): Type3FontDictionaryType
 	{
 		$value = Factory::create('Papier\Type\Base\IntegerType', $fc);
 		$this->setEntry('FirstChar', $value);
@@ -79,9 +79,9 @@ class Type3FontType extends FontType
 	 * Set last character code.
 	 *
 	 * @param int $lc
-	 * @return Type3FontType
+	 * @return Type3FontDictionaryType
 	 */
-	public function setLastChar(int $lc): Type3FontType
+	public function setLastChar(int $lc): Type3FontDictionaryType
 	{
 		$value = Factory::create('Papier\Type\Base\IntegerType', $lc);
 		$this->setEntry('LastChar', $value);
@@ -92,9 +92,9 @@ class Type3FontType extends FontType
 	 * Set widths.
 	 *
 	 * @param ArrayType $widths
-	 * @return Type3FontType
+	 * @return Type3FontDictionaryType
 	 */
-	public function setWidths(ArrayType $widths): Type3FontType
+	public function setWidths(ArrayType $widths): Type3FontDictionaryType
 	{
 		$this->setEntry('Widths', $widths);
 		return $this;
@@ -104,9 +104,9 @@ class Type3FontType extends FontType
 	 * Set font descriptor.
 	 *
 	 * @param  DictionaryType  $fd
-	 * @return Type3FontType
+	 * @return Type3FontDictionaryType
 	 */
-	public function setFontDescriptor(DictionaryType $fd): Type3FontType
+	public function setFontDescriptor(DictionaryType $fd): Type3FontDictionaryType
 	{
 		$this->setEntry('FontDescriptor', $fd);
 		return $this;
@@ -116,10 +116,10 @@ class Type3FontType extends FontType
 	 * Set encoding.
 	 *
 	 * @param  mixed  $encoding
-	 * @return Type3FontType
+	 * @return Type3FontDictionaryType
 	 *@throws InvalidArgumentException if the provided argument is not of type 'DictionaryType' or 'string'.
 	 */
-	public function setEncoding($encoding): Type3FontType
+	public function setEncoding($encoding): Type3FontDictionaryType
 	{
 		if (!$encoding instanceof DictionaryType && !StringValidator::isValid($encoding)) {
 			throw new InvalidArgumentException("Encoding is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -142,9 +142,9 @@ class Type3FontType extends FontType
 	 * Set resources.
 	 *
 	 * @param DictionaryType $resources
-	 * @return Type3FontType
+	 * @return Type3FontDictionaryType
 	 */
-	public function setResources(DictionaryType $resources): Type3FontType
+	public function setResources(DictionaryType $resources): Type3FontDictionaryType
 	{
 		$this->setEntry('Resources', $resources);
 		return $this;
@@ -154,9 +154,9 @@ class Type3FontType extends FontType
 	 * Set map to unicode values.
 	 *
 	 * @param  StreamType  $toUnicode
-	 * @return Type3FontType
+	 * @return Type3FontDictionaryType
 	 */
-	public function setToUnicode(StreamType $toUnicode): Type3FontType
+	public function setToUnicode(StreamType $toUnicode): Type3FontDictionaryType
 	{
 		$this->setEntry('ToUnicode', $toUnicode);
 		return $this;

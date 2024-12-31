@@ -5,9 +5,10 @@ namespace Papier\Type;
 use InvalidArgumentException;
 use Papier\Factory\Factory;
 use Papier\Object\DictionaryObject;
+use Papier\Type\Base\DictionaryType;
 use Papier\Validator\DateValidator;
 
-class EmbeddedFileParameterDictionaryType extends DictionaryObject
+class EmbeddedFileParameterDictionaryType extends DictionaryType
 {
 
     /**

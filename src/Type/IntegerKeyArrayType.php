@@ -4,10 +4,11 @@ namespace Papier\Type;
 
 use Papier\Factory\Factory;
 use Papier\Object\DictionaryObject;
+use Papier\Type\Base\ArrayType;
 use Papier\Type\Base\IntegerType;
 
 
-class IntegerKeyArrayType extends DictionaryObject
+class IntegerKeyArrayType extends ArrayType
 {
 
     /**

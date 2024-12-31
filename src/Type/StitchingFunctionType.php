@@ -5,11 +5,12 @@ namespace Papier\Type;
 use Papier\Object\FunctionObject;
 use Papier\Object\ArrayObject;
 
-use Papier\Functions\FunctionType;
+use Papier\Functions\FunctionType as FuncType;
 
+use Papier\Type\Base\FunctionType;
 use RuntimeException;
 
-class StitchingFunctionType extends FunctionObject
+class StitchingFunctionType extends FunctionType
 {
     
     /**
@@ -55,7 +56,7 @@ class StitchingFunctionType extends FunctionObject
      */
     public function format(): string
     {
-        $this->setFunctionType(FunctionType::STITCHING);
+        $this->setFunctionType(FuncType::STITCHING);
 
         if (!$this->hasEntry('Functions')) {
             throw new RuntimeException("Functions is missing. See ".__CLASS__." class's documentation for possible values.");

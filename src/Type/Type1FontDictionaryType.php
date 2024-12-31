@@ -16,15 +16,15 @@ use Papier\Validator\EncodingValidator;
 use Papier\Validator\StringValidator;
 use RuntimeException;
 
-class Type1FontType extends FontType
+class Type1FontDictionaryType extends FontDictionaryType
 {
     /**
      * Set basefont (PostScript) name.
      *  
      * @param string $name
-     * @return Type1FontType
+     * @return Type1FontDictionaryType
      */
-    public function setBaseFont(string $name): Type1FontType
+    public function setBaseFont(string $name): Type1FontDictionaryType
     {
         $value = Factory::create('Papier\Type\Base\NameType', $name);
 		$this->setEntry('BaseFont', $value);
@@ -35,9 +35,9 @@ class Type1FontType extends FontType
      * Set first character code.
      *  
      * @param int $fc
-     * @return Type1FontType
+     * @return Type1FontDictionaryType
      */
-    public function setFirstChar(int $fc): Type1FontType
+    public function setFirstChar(int $fc): Type1FontDictionaryType
     {
         $value = Factory::create('Papier\Type\Base\IntegerType', $fc);
 		$this->setEntry('FirstChar', $value);
@@ -48,9 +48,9 @@ class Type1FontType extends FontType
      * Set last character code.
      *  
      * @param int $lc
-     * @return Type1FontType
+     * @return Type1FontDictionaryType
      */
-    public function setLastChar(int $lc): Type1FontType
+    public function setLastChar(int $lc): Type1FontDictionaryType
     {
         $value = Factory::create('Papier\Type\Base\IntegerType', $lc);
 		$this->setEntry('LastChar', $value);
@@ -61,9 +61,9 @@ class Type1FontType extends FontType
      * Set widths.
      *  
      * @param ArrayType $widths
-     * @return Type1FontType
+     * @return Type1FontDictionaryType
      */
-    public function setWidths(ArrayType $widths): Type1FontType
+    public function setWidths(ArrayType $widths): Type1FontDictionaryType
     {
 		$this->setEntry('Widths', $widths);
         return $this;
@@ -73,9 +73,9 @@ class Type1FontType extends FontType
      * Set font descriptor.
      *  
      * @param  DictionaryType  $fd
-     * @return Type1FontType
+     * @return Type1FontDictionaryType
      */
-    public function setFontDescriptor(DictionaryType $fd): Type1FontType
+    public function setFontDescriptor(DictionaryType $fd): Type1FontDictionaryType
     {
 		$this->setEntry('FontDescriptor', $fd);
         return $this;
@@ -85,11 +85,11 @@ class Type1FontType extends FontType
      * Set encoding.
      *  
      * @param  mixed  $encoding
-     * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryType' or 'string'.
-     * @return Type1FontType
+     * @return Type1FontDictionaryType
+     *@throws InvalidArgumentException if the provided argument is not of type 'DictionaryType' or 'string'.
      */
-    public function setEncoding($encoding): Type1FontType
-    {
+    public function setEncoding($encoding): Type1FontDictionaryType
+	{
         if (!$encoding instanceof DictionaryType && !StringValidator::isValid($encoding)) {
             throw new InvalidArgumentException("Encoding is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
@@ -111,10 +111,10 @@ class Type1FontType extends FontType
      * Set map to unicode values.
      *  
      * @param  StreamType  $toUnicode
-     * @return Type1FontType
-     */
-    public function setToUnicode(StreamType $toUnicode): Type1FontType
-    {
+     * @return Type1FontDictionaryType
+	 */
+    public function setToUnicode(StreamType $toUnicode): Type1FontDictionaryType
+	{
 		$this->setEntry('ToUnicode', $toUnicode);
         return $this;
     }

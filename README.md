@@ -32,6 +32,7 @@ composer require papier/papier
 ```
 
 ## Example usage
+
 ```php
 require __DIR__.'/../vendor/autoload.php';
 
@@ -48,7 +49,7 @@ $image->setSource($pathToLocalImage);
 $image->setWidth(50);
 $image->translate(10, 10);
 
-$font = Factory::create('Papier\Type\TrueTypeFontType', null, true);
+$font = Factory::create('Papier\Type\TrueTypeFontDictionaryType', null, true);
 $font->load($pathToLocalFontFile);
 $font->setEncoding(Encoding::WIN_ANSI);
 

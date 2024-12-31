@@ -3,16 +3,17 @@
 namespace Papier\Type;
 
 use Papier\Object\DictionaryObject;
+use Papier\Type\Base\DictionaryType;
 
-class NameDictionaryType extends DictionaryObject
+class NameDictionaryType extends DictionaryType
 {
     /**
      * Set mapping to destinations.
      *  
-     * @param NameTreeType $dests
+     * @param NameTreeDictionaryType $dests
      * @return NameDictionaryType
      */
-    public function setDests(NameTreeType $dests): NameDictionaryType
+    public function setDests(NameTreeDictionaryType $dests): NameDictionaryType
     {
         $this->setEntry('Dests', $dests);
         return $this;
@@ -21,10 +22,10 @@ class NameDictionaryType extends DictionaryObject
     /**
      * Set mapping to annotations.
      *  
-     * @param  NameTreeType  $ap
+     * @param  NameTreeDictionaryType  $ap
      * @return NameDictionaryType
      */
-    public function setAP(NameTreeType $ap): NameDictionaryType
+    public function setAP(NameTreeDictionaryType $ap): NameDictionaryType
     {
         $this->setEntry('AP', $ap);
         return $this;
@@ -33,10 +34,10 @@ class NameDictionaryType extends DictionaryObject
     /**
      * Set mapping to document-level Javascript actions.
      *  
-     * @param  NameTreeType  $javascript
+     * @param  NameTreeDictionaryType  $javascript
      * @return NameDictionaryType
      */
-    public function setJavaScript(NameTreeType $javascript): NameDictionaryType
+    public function setJavaScript(NameTreeDictionaryType $javascript): NameDictionaryType
     {
         $this->setEntry('JavaScript', $javascript);
         return $this;
@@ -46,10 +47,10 @@ class NameDictionaryType extends DictionaryObject
     /**
      * Set mapping to pages.
      *  
-     * @param  NameTreeType  $pages
+     * @param  NameTreeDictionaryType  $pages
      * @return NameDictionaryType
      */
-    public function setPages(NameTreeType $pages): NameDictionaryType
+    public function setPages(NameTreeDictionaryType $pages): NameDictionaryType
     {
         $this->setEntry('Pages', $pages);
         return $this;
@@ -59,10 +60,10 @@ class NameDictionaryType extends DictionaryObject
     /**
      * Set mapping to (invisible) pages.
      *  
-     * @param  NameTreeType  $templates
+     * @param  NameTreeDictionaryType  $templates
      * @return NameDictionaryType
      */
-    public function setTemplates(NameTreeType $templates): NameDictionaryType
+    public function setTemplates(NameTreeDictionaryType $templates): NameDictionaryType
     {
         $this->setEntry('Templates', $templates);
         return $this;
@@ -71,10 +72,10 @@ class NameDictionaryType extends DictionaryObject
     /**
      * Set IDS mapping to Web Capture content sets.
      *  
-     * @param  NameTreeType  $ids
+     * @param  NameTreeDictionaryType  $ids
      * @return NameDictionaryType
      */
-    public function setIDS(NameTreeType $ids): NameDictionaryType
+    public function setIDS(NameTreeDictionaryType $ids): NameDictionaryType
     {
         $this->setEntry('IDS', $ids);
         return $this;
@@ -83,10 +84,10 @@ class NameDictionaryType extends DictionaryObject
     /**
      * Set URLS mapping to Web Capture content sets.
      *  
-     * @param  NameTreeType  $urls
+     * @param  NameTreeDictionaryType  $urls
      * @return NameDictionaryType
      */
-    public function setURLS(NameTreeType $urls): NameDictionaryType
+    public function setURLS(NameTreeDictionaryType $urls): NameDictionaryType
     {
         $this->setEntry('URLS', $urls);
         return $this;
@@ -96,10 +97,10 @@ class NameDictionaryType extends DictionaryObject
     /**
      * Set mapping to file specifications for embedded file streams.
      *  
-     * @param  NameTreeType  $files
+     * @param  NameTreeDictionaryType  $files
      * @return NameDictionaryType
      */
-    public function setEmbeddedFiles(NameTreeType $files): NameDictionaryType
+    public function setEmbeddedFiles(NameTreeDictionaryType $files): NameDictionaryType
     {
         $this->setEntry('EmbeddedFiles', $files);
         return $this;
@@ -108,10 +109,10 @@ class NameDictionaryType extends DictionaryObject
     /**
      * Set mapping to alternate presentations.
      *  
-     * @param  NameTreeType  $presentations
+     * @param  NameTreeDictionaryType  $presentations
      * @return NameDictionaryType
      */
-    public function setAlternatePresentations(NameTreeType $presentations): NameDictionaryType
+    public function setAlternatePresentations(NameTreeDictionaryType $presentations): NameDictionaryType
     {
         $this->setEntry('AlternatePresentations', $presentations);
         return $this;
@@ -120,10 +121,10 @@ class NameDictionaryType extends DictionaryObject
     /**
      * Set mapping to renditions objects.
      *  
-     * @param  NameTreeType  $renditions
+     * @param  NameTreeDictionaryType  $renditions
      * @return NameDictionaryType
      */
-    public function setRenditions(NameTreeType $renditions): NameDictionaryType
+    public function setRenditions(NameTreeDictionaryType $renditions): NameDictionaryType
     {
         $this->setEntry('Renditions', $renditions);
         return $this;

@@ -9,24 +9,23 @@ use Papier\Factory\Factory;
 
 use InvalidArgumentException;
 
-class RectangleType extends NumbersArrayType
+class RectangleNumbersArrayType extends NumbersArrayType
 {
     /**
     * Set object's lower left X coordinate.
     *
     * @param  mixed  $coordinate
-    * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
-    * @return RectangleType
+    * @return RectangleNumbersArrayType
+    *@throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
     */
-    public function setLowerLeftX($coordinate): RectangleType
-    {
+    public function setLowerLeftX($coordinate): RectangleNumbersArrayType
+	{
         if (!NumberValidator::isValid($coordinate)) {
             throw new InvalidArgumentException("Number is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-		$values = $this->getValues();
-		$values[0] = $coordinate;
-		$this->setValue($values);
+		$object = $this->getObjectForKey(0);
+		$object->setValue($coordinate);
 
         return $this;
     } 
@@ -36,18 +35,17 @@ class RectangleType extends NumbersArrayType
     * Set object's lower left Y coordinate.
     *
     * @param  mixed  $coordinate
-    * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
-    * @return RectangleType
-    */
-    public function setLowerLeftY($coordinate): RectangleType
-    {
+    * @return RectangleNumbersArrayType
+    *@throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
+	 */
+    public function setLowerLeftY($coordinate): RectangleNumbersArrayType
+	{
         if (!NumberValidator::isValid($coordinate)) {
             throw new InvalidArgumentException("Number is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-		$values = $this->getValues();
-		$values[1] = $coordinate;
-		$this->setValue($values);
+		$object = $this->getObjectForKey(1);
+		$object->setValue($coordinate);
 
         return $this;
     } 
@@ -56,18 +54,18 @@ class RectangleType extends NumbersArrayType
     * Set object's upper right X coordinate.
     *
     * @param  mixed  $coordinate
-    * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
-    * @return RectangleType
-    */
-    public function setUpperRightX($coordinate): RectangleType
-    {
+    * @return RectangleNumbersArrayType
+    *@throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
+	 */
+    public function setUpperRightX($coordinate): RectangleNumbersArrayType
+	{
         if (!NumberValidator::isValid($coordinate)) {
             throw new InvalidArgumentException("Number is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-		$values = $this->getValues();
-		$values[2] = $coordinate;
-		$this->setValue($values);
+		$object = $this->getObjectForKey(2);
+		$object->setValue($coordinate);
+
 		return $this;
     } 
 
@@ -75,45 +73,28 @@ class RectangleType extends NumbersArrayType
     * Set object's upper right Y coordinate.
     *
     * @param  mixed  $coordinate
-    * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
-    * @return RectangleType
-    */
-    public function setUpperRightY($coordinate): RectangleType
-    {
+    * @return RectangleNumbersArrayType
+    *@throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
+	 */
+    public function setUpperRightY($coordinate): RectangleNumbersArrayType
+	{
         if (!NumberValidator::isValid($coordinate)) {
             throw new InvalidArgumentException("Number is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
-		$values = $this->getValues();
-		$values[3] = $coordinate;
-		$this->setValue($values);
+		$object = $this->getObjectForKey(3);
+		$object->setValue($coordinate);
 
         return $this;
     }
 
 	/**
-	 * Get object's numbers
-	 *
-	 * @return array<mixed>
-	 */
-	public function getValues(): array
-	{
-		$values = [];
-		$objects = $this->getObjects();
-		if (count($objects)) {
-			foreach ($objects as $object) {
-				$values[] = $object->getValue();
-			}
-		}
-		return $values;
-	}
-	/**
 	 * Set object's numbers.
 	 *
 	 * @param mixed $value
-	 * @return RectangleType
+	 * @return RectangleNumbersArrayType
 	 */
-	public function setValue(mixed $value): RectangleType
+	public function setValue(mixed $value): RectangleNumbersArrayType
 	{
 		if (!NumbersArrayValidator::isValid($value)) {
 			throw new InvalidArgumentException("Array is incorrect. See ".__CLASS__." class's documentation for possible values.");

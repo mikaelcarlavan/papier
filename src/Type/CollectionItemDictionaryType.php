@@ -6,9 +6,10 @@ use InvalidArgumentException;
 use Papier\Factory\Factory;
 use Papier\Object\DictionaryObject;
 use Papier\Object\IndirectObject;
+use Papier\Type\Base\DictionaryType;
 use Papier\Validator\StringValidator;
 
-class CollectionItemDictionaryType extends DictionaryObject
+class CollectionItemDictionaryType extends DictionaryType
 {
     /**
      * Set object for key.

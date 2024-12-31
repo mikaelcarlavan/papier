@@ -7,8 +7,9 @@ use Papier\Object\DictionaryObject;
 use Papier\Factory\Factory;
 
 use InvalidArgumentException;
+use Papier\Type\Base\DictionaryType;
 
-class ExtensionsDictionaryType extends DictionaryObject
+class ExtensionsDictionaryType extends DictionaryType
 {
     /**
      * Add extension.

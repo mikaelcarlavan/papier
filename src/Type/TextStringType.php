@@ -3,8 +3,9 @@
 namespace Papier\Type;
 
 use Papier\Text\Encoding;
+use Papier\Type\Base\StringType;
 
-class TextStringType extends LiteralStringType
+class TextStringType extends StringType
 {
     /**
      * Get object's value.
@@ -15,6 +16,10 @@ class TextStringType extends LiteralStringType
     {
 		/** @var string|null $value */
         $value = parent::getValue();
-        return is_null($value) ? $value : Encoding::toUTF16BE($value);
+
+		$trans = array('(' => '\(', ')' => '\)', '\\' => '\\\\');
+		$value = strtr($value, $trans);
+		$value = Encoding::toUTF16BE($value);
+		return '(' .$value. ')';
     }
 }

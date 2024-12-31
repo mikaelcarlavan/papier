@@ -5,8 +5,9 @@ namespace Papier\Type;
 use Papier\Object\DictionaryObject;
 
 use Papier\Factory\Factory;
+use Papier\Type\Base\ArrayType;
 
-class LiteralStringKeyArrayType extends DictionaryObject
+class LiteralStringKeyArrayType extends ArrayType
 {
 
     /**

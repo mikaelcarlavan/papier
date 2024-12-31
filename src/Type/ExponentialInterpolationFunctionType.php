@@ -2,19 +2,13 @@
 
 namespace Papier\Type;
 
-use Papier\Object\FunctionObject;
-use Papier\Object\ArrayObject;
-
-use Papier\Functions\FunctionType;
-
-use Papier\Validator\RealValidator;
-
 use Papier\Factory\Factory;
-
-use InvalidArgumentException;
+use Papier\Functions\FunctionType as FunType;
+use Papier\Object\ArrayObject;
+use Papier\Type\Base\FunctionType;
 use RuntimeException;
 
-class ExponentialInterpolationFunctionType extends FunctionObject
+class ExponentialInterpolationFunctionType extends FunctionType
 {
     
     /**
@@ -49,7 +43,7 @@ class ExponentialInterpolationFunctionType extends FunctionObject
      */
     public function setN(float $N): ExponentialInterpolationFunctionType
     {
-        $value = Factory::create('Papier\Type\RealType', $N);
+        $value = Factory::create('Papier\Type\Base\RealType', $N);
 
         $this->setEntry('N', $value);
         return $this;
@@ -62,7 +56,7 @@ class ExponentialInterpolationFunctionType extends FunctionObject
      */
     public function format(): string
     {
-        $this->setFunctionType(FunctionType::EXPONENTIAL_INTERPOLATION);
+        $this->setFunctionType(FunType::EXPONENTIAL_INTERPOLATION);
 
         if (!$this->hasEntry('N')) {
             throw new RuntimeException("N is missing. See ".__CLASS__." class's documentation for possible values.");

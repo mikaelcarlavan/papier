@@ -4,9 +4,10 @@ namespace Papier\Type;
 
 use Papier\Object\FunctionObject;
 
-use Papier\Functions\FunctionType;
+use Papier\Functions\FunctionType as FuncType;
+use Papier\Type\Base\FunctionType;
 
-class PostScriptCalculatorFunctionType extends FunctionObject
+class PostScriptCalculatorFunctionType extends FunctionType
 {
     /**
      * Format object's value.
@@ -15,7 +16,7 @@ class PostScriptCalculatorFunctionType extends FunctionObject
      */
     public function format(): string
     {
-        $this->setFunctionType(FunctionType::POSTSCRIPT_CALCULATOR);
+        $this->setFunctionType(FuncType::POSTSCRIPT_CALCULATOR);
 
         return parent::format();
     }

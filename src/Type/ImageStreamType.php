@@ -10,22 +10,23 @@ use Papier\Object\DictionaryObject;
 use Papier\Object\StreamObject;
 use Papier\Type\Base\BooleanType;
 use Papier\Type\Base\IntegerType;
+use Papier\Type\Base\StreamType;
 use Papier\Validator\BitsPerComponentValidator;
 use Papier\Validator\NumbersArrayValidator;
 use Papier\Validator\RenderingIntentValidator;
 use Papier\Validator\StringValidator;
 use RuntimeException;
 
-class ImageType extends StreamObject
+class ImageStreamType extends StreamType
 {
  
     /**
      * Set width.
      *  
      * @param  int  $width
-     * @return ImageType
+     * @return ImageStreamType
      */
-    public function setWidth(int $width): ImageType
+    public function setWidth(int $width): ImageStreamType
     {
         $value = Factory::create('Papier\Type\Base\IntegerType', $width);
 
@@ -37,9 +38,9 @@ class ImageType extends StreamObject
      * Set height.
      *  
      * @param  int  $height
-     * @return ImageType
+     * @return ImageStreamType
      */
-    public function setHeight(int $height): ImageType
+    public function setHeight(int $height): ImageStreamType
     {
 
         $value = Factory::create('Papier\Type\Base\IntegerType', $height);
@@ -52,11 +53,11 @@ class ImageType extends StreamObject
      * Set color space.
      *  
      * @param  mixed  $space
-     * @throws InvalidArgumentException if the provided argument is not of type 'string' or 'ArrayObject'.
-     * @return ImageType
+     * @return ImageStreamType
+     *@throws InvalidArgumentException if the provided argument is not of type 'string' or 'ArrayObject'.
      */
-    public function setColorSpace($space): ImageType
-    {
+    public function setColorSpace($space): ImageStreamType
+	{
         if (!StringValidator::isValid($space) && !$space instanceof ArrayObject) {
             throw new InvalidArgumentException("ColorSpace is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
@@ -71,11 +72,11 @@ class ImageType extends StreamObject
      * Set the number of bits used to represent each colour component.
      *  
      * @param int $bits
-     * @return ImageType
-     * @throws InvalidArgumentException if the provided argument is not of type 'int'.
+     * @return ImageStreamType
+	  * @throws InvalidArgumentException if the provided argument is not of type 'int'.
      */
-    public function setBitsPerComponent(int $bits): ImageType
-    {
+    public function setBitsPerComponent(int $bits): ImageStreamType
+	{
         if (!BitsPerComponentValidator::isValid($bits)) {
             throw new InvalidArgumentException("BitsPerComponent is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
@@ -90,11 +91,11 @@ class ImageType extends StreamObject
      * Set name of rendering intent.
      *  
      * @param string $intent
-     * @return ImageType
-     * @throws InvalidArgumentException if the provided argument is not a valid rendering intent.
+     * @return ImageStreamType
+	 * @throws InvalidArgumentException if the provided argument is not a valid rendering intent.
      */
-    public function setIntent(string $intent): ImageType
-    {
+    public function setIntent(string $intent): ImageStreamType
+	{
         if (!RenderingIntentValidator::isValid($intent)) {
             throw new InvalidArgumentException("Intent is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
@@ -108,11 +109,11 @@ class ImageType extends StreamObject
      * Set image mask.
      *  
      * @param bool $imageMask
-     * @return ImageType
-     * @throws InvalidArgumentException if the provided argument is not of type 'bool'.
+     * @return ImageStreamType
+	 * @throws InvalidArgumentException if the provided argument is not of type 'bool'.
      */
-    public function setImageMask(bool $imageMask): ImageType
-    {
+    public function setImageMask(bool $imageMask): ImageStreamType
+	{
         $value = Factory::create('Papier\Type\Base\BooleanType', $imageMask);
         $this->setEntry('ImageMask', $value);
         return $this;
@@ -122,11 +123,11 @@ class ImageType extends StreamObject
      * Set mask.
      *  
      * @param  mixed  $mask
-     * @throws InvalidArgumentException if the provided argument is not of type 'StreamObject' or 'ArrayObject'.
-     * @return ImageType
-     */
-    public function setMask($mask): ImageType
-    {
+     * @return ImageStreamType
+     *@throws InvalidArgumentException if the provided argument is not of type 'StreamObject' or 'ArrayObject'.
+	 */
+    public function setMask($mask): ImageStreamType
+	{
         if (!$mask instanceof StreamObject && !$mask instanceof ArrayObject) {
             throw new InvalidArgumentException("Mask is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
@@ -139,11 +140,11 @@ class ImageType extends StreamObject
      * Set map from image samples to the appropriate ranges of values.
      *  
      * @param array<float> $decode
-     * @return ImageType
-     * @throws InvalidArgumentException if the provided argument is not of type 'array' and if each element of the provided argument is not of type 'int' or 'float.
+     * @return ImageStreamType
+	 * @throws InvalidArgumentException if the provided argument is not of type 'array' and if each element of the provided argument is not of type 'int' or 'float.
      */
-    public function setDecode(array $decode): ImageType
-    {
+    public function setDecode(array $decode): ImageStreamType
+	{
         if (!NumbersArrayValidator::isValid($decode)) {
             throw new InvalidArgumentException("Decode is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
@@ -158,10 +159,10 @@ class ImageType extends StreamObject
      * Set interpolation.
      *  
      * @param bool $interpolate
-     * @return ImageType
-     */
-    public function setInterpolate(bool $interpolate = true): ImageType
-    {
+     * @return ImageStreamType
+	 */
+    public function setInterpolate(bool $interpolate = true): ImageStreamType
+	{
         $value = Factory::create('Papier\Type\Base\BooleanType', $interpolate);
 
         $this->setEntry('Interpolate', $value);
@@ -172,10 +173,10 @@ class ImageType extends StreamObject
      * Set alternates.
      *  
      * @param ArrayObject $alternates
-     * @return ImageType
-     */
-    public function setAlternates(ArrayObject $alternates): ImageType
-    {
+     * @return ImageStreamType
+	 */
+    public function setAlternates(ArrayObject $alternates): ImageStreamType
+	{
         $this->setEntry('Alternates', $alternates);
         return $this;
     }
@@ -184,10 +185,10 @@ class ImageType extends StreamObject
      * Set soft-mask image.
      *  
      * @param StreamObject $smask
-     * @return ImageType
-     */
-    public function setSMask(StreamObject $smask): ImageType
-    {
+     * @return ImageStreamType
+	 */
+    public function setSMask(StreamObject $smask): ImageStreamType
+	{
         $this->setEntry('SMask', $smask);
         return $this;
     }
@@ -196,10 +197,10 @@ class ImageType extends StreamObject
      * Set soft-mask image.
      *  
      * @param int $indata
-     * @return ImageType
-     */
-    public function setSMaskInData(int $indata): ImageType
-    {
+     * @return ImageStreamType
+	 */
+    public function setSMaskInData(int $indata): ImageStreamType
+	{
         $value = Factory::create('Papier\Type\Base\IntegerType', $indata);
 
         $this->setEntry('SMaskInData', $value);
@@ -210,10 +211,10 @@ class ImageType extends StreamObject
      * Set name.
      *  
      * @param  string  $name
-     * @return ImageType
-     */
-    public function setName(string $name): ImageType
-    {
+     * @return ImageStreamType
+	 */
+    public function setName(string $name): ImageStreamType
+	{
         $value = Factory::create('Papier\Type\Base\NameType', $name);
 
         $this->setEntry('Papier\Type\Base\NameType', $value);
@@ -224,10 +225,10 @@ class ImageType extends StreamObject
      * Set integer key of image's entry in the structural parent tree.
      *  
      * @param int $struct
-     * @return ImageType
-     */
-    public function setStructParent(int $struct): ImageType
-    {
+     * @return ImageStreamType
+	 */
+    public function setStructParent(int $struct): ImageStreamType
+	{
         $value = Factory::create('Papier\Type\Base\IntegerType', $struct);
 
         $this->setEntry('StructParent', $value);
@@ -238,10 +239,10 @@ class ImageType extends StreamObject
      * Set digital identifier of the page's parent web capture content set.
      *  
      * @param ByteStringType $id
-     * @return ImageType
-     */
-    public function setID(ByteStringType $id): ImageType
-    {
+     * @return ImageStreamType
+	 */
+    public function setID(ByteStringType $id): ImageStreamType
+	{
         $this->setEntry('ID', $id);
         return $this;
     }
@@ -250,10 +251,10 @@ class ImageType extends StreamObject
      * Set open prepress interface.
      *  
      * @param  DictionaryObject  $opi
-     * @return ImageType
-     */
-    public function setOPI(DictionaryObject $opi): ImageType
-    {
+     * @return ImageStreamType
+	 */
+    public function setOPI(DictionaryObject $opi): ImageStreamType
+	{
         $this->setEntry('OPI', $opi);
         return $this;
     }
@@ -262,10 +263,10 @@ class ImageType extends StreamObject
      * Set metadata.
      *  
      * @param StreamObject $metadata
-     * @return ImageType
-     */
-    public function setMetadata(StreamObject $metadata): ImageType
-    {
+     * @return ImageStreamType
+	 */
+    public function setMetadata(StreamObject $metadata): ImageStreamType
+	{
        $this->setEntry('Metadata', $metadata);
         return $this;
     } 
@@ -274,10 +275,10 @@ class ImageType extends StreamObject
      * Set optional content.
      *  
      * @param DictionaryObject $oc
-     * @return ImageType
-     */
-    public function setOC(DictionaryObject $oc): ImageType
-    {
+     * @return ImageStreamType
+	 */
+    public function setOC(DictionaryObject $oc): ImageStreamType
+	{
         $this->setEntry('OC', $oc);
         return $this;
     }

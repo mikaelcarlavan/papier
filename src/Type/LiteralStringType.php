@@ -3,9 +3,10 @@
 namespace Papier\Type;
 
 use Papier\Object\StringObject;
+use Papier\Type\Base\StringType;
 
 
-class LiteralStringType extends StringObject
+class LiteralStringType extends StringType
 {
     /**
      * Format object's value.

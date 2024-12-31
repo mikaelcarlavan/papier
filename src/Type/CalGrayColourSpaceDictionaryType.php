@@ -6,13 +6,14 @@ use Papier\Object\DictionaryObject;
 
 use Papier\Factory\Factory;
 
+use Papier\Type\Base\DictionaryType;
 use Papier\Validator\NumbersArrayValidator;
 use Papier\Validator\NumberValidator;
 
 use InvalidArgumentException;
 use RuntimeException;
 
-class CalGrayColourSpaceDictionaryType extends DictionaryObject
+class CalGrayColourSpaceDictionaryType extends DictionaryType
 {
     /**
      * Set white point.

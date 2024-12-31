@@ -5,24 +5,24 @@ namespace Papier\Type;
 use InvalidArgumentException;
 use Papier\Factory\Factory;
 use Papier\Object\ArrayObject;
-use Papier\Object\NameObject;
 use Papier\Object\StreamObject;
 use Papier\Type\Base\DictionaryType;
+use Papier\Type\Base\NameType;
 use Papier\Validator\BooleanValidator;
 use Papier\Validator\PageLayoutValidator;
 use Papier\Validator\PageModeValidator;
 use Papier\Validator\StringValidator;
 use RuntimeException;
 
-class DocumentCatalogType extends DictionaryType
+class DocumentCatalogDictionaryType extends DictionaryType
 {
     /**
      * Set PDF version.
      *  
-     * @param NameObject $version
-     * @return DocumentCatalogType
+     * @param NameType $version
+     * @return DocumentCatalogDictionaryType
      */
-    public function setVersion(NameObject $version): DocumentCatalogType
+    public function setVersion(NameType $version): DocumentCatalogDictionaryType
     {
         $this->setEntry('Version', $version);
         return $this;
@@ -32,9 +32,9 @@ class DocumentCatalogType extends DictionaryType
      * Set extensions.
      *  
      * @param  ExtensionsDictionaryType  $extensions
-     * @return DocumentCatalogType
+     * @return DocumentCatalogDictionaryType
      */
-    public function setExtensions(ExtensionsDictionaryType $extensions): DocumentCatalogType
+    public function setExtensions(ExtensionsDictionaryType $extensions): DocumentCatalogDictionaryType
     {
         $this->setEntry('Extensions', $extensions);
         return $this;
@@ -61,9 +61,9 @@ class DocumentCatalogType extends DictionaryType
      * Set page tree node (root of document's page tree).
      *  
      * @param DictionaryType $pages
-     * @return DocumentCatalogType
+     * @return DocumentCatalogDictionaryType
      */
-    public function setPages(DictionaryType $pages): DocumentCatalogType
+    public function setPages(DictionaryType $pages): DocumentCatalogDictionaryType
     {
         $this->setEntry('Pages', $pages);
         return $this;
@@ -72,10 +72,10 @@ class DocumentCatalogType extends DictionaryType
     /**
      * Set page tree node (root of document's page tree).
      *  
-     * @param  NumberTreeType  $labels
-     * @return DocumentCatalogType
+     * @param  NumberTreeDictionaryType  $labels
+     * @return DocumentCatalogDictionaryType
      */
-    public function setPageLabels(NumberTreeType $labels): DocumentCatalogType
+    public function setPageLabels(NumberTreeDictionaryType $labels): DocumentCatalogDictionaryType
     {
         $this->setEntry('PageLabels', $labels);
         return $this;
@@ -85,9 +85,9 @@ class DocumentCatalogType extends DictionaryType
      * Set document's name dictionary.
      *  
      * @param DictionaryType $names
-     * @return DocumentCatalogType
+     * @return DocumentCatalogDictionaryType
      */
-    public function setNames(DictionaryType $names): DocumentCatalogType
+    public function setNames(DictionaryType $names): DocumentCatalogDictionaryType
     {
         $this->setEntry('Names', $names);
         return $this;
@@ -97,9 +97,9 @@ class DocumentCatalogType extends DictionaryType
      * Set names and corresponding destinations.
      *  
      * @param DictionaryType $dests
-     * @return DocumentCatalogType
+     * @return DocumentCatalogDictionaryType
      */
-    public function setDests(DictionaryType $dests): DocumentCatalogType
+    public function setDests(DictionaryType $dests): DocumentCatalogDictionaryType
     {
         $this->setEntry('Dests', $dests);
         return $this;
@@ -109,9 +109,9 @@ class DocumentCatalogType extends DictionaryType
      * Set viewer preferences.
      *  
      * @param DictionaryType $preferences
-     * @return DocumentCatalogType
+     * @return DocumentCatalogDictionaryType
      */
-    public function setViewerPreferences(DictionaryType $preferences): DocumentCatalogType
+    public function setViewerPreferences(DictionaryType $preferences): DocumentCatalogDictionaryType
     {
         $this->setEntry('ViewerPreferences', $preferences);
         return $this;
@@ -138,10 +138,10 @@ class DocumentCatalogType extends DictionaryType
      * Set page layout.
      *  
      * @param  string  $layout
-     * @return DocumentCatalogType
+     * @return DocumentCatalogDictionaryType
      * @throws InvalidArgumentException if the provided argument is not a valid layout.
      */
-    public function setPageLayout(string $layout): DocumentCatalogType
+    public function setPageLayout(string $layout): DocumentCatalogDictionaryType
     {
         if (!PageLayoutValidator::isValid($layout)) {
             throw new InvalidArgumentException("Layout is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -157,10 +157,10 @@ class DocumentCatalogType extends DictionaryType
      * Set page mode.
      *  
      * @param  string  $mode
-     * @return DocumentCatalogType
+     * @return DocumentCatalogDictionaryType
      * @throws InvalidArgumentException if the provided argument is not a valid mode.
      */
-    public function setPageMode(string $mode): DocumentCatalogType
+    public function setPageMode(string $mode): DocumentCatalogDictionaryType
     {
         if (!PageModeValidator::isValid($mode)) {
             throw new InvalidArgumentException("Mode is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -176,9 +176,9 @@ class DocumentCatalogType extends DictionaryType
      * Set outlines.
      *  
      * @param DictionaryType $outlines
-     * @return DocumentCatalogType
+     * @return DocumentCatalogDictionaryType
      */
-    public function setOutlines(DictionaryType $outlines): DocumentCatalogType
+    public function setOutlines(DictionaryType $outlines): DocumentCatalogDictionaryType
     {
         $this->setEntry('Outlines', $outlines);
         return $this;
@@ -188,9 +188,9 @@ class DocumentCatalogType extends DictionaryType
      * Set threads.
      *  
      * @param ArrayObject $threads
-     * @return DocumentCatalogType
+     * @return DocumentCatalogDictionaryType
      */
-    public function setThreads(ArrayObject $threads): DocumentCatalogType
+    public function setThreads(ArrayObject $threads): DocumentCatalogDictionaryType
     {
         $this->setEntry('Threads', $threads);
         return $this;
@@ -200,10 +200,10 @@ class DocumentCatalogType extends DictionaryType
      * Set open action.
      *  
      * @param  mixed  $action
-     * @return DocumentCatalogType
+     * @return DocumentCatalogDictionaryType
      * @throws InvalidArgumentException if the provided argument is not of type 'ArrayObject' or 'DictionaryType'.
      */
-    public function setOpenAction($action): DocumentCatalogType
+    public function setOpenAction($action): DocumentCatalogDictionaryType
     {
         if (!$action instanceof ArrayObject && !$action instanceof DictionaryType) {
             throw new InvalidArgumentException("Action is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -217,9 +217,9 @@ class DocumentCatalogType extends DictionaryType
      * Set additional actions.
      *  
      * @param DictionaryType $aa
-     * @return DocumentCatalogType
+     * @return DocumentCatalogDictionaryType
      */
-    public function setAA(DictionaryType $aa): DocumentCatalogType
+    public function setAA(DictionaryType $aa): DocumentCatalogDictionaryType
     {
         $this->setEntry('AA', $aa);
         return $this;
@@ -229,9 +229,9 @@ class DocumentCatalogType extends DictionaryType
      * Set URI.
      *  
      * @param  DictionaryType $uri
-     * @return DocumentCatalogType
+     * @return DocumentCatalogDictionaryType
      */
-    public function setURI(DictionaryType $uri): DocumentCatalogType
+    public function setURI(DictionaryType $uri): DocumentCatalogDictionaryType
     {
         $this->setEntry('URI', $uri);
         return $this;
@@ -241,9 +241,9 @@ class DocumentCatalogType extends DictionaryType
      * Set interactive form.
      *  
      * @param  DictionaryType $form
-     * @return DocumentCatalogType
+     * @return DocumentCatalogDictionaryType
      */
-    public function setAcroForm(DictionaryType $form): DocumentCatalogType
+    public function setAcroForm(DictionaryType $form): DocumentCatalogDictionaryType
     {
         $this->setEntry('AcroForm', $form);
         return $this;
@@ -253,9 +253,9 @@ class DocumentCatalogType extends DictionaryType
      * Set metadata.
      *  
      * @param StreamObject $metadata
-     * @return DocumentCatalogType
+     * @return DocumentCatalogDictionaryType
      */
-    public function setMetadata(StreamObject $metadata): DocumentCatalogType
+    public function setMetadata(StreamObject $metadata): DocumentCatalogDictionaryType
     {
         $this->setEntry('Metadata', $metadata);
         return $this;
@@ -265,9 +265,9 @@ class DocumentCatalogType extends DictionaryType
      * Set document's structure tree root.
      *  
      * @param  DictionaryType $structTreeRoot
-     * @return DocumentCatalogType
+     * @return DocumentCatalogDictionaryType
      */
-    public function setStructTreeRoot(DictionaryType $structTreeRoot): DocumentCatalogType
+    public function setStructTreeRoot(DictionaryType $structTreeRoot): DocumentCatalogDictionaryType
     {
         $this->setEntry('StructTreeRoot', $structTreeRoot);
         return $this;
@@ -278,9 +278,9 @@ class DocumentCatalogType extends DictionaryType
      * Set mark information.
      *  
      * @param  DictionaryType $markInfo
-     * @return DocumentCatalogType
+     * @return DocumentCatalogDictionaryType
      */
-    public function setMarkInfo(DictionaryType $markInfo): DocumentCatalogType
+    public function setMarkInfo(DictionaryType $markInfo): DocumentCatalogDictionaryType
     {
         $this->setEntry('MarkInfo', $markInfo);
         return $this;
@@ -290,11 +290,11 @@ class DocumentCatalogType extends DictionaryType
      * Set document's language.
      *  
      * @param  string  $lang
-     * @throws InvalidArgumentException if the provided argument is not of type 'StringObject'.
-     * @return DocumentCatalogType
+     * @return DocumentCatalogDictionaryType
+     *@throws InvalidArgumentException if the provided argument is not of type 'StringObject'.
      */
-    public function setLang(string $lang): DocumentCatalogType
-    {
+    public function setLang(string $lang): DocumentCatalogDictionaryType
+	{
         if (!StringValidator::isValid($lang)) {
             throw new InvalidArgumentException("Lang is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
@@ -309,10 +309,10 @@ class DocumentCatalogType extends DictionaryType
      * Set spider info.
      *  
      * @param  DictionaryType $spiderInfo
-     * @return DocumentCatalogType
-     */
-    public function setSpiderInfo(DictionaryType $spiderInfo): DocumentCatalogType
-    {
+     * @return DocumentCatalogDictionaryType
+	 */
+    public function setSpiderInfo(DictionaryType $spiderInfo): DocumentCatalogDictionaryType
+	{
         $this->setEntry('SpiderInfo', $spiderInfo);
         return $this;
     }
@@ -321,10 +321,10 @@ class DocumentCatalogType extends DictionaryType
      * Set output intents.
      *  
      * @param ArrayObject $outputIntents
-     * @return DocumentCatalogType
-     */
-    public function setOutputIntents(ArrayObject $outputIntents): DocumentCatalogType
-    {
+     * @return DocumentCatalogDictionaryType
+	 */
+    public function setOutputIntents(ArrayObject $outputIntents): DocumentCatalogDictionaryType
+	{
         $this->setEntry('OutputIntents', $outputIntents);
         return $this;
     } 
@@ -333,10 +333,10 @@ class DocumentCatalogType extends DictionaryType
      * Set piece info.
      *  
      * @param  DictionaryType $pieceInfo
-     * @return DocumentCatalogType
-     */
-    public function setPieceInfo(DictionaryType $pieceInfo): DocumentCatalogType
-    {
+     * @return DocumentCatalogDictionaryType
+	 */
+    public function setPieceInfo(DictionaryType $pieceInfo): DocumentCatalogDictionaryType
+	{
         $this->setEntry('PieceInfo', $pieceInfo);
         return $this;
     }
@@ -345,10 +345,10 @@ class DocumentCatalogType extends DictionaryType
      * Set OC properties.
      *  
      * @param  DictionaryType $ocProperties
-     * @return DocumentCatalogType
-     */
-    public function setOCProperties(DictionaryType $ocProperties): DocumentCatalogType
-    {
+     * @return DocumentCatalogDictionaryType
+	 */
+    public function setOCProperties(DictionaryType $ocProperties): DocumentCatalogDictionaryType
+	{
         $this->setEntry('OCProperties', $ocProperties);
         return $this;
     }
@@ -357,10 +357,10 @@ class DocumentCatalogType extends DictionaryType
      * Set permissions.
      *  
      * @param  DictionaryType $perms
-     * @return DocumentCatalogType
-     */
-    public function setPerms(DictionaryType $perms): DocumentCatalogType
-    {
+     * @return DocumentCatalogDictionaryType
+	 */
+    public function setPerms(DictionaryType $perms): DocumentCatalogDictionaryType
+	{
         $this->setEntry('Perms', $perms);
         return $this;
     }
@@ -369,10 +369,10 @@ class DocumentCatalogType extends DictionaryType
      * Set legal.
      *  
      * @param  DictionaryType $legal
-     * @return DocumentCatalogType
-     */
-    public function setLegal(DictionaryType $legal): DocumentCatalogType
-    {
+     * @return DocumentCatalogDictionaryType
+	 */
+    public function setLegal(DictionaryType $legal): DocumentCatalogDictionaryType
+	{
         $this->setEntry('Legal', $legal);
         return $this;
     }
@@ -381,10 +381,10 @@ class DocumentCatalogType extends DictionaryType
      * Set requirements.
      *  
      * @param  ArrayObject $requirements
-     * @return DocumentCatalogType
-     */
-    public function setRequirements(ArrayObject $requirements): DocumentCatalogType
-    {
+     * @return DocumentCatalogDictionaryType
+	 */
+    public function setRequirements(ArrayObject $requirements): DocumentCatalogDictionaryType
+	{
         $this->setEntry('Requirements', $requirements);
         return $this;
     } 
@@ -393,10 +393,10 @@ class DocumentCatalogType extends DictionaryType
      * Set collection.
      *  
      * @param  DictionaryType $collection
-     * @return DocumentCatalogType
-     */
-    public function setCollection(DictionaryType $collection): DocumentCatalogType
-    {
+     * @return DocumentCatalogDictionaryType
+	  */
+    public function setCollection(DictionaryType $collection): DocumentCatalogDictionaryType
+	{
         $this->setEntry('Collection', $collection);
         return $this;
     }
@@ -405,11 +405,11 @@ class DocumentCatalogType extends DictionaryType
      * Set needs rendering.
      *  
      * @param  bool  $needs
-     * @throws InvalidArgumentException if the provided argument is not of type 'bool'.
-     * @return DocumentCatalogType
-     */
-    public function setNeedsRendering(bool $needs): DocumentCatalogType
-    {
+     * @return DocumentCatalogDictionaryType
+     *@throws InvalidArgumentException if the provided argument is not of type 'bool'.
+	 */
+    public function setNeedsRendering(bool $needs): DocumentCatalogDictionaryType
+	{
         if (!BooleanValidator::isValid($needs)) {
             throw new InvalidArgumentException("NeedsRendering is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }

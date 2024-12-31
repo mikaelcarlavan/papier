@@ -52,15 +52,15 @@ $logo->translate(89/2 - 25/2, 51/2 - 25/2); // Lower-left of page is (0,0) coord
 // Back
 $back = $pdf->addPage([89, 51]);
 
-$boldFont = Factory::create('Papier\Type\TrueTypeFontType', null, true);
+$boldFont = Factory::create('Papier\Type\TrueTypeFontDictionaryType', null, true);
 $boldFont->load($pathToBoldLatoFontFile);
 $boldFont->setEncoding(Encoding::WIN_ANSI);
 
-$regularFont = Factory::create('Papier\Type\TrueTypeFontType', null, true);
+$regularFont = Factory::create('Papier\Type\TrueTypeFontDictionaryType', null, true);
 $regularFont->load($pathToRegularLatoFontFile);
 $regularFont->setEncoding(Encoding::WIN_ANSI);
 
-$italicFont = Factory::create('Papier\Type\TrueTypeFontType', null, true);
+$italicFont = Factory::create('Papier\Type\TrueTypeFontDictionaryType', null, true);
 $italicFont->load($pathToItalicLatoFontFile);
 $italicFont->setEncoding(Encoding::WIN_ANSI);
 

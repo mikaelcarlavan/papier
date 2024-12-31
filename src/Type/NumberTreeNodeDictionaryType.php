@@ -6,17 +6,17 @@ use Papier\Factory\Factory;
 use Papier\Type\Base\ArrayType;
 use RunTimeException;
 
-class NumberTreeNodeType extends TreeNodeType
+class NumberTreeNodeDictionaryType extends TreeNodeDictionaryType
 {  
     /**
      * Add kid to node.
      *  
-     * @return NumberTreeNodeType
+     * @return NumberTreeNodeDictionaryType
      */
-    public function addKid(): NumberTreeNodeType
+    public function addKid(): NumberTreeNodeDictionaryType
     {
-		/** @var NumberTreeNodeType $node */
-		$node = Factory::create('Papier\Type\NumberTreeNodeType', null, true);
+		/** @var NumberTreeNodeDictionaryType $node */
+		$node = Factory::create('Papier\Type\NumberTreeNodeDictionaryType', null, true);
         $this->getKids()->append($node);
 
         return $node;
@@ -27,9 +27,9 @@ class NumberTreeNodeType extends TreeNodeType
      *  
      * @param  mixed  $object
      * @param string $key
-     * @return NumberTreeNodeType
+     * @return NumberTreeNodeDictionaryType
      */
-    public function addNum(string $key, $object): NumberTreeNodeType
+    public function addNum(string $key, $object): NumberTreeNodeDictionaryType
     {
         $this->getNums()->setEntry($key, $object);
         return $this;
@@ -39,11 +39,11 @@ class NumberTreeNodeType extends TreeNodeType
      * Set nums.
      *  
      * @param  IntegerKeyArrayType  $nums
-     * @throws RunTimeException if node already contains 'Kids' key.
-     * @return NumberTreeNodeType
+     * @return NumberTreeNodeDictionaryType
+     *@throws RunTimeException if node already contains 'Kids' key.
      */
-    protected function setNums(IntegerKeyArrayType $nums): NumberTreeNodeType
-    {
+    protected function setNums(IntegerKeyArrayType $nums): NumberTreeNodeDictionaryType
+	{
         if ($this->hasEntry('Kids')) {
             throw new RunTimeException("Kids is already present. See ".__CLASS__." class's documentation for possible values.");  
         }
@@ -77,10 +77,10 @@ class NumberTreeNodeType extends TreeNodeType
     /**
      * Get nums from node.
      *
-     * @param  TreeNodeType  $node
+     * @param  TreeNodeDictionaryType $node
      * @return array<mixed>
      */    
-    protected function collectNums(TreeNodeType $node): array
+    protected function collectNums(TreeNodeDictionaryType $node): array
     {
         $objects = array();
 
@@ -95,7 +95,7 @@ class NumberTreeNodeType extends TreeNodeType
             $kids = $node->getEntry('Kids');
             if (count($kids) > 0) {
                 foreach ($kids as $kid) {
-					/** @var TreeNodeType $kid */
+					/** @var TreeNodeDictionaryType $kid */
                     $nums = $this->collectNums($kid);
                     $objects = array_merge($objects, $nums);
                 }

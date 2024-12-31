@@ -66,10 +66,10 @@ class ShadingDictionaryType extends DictionaryType
     /**
      * Set boundaries of the shading's bounding box.
      *  
-     * @param  RectangleType  $bbox
+     * @param  RectangleNumbersArrayType  $bbox
      * @return ShadingDictionaryType
      */
-    public function setBBox(RectangleType $bbox): ShadingDictionaryType
+    public function setBBox(RectangleNumbersArrayType $bbox): ShadingDictionaryType
     {
         $this->setEntry('BBox', $bbox);
         return $this;

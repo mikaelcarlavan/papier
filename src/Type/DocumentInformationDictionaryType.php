@@ -5,10 +5,11 @@ namespace Papier\Type;
 use InvalidArgumentException;
 use Papier\Factory\Factory;
 use Papier\Object\DictionaryObject;
+use Papier\Type\Base\DictionaryType;
 use Papier\Validator\DateValidator;
 use Papier\Validator\TrappedValidator;
 
-class DocumentInformationDictionaryType extends DictionaryObject
+class DocumentInformationDictionaryType extends DictionaryType
 {
     /**
      * Set title.

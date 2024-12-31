@@ -5,23 +5,23 @@ namespace Papier\Type;
 use Papier\Factory\Factory;
 use Papier\Type\Base\DictionaryType;
 
-class TreeType extends DictionaryType
+class TreeDictionaryType extends DictionaryType
 { 
     /**
      * Get root.
      *  
-     * @return TreeNodeType
+     * @return TreeNodeDictionaryType
      */
-    public function getRoot(): TreeNodeType
+    public function getRoot(): TreeNodeDictionaryType
     {
         if (!$this->hasEntry('Root')) {
-			/** @var TreeNodeType $root */
-            $root = Factory::create('Papier\Type\TreeNodeType', null, true);
+			/** @var TreeNodeDictionaryType $root */
+            $root = Factory::create('Papier\Type\TreeNodeDictionaryType', null, true);
 			$root->setRoot();
             $this->setEntry('Root', $root);
         }
 
-		/** @var TreeNodeType $root */
+		/** @var TreeNodeDictionaryType $root */
 		$root = $this->getEntry('Root');
         return $root;
     }
@@ -29,9 +29,9 @@ class TreeType extends DictionaryType
     /**
      * Add kid to tree.
      *  
-     * @return TreeNodeType
+     * @return TreeNodeDictionaryType
      */
-    public function addKid(): TreeNodeType
+    public function addKid(): TreeNodeDictionaryType
     {
         return $this->getRoot()->addKid();
     }

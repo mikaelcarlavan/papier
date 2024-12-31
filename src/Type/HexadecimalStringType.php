@@ -3,8 +3,9 @@
 namespace Papier\Type;
 
 use Papier\Object\StringObject;
+use Papier\Type\Base\StringType;
 
-class HexadecimalStringType extends StringObject
+class HexadecimalStringType extends StringType
 {
 
     /**

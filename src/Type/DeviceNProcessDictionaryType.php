@@ -6,9 +6,10 @@ use InvalidArgumentException;
 use Papier\Factory\Factory;
 use Papier\Object\ArrayObject;
 use Papier\Object\DictionaryObject;
+use Papier\Type\Base\DictionaryType;
 use Papier\Validator\StringValidator;
 
-class DeviceNProcessDictionaryType extends DictionaryObject
+class DeviceNProcessDictionaryType extends DictionaryType
 {
     /**
      * Set color space.

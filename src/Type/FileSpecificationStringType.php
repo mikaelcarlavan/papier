@@ -3,9 +3,10 @@
 namespace Papier\Type;
 
 use Papier\Object\StringObject;
+use Papier\Type\Base\StringType;
 
 
-class FileSpecificationStringType extends StringObject
+class FileSpecificationStringType extends StringType
 {
     /**
      * Convert file specification.
