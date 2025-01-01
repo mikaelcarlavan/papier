@@ -72,10 +72,10 @@ class DocumentCatalogDictionaryType extends DictionaryType
     /**
      * Set page tree node (root of document's page tree).
      *  
-     * @param  NumberTreeDictionaryType  $labels
+     * @param  PageLabelsNumberTreeDictionaryType  $labels
      * @return DocumentCatalogDictionaryType
      */
-    public function setPageLabels(NumberTreeDictionaryType $labels): DocumentCatalogDictionaryType
+    public function setPageLabels(PageLabelsNumberTreeDictionaryType $labels): DocumentCatalogDictionaryType
     {
         $this->setEntry('PageLabels', $labels);
         return $this;
@@ -115,7 +115,25 @@ class DocumentCatalogDictionaryType extends DictionaryType
     {
         $this->setEntry('ViewerPreferences', $preferences);
         return $this;
-    } 
+    }
+
+	/**
+	 * Get page labels
+	 *
+	 * @return PageLabelsNumberTreeDictionaryType
+	 */
+	public function getPageLabels(): PageLabelsNumberTreeDictionaryType
+	{
+		if (!$this->hasEntry('PageLabels')) {
+			$pageLabels = Factory::create('Papier\Type\PageLabelsNumberTreeDictionaryType');
+			$this->setPageLabels($pageLabels);
+		}
+
+		/** @var PageLabelsNumberTreeDictionaryType $pageLabels */
+		$pageLabels = $this->getEntry('PageLabels');
+		return $pageLabels;
+
+	}
 
     /**
      * Get viewer preferences.
