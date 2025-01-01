@@ -77,6 +77,8 @@ class FileBody extends BaseObject
         $page = $this->getPageTree()->addObject();
         $page->setParent($this->getPageTree());
 
+		$this->getPageTree()->getKids()->next();
+
         return $page;
     } 
 
