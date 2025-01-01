@@ -6,6 +6,7 @@ use InvalidArgumentException;
 use Papier\Factory\Factory;
 use Papier\Object\ArrayObject;
 use Papier\Object\StreamObject;
+use Papier\Type\Base\ArrayType;
 use Papier\Type\Base\DictionaryType;
 use Papier\Type\Base\NameType;
 use Papier\Validator\BooleanValidator;
@@ -132,7 +133,6 @@ class DocumentCatalogDictionaryType extends DictionaryType
 		/** @var PageLabelsNumberTreeDictionaryType $pageLabels */
 		$pageLabels = $this->getEntry('PageLabels');
 		return $pageLabels;
-
 	}
 
     /**
@@ -208,11 +208,28 @@ class DocumentCatalogDictionaryType extends DictionaryType
      * @param ArrayObject $threads
      * @return DocumentCatalogDictionaryType
      */
-    public function setThreads(ArrayObject $threads): DocumentCatalogDictionaryType
+    public function setThreads(ArrayType $threads): DocumentCatalogDictionaryType
     {
         $this->setEntry('Threads', $threads);
         return $this;
-    } 
+    }
+
+	/**
+	 * Get threads
+	 *
+	 * @return ArrayType
+	 */
+	public function getThreads(): ArrayType
+	{
+		if (!$this->hasEntry('Threads')) {
+			$threads = Factory::create('Papier\Type\Base\ArrayType');
+			$this->setThreads($threads);
+		}
+
+		/** @var ArrayType $threads */
+		$threads = $this->getEntry('Threads');
+		return $threads;
+	}
 
     /**
      * Set open action.
