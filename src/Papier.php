@@ -17,6 +17,7 @@ use Papier\File\FileHeader;
 use Papier\File\FileTrailer;
 use Papier\Type\DocumentInformationDictionaryType;
 use Papier\Type\PageObjectDictionaryType;
+use Papier\Type\TextAnnotationDictionaryType;
 use Papier\Type\ViewerPreferencesDictionaryType;
 use Papier\Validator\NumbersArrayValidator;
 
@@ -273,6 +274,30 @@ class Papier
         return $page;
     }
 
+	/**
+	 * Add annotation to PDF's content.
+	 *
+	 * @param PageObjectDictionaryType|null $page
+	 * @return TextAnnotationDictionaryType
+	 */
+	public function addAnnotation(PageObjectDictionaryType $page = null): TextAnnotationDictionaryType
+	{
+		if (is_null($page)) {
+			$page = $this->getCurrentPage();
+		}
+
+		if (!$page instanceof PageObjectDictionaryType) {
+			throw new InvalidArgumentException("Page is incorrect. See ".__CLASS__." class's documentation for possible values.");
+		}
+
+		$annots = $page->getAnnots();
+
+		$annot = Factory::create('Papier\Type\TextAnnotationDictionaryType', null, true);
+
+		$annots->push($annot);
+
+		return $annot;
+	}
 
     /**
      * Get viewer preferences.

@@ -233,6 +233,37 @@ class AnnotationDictionaryType extends DictionaryType
 	}
 
 	/**
+	 * Set text label that shall be displayed in the title bar of the annotation’s pop-up window when open and active
+	 *
+	 * @param  string  $t
+	 * @return AnnotationDictionaryType
+	 * @throws InvalidArgumentException if the provided argument is not of type 'string'.
+	 */
+	public function setT(string $t): AnnotationDictionaryType
+	{
+		if (!StringValidator::isValid($t)) {
+			throw new InvalidArgumentException("T is incorrect. See ".__CLASS__." class's documentation for possible values.");
+		}
+		$value = Factory::create('Papier\Type\TextStringType', $t);
+
+		$this->setEntry('T', $value);
+		return $this;
+	}
+
+	/**
+	 * Set pop-up annotation for entering or editing the text associated with this annotation
+	 *
+	 * @param DictionaryType $popup
+	 * @return AnnotationDictionaryType
+	 * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryType'.
+	 */
+	public function setPopup(DictionaryType $popup): AnnotationDictionaryType
+	{
+		$this->setEntry('Popup', $popup);
+		return $this;
+	}
+
+	/**
 	 * Format object's value.
 	 *
 	 * @return string
