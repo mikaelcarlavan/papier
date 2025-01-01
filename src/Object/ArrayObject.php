@@ -62,7 +62,7 @@ class ArrayObject extends DictionaryObject
     {
 		/** @var array<IndirectObject> $objects */
         $objects = $this->getObjects();
-        return $objects[$this->position];
+        return $objects[$this->position] ?? new NullObject();
     }
 
     /**
