@@ -138,75 +138,81 @@ class Papier
         return $this;
     }
 
-    /**
-     * Create image component.
-     *
-     * @return ImageComponent
-     */
-    public function createImageComponent(): ImageComponent
+	/**
+	 * Add new image component to page.
+	 *
+	 * @param PageObjectDictionaryType|null $page
+	 * @return ImageComponent
+	 */
+    public function addImageComponent(PageObjectDictionaryType $page = null): ImageComponent
     {
 		/** @var ImageComponent $component */
-		$component = $this->createComponent('Papier\Component\ImageComponent');
-		return $component;
-	}
-
-    /**
-     * Create text component.
-     *
-     * @return TextComponent
-     */
-    public function createTextComponent(): TextComponent
-    {
-		/** @var TextComponent $component */
-		$component = $this->createComponent('Papier\Component\TextComponent');
+		$component = $this->addComponent('Papier\Component\ImageComponent', $page);
 		return $component;
 	}
 
 	/**
-	 * Create circle component.
+	 * Add new text component to page.
 	 *
+	 * @param PageObjectDictionaryType|null $page
+	 * @return TextComponent
+	 */
+    public function addTextComponent(PageObjectDictionaryType $page = null): TextComponent
+    {
+		/** @var TextComponent $component */
+		$component = $this->addComponent('Papier\Component\TextComponent', $page);
+		return $component;
+	}
+
+	/**
+	 * Add new circle component to page.
+	 *
+	 * @param PageObjectDictionaryType|null $page
 	 * @return CircleComponent
 	 */
-	public function createCircleComponent(): CircleComponent
+	public function addCircleComponent(PageObjectDictionaryType $page = null): CircleComponent
 	{
 		/** @var CircleComponent $component */
-		$component = $this->createComponent('Papier\Component\CircleComponent');
+		$component = $this->addComponent('Papier\Component\CircleComponent', $page);
 		return $component;
 	}
 
-    /**
-     * Create rectangle component.
-     *
-     * @return RectangleComponent
-     */
-    public function createRectangleComponent(): RectangleComponent
+	/**
+	 * Add new rectangle component to page.
+	 *
+	 * @param PageObjectDictionaryType|null $page
+	 * @return RectangleComponent
+	 */
+    public function addRectangleComponent(PageObjectDictionaryType $page = null): RectangleComponent
     {
 		/** @var RectangleComponent $component */
-		$component = $this->createComponent('Papier\Component\RectangleComponent');
+		$component = $this->addComponent('Papier\Component\RectangleComponent', $page);
 		return $component;
 	}
 
-    /**
-     * Create Bezier component.
-     *
-     * @return DrawComponent
-     */
-    public function createDrawComponent(): DrawComponent
+	/**
+	 * Add new Bezier component to page.
+	 *
+	 * @param PageObjectDictionaryType|null $page
+	 * @return DrawComponent
+	 */
+    public function addDrawComponent(PageObjectDictionaryType $page = null): DrawComponent
     {
 		/** @var DrawComponent $component */
-		$component = $this->createComponent('Papier\Component\DrawComponent');
+		$component = $this->addComponent('Papier\Component\DrawComponent', $page);
 		return $component;
     }
 
 	/**
-	 * Create segment component.
+	 * Add new segment component to page.
 	 *
+	 * @param PageObjectDictionaryType|null $page
 	 * @return SegmentComponent
 	 */
-	public function createSegmentComponent(): SegmentComponent
+	public function addSegmentComponent(PageObjectDictionaryType $page = null): SegmentComponent
 	{
 		/** @var SegmentComponent $component */
-		$component = $this->createComponent('Papier\Component\SegmentComponent');
+		$component = $this->addComponent('Papier\Component\SegmentComponent', $page);
 		return $component;
 	}
 
@@ -215,14 +221,25 @@ class Papier
 	 *
 	 * @template T
 	 * @param class-string<T> $class
+	 * @param PageObjectDictionaryType|null $page
 	 * @return BaseComponent
-	 * @throws InvalidArgumentException if the provided type's object does not exist.
 	 */
-	public function createComponent(string $class)
+	public function addComponent(string $class, PageObjectDictionaryType $page = null): BaseComponent
 	{
 		/** @var BaseComponent $component */
 		$component = Factory::create($class);
 		$this->components[] = $component;
+
+		if (is_null($page)) {
+			$page = $this->getCurrentPage();
+		}
+
+		if (!$page instanceof PageObjectDictionaryType) {
+			throw new InvalidArgumentException("Page is incorrect. See ".__CLASS__." class's documentation for possible values.");
+		}
+
+		$component->setPage($page);
+
 		return $component;
 	}
 

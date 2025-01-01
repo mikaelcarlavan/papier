@@ -44,7 +44,7 @@ $pdf->getHeader()->setVersion(7);
 // Front
 $front = $pdf->addPage([89, 51]);
 
-$logo = $pdf->createImageComponent()->setPage($front);
+$logo = $pdf->addImageComponent();
 $logo->setSource($pathToLogo);
 $logo->setWidth(25);
 $logo->translate(89/2 - 25/2, 51/2 - 25/2); // Lower-left of page is (0,0) coordinate
@@ -64,7 +64,7 @@ $italicFont = Factory::create('Papier\Type\TrueTypeFontDictionaryType', null, tr
 $italicFont->load($pathToItalicLatoFontFile);
 $italicFont->setEncoding(Encoding::WIN_ANSI);
 
-$name = $pdf->createTextComponent()->setPage($back);
+$name = $pdf->addTextComponent();
 $name->setNonStrokingColor(0, 0, 0);
 $name->setNonStrokingColorSpace(DeviceColourSpace::RGB);
 $name->setRenderingMode(RenderingMode::FILL);
@@ -73,7 +73,7 @@ $name->setFont($boldFont);
 $name->setFontSize(5);
 $name->translate(8, 41);
 
-$job = $pdf->createTextComponent()->setPage($back);
+$job = $pdf->addTextComponent();
 $job->setNonStrokingColor(0, 0, 0);
 $job->setNonStrokingColorSpace(DeviceColourSpace::RGB);
 $job->setRenderingMode(RenderingMode::FILL);
@@ -82,7 +82,7 @@ $job->setFont($italicFont);
 $job->setFontSize(3.5);
 $job->translate(8, 36);
 
-$email = $pdf->createTextComponent()->setPage($back);
+$email = $pdf->addTextComponent();
 $email->setNonStrokingColor(0, 0, 0);
 $email->setNonStrokingColorSpace(DeviceColourSpace::RGB);
 $email->setRenderingMode(RenderingMode::FILL);
@@ -93,7 +93,7 @@ $email->translate(8, 31);
 
 // Add nice circles on top-right of the card
 for ($nCircle = 1; $nCircle <= 3; $nCircle++) {
-	$circle = $pdf->createCircleComponent()->setPage($back);
+	$circle = $pdf->addCircleComponent();
 	$circle->setStrokingColor(0.3 * $nCircle, 1 - 0.3 * $nCircle, 0);
 	$circle->setStrokingColorSpace(DeviceColourSpace::RGB);
 	$circle->setRenderingMode(RenderingMode::STROKE);
@@ -103,7 +103,7 @@ for ($nCircle = 1; $nCircle <= 3; $nCircle++) {
 }
 
 // Add qr code
-$qrCode = $pdf->createImageComponent()->setPage($back);
+$qrCode = $pdf->addImageComponent();
 $qrCode->setSource($pathToQrCode);
 $qrCode->setWidth(20);
 $qrCode->translate(8, 6); // Lower-left of page is (0,0) coordinate
