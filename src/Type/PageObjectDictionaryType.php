@@ -7,8 +7,10 @@ use Papier\Factory\Factory;
 use Papier\Object\ArrayObject;
 use Papier\Object\DictionaryObject;
 use Papier\Object\StreamObject;
+use Papier\Type\Base\ArrayType;
 use Papier\Type\Base\DateType;
 use Papier\Type\Base\DictionaryType;
+use Papier\Type\Base\StreamType;
 use Papier\Validator\TabOrderValidator;
 
 
@@ -248,11 +250,11 @@ class PageObjectDictionaryType extends DictionaryType
      *  
      * @param  mixed  $contents
      * @return PageObjectDictionaryType
-     *@throws InvalidArgumentException if the provided argument is not of type 'StreamObject' or 'ArrayObject'.
+     *@throws InvalidArgumentException if the provided argument is not of type 'StreamObject' or 'ArrayType'.
      */
     public function setContents($contents): PageObjectDictionaryType
 	{
-        if (!$contents instanceof StreamObject && !$contents instanceof ArrayObject) {
+        if (!$contents instanceof StreamType && !$contents instanceof ArrayType) {
             throw new InvalidArgumentException("Contents is incorrect. See ".__CLASS__." class's documentation for possible values.");
         }
 
@@ -319,10 +321,10 @@ class PageObjectDictionaryType extends DictionaryType
     /**
      * Set references to articles beads.
      *  
-     * @param  ArrayObject  $b
+     * @param  ArrayType  $b
      * @return PageObjectDictionaryType
 	 */
-    public function setB(ArrayObject $b): PageObjectDictionaryType
+    public function setB(ArrayType $b): PageObjectDictionaryType
 	{
         $this->setEntry('B', $b);
         return $this;
@@ -357,14 +359,31 @@ class PageObjectDictionaryType extends DictionaryType
     /**
      * Set annotations.
      *  
-     * @param  ArrayObject  $annots
+     * @param  ArrayType  $annots
      * @return PageObjectDictionaryType
 	 */
-    public function setAnnots(ArrayObject $annots): PageObjectDictionaryType
+    public function setAnnots(ArrayType $annots): PageObjectDictionaryType
 	{
         $this->setEntry('Annots', $annots);
         return $this;
     }
+
+	/**
+	 * Get annotations.
+	 *
+	 * @return ArrayType
+	 */
+	public function getAnnots(): ArrayType
+	{
+		if (!$this->hasEntry('Annots')) {
+			$annots = Factory::create('Papier\Type\Base\ArrayType', null, true);
+			$this->setAnnots($annots);
+		}
+
+		/** @var ArrayType $annots */
+		$annots = $this->getEntry('Annots');
+		return $annots;
+	}
 
     /**
      * Set additional actions.

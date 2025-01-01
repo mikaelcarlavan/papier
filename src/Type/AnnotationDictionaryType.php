@@ -3,11 +3,13 @@
 namespace Papier\Type;
 
 use Papier\Factory\Factory;
+use Papier\Papier;
 use Papier\Type\Base\DateType;
 use Papier\Type\Base\DictionaryType;
 use Papier\Validator\AnnotationTypeValidator;
 use Papier\Validator\ArrayValidator;
 use Papier\Validator\IntegerValidator;
+use Papier\Validator\NumbersArrayValidator;
 use Papier\Validator\StringValidator;
 use RuntimeException;
 use InvalidArgumentException;
@@ -35,12 +37,22 @@ class AnnotationDictionaryType extends DictionaryType
 	/**
 	 * Set rectangle defining the location of the annotation on the page in default user space units.
 	 *
-	 * @param  RectangleNumbersArrayType  $rect
+	 * @param  array  $rect
 	 * @return AnnotationDictionaryType
 	 */
-	public function setRect(RectangleNumbersArrayType $rect): AnnotationDictionaryType
+	public function setRect(array $rect): AnnotationDictionaryType
 	{
-		$this->setEntry('Rect', $rect);
+		if (!NumbersArrayValidator::isValid($rect)) {
+			throw new InvalidArgumentException("Contents is incorrect. See ".__CLASS__." class's documentation for possible values.");
+		}
+
+		$mmToUserUnit = Papier::MM_TO_USER_UNIT;
+		$rect = array_map(function ($item) use ($mmToUserUnit) {
+			return $item * $mmToUserUnit;
+		}, $rect);
+
+		$value = Factory::create('Papier\Type\RectangleNumbersArrayType', $rect);
+		$this->setEntry('Rect', $value);
 		return $this;
 	}
 
