@@ -43,28 +43,38 @@ $pdf = new Papier();
 $pdf->getHeader()->setVersion(7);
 
 $page = $pdf->addPage([210, 297]);
-
-$image = $pdf->createImageComponent()->setPage($page);
+$image = $pdf->addImageComponent()->setPage($page);
 $image->setSource($pathToLocalImage);
 $image->setWidth(50);
 $image->translate(10, 10);
+
 
 $font = Factory::create('Papier\Type\TrueTypeFontDictionaryType', null, true);
 $font->load($pathToLocalFontFile);
 $font->setEncoding(Encoding::WIN_ANSI);
 
-$text = $pdf->createTextComponent()->setPage($page);
+$page = $pdf->addPage([210, 297]);
+
+$text = $pdf->addTextComponent();
 $text->setNonStrokingColor(1, 0, 0);
 $text->setStrokingColor(0, 1, 0);
 $text->setNonStrokingColorSpace(DeviceColourSpace::RGB);
 $text->setStrokingColorSpace(DeviceColourSpace::RGB);
 $text->setRenderingMode(RenderingMode::FILL_THEN_STROKE);
-$text->setText('Hello World !');
+$text->setText('Café');
 $text->setFont($font);
 $text->setFontSize(12);
 $text->translate(100, 100);
 
-$draw = $pdf->createDrawComponent()->setPage($page);
+$annot = $pdf->addTextAnnotation($page);
+$annot->setContents('Hello World !');
+$annot->setRect([50, 50, 70, 100]);
+$annot->setT('Mikael');
+$annot->setOpen(true);
+
+$page = $pdf->addPage([210, 297]);
+
+$draw = $pdf->addDrawComponent()->setPage($page);
 $draw->setNonStrokingColor(0.4, 0, 0.4);
 $draw->setStrokingColor(0.9, 0, 0);
 $draw->setStrokingColorSpace(DeviceColourSpace::RGB);
@@ -73,14 +83,8 @@ $draw->addPoint(50, 50);
 $draw->addPointWithControlPoints(150, 5, 74, 120, 150, 150);
 $draw->addPoint(200, 200);
 
-$line = $pdf->createSegmentComponent()->setPage($page);
-$line->setNonStrokingColor(0.4, 0, 0.4);
-$line->setStrokingColor(0.9, 0, 0);
-$line->setStrokingColorSpace(DeviceColourSpace::RGB);
-$line->setNonStrokingColorSpace(DeviceColourSpace::RGB);
-$line->setStartPoint(45, 80);
-$line->setEndPoint(145, 180);
-$line->setLineWidth(5);
+$pageLabels = $pdf->getPageLabels();
+$pageLabels->addLabel(0, \Papier\Document\NumberingStyle::LOWERCASE_ROMAN);
 
 $info = $pdf->getInfo();
 $info->setTitle('Papier');
