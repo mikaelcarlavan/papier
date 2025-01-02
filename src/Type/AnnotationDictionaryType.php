@@ -8,6 +8,7 @@ use Papier\Type\Base\DateType;
 use Papier\Type\Base\DictionaryType;
 use Papier\Validator\AnnotationTypeValidator;
 use Papier\Validator\ArrayValidator;
+use Papier\Validator\DateValidator;
 use Papier\Validator\IntegerValidator;
 use Papier\Validator\NumbersArrayValidator;
 use Papier\Validator\StringValidator;
@@ -107,12 +108,17 @@ class AnnotationDictionaryType extends DictionaryType
 	/**
 	 * Set date and time when the annotation was most recently modified
 	 *
-	 * @param  DateType  $m
+	 * @param  mixed  $m
 	 * @return AnnotationDictionaryType
 	 */
-	public function setM(DateType $m): AnnotationDictionaryType
+	public function setM(mixed $m): AnnotationDictionaryType
 	{
-		$this->setEntry('M', $m);
+		if (!DateValidator::isValid($m)) {
+			throw new InvalidArgumentException("M is incorrect. See ".__CLASS__." class's documentation for possible values.");
+		}
+		$value = Factory::create('Papier\Type\Base\DateType', $m);
+
+		$this->setEntry('M', $value);
 		return $this;
 	}
 
@@ -229,37 +235,6 @@ class AnnotationDictionaryType extends DictionaryType
 	public function setOC(DictionaryType $oc): AnnotationDictionaryType
 	{
 		$this->setEntry('OC', $oc);
-		return $this;
-	}
-
-	/**
-	 * Set text label that shall be displayed in the title bar of the annotation’s pop-up window when open and active
-	 *
-	 * @param  string  $t
-	 * @return AnnotationDictionaryType
-	 * @throws InvalidArgumentException if the provided argument is not of type 'string'.
-	 */
-	public function setT(string $t): AnnotationDictionaryType
-	{
-		if (!StringValidator::isValid($t)) {
-			throw new InvalidArgumentException("T is incorrect. See ".__CLASS__." class's documentation for possible values.");
-		}
-		$value = Factory::create('Papier\Type\TextStringType', $t);
-
-		$this->setEntry('T', $value);
-		return $this;
-	}
-
-	/**
-	 * Set pop-up annotation for entering or editing the text associated with this annotation
-	 *
-	 * @param DictionaryType $popup
-	 * @return AnnotationDictionaryType
-	 * @throws InvalidArgumentException if the provided argument is not of type 'DictionaryType'.
-	 */
-	public function setPopup(DictionaryType $popup): AnnotationDictionaryType
-	{
-		$this->setEntry('Popup', $popup);
 		return $this;
 	}
 

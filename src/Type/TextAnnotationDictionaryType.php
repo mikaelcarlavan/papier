@@ -7,14 +7,13 @@ use Papier\Validator\BooleanValidator;
 use RuntimeException;
 use InvalidArgumentException;
 
-class TextAnnotationDictionaryType extends AnnotationDictionaryType
+class TextAnnotationDictionaryType extends MarkupAnnotationDictionaryType
 {
 	/**
 	 * Set whether the annotation shall initially be displayed open
 	 *
-	 * @param  bool  $needs
+	 * @param bool $open
 	 * @return TextAnnotationDictionaryType
-	 * @throws InvalidArgumentException if the provided argument is not of type 'bool'.
 	 */
 	public function setOpen(bool $open): TextAnnotationDictionaryType
 	{
