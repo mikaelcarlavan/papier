@@ -16,6 +16,7 @@ use Papier\File\FileBody;
 use Papier\File\FileHeader;
 use Papier\File\FileTrailer;
 use Papier\Type\DocumentInformationDictionaryType;
+use Papier\Type\PageLabelsNumberTreeDictionaryType;
 use Papier\Type\PageObjectDictionaryType;
 use Papier\Type\TextAnnotationDictionaryType;
 use Papier\Type\ViewerPreferencesDictionaryType;
@@ -266,6 +267,18 @@ class Papier
         $page = $this->getBody()->getPageTree()->getKids()->current();
         return $page;
     }
+
+	/**
+	 * Get pages labels.
+	 *
+	 * @return PageLabelsNumberTreeDictionaryType
+	 */
+	public function getPageLabels(): PageLabelsNumberTreeDictionaryType
+	{
+		/** @var PageLabelsNumberTreeDictionaryType $page */
+		$pageLabels = $this->getBody()->getDocumentCatalog()->getPageLabels();
+		return $pageLabels;
+	}
 
 	/**
 	 * Add page to PDF's content.
