@@ -292,12 +292,12 @@ class Papier
     }
 
 	/**
-	 * Add annotation to PDF's content.
+	 * Add text annotation to PDF's content.
 	 *
 	 * @param PageObjectDictionaryType|null $page
 	 * @return TextAnnotationDictionaryType
 	 */
-	public function addAnnotation(PageObjectDictionaryType $page = null): TextAnnotationDictionaryType
+	public function addTextAnnotation(PageObjectDictionaryType $page = null): TextAnnotationDictionaryType
 	{
 		if (is_null($page)) {
 			$page = $this->getCurrentPage();
