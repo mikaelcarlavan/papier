@@ -34,6 +34,13 @@ composer require papier/papier
 ## Example usage
 
 ```php
+
+use Papier\Papier;
+use Papier\Factory\Factory;
+use Papier\Graphics\DeviceColourSpace;
+use Papier\Text\Encoding;
+use Papier\Text\RenderingMode;
+
 require __DIR__.'/../vendor/autoload.php';
 
 $pathToLocalFontFile = 'Lato-Regular.ttf';
