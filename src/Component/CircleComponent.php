@@ -3,6 +3,7 @@
 namespace Papier\Component;
 
 use Papier\Component\Base\BaseComponent;
+use Papier\Helpers\MetricHelper;
 use Papier\Papier;
 use Papier\Text\RenderingMode;
 use Papier\Util\Point;
@@ -143,17 +144,17 @@ class CircleComponent extends BaseComponent
 		$controlDistance = 4 * (sqrt(2) - 1) / 3;
 
 		$mmToUserUnit = Papier::MM_TO_USER_UNIT;
-		$contents->beginPath($mmToUserUnit * ($centerPoint->getX() + $radius), $mmToUserUnit * $centerPoint->getY());
+		$contents->beginPath(MetricHelper::toUserUnit($centerPoint->getX() + $radius), MetricHelper::toUserUnit($centerPoint->getY()));
 
 		// Approximate the circle using 4 Bézier curves
 		// First quarter
-		$contents->appendCubicBezier($mmToUserUnit * ($centerPoint->getX() + $radius), $mmToUserUnit * ($centerPoint->getY() + $radius * $controlDistance), $mmToUserUnit * ($centerPoint->getX() + $radius * $controlDistance), $mmToUserUnit * ($centerPoint->getY() + $radius), $mmToUserUnit * $centerPoint->getX(), $mmToUserUnit * ($centerPoint->getY() + $radius));
+		$contents->appendCubicBezier(MetricHelper::toUserUnit($centerPoint->getX() + $radius), MetricHelper::toUserUnit($centerPoint->getY() + $radius * $controlDistance), MetricHelper::toUserUnit($centerPoint->getX() + $radius * $controlDistance), MetricHelper::toUserUnit($centerPoint->getY() + $radius), MetricHelper::toUserUnit($centerPoint->getX()), MetricHelper::toUserUnit($centerPoint->getY() + $radius));
 		// Second quarter
-		$contents->appendCubicBezier($mmToUserUnit * ($centerPoint->getX() - $radius * $controlDistance), $mmToUserUnit * ($centerPoint->getY() + $radius), $mmToUserUnit * ($centerPoint->getX() - $radius), $mmToUserUnit * ($centerPoint->getY() + $radius * $controlDistance), $mmToUserUnit * ($centerPoint->getX() - $radius), $mmToUserUnit * $centerPoint->getY());
+		$contents->appendCubicBezier(MetricHelper::toUserUnit($centerPoint->getX() - $radius * $controlDistance), MetricHelper::toUserUnit($centerPoint->getY() + $radius), MetricHelper::toUserUnit($centerPoint->getX() - $radius), MetricHelper::toUserUnit($centerPoint->getY() + $radius * $controlDistance), MetricHelper::toUserUnit($centerPoint->getX() - $radius), MetricHelper::toUserUnit($centerPoint->getY()));
 		// Third quarter
-		$contents->appendCubicBezier($mmToUserUnit * ($centerPoint->getX() - $radius), $mmToUserUnit * ($centerPoint->getY() - $radius * $controlDistance), $mmToUserUnit * ($centerPoint->getX() - $radius * $controlDistance), $mmToUserUnit * ($centerPoint->getY() - $radius), $mmToUserUnit * $centerPoint->getX(), $mmToUserUnit * ($centerPoint->getY() - $radius));
+		$contents->appendCubicBezier(MetricHelper::toUserUnit($centerPoint->getX() - $radius), MetricHelper::toUserUnit($centerPoint->getY() - $radius * $controlDistance), MetricHelper::toUserUnit($centerPoint->getX() - $radius * $controlDistance), MetricHelper::toUserUnit($centerPoint->getY() - $radius), MetricHelper::toUserUnit($centerPoint->getX()), MetricHelper::toUserUnit($centerPoint->getY() - $radius));
 		// Fourth quarter
-		$contents->appendCubicBezier($mmToUserUnit * ($centerPoint->getX() + $radius * $controlDistance), $mmToUserUnit * ($centerPoint->getY() - $radius), $mmToUserUnit * ($centerPoint->getX() + $radius), $mmToUserUnit * ($centerPoint->getY() - $radius * $controlDistance), $mmToUserUnit * ($centerPoint->getX() + $radius), $mmToUserUnit * $centerPoint->getY());
+		$contents->appendCubicBezier(MetricHelper::toUserUnit($centerPoint->getX() + $radius * $controlDistance), MetricHelper::toUserUnit($centerPoint->getY() - $radius), MetricHelper::toUserUnit($centerPoint->getX() + $radius), MetricHelper::toUserUnit($centerPoint->getY() - $radius * $controlDistance), MetricHelper::toUserUnit($centerPoint->getX() + $radius), MetricHelper::toUserUnit($centerPoint->getY()));
 
 
 		$strokingColors = $this->getStrokingColor();

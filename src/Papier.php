@@ -15,9 +15,13 @@ use Papier\File\CrossReference;
 use Papier\File\FileBody;
 use Papier\File\FileHeader;
 use Papier\File\FileTrailer;
+use Papier\Helpers\MetricHelper;
+use Papier\Type\AnnotationDictionaryType;
+use Papier\Type\CircleAnnotationDictionaryType;
 use Papier\Type\DocumentInformationDictionaryType;
 use Papier\Type\PageLabelsNumberTreeDictionaryType;
 use Papier\Type\PageObjectDictionaryType;
+use Papier\Type\SquareAnnotationDictionaryType;
 use Papier\Type\TextAnnotationDictionaryType;
 use Papier\Type\ViewerPreferencesDictionaryType;
 use Papier\Validator\NumbersArrayValidator;
@@ -225,7 +229,7 @@ class Papier
 	 * @param PageObjectDictionaryType|null $page
 	 * @return BaseComponent
 	 */
-	public function addComponent(string $class, PageObjectDictionaryType $page = null): BaseComponent
+	private function addComponent(string $class, PageObjectDictionaryType $page = null): BaseComponent
 	{
 		/** @var BaseComponent $component */
 		$component = Factory::create($class);
@@ -294,8 +298,7 @@ class Papier
 			throw new InvalidArgumentException("Dimensions is incorrect. See ".__CLASS__." class's documentation for possible values.");
 		}
 
-        $mmToUserUnit = Papier::MM_TO_USER_UNIT;
-		$dimensions = [0, 0, $mmToUserUnit * $dimensions[0], $mmToUserUnit * $dimensions[1]];
+		$dimensions = [0, 0, MetricHelper::toUserUnit($dimensions[0]), MetricHelper::toUserUnit($dimensions[1])];
 
 		$mediabox = Factory::create('Papier\Type\RectangleNumbersArrayType', $dimensions);
 
@@ -312,6 +315,49 @@ class Papier
 	 */
 	public function addTextAnnotation(PageObjectDictionaryType $page = null): TextAnnotationDictionaryType
 	{
+		/** @var TextAnnotationDictionaryType $annot */
+		$annot = $this->addAnnotation('Papier\Type\TextAnnotationDictionaryType', $page);
+		return $annot;
+	}
+
+
+	/**
+	 * Add square annotation to PDF's content.
+	 *
+	 * @param PageObjectDictionaryType|null $page
+	 * @return SquareAnnotationDictionaryType
+	 */
+	public function addSquareAnnotation(PageObjectDictionaryType $page = null): SquareAnnotationDictionaryType
+	{
+		/** @var SquareAnnotationDictionaryType $annot */
+		$annot = $this->addAnnotation('Papier\Type\SquareAnnotationDictionaryType', $page);
+		return $annot;
+	}
+
+
+	/**
+	 * Add circle annotation to PDF's content.
+	 *
+	 * @param PageObjectDictionaryType|null $page
+	 * @return CircleAnnotationDictionaryType
+	 */
+	public function addCircleAnnotation(PageObjectDictionaryType $page = null): CircleAnnotationDictionaryType
+	{
+		/** @var CircleAnnotationDictionaryType $annot */
+		$annot = $this->addAnnotation('Papier\Type\CircleAnnotationDictionaryType', $page);
+		return $annot;
+	}
+
+	/**
+	 * Create a new annotation of type
+	 *
+	 * @template T
+	 * @param class-string<T> $class
+	 * @param PageObjectDictionaryType|null $page
+	 * @return AnnotationDictionaryType
+	 */
+	private function addAnnotation(string $class, PageObjectDictionaryType $page = null): AnnotationDictionaryType
+	{
 		if (is_null($page)) {
 			$page = $this->getCurrentPage();
 		}
@@ -322,8 +368,8 @@ class Papier
 
 		$annots = $page->getAnnots();
 
-		$annot = Factory::create('Papier\Type\TextAnnotationDictionaryType', null, true);
-
+		/** @var AnnotationDictionaryType $annot */
+		$annot = Factory::create($class, null, true);
 		$annots->push($annot);
 
 		return $annot;

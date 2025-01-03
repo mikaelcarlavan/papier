@@ -3,6 +3,7 @@
 namespace Papier\Type;
 
 use Papier\Factory\Factory;
+use Papier\Helpers\MetricHelper;
 use Papier\Papier;
 use Papier\Type\Base\DateType;
 use Papier\Type\Base\DictionaryType;
@@ -47,10 +48,7 @@ class AnnotationDictionaryType extends DictionaryType
 			throw new InvalidArgumentException("Contents is incorrect. See ".__CLASS__." class's documentation for possible values.");
 		}
 
-		$mmToUserUnit = Papier::MM_TO_USER_UNIT;
-		$rect = array_map(function ($item) use ($mmToUserUnit) {
-			return $item * $mmToUserUnit;
-		}, $rect);
+		$rect = MetricHelper::toUserUnit($rect);
 
 		$value = Factory::create('Papier\Type\RectangleNumbersArrayType', $rect);
 		$this->setEntry('Rect', $value);
@@ -192,16 +190,16 @@ class AnnotationDictionaryType extends DictionaryType
 	/**
 	 * Set colour used for the annotation
 	 *
-	 * @param  array  $c
+	 * @param  mixed  $colors
 	 * @return AnnotationDictionaryType
 	 * @throws InvalidArgumentException if the provided argument is not of type 'array'.
 	 */
-	public function setC(array $c): AnnotationDictionaryType
+	public function setC(...$colors): AnnotationDictionaryType
 	{
-		if (!ArrayValidator::isValid($c)) {
+		if (!ArrayValidator::isValid($colors)) {
 			throw new InvalidArgumentException("C is incorrect. See ".__CLASS__." class's documentation for possible values.");
 		}
-		$value = Factory::create('Papier\Type\Base\ArrayType', $c);
+		$value = Factory::create('Papier\Type\Base\ArrayType', $colors);
 
 		$this->setEntry('C', $value);
 		return $this;

@@ -3,6 +3,7 @@
 namespace Papier\Component;
 
 use Papier\Component\Base\BaseComponent;
+use Papier\Helpers\MetricHelper;
 use Papier\Papier;
 use Papier\Util\Matrix;
 
@@ -97,13 +98,11 @@ trait Transformation
      */
     public function translate(float $x, float $y): BaseComponent
     {
-        $mmToUserUnit = Papier::MM_TO_USER_UNIT;
-
         $matrix = new Matrix(3, 3);
         $matrix->setData(0, 0, 1.0);
         $matrix->setData(1, 1, 1.0);
-        $matrix->setData(2, 0, $mmToUserUnit * $x);
-        $matrix->setData(2, 1, $mmToUserUnit * $y);
+        $matrix->setData(2, 0, MetricHelper::toUserUnit($x));
+        $matrix->setData(2, 1, MetricHelper::toUserUnit($y));
         $matrix->setData(2, 2, 1.0);
 
         $transformation = $this->getTransformationMatrix();

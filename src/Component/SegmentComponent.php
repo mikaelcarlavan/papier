@@ -3,6 +3,7 @@
 namespace Papier\Component;
 
 use Papier\Component\Base\BaseComponent;
+use Papier\Helpers\MetricHelper;
 use Papier\Papier;
 use Papier\Util\Point;
 use Papier\Validator\NumberValidator;
@@ -110,13 +111,11 @@ class SegmentComponent extends BaseComponent
 		$this->applyColors($contents);
 		$this->applyWidth($contents);
 
-		$mmToUserUnit = Papier::MM_TO_USER_UNIT;
-
 		$start = $this->getStartPoint();
 		$end = $this->getEndPoint();
 
-		$contents->beginPath($mmToUserUnit * $start->getX(), $mmToUserUnit * $start->getY());
-		$contents->appendSegment($mmToUserUnit * $end->getX(), $mmToUserUnit * $end->getY());
+		$contents->beginPath(MetricHelper::toUserUnit($start->getX()), MetricHelper::toUserUnit($start->getY()));
+		$contents->appendSegment(MetricHelper::toUserUnit($end->getX()), MetricHelper::toUserUnit($end->getY()));
 
 		$strokingColors = $this->getStrokingColor();
 		$nonStrokingColors = $this->getNonStrokingColor();

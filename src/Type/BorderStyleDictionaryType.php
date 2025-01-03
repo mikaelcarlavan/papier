@@ -14,16 +14,16 @@ use Papier\Validator\StringValidator;
 use InvalidArgumentException;
 use RuntimeException;
 
-class BorderDictionaryType extends DictionaryType
+class BorderStyleDictionaryType extends DictionaryType
 {
 	/**
 	 * Set width.
 	 *
 	 * @param  mixed  $w
-	 * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
-	 * @return BorderDictionaryType
+	 * @return BorderStyleDictionaryType
+	 *@throws InvalidArgumentException if the provided argument is not of type 'float' or 'int'.
 	 */
-	public function setW(mixed $w): BorderDictionaryType
+	public function setW(mixed $w): BorderStyleDictionaryType
 	{
 		if (!NumberValidator::isValid($w)) {
 			throw new InvalidArgumentException("W is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -39,10 +39,10 @@ class BorderDictionaryType extends DictionaryType
 	 * Set style
 	 *
 	 * @param  string  $s
-	 * @return BorderDictionaryType
+	 * @return BorderStyleDictionaryType
 	 * @throws InvalidArgumentException if the provided argument is not of type 'string'.
 	 */
-	public function setS(string $s): BorderDictionaryType
+	public function setS(string $s): BorderStyleDictionaryType
 	{
 		if (!BorderStyleValidator::isValid($s)) {
 			throw new InvalidArgumentException("S is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -58,10 +58,10 @@ class BorderDictionaryType extends DictionaryType
 	 * Set pattern of dashes and gaps that shall be used in drawing a dashed border
 	 *
 	 * @param  array  $d
-	 * @return BorderDictionaryType
+	 * @return BorderStyleDictionaryType
 	 * @throws InvalidArgumentException if the provided argument is not of type 'array'.
 	 */
-	public function setD(array $d): BorderDictionaryType
+	public function setD(array $d): BorderStyleDictionaryType
 	{
 		if (!ArrayValidator::isValid($d)) {
 			throw new InvalidArgumentException("D is incorrect. See ".__CLASS__." class's documentation for possible values.");

@@ -170,5 +170,4 @@ class MarkupAnnotationDictionaryType extends AnnotationDictionaryType
 
 		return parent::format();
 	}
-
 }

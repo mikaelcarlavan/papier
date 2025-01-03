@@ -3,6 +3,7 @@
 namespace Papier\Component;
 
 use Papier\Component\Base\BaseComponent;
+use Papier\Helpers\MetricHelper;
 use Papier\Papier;
 use Papier\Util\Point;
 
@@ -157,7 +158,7 @@ class DrawComponent extends BaseComponent
 			$point = array_shift($points);
 			/** @var Point $p */
 			$p = $point['point'];
-			$contents->beginPath($mmToUserUnit * $p->getX(), $mmToUserUnit * $p->getY());
+			$contents->beginPath(MetricHelper::toUserUnit($p->getX()), MetricHelper::toUserUnit($p->getY()));
             foreach ($points as $point) {
 				/** @var Point $p */
 				$p = $point['point'];
@@ -169,18 +170,18 @@ class DrawComponent extends BaseComponent
 						/** @var Point $finalPoint */
                         $initialPoint = $ctrl['initial'];
                         $finalPoint = $ctrl['final'];
-                        $contents->appendCubicBezier($mmToUserUnit * $p->getX(), $mmToUserUnit * $p->getY(), $mmToUserUnit * $initialPoint->getX(), $mmToUserUnit * $initialPoint->getY(), $mmToUserUnit * $finalPoint->getX(), $mmToUserUnit * $finalPoint->getY());
+                        $contents->appendCubicBezier(MetricHelper::toUserUnit($p->getX()), MetricHelper::toUserUnit($p->getY()), MetricHelper::toUserUnit($initialPoint->getX()), MetricHelper::toUserUnit($initialPoint->getY()), MetricHelper::toUserUnit($finalPoint->getX()), MetricHelper::toUserUnit($finalPoint->getY()));
                     } else if (isset($ctrl['initial'])) {
 						/** @var Point $initialPoint */
 						$initialPoint = $ctrl['initial'];
-                        $contents->appendCubicBezier2a($mmToUserUnit * $p->getX(), $mmToUserUnit * $p->getY(), $mmToUserUnit * $initialPoint->getX(), $mmToUserUnit * $initialPoint->getY());
+                        $contents->appendCubicBezier2a(MetricHelper::toUserUnit($p->getX()), MetricHelper::toUserUnit($p->getY()), MetricHelper::toUserUnit($initialPoint->getX()), MetricHelper::toUserUnit($initialPoint->getY()));
                     } else if (isset($ctrl['final'])) {
 						/** @var Point $finalPoint */
 						$finalPoint = $ctrl['final'];
-                        $contents->appendCubicBezier2b($mmToUserUnit * $p->getX(), $mmToUserUnit * $p->getY(), $mmToUserUnit * $finalPoint->getX(), $mmToUserUnit * $finalPoint->getY());
+                        $contents->appendCubicBezier2b(MetricHelper::toUserUnit($p->getX()), MetricHelper::toUserUnit($p->getY()), MetricHelper::toUserUnit($finalPoint->getX()), MetricHelper::toUserUnit($finalPoint->getY()));
                     }
                 } else {
-                    $contents->appendSegment($mmToUserUnit * $p->getX(), $mmToUserUnit * $p->getY());
+                    $contents->appendSegment(MetricHelper::toUserUnit($p->getX()), MetricHelper::toUserUnit($p->getY()));
                 }
             }
         }

@@ -3,6 +3,7 @@
 namespace Papier\Component;
 
 use Papier\Component\Base\BaseComponent;
+use Papier\Helpers\MetricHelper;
 use Papier\Papier;
 
 class RectangleComponent extends BaseComponent
@@ -34,9 +35,9 @@ class RectangleComponent extends BaseComponent
 
         $lineWidth = $this->getLineWidth();
 
-        $contents->setLineWidth($mmToUserUnit * $lineWidth);
+        $contents->setLineWidth(MetricHelper::toUserUnit($lineWidth));
         
-        $contents->appendRectangle($mmToUserUnit * $x, $mmToUserUnit * $y, $mmToUserUnit * $width, $mmToUserUnit * $height);
+        $contents->appendRectangle(MetricHelper::toUserUnit($x), MetricHelper::toUserUnit($y), MetricHelper::toUserUnit($width), MetricHelper::toUserUnit($height));
 
         $strokingColors = $this->getStrokingColor();
         $nonStrokingColors = $this->getNonStrokingColor();

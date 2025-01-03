@@ -5,6 +5,7 @@ namespace Papier\Component;
 use Papier\Component\Base\BaseComponent;
 use Papier\Document\ProcedureSet;
 use Papier\Factory\Factory;
+use Papier\Helpers\MetricHelper;
 use Papier\Papier;
 use Papier\Text\Encoding;
 use Papier\Text\RenderingMode;
@@ -316,10 +317,8 @@ class TextComponent extends BaseComponent
         $contents = $this->getContents();
         $contents->save();
 
-        $mmToUserUnit = Papier::MM_TO_USER_UNIT;
-
         $contents->beginText();
-        $contents->setFont($font->getName(), $mmToUserUnit * $fontSize);
+        $contents->setFont($font->getName(), MetricHelper::toUserUnit($fontSize));
 
         $this->applyColors($contents);
 
@@ -332,23 +331,23 @@ class TextComponent extends BaseComponent
         $transformationMatrix = $this->getTransformationMatrix();
 
         if ($characterSpacing) {
-            $contents->setCharacterSpacing($mmToUserUnit * $characterSpacing);
+            $contents->setCharacterSpacing(MetricHelper::toUserUnit($characterSpacing));
         }
 
         if ($textRise) {
-            $contents->setTextRise($mmToUserUnit * $textRise);
+            $contents->setTextRise(MetricHelper::toUserUnit($textRise));
         }
 
         if ($textLeading) {
-            $contents->setTextLeading($mmToUserUnit * $textLeading);
+            $contents->setTextLeading(MetricHelper::toUserUnit($textLeading));
         }
 
         if ($horizontalScaling) {
-            $contents->setHorizontalScaling($mmToUserUnit * $horizontalScaling);
+            $contents->setHorizontalScaling(MetricHelper::toUserUnit($horizontalScaling));
         }
 
         if ($wordSpacing) {
-            $contents->setWordSpacing($mmToUserUnit * $wordSpacing);
+            $contents->setWordSpacing(MetricHelper::toUserUnit($wordSpacing));
         }
 
         $contents->setTextRenderingMode($renderingMode);

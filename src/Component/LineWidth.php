@@ -2,6 +2,7 @@
 
 namespace Papier\Component;
 
+use Papier\Helpers\MetricHelper;
 use Papier\Papier;
 use Papier\Type\ContentStreamType;
 
@@ -46,9 +47,7 @@ trait LineWidth
 	{
 		$lineWidth = $this->getLineWidth();
 		if ($lineWidth > 0) {
-			$mmToUserUnit = Papier::MM_TO_USER_UNIT;
-
-			$contents->setLineWidth($mmToUserUnit * $lineWidth);
+			$contents->setLineWidth(MetricHelper::toUserUnit($lineWidth));
 		}
 
 		return $this;
