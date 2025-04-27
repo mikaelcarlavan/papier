@@ -21,16 +21,16 @@ class FreeTextAnnotationDictionaryType extends AnnotationDictionaryType
 	 * Set default appearance string that shall be used in formatting
 	 * the text
 	 *
-	 * @param  string  $da
+	 * @param  ContentStreamType  $da
 	 * @return FreeTextAnnotationDictionaryType
 	 * @throws InvalidArgumentException if the provided argument is not of type 'string'.
 	 */
-	public function setDA(string $da): FreeTextAnnotationDictionaryType
+	public function setDA(ContentStreamType $da): FreeTextAnnotationDictionaryType
 	{
-		if (!StringValidator::isValid($da)) {
-			throw new InvalidArgumentException("DA is incorrect. See ".__CLASS__." class's documentation for possible values.");
-		}
-		$value = Factory::create('Papier\Type\Base\StringType', $da);
+		$content = $da->getContent();
+		// Remove EOL
+		$content = str_replace(\Papier\Object\BaseObject::EOL_MARKER, "", $content);
+		$value = Factory::create('Papier\Type\LiteralStringType', $content);
 
 		$this->setEntry('DA', $value);
 		return $this;
@@ -202,9 +202,8 @@ class FreeTextAnnotationDictionaryType extends AnnotationDictionaryType
 		$type = Factory::create('Papier\Type\Base\NameType', 'FreeText');
 		$this->setEntry('Subtype', $type);
 
-
 		if (!$this->hasEntry('DA')) {
-			throw new RuntimeException("DA is missing. See ".__CLASS__." class's documentation for possible values.");
+			$this->setDA('');
 		}
 
 		return parent::format();
