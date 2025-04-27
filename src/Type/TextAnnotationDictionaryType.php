@@ -2,8 +2,10 @@
 
 namespace Papier\Type;
 
+use Papier\Document\AnnotationState\AnnotationState;
 use Papier\Factory\Factory;
 use Papier\Validator\BooleanValidator;
+use Papier\Validator\StringValidator;
 use RuntimeException;
 use InvalidArgumentException;
 
@@ -25,7 +27,43 @@ class TextAnnotationDictionaryType extends MarkupAnnotationDictionaryType
 		$this->setEntry('Open', $value);
 		return $this;
 	}
-	
+
+	/**
+	 * Set name of an icon that shall be used in displaying the
+	 * annotation
+	 *
+	 * @param  string  $name
+	 * @return TextAnnotationDictionaryType
+	 * @throws InvalidArgumentException if the provided argument is not of type 'string'.
+	 */
+	public function setName(string $name): TextAnnotationDictionaryType
+	{
+		if (!StringValidator::isValid($name)) {
+			throw new InvalidArgumentException("Name is incorrect. See ".__CLASS__." class's documentation for possible values.");
+		}
+		$value = Factory::create('Papier\Type\Base\NameType', $name);
+
+		$this->setEntry('Name', $value);
+		return $this;
+	}
+
+	/**
+	 * Set state to which the original annotation shall be set
+	 *
+	 * @param  AnnotationState  $state
+	 * @return TextAnnotationDictionaryType
+	 */
+	public function setState(AnnotationState $state): TextAnnotationDictionaryType
+	{
+		$value = Factory::create('Papier\Type\TextStringType', $state::STATE);
+		$this->setEntry('State', $value);
+
+		$value = Factory::create('Papier\Type\TextStringType', $state::STATE_MODEL);
+		$this->setEntry('StateModel', $value);
+
+		return $this;
+	}
+
 	/**
 	 * Format object's value.
 	 *

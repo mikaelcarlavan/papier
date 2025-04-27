@@ -129,7 +129,7 @@ class AnnotationDictionaryType extends DictionaryType
 	 */
 	public function setF(int $f): AnnotationDictionaryType
 	{
-		if (!IntegerValidator::isValid($f)) {
+		if (!AnnotationTypeValidator::isValid($f)) {
 			throw new InvalidArgumentException("F is incorrect. See ".__CLASS__." class's documentation for possible values.");
 		}
 		$value = Factory::create('Papier\Type\Base\IntegerType', $f);

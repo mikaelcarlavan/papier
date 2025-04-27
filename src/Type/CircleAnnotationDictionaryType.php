@@ -63,7 +63,7 @@ class CircleAnnotationDictionaryType extends AnnotationDictionaryType
 	 */
 	public function setRD(array $rd): AnnotationDictionaryType
 	{
-		if (!NumbersArrayValidator::isValid($rd)) {
+		if (!NumbersArrayValidator::isValid($rd, 4)) {
 			throw new InvalidArgumentException("RD is incorrect. See ".__CLASS__." class's documentation for possible values.");
 		}
 

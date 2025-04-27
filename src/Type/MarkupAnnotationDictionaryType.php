@@ -5,6 +5,7 @@ namespace Papier\Type;
 use Papier\Factory\Factory;
 use Papier\Type\Base\DateType;
 use Papier\Type\Base\DictionaryType;
+use Papier\Validator\AnnotationITValidator;
 use Papier\Validator\AnnotationTypeValidator;
 use Papier\Validator\DateValidator;
 use Papier\Validator\NumberValidator;
@@ -136,7 +137,7 @@ class MarkupAnnotationDictionaryType extends AnnotationDictionaryType
 	 */
 	public function setIT(string $it): MarkupAnnotationDictionaryType
 	{
-		if (!StringValidator::isValid($it)) {
+		if (!AnnotationITValidator::isValid($it)) {
 			throw new InvalidArgumentException("IT is incorrect. See ".__CLASS__." class's documentation for possible values.");
 		}
 		$value = Factory::create('Papier\Type\Base\NameType', $it);
