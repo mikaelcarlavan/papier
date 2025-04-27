@@ -54,7 +54,7 @@ class StreamObject extends DictionaryObject
      *
      * @return string|null
      */
-    protected function getContent(): ?string
+    public function getContent(): ?string
     {
 		$content = $this->content;
 		/** @var string|null $content */
