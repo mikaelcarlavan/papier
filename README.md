@@ -41,7 +41,7 @@ use Papier\Graphics\DeviceColourSpace;
 use Papier\Text\Encoding;
 use Papier\Text\RenderingMode;
 
-require __DIR__.'/../vendor/autoload.php';
+require __DIR__.'/vendor/autoload.php';
 
 $pathToLocalFontFile = 'Lato-Regular.ttf';
 $pathToLocalImage = 'test.png';
