@@ -9,6 +9,7 @@ use Papier\Type\Base\StreamType;
 use Papier\Validator\ByteStringValidator;
 use Papier\Validator\ColourComponentsValidator;
 use Papier\Validator\EncodingValidator;
+use Papier\Validator\FontDescriptorFlagValidator;
 use Papier\Validator\FontStretchValidator;
 use Papier\Validator\StringValidator;
 use InvalidArgumentException;
@@ -96,6 +97,10 @@ class FontDescriptorDictionaryType extends DictionaryType
 	 */
 	public function setFlags(int $flags): FontDescriptorDictionaryType
 	{
+		if (!FontDescriptorFlagValidator::isValid($flags)) {
+			throw new InvalidArgumentException("Flag is incorrect. See ".__CLASS__." class's documentation for possible values.");
+		}
+
 		$value = Factory::create('Papier\Type\Base\IntegerType', $flags);
 		$this->setEntry('Flags', $value);
 		return $this;
