@@ -19,6 +19,8 @@ use Papier\Helpers\MetricHelper;
 use Papier\Type\AnnotationDictionaryType;
 use Papier\Type\CircleAnnotationDictionaryType;
 use Papier\Type\DocumentInformationDictionaryType;
+use Papier\Type\FreeTextAnnotationDictionaryType;
+use Papier\Type\LinkAnnotationDictionaryType;
 use Papier\Type\PageLabelsNumberTreeDictionaryType;
 use Papier\Type\PageObjectDictionaryType;
 use Papier\Type\SquareAnnotationDictionaryType;
@@ -306,6 +308,32 @@ class Papier
 
         return $page;
     }
+
+	/**
+	 * Add link annotation to PDF's content.
+	 *
+	 * @param PageObjectDictionaryType|null $page
+	 * @return LinkAnnotationDictionaryType
+	 */
+	public function addLinkAnnotation(PageObjectDictionaryType $page = null): LinkAnnotationDictionaryType
+	{
+		/** @var LinkAnnotationDictionaryType $annot */
+		$annot = $this->addAnnotation('Papier\Type\LinkAnnotationDictionaryType', $page);
+		return $annot;
+	}
+
+	/**
+	 * Add free text annotation to PDF's content.
+	 *
+	 * @param PageObjectDictionaryType|null $page
+	 * @return FreeTextAnnotationDictionaryType
+	 */
+	public function addFreeTextAnnotation(PageObjectDictionaryType $page = null): FreeTextAnnotationDictionaryType
+	{
+		/** @var FreeTextAnnotationDictionaryType $annot */
+		$annot = $this->addAnnotation('Papier\Type\FreeTextAnnotationDictionaryType', $page);
+		return $annot;
+	}
 
 	/**
 	 * Add text annotation to PDF's content.
