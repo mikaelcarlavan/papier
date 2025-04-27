@@ -3,7 +3,9 @@
 namespace Papier\Type;
 
 use InvalidArgumentException;
+use Papier\Component\SegmentComponent;
 use Papier\Factory\Factory;
+use Papier\Font\TrueType\Base\TrueTypeFontTable;
 use Papier\Font\TrueType\TrueTypeFontHeadTable;
 use Papier\Font\TrueType\TrueTypeFontHorizontalHeaderTable;
 use Papier\Font\TrueType\TrueTypeFontNameTable;
@@ -145,85 +147,54 @@ class TrueTypeFontDictionaryType extends FontDictionaryType
 	 */
 	public function load(string $pathToFontFile): TrueTypeFontDictionaryType
 	{
-		$stream = TrueTypeFontFileHelper::getInstance()->open($pathToFontFile);
+		$helper = TrueTypeFontFileHelper::getInstance()->parse($pathToFontFile);
 
 		$fontBBoxStream = Factory::create('Papier\Type\Base\StreamType', null, true);
 		$fontBBoxStream->setContent(file_get_contents($pathToFontFile));
 
 		$fd = $this->getFontDescriptor();
 
-		$scalerType = $stream->unpackUnsignedInteger();
-		$numTables = $stream->unpackUnsignedShortInteger();
-		$searchRange = $stream->unpackUnsignedShortInteger();
-		$entrySelector = $stream->unpackUnsignedShortInteger();
-		$rangeShift = $stream->unpackUnsignedShortInteger();
+		/** @var ?TrueTypeFontHeadTable $table */
+		$head = $helper->getTable(TrueTypeFontTable::HEAD_TABLE);
 
-		$tables = [];
-		for ($i = 0; $i < $numTables; $i++) {
-			$tag = trim($stream->unpackString(4));
-
-			$tables[$tag] = [
-				'checksum' => $stream->unpackUnsignedInteger(),
-				'offset' => $stream->unpackUnsignedInteger(),
-				'length' => $stream->unpackUnsignedInteger(),
-			];
-		}
-
-		// Head table
-		if (isset($tables['head'])) {
-			$table = new TrueTypeFontHeadTable();
-			$table->setHelper($stream);
-			$table->setOffset($tables['head']['offset']);
-			$table->parse();
-
-			$fontBBox = [$table->getXMin(), $table->getYMin(), $table->getXMax(), $table->getYMax()];
+		if ($head) {
+			$fontBBox = [$head->getXMin(), $head->getYMin(), $head->getXMax(), $head->getYMax()];
 			$fd->setFontBBox($fontBBox);
 		}
 
-		// Horizontal header table
-		if (isset($tables['hhea'])) {
-			$table = new TrueTypeFontHorizontalHeaderTable();
-			$table->setHelper($stream);
-			$table->setOffset($tables['hhea']['offset']);
-			$table->parse();
+		/** @var ?TrueTypeFontHorizontalHeaderTable $table */
+		$horizontalHeader = $helper->getTable(TrueTypeFontTable::HORIZONTAL_HEADER_TABLE);
 
-			$fd->setAscent($table->getAscent());
-			$fd->setDescent($table->getDescent());
+		if ($horizontalHeader) {
+			$fd->setAscent($horizontalHeader->getAscent());
+			$fd->setDescent($horizontalHeader->getDescent());
 		}
 
-		// OS/2 table
-		if (isset($tables['OS/2'])) {
-			$table = new TrueTypeFontOS2Table();
-			$table->setHelper($stream);
-			$table->setOffset($tables['OS/2']['offset']);
-			$table->parse();
-
-			$fd->setCapHeight($table->getSCapHeight());
+		/** @var ?TrueTypeFontOS2Table $table */
+		$os2 = $helper->getTable(TrueTypeFontTable::OS2_TABLE);
+		if ($os2) {
+			$fd->setCapHeight($os2->getSCapHeight());
 		}
 
-		// Name table
-		if (isset($tables['name'])) {
-			$table = new TrueTypeFontNameTable();
-			$table->setHelper($stream);
-			$table->setOffset($tables['name']['offset']);
-			$table->parse();
-
-			$name = $table->getPostscriptName();
-			if (!is_null($name)) {
-				$fd->setFontName($name);
-				$this->setBaseFont($name);
+		/** @var ?TrueTypeFontNameTable $table */
+		$name = $helper->getTable(TrueTypeFontTable::NAME_TABLE);
+		if ($name) {
+			$postscriptName = $name->getPostscriptName();
+			if (!is_null($postscriptName)) {
+				$fd->setFontName($postscriptName);
+				$this->setBaseFont($postscriptName);
 			}
 		}
 
 		$fd->setItalicAngle(0);
 		$fd->setStemV(80);
-		$fd->setFlags(0);
+		$fd->setFlags(32);
 
 		$fd->setFontFile2($fontBBoxStream);
 
 		$this->setFontDescriptor($fd);
 
-		$stream->close();
+		$helper->close();
 
 		return $this;
 	}
