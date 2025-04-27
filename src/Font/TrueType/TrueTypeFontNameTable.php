@@ -32,6 +32,34 @@ class TrueTypeFontNameTable extends TrueTypeFontTable
 	protected int $storageOffset;
 
 	/**
+	 * The copyright name
+	 *
+	 * @var string
+	 */
+	protected string $copyrightName;
+
+	/**
+	 * The family name
+	 *
+	 * @var string
+	 */
+	protected string $familyName;
+
+	/**
+	 * The subfamily name
+	 *
+	 * @var string
+	 */
+	protected string $subFamilyName;
+
+	/**
+	 * The identifier name
+	 *
+	 * @var string
+	 */
+	protected string $identifierName;
+
+	/**
 	 * The Postscript name
 	 *
 	 * @var string
@@ -186,8 +214,24 @@ class TrueTypeFontNameTable extends TrueTypeFontTable
 			$chunk = $stream->unpackString($length);
 			$value = mb_convert_encoding($chunk, 'UTF-8', 'UTF-16BE');
 
-			if ($nameID == self::POSTSCRIPT_NAME_ID) {
-				$this->setPostscriptName($value);
+			switch ($nameID) {
+				case self::COPYRIGHT_NAME_ID:
+					$this->setCopyrightName($value);
+					break;
+				case self::FAMILY_NAME_ID:
+					$this->setFamilyName($value);
+					break;
+				case self::SUBFAMILY_NAME_ID:
+					$this->setSubFamilyName($value);
+					break;
+				case self::IDENTIFIER_NAME_ID:
+					$this->setIdentifierName($value);
+					break;
+				case self::POSTSCRIPT_NAME_ID:
+					$this->setPostscriptName($value);
+					break;
+				default:
+					break;
 			}
 
 			$stream->setOffset($position);
@@ -273,6 +317,74 @@ class TrueTypeFontNameTable extends TrueTypeFontTable
 	}
 
 	/**
+	 * Sets the copyright name.
+	 *
+	 * @param string $copyrightName The copyright name.
+	 * @return TrueTypeFontNameTable
+	 * @throws InvalidArgumentException If the value is not valid.
+	 */
+	public function setCopyrightName(string $copyrightName): TrueTypeFontNameTable
+	{
+		if (!StringValidator::isValid($copyrightName)) {
+			throw new InvalidArgumentException("Copyright name is not valid. See ".__CLASS__." class's documentation for possible values.");
+		}
+
+		$this->copyrightName = $copyrightName;
+		return $this;
+	}
+
+	/**
+	 * Sets the family name.
+	 *
+	 * @param string $familyName The family name.
+	 * @return TrueTypeFontNameTable
+	 * @throws InvalidArgumentException If the value is not valid.
+	 */
+	public function setFamilyName(string $familyName): TrueTypeFontNameTable
+	{
+		if (!StringValidator::isValid($familyName)) {
+			throw new InvalidArgumentException("Family name is not valid. See ".__CLASS__." class's documentation for possible values.");
+		}
+
+		$this->familyName = $familyName;
+		return $this;
+	}
+
+	/**
+	 * Sets the subfamily name.
+	 *
+	 * @param string $subFamilyName The subfamily name.
+	 * @return TrueTypeFontNameTable
+	 * @throws InvalidArgumentException If the value is not valid.
+	 */
+	public function setSubFamilyName(string $subFamilyName): TrueTypeFontNameTable
+	{
+		if (!StringValidator::isValid($subFamilyName)) {
+			throw new InvalidArgumentException("Subfamily name is not valid. See ".__CLASS__." class's documentation for possible values.");
+		}
+
+		$this->subFamilyName = $subFamilyName;
+		return $this;
+	}
+
+	/**
+	 * Sets the subfamily name.
+	 *
+	 * @param string $identifierName The identifier name.
+	 * @return TrueTypeFontNameTable
+	 * @throws InvalidArgumentException If the value is not valid.
+	 */
+	public function setIdentifierName(string $identifierName): TrueTypeFontNameTable
+	{
+		if (!StringValidator::isValid($identifierName)) {
+			throw new InvalidArgumentException("Identifier name is not valid. See ".__CLASS__." class's documentation for possible values.");
+		}
+
+		$this->identifierName = $identifierName;
+		return $this;
+	}
+
+	/**
 	 * Sets the Postscript name.
 	 *
 	 * @param string $postscriptName The Postscript name.
@@ -287,6 +399,46 @@ class TrueTypeFontNameTable extends TrueTypeFontTable
 
 		$this->postscriptName = $postscriptName;
 		return $this;
+	}
+
+	/**
+	 * Gets the copyright name.
+	 *
+	 * @return string|null
+	 */
+	public function getCopyrightName(): ?string
+	{
+		return $this->copyrightName;
+	}
+
+	/**
+	 * Gets the family name.
+	 *
+	 * @return string|null
+	 */
+	public function getFamilyName(): ?string
+	{
+		return $this->familyName;
+	}
+
+	/**
+	 * Gets the subfamily name.
+	 *
+	 * @return string|null
+	 */
+	public function getSubFamilyName(): ?string
+	{
+		return $this->subFamilyName;
+	}
+
+	/**
+	 * Gets the identifier name.
+	 *
+	 * @return string|null
+	 */
+	public function getIdentifierName(): ?string
+	{
+		return $this->identifierName;
 	}
 
 	/**
