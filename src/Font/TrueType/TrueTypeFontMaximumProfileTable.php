@@ -8,7 +8,7 @@ use Papier\Helpers\TrueTypeFontFileHelper;
 use Papier\Validator\IntegerValidator;
 use Papier\Validator\RealValidator;
 
-class TrueTypeFontMaxProfileTable extends TrueTypeFontTable
+class TrueTypeFontMaximumProfileTable extends TrueTypeFontTable
 {
 	/**
 	 * Version.
@@ -147,9 +147,9 @@ class TrueTypeFontMaxProfileTable extends TrueTypeFontTable
 	 * Set the version of the MaxP table.
 	 *
 	 * @param float $version
-	 * @return TrueTypeFontMaxProfileTable
+	 * @return TrueTypeFontMaximumProfileTable
 	 */
-	public function setVersion(float $version): TrueTypeFontMaxProfileTable
+	public function setVersion(float $version): TrueTypeFontMaximumProfileTable
 	{
 		if (!RealValidator::isValid($version)) {
 			throw new InvalidArgumentException("Version is not valid. See ".__CLASS__." class's documentation for possible values.");
@@ -173,9 +173,9 @@ class TrueTypeFontMaxProfileTable extends TrueTypeFontTable
 	 * Set the number of glyphs.
 	 *
 	 * @param int $numGlyphs
-	 * @return TrueTypeFontMaxProfileTable
+	 * @return TrueTypeFontMaximumProfileTable
 	 */
-	public function setNumGlyphs(int $numGlyphs): TrueTypeFontMaxProfileTable
+	public function setNumGlyphs(int $numGlyphs): TrueTypeFontMaximumProfileTable
 	{
 		if (!IntegerValidator::isValid($numGlyphs)) {
 			throw new InvalidArgumentException("Number glyphs is not valid. See ".__CLASS__." class's documentation for possible values.");
@@ -199,9 +199,9 @@ class TrueTypeFontMaxProfileTable extends TrueTypeFontTable
 	 * Set the maximum number of points.
 	 *
 	 * @param int $maxPoints
-	 * @return TrueTypeFontMaxProfileTable
+	 * @return TrueTypeFontMaximumProfileTable
 	 */
-	public function setMaxPoints(int $maxPoints): TrueTypeFontMaxProfileTable
+	public function setMaxPoints(int $maxPoints): TrueTypeFontMaximumProfileTable
 	{
 		if (!IntegerValidator::isValid($maxPoints)) {
 			throw new InvalidArgumentException("Max points is not valid. See ".__CLASS__." class's documentation for possible values.");
@@ -225,9 +225,9 @@ class TrueTypeFontMaxProfileTable extends TrueTypeFontTable
 	 * Set the maximum number of contours.
 	 *
 	 * @param int $maxContours
-	 * @return TrueTypeFontMaxProfileTable
+	 * @return TrueTypeFontMaximumProfileTable
 	 */
-	public function setMaxContours(int $maxContours): TrueTypeFontMaxProfileTable
+	public function setMaxContours(int $maxContours): TrueTypeFontMaximumProfileTable
 	{
 		if (!IntegerValidator::isValid($maxContours)) {
 			throw new InvalidArgumentException("Max contours is not valid. See ".__CLASS__." class's documentation for possible values.");
@@ -251,9 +251,9 @@ class TrueTypeFontMaxProfileTable extends TrueTypeFontTable
 	 * Set the maximum number of composite points.
 	 *
 	 * @param int $maxCompositePoints
-	 * @return TrueTypeFontMaxProfileTable
+	 * @return TrueTypeFontMaximumProfileTable
 	 */
-	public function setMaxCompositePoints(int $maxCompositePoints): TrueTypeFontMaxProfileTable
+	public function setMaxCompositePoints(int $maxCompositePoints): TrueTypeFontMaximumProfileTable
 	{
 		if (!IntegerValidator::isValid($maxCompositePoints)) {
 			throw new InvalidArgumentException("Max composite points is not valid. See ".__CLASS__." class's documentation for possible values.");
@@ -277,9 +277,9 @@ class TrueTypeFontMaxProfileTable extends TrueTypeFontTable
 	 * Set the maximum number of composite contours.
 	 *
 	 * @param int $maxCompositeContours
-	 * @return TrueTypeFontMaxProfileTable
+	 * @return TrueTypeFontMaximumProfileTable
 	 */
-	public function setMaxCompositeContours(int $maxCompositeContours): TrueTypeFontMaxProfileTable
+	public function setMaxCompositeContours(int $maxCompositeContours): TrueTypeFontMaximumProfileTable
 	{
 		if (!IntegerValidator::isValid($maxCompositeContours)) {
 			throw new InvalidArgumentException("Max composite contours is not valid. See ".__CLASS__." class's documentation for possible values.");
@@ -303,9 +303,9 @@ class TrueTypeFontMaxProfileTable extends TrueTypeFontTable
 	 * Set the maximum number of zones.
 	 *
 	 * @param int $maxZones
-	 * @return TrueTypeFontMaxProfileTable
+	 * @return TrueTypeFontMaximumProfileTable
 	 */
-	public function setMaxZones(int $maxZones): TrueTypeFontMaxProfileTable
+	public function setMaxZones(int $maxZones): TrueTypeFontMaximumProfileTable
 	{
 		if (!IntegerValidator::isValid($maxZones)) {
 			throw new InvalidArgumentException("Max zones is not valid. See ".__CLASS__." class's documentation for possible values.");
@@ -329,9 +329,9 @@ class TrueTypeFontMaxProfileTable extends TrueTypeFontTable
 	 * Set the maximum number of twilight points.
 	 *
 	 * @param int $maxTwilightPoints
-	 * @return TrueTypeFontMaxProfileTable
+	 * @return TrueTypeFontMaximumProfileTable
 	 */
-	public function setMaxTwilightPoints(int $maxTwilightPoints): TrueTypeFontMaxProfileTable
+	public function setMaxTwilightPoints(int $maxTwilightPoints): TrueTypeFontMaximumProfileTable
 	{
 		if (!IntegerValidator::isValid($maxTwilightPoints)) {
 			throw new InvalidArgumentException("Max twilight points is not valid. See ".__CLASS__." class's documentation for possible values.");
@@ -355,9 +355,9 @@ class TrueTypeFontMaxProfileTable extends TrueTypeFontTable
 	 * Set the maximum storage.
 	 *
 	 * @param int $maxStorage
-	 * @return TrueTypeFontMaxProfileTable
+	 * @return TrueTypeFontMaximumProfileTable
 	 */
-	public function setMaxStorage(int $maxStorage): TrueTypeFontMaxProfileTable
+	public function setMaxStorage(int $maxStorage): TrueTypeFontMaximumProfileTable
 	{
 		if (!IntegerValidator::isValid($maxStorage)) {
 			throw new InvalidArgumentException("Max storage is not valid. See ".__CLASS__." class's documentation for possible values.");
@@ -381,9 +381,9 @@ class TrueTypeFontMaxProfileTable extends TrueTypeFontTable
 	 * Set the maximum function definitions.
 	 *
 	 * @param int $maxFunctionDefs
-	 * @return TrueTypeFontMaxProfileTable
+	 * @return TrueTypeFontMaximumProfileTable
 	 */
-	public function setMaxFunctionDefs(int $maxFunctionDefs): TrueTypeFontMaxProfileTable
+	public function setMaxFunctionDefs(int $maxFunctionDefs): TrueTypeFontMaximumProfileTable
 	{
 		if (!IntegerValidator::isValid($maxFunctionDefs)) {
 			throw new InvalidArgumentException("Max function defs is not valid. See ".__CLASS__." class's documentation for possible values.");
@@ -407,9 +407,9 @@ class TrueTypeFontMaxProfileTable extends TrueTypeFontTable
 	 * Set the maximum instruction definitions.
 	 *
 	 * @param int $maxInstructionDefs
-	 * @return TrueTypeFontMaxProfileTable
+	 * @return TrueTypeFontMaximumProfileTable
 	 */
-	public function setMaxInstructionDefs(int $maxInstructionDefs): TrueTypeFontMaxProfileTable
+	public function setMaxInstructionDefs(int $maxInstructionDefs): TrueTypeFontMaximumProfileTable
 	{
 		if (!IntegerValidator::isValid($maxInstructionDefs)) {
 			throw new InvalidArgumentException("Max instruction defs is not valid. See ".__CLASS__." class's documentation for possible values.");
@@ -433,9 +433,9 @@ class TrueTypeFontMaxProfileTable extends TrueTypeFontTable
 	 * Set the maximum stack elements.
 	 *
 	 * @param int $maxStackElements
-	 * @return TrueTypeFontMaxProfileTable
+	 * @return TrueTypeFontMaximumProfileTable
 	 */
-	public function setMaxStackElements(int $maxStackElements): TrueTypeFontMaxProfileTable
+	public function setMaxStackElements(int $maxStackElements): TrueTypeFontMaximumProfileTable
 	{
 		if (!IntegerValidator::isValid($maxStackElements)) {
 			throw new InvalidArgumentException("Max stack elements is not valid. See ".__CLASS__." class's documentation for possible values.");
@@ -459,9 +459,9 @@ class TrueTypeFontMaxProfileTable extends TrueTypeFontTable
 	 * Set the maximum size of instructions.
 	 *
 	 * @param int $maxSizeOfInstructions
-	 * @return TrueTypeFontMaxProfileTable
+	 * @return TrueTypeFontMaximumProfileTable
 	 */
-	public function setMaxSizeOfInstructions(int $maxSizeOfInstructions): TrueTypeFontMaxProfileTable
+	public function setMaxSizeOfInstructions(int $maxSizeOfInstructions): TrueTypeFontMaximumProfileTable
 	{
 		if (!IntegerValidator::isValid($maxSizeOfInstructions)) {
 			throw new InvalidArgumentException("Max size of instructions is not valid. See ".__CLASS__." class's documentation for possible values.");
@@ -485,9 +485,9 @@ class TrueTypeFontMaxProfileTable extends TrueTypeFontTable
 	 * Set the maximum component elements.
 	 *
 	 * @param int $maxComponentElements
-	 * @return TrueTypeFontMaxProfileTable
+	 * @return TrueTypeFontMaximumProfileTable
 	 */
-	public function setMaxComponentElements(int $maxComponentElements): TrueTypeFontMaxProfileTable
+	public function setMaxComponentElements(int $maxComponentElements): TrueTypeFontMaximumProfileTable
 	{
 		if (!IntegerValidator::isValid($maxComponentElements)) {
 			throw new InvalidArgumentException("Max components elements is not valid. See ".__CLASS__." class's documentation for possible values.");
@@ -511,9 +511,9 @@ class TrueTypeFontMaxProfileTable extends TrueTypeFontTable
 	 * Set the maximum component depth.
 	 *
 	 * @param int $maxComponentDepth
-	 * @return TrueTypeFontMaxProfileTable
+	 * @return TrueTypeFontMaximumProfileTable
 	 */
-	public function setMaxComponentDepth(int $maxComponentDepth): TrueTypeFontMaxProfileTable
+	public function setMaxComponentDepth(int $maxComponentDepth): TrueTypeFontMaximumProfileTable
 	{
 		if (!IntegerValidator::isValid($maxComponentDepth)) {
 			throw new InvalidArgumentException("Max components depth is not valid. See ".__CLASS__." class's documentation for possible values.");
