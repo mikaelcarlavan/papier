@@ -3,6 +3,10 @@
 namespace Papier\Font\TrueType\Base;
 
 use InvalidArgumentException;
+use Papier\Font\TrueType\TrueTypeFontHeadTable;
+use Papier\Font\TrueType\TrueTypeFontHorizontalHeaderTable;
+use Papier\Font\TrueType\TrueTypeFontHorizontalMetricsTable;
+use Papier\Font\TrueType\TrueTypeFontOS2Table;
 use Papier\Helpers\FileHelper;
 use Papier\Validator\IntegerValidator;
 
@@ -35,6 +39,69 @@ class TrueTypeFontTable
 	 * @var FileHelper $helper
 	 */
 	protected FileHelper $helper;
+
+	/**
+	 * Head table
+	 *
+	 * @var string
+	 */
+	const HEAD_TABLE = 'head';
+
+	/**
+	 * OS/2 table
+	 *
+	 * @var string
+	 */
+	const OS2_TABLE = 'OS/2';
+
+	/**
+	 * Horizontal header table
+	 *
+	 * @var string
+	 */
+	const HORIZONTAL_HEADER_TABLE = 'hhea';
+
+	/**
+	 * Name table
+	 *
+	 * @var string
+	 */
+	const NAME_TABLE = 'name';
+
+	/**
+	 * Maximum Profile table
+	 *
+	 * @var string
+	 */
+	const MAXIMUM_PROFILE_TABLE = 'maxp';
+
+	/**
+	 * Character to glyph index mapping table
+	 *
+	 * @var string
+	 */
+	const CHARACTER_TO_GLYPH_INDEX_MAPPING_TABLE = 'cmap';
+
+	/**
+	 * Horizontal metrics table
+	 *
+	 * @var string
+	 */
+	const HORIZONTAL_METRICS_TABLE = 'hmtx';
+
+	/**
+	 * Index to location table
+	 *
+	 * @var string
+	 */
+	const INDEX_TO_LOCATION_TABLE = 'loca';
+
+	/**
+	 * Glyph data table
+	 *
+	 * @var string
+	 */
+	const GLYPH_DATA_TABLE = 'glyf';
 
 	/**
 	 * Set table's offset
