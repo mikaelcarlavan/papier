@@ -203,7 +203,9 @@ class FreeTextAnnotationDictionaryType extends AnnotationDictionaryType
 		$this->setEntry('Subtype', $type);
 
 		if (!$this->hasEntry('DA')) {
-			$this->setDA('');
+			$da = new ContentStreamType();
+			$da->setContent('');
+			$this->setDA($da);
 		}
 
 		return parent::format();
