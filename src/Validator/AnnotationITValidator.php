@@ -17,6 +17,8 @@ class AnnotationITValidator implements Validator
 		AnnotationIT::FREE_TEXT,
 		AnnotationIT::FREE_TEXT_CALLOUT,
 		AnnotationIT::FREE_TEXT_TYPE_WRITER,
+		AnnotationIT::FREE_TEXT_TYPE_WRITER,
+		AnnotationIT::FREE_TEXT_TYPE_WRITER,
 	);
 
 
