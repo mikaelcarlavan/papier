@@ -12,6 +12,7 @@ use Papier\Font\TrueType\TrueTypeFontIndexToLocationTable;
 use Papier\Font\TrueType\TrueTypeFontMaximumProfileTable;
 use Papier\Font\TrueType\TrueTypeFontNameTable;
 use Papier\Font\TrueType\TrueTypeFontOS2Table;
+use Papier\Font\TrueType\TrueTypeFontPostTable;
 use Papier\Type\TrueTypeFontDictionaryType;
 
 class TrueTypeFontFileHelper extends FileHelper
@@ -194,7 +195,8 @@ class TrueTypeFontFileHelper extends FileHelper
 			TrueTypeFontTable::HORIZONTAL_HEADER_TABLE,
 			TrueTypeFontTable::NAME_TABLE,
 			TrueTypeFontTable::MAXIMUM_PROFILE_TABLE,
-			TrueTypeFontTable::CHARACTER_TO_GLYPH_INDEX_MAPPING_TABLE
+			TrueTypeFontTable::CHARACTER_TO_GLYPH_INDEX_MAPPING_TABLE,
+			TrueTypeFontTable::POST_TABLE
 		];
 
 		foreach ($tags as $tag) {
@@ -218,6 +220,9 @@ class TrueTypeFontFileHelper extends FileHelper
 						break;
 					case TrueTypeFontTable::CHARACTER_TO_GLYPH_INDEX_MAPPING_TABLE:
 						$table = new TrueTypeFontCharacterToGlyphIndexMappingTable();
+						break;
+					case TrueTypeFontTable::POST_TABLE:
+						$table = new TrueTypeFontPostTable();
 						break;
 				}
 
@@ -269,20 +274,6 @@ class TrueTypeFontFileHelper extends FileHelper
 			$tables[$tag] = $table;
 
 			$location = $table->getLocation();
-		}
-
-		// Index to location table
-		$tag = TrueTypeFontTable::INDEX_TO_LOCATION_TABLE;
-		if (isset($listOfTables[$tag])) {
-			$table = new TrueTypeFontGlyphDataTable();
-			$table->setHelper($stream);
-			$table->setOffset($listOfTables[$tag]['offset']);
-			$table->setNumGlyphs($numGlyphs);
-			$table->setLocation($location);
-			$table->parse();
-			$tables[$tag] = $table;
-
-			$data = $table->getData();
 		}
 
 		// Character to glyph index table

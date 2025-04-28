@@ -5,11 +5,13 @@ namespace Papier\Type;
 use InvalidArgumentException;
 use Papier\Component\SegmentComponent;
 use Papier\Factory\Factory;
+use Papier\Font\FontDescriptorFlag;
 use Papier\Font\TrueType\Base\TrueTypeFontTable;
 use Papier\Font\TrueType\TrueTypeFontHeadTable;
 use Papier\Font\TrueType\TrueTypeFontHorizontalHeaderTable;
 use Papier\Font\TrueType\TrueTypeFontNameTable;
 use Papier\Font\TrueType\TrueTypeFontOS2Table;
+use Papier\Font\TrueType\TrueTypeFontPostTable;
 use Papier\Helpers\TrueTypeFontFileHelper;
 use Papier\Type\Base\ArrayType;
 use Papier\Type\Base\DictionaryType;
@@ -152,47 +154,61 @@ class TrueTypeFontDictionaryType extends FontDictionaryType
 		$fontBBoxStream = Factory::create('Papier\Type\Base\StreamType', null, true);
 		$fontBBoxStream->setContent(file_get_contents($pathToFontFile));
 
-		$fd = $this->getFontDescriptor();
+		$fontDescriptor = $this->getFontDescriptor();
 
-		/** @var ?TrueTypeFontHeadTable $table */
+		/** @var ?TrueTypeFontHeadTable $head */
 		$head = $helper->getTable(TrueTypeFontTable::HEAD_TABLE);
 
 		if ($head) {
 			$fontBBox = [$head->getXMin(), $head->getYMin(), $head->getXMax(), $head->getYMax()];
-			$fd->setFontBBox($fontBBox);
+			$fontDescriptor->setFontBBox($fontBBox);
 		}
 
-		/** @var ?TrueTypeFontHorizontalHeaderTable $table */
+		/** @var ?TrueTypeFontHorizontalHeaderTable $horizontalHeader */
 		$horizontalHeader = $helper->getTable(TrueTypeFontTable::HORIZONTAL_HEADER_TABLE);
 
 		if ($horizontalHeader) {
-			$fd->setAscent($horizontalHeader->getAscent());
-			$fd->setDescent($horizontalHeader->getDescent());
+			$fontDescriptor->setAscent($horizontalHeader->getAscent());
+			$fontDescriptor->setDescent($horizontalHeader->getDescent());
 		}
 
-		/** @var ?TrueTypeFontOS2Table $table */
+		/** @var ?TrueTypeFontOS2Table $os2 */
 		$os2 = $helper->getTable(TrueTypeFontTable::OS2_TABLE);
 		if ($os2) {
-			$fd->setCapHeight($os2->getSCapHeight());
+			$fontDescriptor->setCapHeight($os2->getSCapHeight());
 		}
 
-		/** @var ?TrueTypeFontNameTable $table */
+		/** @var ?TrueTypeFontNameTable $name */
 		$name = $helper->getTable(TrueTypeFontTable::NAME_TABLE);
 		if ($name) {
 			$postscriptName = $name->getPostscriptName();
 			if (!is_null($postscriptName)) {
-				$fd->setFontName($postscriptName);
+				$fontDescriptor->setFontName($postscriptName);
 				$this->setBaseFont($postscriptName);
 			}
 		}
 
-		$fd->setItalicAngle(0);
-		$fd->setStemV(80);
-		$fd->setFlags(32);
+		$flag = FontDescriptorFlag::NON_SYMBOLIC;
+		$fontDescriptor->setItalicAngle(0);
 
-		$fd->setFontFile2($fontBBoxStream);
+		/** @var ?TrueTypeFontPostTable $post */
+		$post = $helper->getTable(TrueTypeFontTable::POST_TABLE);
+		if ($post) {
+			$italicAngle = $post->getItalicAngle();
+			$fontDescriptor->setItalicAngle($italicAngle);
 
-		$this->setFontDescriptor($fd);
+			$isFixedPitch = $post->getIsFixedPitch();
+			if ($isFixedPitch) {
+				$flag |= FontDescriptorFlag::FIXED_PITCH;
+			}
+		}
+
+		$fontDescriptor->setStemV(80);
+		$fontDescriptor->setFlags($flag);
+
+		$fontDescriptor->setFontFile2($fontBBoxStream);
+
+		$this->setFontDescriptor($fontDescriptor);
 
 		$helper->close();
 

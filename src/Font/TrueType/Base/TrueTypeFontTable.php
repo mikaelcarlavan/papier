@@ -104,6 +104,13 @@ class TrueTypeFontTable
 	const GLYPH_DATA_TABLE = 'glyf';
 
 	/**
+	 * Post table
+	 *
+	 * @var string
+	 */
+	const POST_TABLE = 'post';
+
+	/**
 	 * Set table's offset
 	 *
 	 * @param int $offset
