@@ -115,7 +115,7 @@ class TrueTypeFontHorizontalMetricsTable extends TrueTypeFontTable
 		}
 
 		$this->setHMetrics($hMetrics);
-		$this->setLeftSideBaring($leftSideBearing);
+		$this->setLeftSideBearing($leftSideBearing);
 	}
 
 	/**
@@ -150,7 +150,7 @@ class TrueTypeFontHorizontalMetricsTable extends TrueTypeFontTable
 	 * @param array $leftSideBearing
 	 * @return TrueTypeFontHorizontalMetricsTable
 	 */
-	public function setLeftSideBaring(array $leftSideBearing): TrueTypeFontHorizontalMetricsTable
+	public function setLeftSideBearing(array $leftSideBearing): TrueTypeFontHorizontalMetricsTable
 	{
 		if (!ArrayValidator::isValid($leftSideBearing)) {
 			throw new InvalidArgumentException("Left side bearing is not valid. See ".__CLASS__." class's documentation for possible values.");
@@ -165,7 +165,7 @@ class TrueTypeFontHorizontalMetricsTable extends TrueTypeFontTable
 	 *
 	 * @return array
 	 */
-	public function getLeftSideBaring(): array
+	public function getLeftSideBearing(): array
 	{
 		return $this->leftSideBearing;
 	}
