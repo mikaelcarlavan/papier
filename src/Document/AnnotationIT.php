@@ -28,4 +28,19 @@ class AnnotationIT
 	 * @var string
 	 */
 	const FREE_TEXT_TYPE_WRITER = 'FreeTextTypeWriter';
+
+	/**
+	 * Line arrow
+	 *
+	 * @var string
+	 */
+	const LINE_ARROW = 'LineArrow';
+
+	/**
+	 * Line dimension
+	 *
+	 * @var string
+	 */
+	const LINE_DIMENSION = 'LineDimension';
+
 }
