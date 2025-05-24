@@ -157,6 +157,26 @@ class ArrayObject extends DictionaryObject
         return $object;
     }
 
+	/**
+	 * Return all values
+	 *
+	 * @return array
+	 */
+	public function all(): array
+	{
+		/** @var array<IndirectObject> $objects */
+		$objects = $this->getObjects();
+		$values = [];
+
+		if (count($objects) > 0) {
+			foreach ($objects as $object) {
+				$values[] = $object->getValue();
+			}
+		}
+
+		return $values;
+	}
+
     /**
      * Format object's value.
      *
