@@ -5,12 +5,16 @@ namespace Papier\Component;
 use Papier\Component\Base\BaseComponent;
 use Papier\Document\ProcedureSet;
 use Papier\Factory\Factory;
+use Papier\Font\TrueType\Base\TrueTypeFontTable;
 use Papier\Helpers\MetricHelper;
+use Papier\Helpers\TrueTypeFontFileHelper;
 use Papier\Papier;
 use Papier\Text\Encoding;
 use Papier\Text\RenderingMode;
 use Papier\Type\Base\ArrayType;
+use Papier\Type\FontDescriptorDictionaryType;
 use Papier\Type\FontDictionaryType;
+use Papier\Type\TrueTypeFontDictionaryType;
 use Papier\Type\Type1FontDictionaryType;
 use RuntimeException;
 
@@ -281,6 +285,50 @@ class TextComponent extends BaseComponent
     {
         return $this->fontSize;
     }
+
+	public function getTextWidth(): float
+	{
+		$text = $this->getText();
+		/** @var TrueTypeFontDictionaryType $font */
+		$font = $this->getFont();
+		$fontSize = $this->getFontSize();
+		$horizontalScaling = $this->getHorizontalScaling() ?: 100; // Default 100%
+		$characterSpacing = $this->getCharacterSpacing();
+		$wordSpacing = $this->getWordSpacing();
+
+
+		$widths = $font->getWidths()->all();
+		$firstChar = intval($font->getFirstChar()->format());
+		$lastChar = intval($font->getLastChar()->format());
+
+		for ($charCode = $firstChar; $charCode <= $lastChar; $charCode++) {
+			$glyphWidths[$charCode] = array_shift($widths);
+		}
+
+		$totalWidthUnits = 0;
+		$textLength = mb_strlen($text, 'UTF-8');
+
+		for ($i = 0; $i < $textLength; $i++) {
+			$char = mb_substr($text, $i, 1, 'UTF-8');
+			$charCode = mb_ord($char, 'UTF-8');
+
+			$glyphWidth = $glyphWidths[$charCode] ?? 0;
+			$totalWidthUnits += $glyphWidth;
+
+			if ($i < $textLength - 1) { // No spacing after last character
+				$totalWidthUnits += $characterSpacing * 1000;
+			}
+
+			if ($char === ' ') {
+				$totalWidthUnits += $wordSpacing * 1000;
+			}
+		}
+
+		$totalWidth = ($totalWidthUnits / 1000) * $fontSize;
+		$totalWidth *= $horizontalScaling / 100;
+
+		return $totalWidth;
+	}
 
     function format(): TextComponent
     {
