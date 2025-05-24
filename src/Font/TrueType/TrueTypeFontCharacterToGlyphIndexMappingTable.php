@@ -33,6 +33,13 @@ class TrueTypeFontCharacterToGlyphIndexMappingTable extends TrueTypeFontTable
 	protected array $glyphIndexMap;
 
 	/**
+	 * Storage offset.
+	 *
+	 * @var int
+	 */
+	protected int $storageOffset = 0;
+
+	/**
 	 * Set glyph index map.
 	 *
 	 * @param array $glyphIndexMap
