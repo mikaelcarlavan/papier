@@ -7,14 +7,17 @@ use Papier\Component\SegmentComponent;
 use Papier\Factory\Factory;
 use Papier\Font\FontDescriptorFlag;
 use Papier\Font\TrueType\Base\TrueTypeFontTable;
+use Papier\Font\TrueType\TrueTypeFontCharacterToGlyphIndexMappingTable;
 use Papier\Font\TrueType\TrueTypeFontHeadTable;
 use Papier\Font\TrueType\TrueTypeFontHorizontalHeaderTable;
+use Papier\Font\TrueType\TrueTypeFontHorizontalMetricsTable;
 use Papier\Font\TrueType\TrueTypeFontNameTable;
 use Papier\Font\TrueType\TrueTypeFontOS2Table;
 use Papier\Font\TrueType\TrueTypeFontPostTable;
 use Papier\Helpers\TrueTypeFontFileHelper;
 use Papier\Type\Base\ArrayType;
 use Papier\Type\Base\DictionaryType;
+use Papier\Type\Base\IntegerType;
 use Papier\Type\Base\StreamType;
 use Papier\Validator\EncodingValidator;
 use Papier\Validator\StringValidator;
@@ -50,6 +53,18 @@ class TrueTypeFontDictionaryType extends FontDictionaryType
 	}
 
 	/**
+	 * Get first character code.
+	 *
+	 * @return IntegerType
+	 */
+	public function getFirstChar(): IntegerType
+	{
+		/** @var IntegerType $firstChar */
+		$firstChar = $this->getEntry('FirstChar');
+		return $firstChar;
+	}
+
+	/**
 	 * Set last character code.
 	 *
 	 * @param int $lc
@@ -63,6 +78,18 @@ class TrueTypeFontDictionaryType extends FontDictionaryType
 	}
 
 	/**
+	 * Get last character code.
+	 *
+	 * @return IntegerType
+	 */
+	public function getLastChar(): IntegerType
+	{
+		/** @var IntegerType $lastChar */
+		$lastChar = $this->getEntry('LastChar');
+		return $lastChar;
+	}
+
+	/**
 	 * Set widths.
 	 *
 	 * @param ArrayType $widths
@@ -72,6 +99,18 @@ class TrueTypeFontDictionaryType extends FontDictionaryType
 	{
 		$this->setEntry('Widths', $widths);
 		return $this;
+	}
+
+	/**
+	 * Get widths.
+	 *
+	 * @return ArrayType
+	 */
+	public function getWidths(): ArrayType
+	{
+		/** @var ArrayType $widths */
+		$widths = $this->getEntry('Widths');
+		return $widths;
 	}
 
 	/**
@@ -110,7 +149,7 @@ class TrueTypeFontDictionaryType extends FontDictionaryType
 	 * @return TrueTypeFontDictionaryType
 	 *@throws InvalidArgumentException if the provided argument is not of type 'DictionaryType' or 'string'.
 	 */
-	public function setEncoding($encoding): TrueTypeFontDictionaryType
+	public function setEncoding(mixed $encoding): TrueTypeFontDictionaryType
 	{
 		if (!$encoding instanceof DictionaryType && !StringValidator::isValid($encoding)) {
 			throw new InvalidArgumentException("Encoding is incorrect. See ".__CLASS__." class's documentation for possible values.");
@@ -149,6 +188,7 @@ class TrueTypeFontDictionaryType extends FontDictionaryType
 	 */
 	public function load(string $pathToFontFile): TrueTypeFontDictionaryType
 	{
+		$scaleFactor = 1;
 		$helper = TrueTypeFontFileHelper::getInstance()->parse($pathToFontFile);
 
 		$fontBBoxStream = Factory::create('Papier\Type\Base\StreamType', null, true);
@@ -162,6 +202,8 @@ class TrueTypeFontDictionaryType extends FontDictionaryType
 		if ($head) {
 			$fontBBox = [$head->getXMin(), $head->getYMin(), $head->getXMax(), $head->getYMax()];
 			$fontDescriptor->setFontBBox($fontBBox);
+
+			$scaleFactor = 1000 / $head->getUnitsPerEm();
 		}
 
 		/** @var ?TrueTypeFontHorizontalHeaderTable $horizontalHeader */
@@ -175,7 +217,8 @@ class TrueTypeFontDictionaryType extends FontDictionaryType
 		/** @var ?TrueTypeFontOS2Table $os2 */
 		$os2 = $helper->getTable(TrueTypeFontTable::OS2_TABLE);
 		if ($os2) {
-			$fontDescriptor->setCapHeight($os2->getSCapHeight());
+			$capHeight = $os2->getSCapHeight() ?? $horizontalHeader->getAscent();
+			$fontDescriptor->setCapHeight($capHeight);
 		}
 
 		/** @var ?TrueTypeFontNameTable $name */
@@ -186,6 +229,39 @@ class TrueTypeFontDictionaryType extends FontDictionaryType
 				$fontDescriptor->setFontName($postscriptName);
 				$this->setBaseFont($postscriptName);
 			}
+		}
+
+		/** @var ?TrueTypeFontCharacterToGlyphIndexMappingTable $cmap */
+		$cmap = $helper->getTable(TrueTypeFontTable::CHARACTER_TO_GLYPH_INDEX_MAPPING_TABLE);
+
+		/** @var ?TrueTypeFontHorizontalMetricsTable $horizontalMetrics */
+		$horizontalMetrics = $helper->getTable(TrueTypeFontTable::HORIZONTAL_METRICS_TABLE);
+		if ($horizontalMetrics && $cmap) {
+			$hMetrics = $horizontalMetrics->getHMetrics();
+			$glyphIndexMap = $cmap->getGlyphIndexMap();
+
+			$widthsArray = Factory::create('Papier\Type\Base\ArrayType', null, true);
+			$firstChar = min(array_keys($glyphIndexMap));
+			$lastChar = max(array_keys($glyphIndexMap));
+
+			for ($char = $firstChar; $char <= $lastChar; $char++) {
+				$glyphIndex = $glyphIndexMap[$char] ?? 0;
+
+				if ($glyphIndex < count($hMetrics)) {
+					$advanceWidth = $hMetrics[$glyphIndex]['advanceWidth'];
+				} else {
+					$advanceWidth = end($hMetrics)['advanceWidth'];
+				}
+
+				$advanceWidth = (int) round($advanceWidth * $scaleFactor);
+				$widthsArray->append(Factory::create('Papier\Type\Base\IntegerType', $advanceWidth));
+			}
+
+			$characters = array_keys($glyphIndexMap);
+
+			$this->setFirstChar($characters[0]);
+			$this->setLastChar(end($characters));
+			$this->setWidths($widthsArray);
 		}
 
 		$flag = FontDescriptorFlag::NON_SYMBOLIC;
