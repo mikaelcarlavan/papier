@@ -11,6 +11,7 @@ use Papier\Font\TrueType\TrueTypeFontCharacterToGlyphIndexMappingTable;
 use Papier\Font\TrueType\TrueTypeFontHeadTable;
 use Papier\Font\TrueType\TrueTypeFontHorizontalHeaderTable;
 use Papier\Font\TrueType\TrueTypeFontHorizontalMetricsTable;
+use Papier\Font\TrueType\TrueTypeFontKerningTable;
 use Papier\Font\TrueType\TrueTypeFontNameTable;
 use Papier\Font\TrueType\TrueTypeFontOS2Table;
 use Papier\Font\TrueType\TrueTypeFontPostTable;
@@ -19,12 +20,129 @@ use Papier\Type\Base\ArrayType;
 use Papier\Type\Base\DictionaryType;
 use Papier\Type\Base\IntegerType;
 use Papier\Type\Base\StreamType;
+use Papier\Validator\ArrayValidator;
 use Papier\Validator\EncodingValidator;
+use Papier\Validator\IntegerValidator;
+use Papier\Validator\RealValidator;
 use Papier\Validator\StringValidator;
 use RuntimeException;
 
 class TrueTypeFontDictionaryType extends FontDictionaryType
 {
+	/**
+	 * Default advance width
+	 *
+	 * @var int
+	 */
+	protected int $defaultAdvanceWidth = 0;
+
+	/**
+	 * Font char codes.
+	 *
+	 * @var array
+	 */
+	protected array $charCodes = [];
+
+	/**
+	 * Kerning pairs.
+	 *
+	 * @var array
+	 */
+	protected array $kerningPairs = [];
+
+	/**
+	 * The line gap in font units.
+	 *
+	 * @var int
+	 */
+	protected int $lineGap = 0;
+
+	/**
+	 * Scale factor.
+	 *
+	 * @var float
+	 */
+	protected int $scaleFactor;
+
+	/**
+	 * Get units per EM.
+	 *
+	 * @return float
+	 */
+	public function getScaleFactor(): float
+	{
+		return $this->scaleFactor;
+	}
+
+	/**
+	 * Set scale factor.
+	 *
+	 * @param float $scaleFactor
+	 * @return TrueTypeFontDictionaryType
+	 */
+	public function setScaleFactor(float $scaleFactor): TrueTypeFontDictionaryType
+	{
+		if (!RealValidator::isValid($scaleFactor)) {
+			throw new InvalidArgumentException("Scale factor is not valid. See ".__CLASS__." class's documentation for possible values.");
+		}
+
+		$this->scaleFactor = $scaleFactor;
+
+		return $this;
+	}
+
+	/**
+	 * Sets the line gap in font units.
+	 *
+	 * @param int $lineGap The line gap value.
+	 * @return TrueTypeFontDictionaryType
+	 * @throws InvalidArgumentException if the value is not valid.
+	 */
+	public function setLineGap(int $lineGap): TrueTypeFontDictionaryType
+	{
+		if (!IntegerValidator::isValid($lineGap)) {
+			throw new InvalidArgumentException("Line Gap is not valid. See " . __CLASS__ . " class's documentation for possible values.");
+		}
+		$this->lineGap = $lineGap;
+		return $this;
+	}
+
+	/**
+	 * Gets the line gap in font units.
+	 *
+	 * @return int
+	 */
+	public function getLineGap(): int
+	{
+		return $this->lineGap;
+	}
+
+	/**
+	 * Set kerning pairs.
+	 *
+	 * @param array $kerningPairs
+	 * @return TrueTypeFontDictionaryType
+	 */
+	public function setKerningPairs(array $kerningPairs): TrueTypeFontDictionaryType
+	{
+		if (!ArrayValidator::isValid($kerningPairs)) {
+			throw new InvalidArgumentException("Kerning pairs is not valid. See ".__CLASS__." class's documentation for possible values.");
+		}
+
+		$this->kerningPairs = $kerningPairs;
+
+		return $this;
+	}
+
+	/**
+	 * Get kerning pairs.
+	 *
+	 * @return array
+	 */
+	public function getKerningPairs(): array
+	{
+		return $this->kerningPairs;
+	}
 
 	/**
 	 * Set basefont (PostScript) name.
@@ -62,6 +180,50 @@ class TrueTypeFontDictionaryType extends FontDictionaryType
 		/** @var IntegerType $firstChar */
 		$firstChar = $this->getEntry('FirstChar');
 		return $firstChar;
+	}
+
+	/**
+	 * Set char codes.
+	 *
+	 * @param array $charCodes
+	 * @return TrueTypeFontDictionaryType
+	 */
+	public function setCharCodes(array $charCodes): TrueTypeFontDictionaryType
+	{
+		$this->charCodes = $charCodes;
+		return $this;
+	}
+
+	/**
+	 * Get font char codes
+	 *
+	 * @return array
+	 */
+	public function getCharCodes(): array
+	{
+		return $this->charCodes;
+	}
+
+	/**
+	 * Set default advance width.
+	 *
+	 * @param int $defaultAdvanceWidth
+	 * @return TrueTypeFontDictionaryType
+	 */
+	public function setDefaultAdvanceWidth(int $defaultAdvanceWidth): TrueTypeFontDictionaryType
+	{
+		$this->defaultAdvanceWidth = $defaultAdvanceWidth;
+		return $this;
+	}
+
+	/**
+	 * Get default advance width.
+	 *
+	 * @return int
+	 */
+	public function getDefaultAdvanceWidth(): int
+	{
+		return $this->defaultAdvanceWidth;
 	}
 
 	/**
@@ -200,25 +362,31 @@ class TrueTypeFontDictionaryType extends FontDictionaryType
 		$head = $helper->getTable(TrueTypeFontTable::HEAD_TABLE);
 
 		if ($head) {
-			$fontBBox = [$head->getXMin(), $head->getYMin(), $head->getXMax(), $head->getYMax()];
+			$scaleFactor = 1000 / $head->getUnitsPerEm();
+			$fontBBox = [
+				$scaleFactor * $head->getXMin(),
+				$scaleFactor * $head->getYMin(),
+				$scaleFactor * $head->getXMax(),
+				$scaleFactor * $head->getYMax()
+			];
 			$fontDescriptor->setFontBBox($fontBBox);
 
-			$scaleFactor = 1000 / $head->getUnitsPerEm();
 		}
 
 		/** @var ?TrueTypeFontHorizontalHeaderTable $horizontalHeader */
 		$horizontalHeader = $helper->getTable(TrueTypeFontTable::HORIZONTAL_HEADER_TABLE);
 
 		if ($horizontalHeader) {
-			$fontDescriptor->setAscent($horizontalHeader->getAscent());
-			$fontDescriptor->setDescent($horizontalHeader->getDescent());
+			$fontDescriptor->setAscent($scaleFactor * $horizontalHeader->getAscent());
+			$fontDescriptor->setDescent($scaleFactor * $horizontalHeader->getDescent());
+			$this->setLineGap($scaleFactor * $horizontalHeader->getLineGap());
 		}
 
 		/** @var ?TrueTypeFontOS2Table $os2 */
 		$os2 = $helper->getTable(TrueTypeFontTable::OS2_TABLE);
 		if ($os2) {
-			$capHeight = $os2->getSCapHeight() ?? $horizontalHeader->getAscent();
-			$fontDescriptor->setCapHeight($capHeight);
+			$capHeight = $os2->getSCapHeight() ?? ($horizontalHeader ? $horizontalHeader->getAscent() : 0);
+			$fontDescriptor->setCapHeight($scaleFactor * $capHeight);
 		}
 
 		/** @var ?TrueTypeFontNameTable $name */
@@ -244,9 +412,10 @@ class TrueTypeFontDictionaryType extends FontDictionaryType
 			$firstChar = min(array_keys($glyphIndexMap));
 			$lastChar = max(array_keys($glyphIndexMap));
 
-			for ($char = $firstChar; $char <= $lastChar; $char++) {
-				$glyphIndex = $glyphIndexMap[$char] ?? 0;
+			$defaultAdvanceWidth = (int) round(end($hMetrics)['advanceWidth'] * $scaleFactor);
+			$this->setDefaultAdvanceWidth($defaultAdvanceWidth);
 
+			foreach ($glyphIndexMap as $glyphIndex) {
 				if ($glyphIndex < count($hMetrics)) {
 					$advanceWidth = $hMetrics[$glyphIndex]['advanceWidth'];
 				} else {
@@ -257,11 +426,34 @@ class TrueTypeFontDictionaryType extends FontDictionaryType
 				$widthsArray->append(Factory::create('Papier\Type\Base\IntegerType', $advanceWidth));
 			}
 
-			$characters = array_keys($glyphIndexMap);
-
-			$this->setFirstChar($characters[0]);
-			$this->setLastChar(end($characters));
+			$this->setFirstChar($firstChar);
+			$this->setLastChar($lastChar);
 			$this->setWidths($widthsArray);
+			$this->setCharCodes(array_keys($glyphIndexMap));
+		}
+
+		/** @var ?TrueTypeFontKerningTable $kerning */
+		$kerning = $helper->getTable(TrueTypeFontTable::KERNING_TABLE);
+		if ($kerning && $cmap) {
+			$kerningPairs = [];
+			$kerningIndexPairs = $kerning->getKerningPairs();
+			$glyphIndexMap = $cmap->getGlyphIndexMap();
+			$glyphCodeMap = [];
+			foreach ($glyphIndexMap as $charCode => $glyphIndex) {
+				$glyphCodeMap[$glyphIndex][] = $charCode;
+			}
+
+			foreach ($kerningIndexPairs as $leftIndex => $kerningRightIndexPairs) {
+				foreach ($kerningRightIndexPairs as $rightIndex => $value) {
+					foreach (($glyphCodeMap[$leftIndex] ?? []) as $leftCode) {
+						foreach (($glyphCodeMap[$rightIndex] ?? []) as $rightCode) {
+							$kerningPairs[$leftCode][$rightCode] = $value * $scaleFactor;
+						}
+					}
+				}
+			}
+
+			$this->setKerningPairs($kerningPairs);
 		}
 
 		$flag = FontDescriptorFlag::NON_SYMBOLIC;
