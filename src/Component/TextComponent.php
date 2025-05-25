@@ -419,11 +419,11 @@ class TextComponent extends BaseComponent
 	}
 
 	/**
-	 * Get component's height.
+	 * Estimate component's height.
 	 *
 	 * @return float
 	 */
-	public function getHeight(): float
+	public function estimateHeight(): float
 	{
 		$height = 0;
 		$lines = $this->getTextLines();
@@ -433,6 +433,17 @@ class TextComponent extends BaseComponent
 		}
 
 		return $height;
+	}
+
+	/**
+	 * Estimate component's height.
+	 *
+	 * @return float
+	 */
+	public function estimateWidth(): float
+	{
+		$width = $this->getWidth();
+		return $width > 0 ? $width : $this->getTextWidth($this->getText());
 	}
 
     function format(): TextComponent
