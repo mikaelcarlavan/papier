@@ -11,6 +11,7 @@ use Papier\Helpers\TrueTypeFontFileHelper;
 use Papier\Papier;
 use Papier\Text\Encoding;
 use Papier\Text\RenderingMode;
+use Papier\Text\TextAlign;
 use Papier\Type\Base\ArrayType;
 use Papier\Type\FontDescriptorDictionaryType;
 use Papier\Type\FontDictionaryType;
@@ -87,6 +88,13 @@ class TextComponent extends BaseComponent
      */
     protected int $renderingMode = RenderingMode::FILL;
 
+	/**
+	 * Text align.
+	 *
+	 * @var string
+	 */
+	protected string $textAlign = TextAlign::LEFT;
+
     /**
      * Set rendering mode.
      *
@@ -108,6 +116,28 @@ class TextComponent extends BaseComponent
     {
         return $this->renderingMode;
     }
+
+	/**
+	 * Set text align.
+	 *
+	 * @param string $textAlign
+	 * @return TextComponent
+	 */
+	public function setTextAlign(string $textAlign): TextComponent
+	{
+		$this->textAlign = $textAlign;
+		return $this;
+	}
+
+	/**
+	 * Get text align.
+	 *
+	 * @return string
+	 */
+	public function getTextAlign(): string
+	{
+		return $this->textAlign;
+	}
 
     /**
      * Set text rise.
@@ -516,7 +546,11 @@ class TextComponent extends BaseComponent
 
         $contents->setTextRenderingMode($renderingMode);
 
-		$this->translate($this->getX(), $this->getY());
+		$x = $this->getX();
+		$y = $this->getY();
+
+		
+		$this->translate($x, $y);
 		$transformationMatrix = $this->getTransformationMatrix();
 
 		$currentX = $transformationMatrix->getData(2, 0);
