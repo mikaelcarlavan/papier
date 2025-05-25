@@ -17,12 +17,12 @@ use Papier\Type\FontDictionaryType;
 use Papier\Type\TrueTypeFontDictionaryType;
 use Papier\Type\Type1FontDictionaryType;
 use RuntimeException;
-
-
 class TextComponent extends BaseComponent
 {
     use Color;
     use Transformation;
+	use Width;
+	use Position;
 
 	/**
 	 * Text's font.
@@ -241,6 +241,45 @@ class TextComponent extends BaseComponent
         return $this->text;
     }
 
+	/**
+	 * Get text lines.
+	 *
+	 * @return array
+	 */
+	public function getTextLines(): array
+	{
+		$text = $this->getText();
+
+		$width = $this->getWidth();
+		$lines = [];
+
+		if ($width <= 0) {
+			$lines[] = $text;
+			return $lines;
+		}
+
+		$words = preg_split('/\s+/', $text);
+		$currentLine = '';
+
+		foreach ($words as $word) {
+			$testLine = $currentLine === '' ? $word : $currentLine . ' ' . $word;
+			$testWidth = $this->getTextWidth($testLine);
+
+			if ($testWidth <= $width || $currentLine === '') {
+				$currentLine = $testLine;
+			} else {
+				$lines[] = $currentLine;
+				$currentLine = $word;
+			}
+		}
+
+		if ($currentLine !== '') {
+			$lines[] = $currentLine;
+		}
+
+		return $lines;
+	}
+
     /**
      * Set font.
      *
@@ -291,9 +330,9 @@ class TextComponent extends BaseComponent
 	 *
 	 * @return float
 	 */
-	public function getTextHeight(): float
+	public function getTextHeight($text = ''): float
 	{
-		$text = $this->getText();
+		// $text = $this->getText();
 		/** @var TrueTypeFontDictionaryType $font */
 		$font = $this->getFont();
 		$fontSize = $this->getFontSize();
@@ -319,9 +358,10 @@ class TextComponent extends BaseComponent
 	 * @return float
 	 */
 
-	public function getTextWidth(): float
+	public function getTextWidth($text = ''): float
 	{
-		$text = $this->getText();
+		// $text = is_null($text) ? $this->getText() : $text;
+
 		/** @var TrueTypeFontDictionaryType $font */
 		$font = $this->getFont();
 		$fontSize = $this->getFontSize();
@@ -378,6 +418,23 @@ class TextComponent extends BaseComponent
 		return $totalWidth;
 	}
 
+	/**
+	 * Get component's height.
+	 *
+	 * @return float
+	 */
+	public function getHeight(): float
+	{
+		$height = 0;
+		$lines = $this->getTextLines();
+
+		foreach ($lines as $line) {
+			$height += $this->getTextHeight($line);
+		}
+
+		return $height;
+	}
+
     function format(): TextComponent
     {
         $page = $this->getPage();
@@ -413,6 +470,7 @@ class TextComponent extends BaseComponent
         $contents = $this->getContents();
         $contents->save();
 
+
         $contents->beginText();
         $contents->setFont($font->getName(), MetricHelper::toUserUnit($fontSize));
 
@@ -424,7 +482,6 @@ class TextComponent extends BaseComponent
         $wordSpacing = $this->getWordSpacing();
         $characterSpacing = $this->getCharacterSpacing();
 
-        $transformationMatrix = $this->getTransformationMatrix();
 
         if ($characterSpacing) {
             $contents->setCharacterSpacing(MetricHelper::toUserUnit($characterSpacing));
@@ -448,33 +505,47 @@ class TextComponent extends BaseComponent
 
         $contents->setTextRenderingMode($renderingMode);
 
-        $contents->setTextMatrix(
-            $transformationMatrix->getData(0, 0),
-            $transformationMatrix->getData(0, 1),
-            $transformationMatrix->getData(1, 0),
-            $transformationMatrix->getData(1, 1),
-            $transformationMatrix->getData(2, 0),
-            $transformationMatrix->getData(2, 1)
-        );
+		$this->translate($this->getX(), $this->getY());
+		$transformationMatrix = $this->getTransformationMatrix();
 
-		$text = $this->getText();
+		$currentX = $transformationMatrix->getData(2, 0);
+		$currentY = $transformationMatrix->getData(2, 1);
 
-		if ($font->hasEntry('Encoding')) {
-			$encoding = $font->getEntryValue('Encoding');
-			if ($encoding == Encoding::WIN_ANSI) {
-				$text = mb_convert_encoding($text, 'windows-1252', 'UTF-8');
-			} else if ($encoding == Encoding::MAC_ROMAN) {
-				$text = iconv('UTF-8', 'macintosh', $text);
+		$lines = $this->getTextLines();
+
+		foreach ($lines as $line) {
+			$height = $this->getTextHeight($line);
+
+			$contents->setTextMatrix(
+				$transformationMatrix->getData(0, 0),
+				$transformationMatrix->getData(0, 1),
+				$transformationMatrix->getData(1, 0),
+				$transformationMatrix->getData(1, 1),
+				$transformationMatrix->getData(2, 0),
+				$transformationMatrix->getData(2, 1)
+			);
+
+			if ($font->hasEntry('Encoding')) {
+				$encoding = $font->getEntryValue('Encoding');
+				if ($encoding == Encoding::WIN_ANSI) {
+					$line = mb_convert_encoding($line, 'windows-1252', 'UTF-8');
+				} else if ($encoding == Encoding::MAC_ROMAN) {
+					$line = iconv('UTF-8', 'macintosh', $line);
+				} else {
+					throw new RuntimeException("Encoding not implemented yet. See ".__CLASS__." class's documentation for possible values.");
+				}
+
+				$line = Factory::create('Papier\Type\LiteralStringType', $line)->format();
 			} else {
-				throw new RuntimeException("Encoding not implemented yet. See ".__CLASS__." class's documentation for possible values.");
+				$line = Factory::create('Papier\Type\TextStringType', $line)->format();
 			}
 
-			$text = Factory::create('Papier\Type\LiteralStringType', $text)->format();
-		} else {
-			$text = Factory::create('Papier\Type\TextStringType', $text)->format();
+			$contents->showText($line);
+
+			$this->translate(0, -$height);
+			$transformationMatrix = $this->getTransformationMatrix();
 		}
 
-        $contents->showText($text);
         $contents->endText();
 
         $contents->restore();
