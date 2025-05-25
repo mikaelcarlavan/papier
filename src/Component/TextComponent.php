@@ -286,6 +286,39 @@ class TextComponent extends BaseComponent
         return $this->fontSize;
     }
 
+	/**
+	 * Get text height.
+	 *
+	 * @return float
+	 */
+	public function getTextHeight(): float
+	{
+		$text = $this->getText();
+		/** @var TrueTypeFontDictionaryType $font */
+		$font = $this->getFont();
+		$fontSize = $this->getFontSize();
+
+		$fontDescriptor = $font->getFontDescriptor();
+
+		$lineGap = $font->getLineGap();
+		$capHeight = $fontDescriptor->getCapHeightValue();
+
+		$lineHeightUnits = $capHeight + $lineGap;
+
+		$lines = preg_split("/\r\n|\r|\n/", $text);
+		$lineCount = max(count($lines), 1);
+
+		$totalHeight = ($lineHeightUnits / 1000) * $fontSize * $lineCount;
+
+		return $totalHeight;
+	}
+
+	/**
+	 * Get text width
+	 *
+	 * @return float
+	 */
+
 	public function getTextWidth(): float
 	{
 		$text = $this->getText();
@@ -298,30 +331,45 @@ class TextComponent extends BaseComponent
 
 
 		$widths = $font->getWidths()->all();
-		$firstChar = intval($font->getFirstChar()->format());
-		$lastChar = intval($font->getLastChar()->format());
+		$charCodes = $font->getCharCodes();
 
-		for ($charCode = $firstChar; $charCode <= $lastChar; $charCode++) {
+		$glyphWidths = [];
+		foreach ($charCodes as $charCode) {
 			$glyphWidths[$charCode] = array_shift($widths);
 		}
 
 		$totalWidthUnits = 0;
-		$textLength = mb_strlen($text, 'UTF-8');
+
+		$chars = preg_split('//u', $text, -1, PREG_SPLIT_NO_EMPTY);
+		$textLength = count($chars);
+
+		$leftCharCode = null;
+		$kerningPairs = $font->getKerningPairs();
+		$charSpacingUnits = $characterSpacing * 1000;
+		$wordSpacingUnits = $wordSpacing * 1000;
 
 		for ($i = 0; $i < $textLength; $i++) {
-			$char = mb_substr($text, $i, 1, 'UTF-8');
+			$char = $chars[$i];
 			$charCode = mb_ord($char, 'UTF-8');
 
-			$glyphWidth = $glyphWidths[$charCode] ?? 0;
+			$glyphWidth = $glyphWidths[$charCode] ?? $font->getDefaultAdvanceWidth();
 			$totalWidthUnits += $glyphWidth;
 
+			// Kerning
+			if ($leftCharCode !== null) {
+				$kerning = $kerningPairs[$leftCharCode][$charCode] ?? 0;
+				$totalWidthUnits += $kerning;
+			}
+
 			if ($i < $textLength - 1) { // No spacing after last character
-				$totalWidthUnits += $characterSpacing * 1000;
+				$totalWidthUnits += $charSpacingUnits;
 			}
 
 			if ($char === ' ') {
-				$totalWidthUnits += $wordSpacing * 1000;
+				$totalWidthUnits += $wordSpacingUnits;
 			}
+
+			$leftCharCode = $charCode;
 		}
 
 		$totalWidth = ($totalWidthUnits / 1000) * $fontSize;
