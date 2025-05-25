@@ -31,8 +31,6 @@ class RectangleComponent extends BaseComponent
         $width = $this->getWidth();
         $height = $this->getHeight();
 
-        $mmToUserUnit = Papier::MM_TO_USER_UNIT;
-
         $lineWidth = $this->getLineWidth();
 
         $contents->setLineWidth(MetricHelper::toUserUnit($lineWidth));
