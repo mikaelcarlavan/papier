@@ -73,6 +73,16 @@ $text->setFont($font);
 $text->setFontSize(12);
 $text->translate(100, 100);
 
+$textWidth = $text->getTextWidth();
+$textHeight = $text->getTextHeight();
+
+$rect = $pdf->addRectangleComponent()->setPage($page);
+$rect->setStrokingColor(0.9, 0, 0);
+$rect->setStrokingColorSpace(DeviceColourSpace::RGB);
+$rect->setXY(100, 100);
+$rect->setWidth($textWidth);
+$rect->setHeight($textHeight);
+
 $annot = $pdf->addTextAnnotation($page);
 $annot->setContents('Hello World !');
 $annot->setRect([50, 50, 70, 100]);
@@ -106,6 +116,3 @@ More examples can be found in the <strong>examples</strong> directory.
 
 ## License
 Papier is open-sourced software licensed under the [MIT license](LICENSE.md).
-
-## Known issues
-Accents in text may be displayed incorrectly, depending on the encoding and font used. A different encoding can be used and may work for core fonts. In all cases, work needs to be done on the fonts. We're working on it.
