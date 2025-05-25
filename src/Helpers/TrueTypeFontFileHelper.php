@@ -9,6 +9,7 @@ use Papier\Font\TrueType\TrueTypeFontHeadTable;
 use Papier\Font\TrueType\TrueTypeFontHorizontalHeaderTable;
 use Papier\Font\TrueType\TrueTypeFontHorizontalMetricsTable;
 use Papier\Font\TrueType\TrueTypeFontIndexToLocationTable;
+use Papier\Font\TrueType\TrueTypeFontKerningTable;
 use Papier\Font\TrueType\TrueTypeFontMaximumProfileTable;
 use Papier\Font\TrueType\TrueTypeFontNameTable;
 use Papier\Font\TrueType\TrueTypeFontOS2Table;
@@ -196,7 +197,8 @@ class TrueTypeFontFileHelper extends FileHelper
 			TrueTypeFontTable::NAME_TABLE,
 			TrueTypeFontTable::MAXIMUM_PROFILE_TABLE,
 			TrueTypeFontTable::CHARACTER_TO_GLYPH_INDEX_MAPPING_TABLE,
-			TrueTypeFontTable::POST_TABLE
+			TrueTypeFontTable::POST_TABLE,
+			TrueTypeFontTable::KERNING_TABLE
 		];
 
 		foreach ($tags as $tag) {
@@ -223,6 +225,9 @@ class TrueTypeFontFileHelper extends FileHelper
 						break;
 					case TrueTypeFontTable::POST_TABLE:
 						$table = new TrueTypeFontPostTable();
+						break;
+					case TrueTypeFontTable::KERNING_TABLE:
+						$table = new TrueTypeFontKerningTable();
 						break;
 				}
 

@@ -111,6 +111,13 @@ class TrueTypeFontTable
 	const POST_TABLE = 'post';
 
 	/**
+	 * Kerning table
+	 *
+	 * @var string
+	 */
+	const KERNING_TABLE = 'kern';
+
+	/**
 	 * Set table's offset
 	 *
 	 * @param int $offset
