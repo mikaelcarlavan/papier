@@ -21,6 +21,7 @@ class ImageComponent extends BaseComponent
 {
     use Transformation;
 	use Size;
+	use Position;
 
     /**
      * Valid mimes for image.
@@ -309,6 +310,7 @@ class ImageComponent extends BaseComponent
         $image->setWidth($width);
         $image->setHeight($height);
 
+		$this->translate($this->getX(), $this->getY());
         $transformationMatrix = $this->getTransformationMatrix();
 
         // For Images, CTM shall contain dimensions and not multiply factors
