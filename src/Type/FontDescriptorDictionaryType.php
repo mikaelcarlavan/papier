@@ -3,6 +3,7 @@
 namespace Papier\Type;
 
 use Papier\Factory\Factory;
+use Papier\Font\TrueType\TrueTypeFontHorizontalHeaderTable;
 use Papier\Type\Base\ArrayType;
 use Papier\Type\Base\DictionaryType;
 use Papier\Type\Base\StreamType;
@@ -11,6 +12,7 @@ use Papier\Validator\ColourComponentsValidator;
 use Papier\Validator\EncodingValidator;
 use Papier\Validator\FontDescriptorFlagValidator;
 use Papier\Validator\FontStretchValidator;
+use Papier\Validator\IntegerValidator;
 use Papier\Validator\StringValidator;
 use InvalidArgumentException;
 use RuntimeException;
@@ -146,6 +148,16 @@ class FontDescriptorDictionaryType extends DictionaryType
 	}
 
 	/**
+	 * Gets the ascent value in font units.
+	 *
+	 * @return float
+	 */
+	public function getAscentValue(): float
+	{
+		return $this->getEntryValue('Ascent') ?? 0;
+	}
+
+	/**
 	 * Set descent.
 	 *
 	 * @param float $descent
@@ -154,8 +166,18 @@ class FontDescriptorDictionaryType extends DictionaryType
 	public function setDescent(float $descent): FontDescriptorDictionaryType
 	{
 		$value = Factory::create('Papier\Type\NumberType', $descent);
-		$this->setEntry('Ascent', $value);
+		$this->setEntry('Descent', $value);
 		return $this;
+	}
+
+	/**
+	 * Gets the descent value in font units.
+	 *
+	 * @return float
+	 */
+	public function getDescentValue(): float
+	{
+		return $this->getEntryValue('Descent') ?? 0;
 	}
 
 	/**
@@ -182,6 +204,17 @@ class FontDescriptorDictionaryType extends DictionaryType
 		$value = Factory::create('Papier\Type\NumberType', $capHeight);
 		$this->setEntry('CapHeight', $value);
 		return $this;
+	}
+
+
+	/**
+	 * Gets cap height value.
+	 *
+	 * @return float
+	 */
+	public function getCapHeightValue(): float
+	{
+		return $this->getEntryValue('CapHeight') ?? 0;
 	}
 
 	/**
