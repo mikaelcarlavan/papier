@@ -72,16 +72,17 @@ $text->setText('Café');
 $text->setFont($font);
 $text->setFontSize(12);
 $text->translate(100, 100);
+$text->setWidth(100);
+$text->setTextAlign(\Papier\Text\TextAlign::CENTER);
 
-$textWidth = $text->getTextWidth();
-$textHeight = $text->getTextHeight();
+$boundingBox = $text->getBoundingBox();
 
 $rect = $pdf->addRectangleComponent()->setPage($page);
 $rect->setStrokingColor(0.9, 0, 0);
 $rect->setStrokingColorSpace(DeviceColourSpace::RGB);
-$rect->setXY(100, 100);
-$rect->setWidth($textWidth);
-$rect->setHeight($textHeight);
+$rect->setXY($boundingBox[0], $boundingBox[1]);
+$rect->setWidth($boundingBox[2]);
+$rect->setHeight($boundingBox[3]);
 
 $annot = $pdf->addTextAnnotation($page);
 $annot->setContents('Hello World !');
