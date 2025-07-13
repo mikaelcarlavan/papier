@@ -11,7 +11,7 @@ class AnnotationFlagValidator implements Validator
 	/**
 	 * Flags.
 	 *
-	 * @var array<string>
+	 * @var array<int>
 	 */
 	const ANNOTATION_FLAGS = array(
 		AnnotationFlag::INVISIBLE,
