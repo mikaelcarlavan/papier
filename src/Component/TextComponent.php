@@ -274,7 +274,7 @@ class TextComponent extends BaseComponent
 	/**
 	 * Get text lines.
 	 *
-	 * @return array
+	 * @return array<string>
 	 */
 	public function getTextLines(): array
 	{
@@ -291,15 +291,17 @@ class TextComponent extends BaseComponent
 		$words = preg_split('/\s+/', $text);
 		$currentLine = '';
 
-		foreach ($words as $word) {
-			$testLine = $currentLine === '' ? $word : $currentLine . ' ' . $word;
-			$testWidth = $this->getTextWidth($testLine);
+		if (is_array($words)) {
+			foreach ($words as $word) {
+				$testLine = $currentLine === '' ? $word : $currentLine . ' ' . $word;
+				$testWidth = $this->getTextWidth($testLine);
 
-			if ($testWidth <= $width || $currentLine === '') {
-				$currentLine = $testLine;
-			} else {
-				$lines[] = $currentLine;
-				$currentLine = $word;
+				if ($testWidth <= $width || $currentLine === '') {
+					$currentLine = $testLine;
+				} else {
+					$lines[] = $currentLine;
+					$currentLine = $word;
+				}
 			}
 		}
 
@@ -358,9 +360,10 @@ class TextComponent extends BaseComponent
 	/**
 	 * Get text height.
 	 *
+	 * @param string $text
 	 * @return float
 	 */
-	public function getTextHeight($text = ''): float
+	public function getTextHeight(string $text = ''): float
 	{
 		// $text = $this->getText();
 		/** @var TrueTypeFontDictionaryType $font */
@@ -375,9 +378,14 @@ class TextComponent extends BaseComponent
 		$lineHeightUnits = $capHeight + $lineGap;
 
 		$lines = preg_split("/\r\n|\r|\n/", $text);
-		$lineCount = max(count($lines), 1);
+		if (is_array($lines)) {
+			$lineCount = max(count($lines), 1);
+		} else {
+			$lineCount = 1;
+		}
 
-		$totalHeight = ($lineHeightUnits / 1000) * $fontSize * $lineCount;
+		$lineCount = floatval($lineCount);
+		$totalHeight = (floatval($lineHeightUnits) / 1000) * $fontSize * $lineCount;
 
 		return $totalHeight;
 	}
@@ -385,10 +393,11 @@ class TextComponent extends BaseComponent
 	/**
 	 * Get text width
 	 *
+	 * @param string $text
 	 * @return float
 	 */
 
-	public function getTextWidth($text = ''): float
+	public function getTextWidth(string $text = ''): float
 	{
 		// $text = is_null($text) ? $this->getText() : $text;
 
@@ -463,6 +472,31 @@ class TextComponent extends BaseComponent
 		}
 
 		return $height;
+	}
+
+	/**
+	 * Estimate bounding box
+	 *
+	 * @return array
+	 */
+	public function getBoundingBox(): array
+	{
+		// Bounding box differs from just X, Y, width and height because PDF
+		// starts drawing at the bottom-left of the text
+		$height = 0;
+		$lines = $this->getTextLines();
+
+		$line = array_shift($lines);
+		$firstLineHeight = $this->getTextHeight($line);
+
+		$height += $firstLineHeight;
+		foreach ($lines as $line) {
+			$height += $this->getTextHeight($line);
+		}
+
+		$box = [$this->getX(), $this->getY() + $firstLineHeight - $height, $this->estimateWidth(), $height];
+
+		return $box;
 	}
 
 	/**
@@ -549,17 +583,24 @@ class TextComponent extends BaseComponent
 		$x = $this->getX();
 		$y = $this->getY();
 
-		
 		$this->translate($x, $y);
-		$transformationMatrix = $this->getTransformationMatrix();
-
-		$currentX = $transformationMatrix->getData(2, 0);
-		$currentY = $transformationMatrix->getData(2, 1);
 
 		$lines = $this->getTextLines();
 
+		list($boxX, $boxY, $boxWidth, $boxHeight) = $this->getBoundingBox();
+
 		foreach ($lines as $line) {
 			$height = $this->getTextHeight($line);
+
+			$offsetX = 0;
+			if ($this->getTextAlign() == TextAlign::RIGHT) {
+				$offsetX = $boxWidth - $this->getTextWidth($line);
+			} else if ($this->getTextAlign() == TextAlign::CENTER) {
+				$offsetX = ($boxWidth - $this->getTextWidth($line)) / 2.0;
+			}
+
+			$this->translate($offsetX, 0);
+			$transformationMatrix = $this->getTransformationMatrix();
 
 			$contents->setTextMatrix(
 				$transformationMatrix->getData(0, 0),
@@ -580,15 +621,14 @@ class TextComponent extends BaseComponent
 					throw new RuntimeException("Encoding not implemented yet. See ".__CLASS__." class's documentation for possible values.");
 				}
 
-				$line = Factory::create('Papier\Type\LiteralStringType', $line)->format();
+				$text = Factory::create('Papier\Type\LiteralStringType', $line)->format();
 			} else {
-				$line = Factory::create('Papier\Type\TextStringType', $line)->format();
+				$text = Factory::create('Papier\Type\TextStringType', $line)->format();
 			}
 
-			$contents->showText($line);
+			$contents->showText($text);
 
-			$this->translate(0, -$height);
-			$transformationMatrix = $this->getTransformationMatrix();
+			$this->translate(-$offsetX, -$height);
 		}
 
         $contents->endText();
