@@ -11,7 +11,7 @@ class FontDescriptorFlagValidator implements Validator
 	/**
 	 * Flags.
 	 *
-	 * @var array<string>
+	 * @var array<int>
 	 */
 	const FLAGS = array(
 		FontDescriptorFlag::FIXED_PITCH,
