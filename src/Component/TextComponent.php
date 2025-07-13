@@ -17,7 +17,10 @@ use Papier\Type\FontDescriptorDictionaryType;
 use Papier\Type\FontDictionaryType;
 use Papier\Type\TrueTypeFontDictionaryType;
 use Papier\Type\Type1FontDictionaryType;
+use Papier\Validator\NumberValidator;
 use RuntimeException;
+use InvalidArgumentException;
+
 class TextComponent extends BaseComponent
 {
     use Color;
@@ -94,6 +97,40 @@ class TextComponent extends BaseComponent
 	 * @var string
 	 */
 	protected string $textAlign = TextAlign::LEFT;
+
+	/**
+	 * The space between two lines
+	 *
+	 * @var float
+	 */
+	protected float $interlineSpacing = 0;
+
+	/**
+	 * Set component's interline spacing.
+	 *
+	 * @param  float  $interlineSpacing
+	 * @return static
+	 * @throws InvalidArgumentException if the provided argument is not of type 'float' or 'int' and positive.
+	 */
+	public function setInterlineSpacing(float $interlineSpacing): static
+	{
+		if (!NumberValidator::isValid($interlineSpacing)) {
+			throw new InvalidArgumentException("Interline spacing is incorrect. See ".__CLASS__." class's documentation for possible values.");
+		}
+
+		$this->interlineSpacing = $interlineSpacing;
+		return $this;
+	}
+
+	/**
+	 * Get component's interline spacing.
+	 *
+	 * @return float
+	 */
+	public function getInterlineSpacing(): float
+	{
+		return $this->interlineSpacing;
+	}
 
     /**
      * Set rendering mode.
@@ -469,8 +506,10 @@ class TextComponent extends BaseComponent
 
 		foreach ($lines as $line) {
 			$height += $this->getTextHeight($line);
+			$height += $this->getInterlineSpacing();
 		}
 
+		$height -= $this->getInterlineSpacing();
 		return $height;
 	}
 
@@ -489,11 +528,12 @@ class TextComponent extends BaseComponent
 		$line = array_shift($lines);
 		$firstLineHeight = $this->getTextHeight($line);
 
-		$height += $firstLineHeight;
+		$height += $firstLineHeight + $this->getInterlineSpacing();
 		foreach ($lines as $line) {
-			$height += $this->getTextHeight($line);
+			$height += ($this->getTextHeight($line) + $this->getInterlineSpacing());
 		}
 
+		$height -= $this->getInterlineSpacing();
 		$box = [$this->getX(), $this->getY() + $firstLineHeight - $height, $this->estimateWidth(), $height];
 
 		return $box;
@@ -589,6 +629,8 @@ class TextComponent extends BaseComponent
 
 		list($boxX, $boxY, $boxWidth, $boxHeight) = $this->getBoundingBox();
 
+		$interlineSpacing = $this->getInterlineSpacing();
+
 		foreach ($lines as $line) {
 			$height = $this->getTextHeight($line);
 
@@ -628,7 +670,7 @@ class TextComponent extends BaseComponent
 
 			$contents->showText($text);
 
-			$this->translate(-$offsetX, -$height);
+			$this->translate(-$offsetX, -($height + $interlineSpacing));
 		}
 
         $contents->endText();
