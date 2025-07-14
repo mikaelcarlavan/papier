@@ -102,7 +102,7 @@ $text->setFontSize(5);
 $text->setXY($margin, $currentY);
 $text->setInterlineSpacing(1.5);
 $text->setWidth($pageWidth - (2 * $margin));
-$text->setTextAlign(\Papier\Text\TextAlign::LEFT);
+$text->setTextAlign(\Papier\Text\TextAlign::JUSTIFY);
 
 // Sign
 $currentY -= $text->estimateHeight();
