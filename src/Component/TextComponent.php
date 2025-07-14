@@ -431,10 +431,11 @@ class TextComponent extends BaseComponent
 	 * Get text width
 	 *
 	 * @param string $text
+	 * @param bool $includeWhitespace
 	 * @return float
 	 */
 
-	public function getTextWidth(string $text = ''): float
+	public function getTextWidth(string $text = '', $includeWhitespace = true): float
 	{
 		// $text = is_null($text) ? $this->getText() : $text;
 
@@ -481,7 +482,7 @@ class TextComponent extends BaseComponent
 				$totalWidthUnits += $charSpacingUnits;
 			}
 
-			if ($char === ' ') {
+			if ($char === ' ' && $includeWhitespace) {
 				$totalWidthUnits += $wordSpacingUnits;
 			}
 
@@ -504,12 +505,14 @@ class TextComponent extends BaseComponent
 		$height = 0;
 		$lines = $this->getTextLines();
 
-		foreach ($lines as $line) {
+		$nLines = count($lines);
+		foreach ($lines as $i => $line) {
 			$height += $this->getTextHeight($line);
-			$height += $this->getInterlineSpacing();
+			if ($i < $nLines - 1) { // No spacing after last line
+				$height += $this->getInterlineSpacing();
+			}
 		}
 
-		$height -= $this->getInterlineSpacing();
 		return $height;
 	}
 
@@ -522,18 +525,12 @@ class TextComponent extends BaseComponent
 	{
 		// Bounding box differs from just X, Y, width and height because PDF
 		// starts drawing at the bottom-left of the text
-		$height = 0;
 		$lines = $this->getTextLines();
 
 		$line = array_shift($lines);
 		$firstLineHeight = $this->getTextHeight($line);
 
-		$height += $firstLineHeight + $this->getInterlineSpacing();
-		foreach ($lines as $line) {
-			$height += ($this->getTextHeight($line) + $this->getInterlineSpacing());
-		}
-
-		$height -= $this->getInterlineSpacing();
+		$height = $this->estimateHeight();
 		$box = [$this->getX(), $this->getY() + $firstLineHeight - $height, $this->estimateWidth(), $height];
 
 		return $box;
@@ -631,15 +628,29 @@ class TextComponent extends BaseComponent
 
 		$interlineSpacing = $this->getInterlineSpacing();
 
-		foreach ($lines as $line) {
+		$nLines = count($lines);
+		foreach ($lines as $i => $line) {
 			$height = $this->getTextHeight($line);
+			$width = $this->getTextWidth($line);
 
 			$offsetX = 0;
 			if ($this->getTextAlign() == TextAlign::RIGHT) {
-				$offsetX = $boxWidth - $this->getTextWidth($line);
+				$offsetX = $boxWidth - $width;
 			} else if ($this->getTextAlign() == TextAlign::CENTER) {
-				$offsetX = ($boxWidth - $this->getTextWidth($line)) / 2.0;
+				$offsetX = ($boxWidth - $width) / 2.0;
 			}
+
+			if ($this->getTextAlign() == TextAlign::JUSTIFY && $i < $nLines - 1) {
+				$charactersWidth = $this->getTextWidth($line, false);
+				$words = preg_split('/\s+/u', $line, -1, PREG_SPLIT_NO_EMPTY);
+				$nWords = count($words);
+				$wordSpacing = $nWords > 0 ? ($this->getWidth() - $charactersWidth) / $nWords : 0;
+
+				if ($wordSpacing > 0) {
+					$contents->setWordSpacing(MetricHelper::toUserUnit($wordSpacing));
+				}
+			}
+
 
 			$this->translate($offsetX, 0);
 			$transformationMatrix = $this->getTransformationMatrix();
