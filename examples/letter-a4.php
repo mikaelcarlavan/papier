@@ -31,7 +31,7 @@ date_default_timezone_set("UTC");
 | - Lato font: tyPoland Lukasz Dziedzic (team@latofonts.com)
 */
 
-require __DIR__.'/../vendor/autoload.php';
+require_once __DIR__.'/../vendor/autoload.php';
 
 
 $pathToRegularLatoFontFile = 'fonts/Lato-Regular.ttf';
