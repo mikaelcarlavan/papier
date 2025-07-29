@@ -1,12 +1,8 @@
 # Papier
 <p>
-    <a href="https://packagist.org/packages/papier/papier">
-        <img src="https://poser.pugx.org/papier/papier/d/total.svg" alt="Total Downloads">
-    </a><a href="https://packagist.org/packages/papier/papier">
-        <img src="https://poser.pugx.org/papier/papier/v/stable.svg" alt="Latest Stable Version">
-    </a><a href="https://packagist.org/packages/papier/papier">
-        <img src="https://poser.pugx.org/papier/papier/license.svg" alt="License">
-    </a>
+    <a href="https://packagist.org/packages/papier/papier"><img src="https://poser.pugx.org/papier/papier/d/total.svg" alt="Total Downloads"></a>
+    <a href="https://packagist.org/packages/papier/papier"><img src="https://poser.pugx.org/papier/papier/v/stable.svg" alt="Latest Stable Version"></a>
+    <a href="https://packagist.org/packages/papier/papier"><img src="https://poser.pugx.org/papier/papier/license.svg" alt="License"></a>
 </p>
 
 ## Introduction
