@@ -34,7 +34,7 @@ class LZWFilter extends Filter
      * @return string
      * @throws Exception
      */
-    public static function decode(string $stream, DictionaryObject $param = null): string
+    public static function decode(string $stream, ?DictionaryObject $param = null): string
     {
         // Convert compressed bytes back to binary
         $binaryString = '';
@@ -107,7 +107,7 @@ class LZWFilter extends Filter
      * @param DictionaryObject|null $param
      * @return string
      */
-    public static function encode(string $value, DictionaryObject $param = null): string
+    public static function encode(string $value, ?DictionaryObject $param = null): string
     {
         if (!StringValidator::isValid($value)) {
             throw new InvalidArgumentException("Value is incorrect. See ".__CLASS__." class's documentation for possible values.");

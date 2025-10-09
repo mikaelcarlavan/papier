@@ -25,7 +25,7 @@ class ASCII85Filter extends Filter
      * @param DictionaryObject|null $param
      * @return string
      */
-    public static function decode(string $stream, DictionaryObject $param = null): string
+    public static function decode(string $stream, ?DictionaryObject $param = null): string
     {
         $stream = trim($stream);
         $marker = substr($stream, -strlen(self::EOD_MARKER));
@@ -77,7 +77,7 @@ class ASCII85Filter extends Filter
      * @param DictionaryObject|null $param
      * @return string
      */
-    public static function encode(string $value, DictionaryObject $param = null): string
+    public static function encode(string $value, ?DictionaryObject $param = null): string
     {
         if (!StringValidator::isValid($value)) {
             throw new InvalidArgumentException("Value is incorrect. See ".__CLASS__." class's documentation for possible values.");

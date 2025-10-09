@@ -14,7 +14,7 @@ class ASCIIHexDecodeFilter extends Filter
      * @param DictionaryObject|null $param
      * @return string|bool
      */
-    public static function process(string $stream, DictionaryObject $param = null): string|bool
+    public static function process(string $stream, ?DictionaryObject $param = null): string|bool
     {
         return ASCIIHexFilter::encode($stream, $param);
     }

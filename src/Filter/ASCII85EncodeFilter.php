@@ -14,7 +14,7 @@ class ASCII85EncodeFilter extends Filter
      * @param DictionaryObject|null $param
      * @return string|bool
      */
-    public static function process(string $value, DictionaryObject $param = null): string|bool
+    public static function process(string $value, ?DictionaryObject $param = null): string|bool
     {
         return ASCII85Filter::decode($value, $param);
     }

@@ -13,7 +13,7 @@ abstract class Filter
      * @param DictionaryObject|null $param
      * @return string|bool
      */
-    public static function decode(string $stream, DictionaryObject $param = null): string|bool
+    public static function decode(string $stream, ?DictionaryObject $param = null): string|bool
     {
         return $stream;
     }
@@ -25,7 +25,7 @@ abstract class Filter
      * @param DictionaryObject|null $param
      * @return string|bool
      */
-    public static function encode(string $value, DictionaryObject $param = null): string|bool
+    public static function encode(string $value, ?DictionaryObject $param = null): string|bool
     {
         return $value;
     }
