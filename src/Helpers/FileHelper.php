@@ -196,10 +196,6 @@ class FileHelper
 			$stream = $this->getStream();
 			if (is_resource($stream)) {
 				fseek($stream, $offset);
-				/*if ($success < 0) {
-					$this->read($offset);
-				}*/
-
 				$this->offset = $offset;
 			} else {
 				throw new InvalidArgumentException("Stream is not valid. See ".__CLASS__." class's documentation for possible values.");
