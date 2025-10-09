@@ -31,5 +31,38 @@ class NumbersArrayType extends ArrayType
 
         parent::setValue($objects);
         return $this;
-    } 
+    }
+
+	/**
+	 * Create object from string.
+	 *
+	 * @param string $data
+	 * @return NumbersArrayType
+	 */
+	public static function fromString(string $data): NumbersArrayType
+	{
+		// Start from parent ArrayType parser
+		/** @var ArrayType $arrayObject */
+		$arrayObject = parent::fromString($data);
+
+		// Get parsed objects (likely as raw strings or generic base objects)
+		$objects = $arrayObject->getObjects();
+		$converted = [];
+
+		foreach ($objects as $i => $obj) {
+			$value = is_object($obj) && method_exists($obj, 'getValue')
+				? $obj->getValue()
+				: (float) $obj;
+
+			// Create NumberType for each item
+			$converted[$i] = Factory::create('Papier\Type\NumberType', $value);
+		}
+
+		/** @var NumbersArrayType $object */
+		$object = Factory::create('Papier\Type\NumbersArrayType');
+		$object->setValue($converted);
+
+		return $object;
+	}
+
 }
