@@ -17,7 +17,7 @@ class PageLabelsNumberTreeDictionaryType extends NumberTreeDictionaryType
 	 * @param int $start Value of the numeric portion for the first page label in the range.
 	 * @return PageLabelDictionaryType
 	 */
-	public function addLabel(int $page, string $style, string $prefix = null, int $start = 0): PageLabelDictionaryType
+	public function addLabel(int $page, string $style, ?string $prefix = null, int $start = 0): PageLabelDictionaryType
 	{
 		$pageLabel = Factory::create('Papier\Type\PageLabelDictionaryType');
 		$pageLabel->setS($style);

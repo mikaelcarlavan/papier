@@ -13,7 +13,7 @@ class RealValidator implements Validator
      * @param float|null $max
      * @return bool
      */
-    public static function isValid($value, float $min = null, float $max = null): bool
+    public static function isValid($value, ?float $min = null, ?float $max = null): bool
     {
         $isValid = is_float($value);
         if (is_float($min) && $isValid) {

@@ -13,7 +13,7 @@ class IntegerValidator implements Validator
      * @param int|null $max
      * @return bool
      */
-    public static function isValid($value, int $min = null, int $max = null): bool
+    public static function isValid($value, ?int $min = null, ?int $max = null): bool
     {
         $isValid = is_int($value);
         if (is_int($min) && $isValid) {
