@@ -39,4 +39,28 @@ class NameObject extends IndirectObject
 
         return '/' .$value;
     }
+
+	/**
+	 * Create object from string.
+	 *
+	 * @param string $data
+	 * @return NameObject
+	 */
+	public static function fromString(string $data): NameObject
+	{
+		$object = new NameObject();
+
+		// Trim whitespace and leading '/'
+		$data = trim($data);
+		$data = ltrim($data, '/');
+
+		// Decode PDF-encoded hex sequences in the name (e.g., #20 → space)
+		$data = preg_replace_callback('/#([0-9A-Fa-f]{2})/', function ($matches) {
+			return chr(hexdec($matches[1]));
+		}, $data);
+
+		$object->setValue($data);
+
+		return $object;
+	}
 }

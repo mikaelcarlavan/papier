@@ -126,4 +126,52 @@ class FunctionObject extends StreamObject
 
         return parent::format();
     }
+
+	/**
+	 * Create object from string.
+	 *
+	 * @param string $data
+	 * @return FunctionObject
+	 */
+	public static function fromString(string $data): FunctionObject
+	{
+		$object = new FunctionObject();
+
+		// Parse the stream dictionary and content using parent
+		$streamObj = StreamObject::fromString($data);
+
+		// Copy all dictionary entries into FunctionObject
+		foreach ($streamObj->getKeys() as $key) {
+			$object->setEntry($key, $streamObj->getEntry($key));
+		}
+
+		// Copy content
+		$object->setContent($streamObj->getContent());
+
+		// Handle FunctionType entry if present
+		if ($object->hasEntry('FunctionType')) {
+			$typeEntry = $object->getEntry('FunctionType');
+			if ($typeEntry instanceof IntegerObject) {
+				$object->setFunctionType($typeEntry->getValue());
+			}
+		}
+
+		// Handle Domain entry if present
+		if ($object->hasEntry('Domain')) {
+			$domainEntry = $object->getEntry('Domain');
+			if ($domainEntry instanceof ArrayObject) {
+				$object->setDomain($domainEntry);
+			}
+		}
+
+		// Handle Range entry if present
+		if ($object->hasEntry('Range')) {
+			$rangeEntry = $object->getEntry('Range');
+			if ($rangeEntry instanceof ArrayObject) {
+				$object->setRange($rangeEntry);
+			}
+		}
+
+		return $object;
+	}
 }

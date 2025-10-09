@@ -39,4 +39,26 @@ class CommentObject extends BaseObject
 
         return '%'.$value;
     }
+
+	/**
+	 * Create object from string.
+	 *
+	 * @param string $data
+	 * @return CommentObject
+	 */
+	public static function fromString(string $data): CommentObject
+	{
+		$object = new CommentObject();
+
+		// Trim whitespace and leading '%'
+		$data = trim($data);
+		$data = ltrim($data, '%');
+
+		// Unescape escaped percent signs (\%)
+		$data = str_replace('\%', '%', $data);
+
+		$object->setValue($data);
+
+		return $object;
+	}
 }

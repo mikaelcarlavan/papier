@@ -2,6 +2,7 @@
 
 namespace Papier\Type;
 
+use Papier\Object\ArrayObject;
 use Papier\Object\StringObject;
 use Papier\Type\Base\StringType;
 
@@ -26,4 +27,34 @@ class HexadecimalStringType extends StringType
 
         return '<' .$value. '>';
     }
+
+	/**
+	 * Create object from string.
+	 *
+	 * @param string $data
+	 * @return HexadecimalStringType
+	 */
+	public static function fromString(string $data): HexadecimalStringType
+	{
+		$object = new HexadecimalStringType();
+
+		// Clean input: remove < and >
+		$data = trim($data);
+		$data = trim($data, '<>');
+
+		// Normalize possible odd-length hex
+		if (strlen($data) % 2 !== 0) {
+			$data .= '0';
+		}
+
+		// Convert hex to raw string
+		$decoded = '';
+		for ($i = 0; $i < strlen($data); $i += 2) {
+			$decoded .= chr(hexdec(substr($data, $i, 2)));
+		}
+
+		$object->setValue($decoded);
+
+		return $object;
+	}
 }

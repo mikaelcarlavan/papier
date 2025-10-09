@@ -226,4 +226,46 @@ class StreamObject extends DictionaryObject
 
         return $value;
     }
+
+	/**
+	 * Create object from string.
+	 *
+	 * @param string $data
+	 * @return StreamObject
+	 */
+	public static function fromString(string $data): StreamObject
+	{
+		$object = new StreamObject();
+
+		$data = trim($data);
+
+		// Split dictionary and stream content
+		if (preg_match('/^(<<.*?>>)\s*stream\s*(.*?)\s*endstream$/s', $data, $matches)) {
+			$dictString = $matches[1];
+			$streamContent = $matches[2];
+
+			// Parse dictionary entries
+			$dict = DictionaryObject::fromString($dictString);
+
+			// Copy dictionary entries into StreamObject
+			foreach ($dict->getKeys() as $key) {
+				$object->setEntry($key, $dict->getEntry($key));
+			}
+
+			// Set the raw content
+			$object->setContent($streamContent);
+
+			// Optionally, handle known filters if 'Filter' entry exists
+			if ($object->hasEntry('Filter')) {
+				$filter = $object->getEntry('Filter')->getValue();
+				if (is_string($filter)) {
+					$object->setCompression($filter);
+				}
+			}
+		} else {
+			throw new InvalidArgumentException("Value is incorrect. See ".__CLASS__." class's documentation for possible values.");
+		}
+
+		return $object;
+	}
 }

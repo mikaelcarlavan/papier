@@ -39,4 +39,30 @@ class StringObject extends IndirectObject
 
         return $value. ')';
     }
+
+	/**
+	 * Create object from string.
+	 *
+	 * @param string $data
+	 * @return StringObject
+	 */
+	public static function fromString(string $data): StringObject
+	{
+		$object = new StringObject();
+
+		// Trim whitespace
+		$data = trim($data);
+
+		// Remove surrounding parentheses if present
+		if (preg_match('/^\((.*)\)$/s', $data, $matches)) {
+			$data = $matches[1];
+		}
+
+		// Unescape escaped characters: \(, \), \\
+		$data = str_replace(['\\(', '\\)', '\\\\'], ['(', ')', '\\'], $data);
+
+		$object->setValue($data);
+
+		return $object;
+	}
 }

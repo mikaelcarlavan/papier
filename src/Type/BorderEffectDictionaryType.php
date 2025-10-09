@@ -64,4 +64,41 @@ class BorderEffectDictionaryType extends DictionaryType
 
 		return parent::format();
 	}
+
+	/**
+	 * Create object from string.
+	 *
+	 * @param string $data
+	 * @return BorderEffectDictionaryType
+	 */
+	public static function fromString(string $data): BorderEffectDictionaryType
+	{
+		$object = new BorderEffectDictionaryType();
+
+		// Use parent DictionaryType parser
+		$dict = parent::fromString($data);
+
+		$entries = $dict->getObjects();
+
+		foreach ($entries as $key => $val) {
+			switch ($key) {
+				case 'S':
+					$valueObject = Factory::create('Papier\Type\Base\NameType', $val);
+					$object->setS($valueObject->getValue());
+					break;
+
+				case 'I':
+					$number = is_object($val) && method_exists($val, 'getValue') ? $val->getValue() : $val;
+					$object->setI($number);
+					break;
+
+				default:
+					// Keep other entries if necessary
+					$object->setEntry($key, $val);
+			}
+		}
+
+		return $object;
+	}
+
 }

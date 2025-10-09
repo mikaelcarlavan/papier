@@ -76,4 +76,29 @@ class BooleanObject extends IndirectObject
         $value = $this->getValue();
         return $value ? 'true' : 'false';
     }
+
+	/**
+	 * Create object from string.
+	 *
+	 * @param string $data
+	 * @return BooleanObject
+	 */
+	public static function fromString(string $data): BooleanObject
+	{
+		$object = new BooleanObject();
+
+		// Normalize input
+		$data = trim(strtolower($data));
+
+		// PDF boolean literals are "true" or "false"
+		if ($data === 'true') {
+			$object->setTrue();
+		} elseif ($data === 'false') {
+			$object->setFalse();
+		} else {
+			throw new InvalidArgumentException("Value is incorrect. See ".__CLASS__." class's documentation for possible values.");
+		}
+
+		return $object;
+	}
 }

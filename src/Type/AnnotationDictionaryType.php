@@ -4,6 +4,9 @@ namespace Papier\Type;
 
 use Papier\Factory\Factory;
 use Papier\Helpers\MetricHelper;
+use Papier\Object\ArrayObject;
+use Papier\Object\IntegerObject;
+use Papier\Object\StringObject;
 use Papier\Papier;
 use Papier\Type\Base\DateType;
 use Papier\Type\Base\DictionaryType;
@@ -252,4 +255,74 @@ class AnnotationDictionaryType extends DictionaryType
 
 		return parent::format();
 	}
+
+	/**
+	 * Create object from string.
+	 *
+	 * @param string $data
+	 * @return AnnotationDictionaryType
+	 */
+	public static function fromString(string $data): AnnotationDictionaryType
+	{
+		$object = new AnnotationDictionaryType();
+
+		// Parse the dictionary using parent parser
+		$dict = parent::fromString($data);
+
+		// Copy all entries into AnnotationDictionaryType
+		foreach ($dict->getKeys() as $key) {
+			$object->setEntry($key, $dict->getEntry($key));
+		}
+
+		// Wrap specific entries in the correct object types
+		$stringKeys = ['Subtype', 'Contents', 'NM', 'AS'];
+		foreach ($stringKeys as $key) {
+			if ($object->hasEntry($key) && !($object->getEntry($key) instanceof StringObject)) {
+				$value = $object->getEntry($key);
+				$object->setEntry($key, Factory::create('Papier\Object\StringObject', $value));
+			}
+		}
+
+		if ($object->hasEntry('Rect') && !($object->getEntry('Rect') instanceof RectangleNumbersArrayType)) {
+			$value = $object->getEntry('Rect');
+			$object->setEntry('Rect', Factory::create('Papier\Type\RectangleNumbersArrayType', $value));
+		}
+
+		if ($object->hasEntry('P') && !($object->getEntry('P') instanceof DictionaryType)) {
+			$value = $object->getEntry('P');
+			$object->setEntry('P', Factory::create('Papier\Type\Base\DictionaryType', $value));
+		}
+
+		if ($object->hasEntry('M') && !($object->getEntry('M') instanceof DateType)) {
+			$value = $object->getEntry('M');
+			$object->setEntry('M', Factory::create('Papier\Type\Base\DateType', $value));
+		}
+
+		$intKeys = ['F', 'StructParent'];
+		foreach ($intKeys as $key) {
+			if ($object->hasEntry($key) && !($object->getEntry($key) instanceof IntegerObject)) {
+				$value = $object->getEntry($key);
+				$object->setEntry($key, Factory::create('Papier\Object\IntegerObject', $value));
+			}
+		}
+
+		$arrayKeys = ['Border', 'C'];
+		foreach ($arrayKeys as $key) {
+			if ($object->hasEntry($key) && !($object->getEntry($key) instanceof ArrayObject)) {
+				$value = $object->getEntry($key);
+				$object->setEntry($key, Factory::create('Papier\Object\ArrayObject', $value));
+			}
+		}
+
+		$dictKeys = ['AP', 'OC'];
+		foreach ($dictKeys as $key) {
+			if ($object->hasEntry($key) && !($object->getEntry($key) instanceof DictionaryType)) {
+				$value = $object->getEntry($key);
+				$object->setEntry($key, Factory::create('Papier\Type\Base\DictionaryType', $value));
+			}
+		}
+
+		return $object;
+	}
+
 }

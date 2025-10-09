@@ -2,6 +2,12 @@
 
 namespace Papier\Object;
 
+use Papier\Factory\Factory;
+use Papier\Type\Base\ArrayType;
+use Papier\Type\Base\DictionaryType;
+use Papier\Type\Base\IntegerType;
+use Papier\Type\Base\RealType;
+
 class ArrayObject extends DictionaryObject
 {
     /**
@@ -196,4 +202,37 @@ class ArrayObject extends DictionaryObject
 
         return '[' .trim($value). ']';
     }
+
+	/**
+	 * Create object from string.
+	 *
+	 * @param string $data
+	 * @return ArrayObject
+	 */
+	public static function fromString(string $data): ArrayObject
+	{
+		$object = new ArrayObject();
+
+		// Clean input: remove brackets and whitespace
+		$data = trim($data);
+		$data = trim($data, "[] \r\n");
+
+		// Split items while preserving enclosed <>, (), and nested [] or << >>
+		// This regex isolates tokens separated by spaces but not inside <> or ()
+		preg_match_all('/(<[^>]+>|\([^\)]+\)|<<.*?>>|\[.*?\]|\S+)/s', $data, $matches);
+
+		$items = [];
+		if (!empty($matches[1])) {
+			foreach ($matches[1] as $token) {
+				$value = trim($token);
+				$items[] = Factory::fromString($value);
+			}
+		}
+
+		if (count($items)) {
+			$object->setObjects($items);
+		}
+
+		return $object;
+	}
 }

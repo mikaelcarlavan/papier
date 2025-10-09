@@ -88,4 +88,44 @@ class BorderStyleDictionaryType extends DictionaryType
 
 		return parent::format();
 	}
+
+	/**
+	 * Create object from string.
+	 *
+	 * @param string $data
+	 * @return BorderStyleDictionaryType
+	 */
+	public static function fromString(string $data): BorderStyleDictionaryType
+	{
+		$object = new BorderStyleDictionaryType();
+
+		// Parse dictionary using parent method
+		$dict = parent::fromString($data);
+		$entries = $dict->getObjects();
+
+		foreach ($entries as $key => $val) {
+			switch ($key) {
+				case 'W':
+					$number = is_object($val) && method_exists($val, 'getValue') ? $val->getValue() : $val;
+					$object->setW($number);
+					break;
+
+				case 'S':
+					$name = is_object($val) && method_exists($val, 'getValue') ? $val->getValue() : $val;
+					$object->setS($name);
+					break;
+
+				case 'D':
+					$array = is_object($val) && method_exists($val, 'getValue') ? $val->getValue() : $val;
+					$object->setD($array);
+					break;
+
+				default:
+					$object->setEntry($key, $val);
+			}
+		}
+
+		return $object;
+	}
+
 }

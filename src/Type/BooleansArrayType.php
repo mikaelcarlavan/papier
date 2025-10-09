@@ -33,4 +33,30 @@ class BooleansArrayType extends ArrayType
 		parent::setValue($objects);
         return $this;
     }
+
+	/**
+	 * Create object from string.
+	 *
+	 * @param string $data
+	 * @return BooleansArrayType
+	 */
+	public static function fromString(string $data): BooleansArrayType
+	{
+		$object = new BooleansArrayType();
+
+		// Parse array using parent parser
+		$array = parent::fromString($data);
+
+		$values = $array->all(); // get raw values
+
+		$boolObjects = [];
+		foreach ($values as $i => $val) {
+			$boolObjects[$i] = Factory::create('Papier\Object\BooleanObject', $val);
+		}
+
+		$object->setValue($boolObjects);
+
+		return $object;
+	}
+
 }

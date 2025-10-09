@@ -3,6 +3,7 @@
 namespace Papier\Type;
 
 use Papier\Factory\Factory;
+use Papier\Object\StringObject;
 use Papier\Type\Base\DictionaryType;
 use InvalidArgumentException;
 use RuntimeException;
@@ -86,4 +87,39 @@ class BeadDictionaryType extends DictionaryType
 
 		return parent::format();
 	}
+
+	/**
+	 * Create object from string.
+	 *
+	 * @param string $data
+	 * @return BeadDictionaryType
+	 */
+	public static function fromString(string $data): BeadDictionaryType
+	{
+		$object = new BeadDictionaryType();
+
+		// Parse the dictionary using parent DictionaryType parser
+		$dict = parent::fromString($data);
+
+		// Copy all entries into BeadDictionaryType
+		foreach ($dict->getKeys() as $key) {
+			$object->setEntry($key, $dict->getEntry($key));
+		}
+
+		// Optionally, wrap specific entries as DictionaryType or specialized types
+		foreach (['T', 'N', 'V', 'P'] as $key) {
+			if ($object->hasEntry($key) && !($object->getEntry($key) instanceof DictionaryType)) {
+				$value = $object->getEntry($key);
+				$object->setEntry($key, Factory::create('Papier\Type\Base\DictionaryType', $value));
+			}
+		}
+
+		if ($object->hasEntry('R') && !($object->getEntry('R') instanceof RectangleNumbersArrayType)) {
+			$value = $object->getEntry('R');
+			$object->setEntry('R', Factory::create('Papier\Type\RectangleNumbersArrayType', $value));
+		}
+
+		return $object;
+	}
+
 }
