@@ -148,7 +148,7 @@ class FileTrailer extends DictionaryObject
 		/** @var DocumentInformationDictionaryType $info */
 		$info = $this->getEntry('Info');
         return $info;
-    } 
+    }
 
     /**
      * Set ID (array of two byte-strings constituting a file identifier).
@@ -184,8 +184,7 @@ class FileTrailer extends DictionaryObject
         $value .= parent::format() . self::EOL_MARKER;
         $value .= 'startxref' . self::EOL_MARKER;
         $value .= $this->getCrossReferenceOffset() . self::EOL_MARKER;
-        $value .= self::EOF_MARKER;
-        $value .= self::EOL_MARKER;
+        $value .= self::EOF_MARKER . self::EOL_MARKER;
 
         return $value;
     }
