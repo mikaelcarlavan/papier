@@ -13,7 +13,7 @@ use Papier\LogicalStructure\StructTreeRoot;
 use Papier\Metadata\{DocumentInfo, XmpMetadata};
 use Papier\Objects\{PdfArray, PdfDictionary, PdfInteger, PdfName, PdfString};
 use Papier\OptionalContent\OCProperties;
-use Papier\Parser\PdfParser;
+use Papier\Parser\{ImportedPage, PdfParser};
 use Papier\Structure\{PageLabelStyle, PdfOutline, PdfPage};
 use Papier\Writer\PdfWriter;
 
@@ -192,6 +192,68 @@ final class PdfDocument
     {
         $this->writer->addPage($page);
         return $this;
+    }
+
+    /**
+     * Import a page from another PDF and append it to this document.
+     *
+     * The source page is embedded as a Form XObject (ISO 32000-1 §8.10).
+     * All resources referenced by that page — fonts, images, colour spaces,
+     * graphics states — are deep-copied so the output document is fully
+     * self-contained.
+     *
+     * The returned {@see PdfPage} has the same dimensions as the source page.
+     * Add elements or content streams to it to overlay text, signatures, or
+     * other graphics on top of the imported background.
+     *
+     * Example — mail-merge over state-provided blank forms:
+     *
+     *   $source   = PdfDocument::open('blank_form.pdf');
+     *   $font     = $doc->addFont('Helvetica');
+     *
+     *   foreach ($customers as $customer) {
+     *       foreach (range(1, $source->getPageCount()) as $pageNum) {
+     *           $imported = ImportedPage::fromParser($source, $pageNum);
+     *           $page     = $doc->importPage($imported);
+     *           $page->add(
+     *               Text::write($customer->name)->at(150, 620)->font($font, 11),
+     *               Text::write($customer->address)->at(150, 605)->font($font, 11),
+     *           );
+     *       }
+     *   }
+     *   $doc->output('deal-jacket.pdf');
+     *
+     * @param ImportedPage $imported  Page prepared with {@see ImportedPage::fromParser()}.
+     * @param float        $x        X offset of the imported page origin in points (default 0).
+     * @param float        $y        Y offset of the imported page origin in points (default 0).
+     * @param float        $scale    Uniform scale factor (1.0 = 100 %, full size).
+     *
+     * @return PdfPage  The new page, ready for overlay content.
+     */
+    public function importPage(
+        ImportedPage $imported,
+        float $x     = 0.0,
+        float $y     = 0.0,
+        float $scale = 1.0,
+    ): PdfPage {
+        $page = new PdfPage(
+            $imported->getWidth()  * $scale,
+            $imported->getHeight() * $scale,
+        );
+
+        $name = $imported->getResourceName();
+        $page->getResources()->addXObject($name, $imported->getFormXObject());
+
+        $cs = new ContentStream();
+        $cs->save();
+        if ($x !== 0.0 || $y !== 0.0 || $scale !== 1.0) {
+            $cs->transform($scale, 0.0, 0.0, $scale, $x, $y);
+        }
+        $cs->drawXObject($name)->restore();
+        $page->addContent($cs);
+
+        $this->writer->addPage($page);
+        return $page;
     }
 
     // ── Fonts ─────────────────────────────────────────────────────────────────
