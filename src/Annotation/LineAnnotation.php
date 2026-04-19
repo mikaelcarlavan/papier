@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Papier\Annotation;
 
+use Papier\Elements\Color;
 use Papier\Objects\{PdfArray, PdfName, PdfReal};
 
 /**
@@ -69,17 +70,14 @@ final class LineAnnotation extends Annotation
     /**
      * Set the interior fill colour (`/IC`) for closed arrowheads.
      *
-     * @param float $r  Red   [0, 1].
-     * @param float $g  Green [0, 1].
-     * @param float $b  Blue  [0, 1].
+     * Only applies when a closed line-ending style (`ClosedArrow`,
+     * `RClosedArrow`, `Diamond`, `Circle`, `Square`) is used.
+     *
+     * @param Color $color  Fill colour for the arrowhead interior.
      */
-    public function setInteriorColor(float $r, float $g, float $b): static
+    public function setInteriorColor(Color $color): static
     {
-        $ic = new PdfArray();
-        $ic->add(new PdfReal($r));
-        $ic->add(new PdfReal($g));
-        $ic->add(new PdfReal($b));
-        $this->dict->set('IC', $ic);
+        $this->dict->set('IC', $this->colorToArray($color));
         return $this;
     }
 }

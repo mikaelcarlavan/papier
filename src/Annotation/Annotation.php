@@ -145,24 +145,28 @@ abstract class Annotation
      * Set the annotation colour (`/C`).
      *
      * Used as the background colour of text annotations and the border colour
-     * of most other types.  Accepts a {@see Color} object or three RGB floats.
+     * of most other types.  The colour space is preserved: a greyscale
+     * `Color` produces a 1-component array, RGB a 3-component array, and
+     * CMYK a 4-component array, matching ISO 32000-1 §12.5.2 Table 164.
      *
-     * @param Color|float $colorOrR  A Color object, or the red component [0, 1].
-     * @param float|null  $g         Green component (only when passing raw floats).
-     * @param float|null  $b         Blue  component (only when passing raw floats).
+     * @param Color $color  Use {@see Color::rgb()}, {@see Color::hex()},
+     *                      {@see Color::gray()}, or {@see Color::cmyk()}.
      */
-    public function setColor(Color|float $colorOrR, ?float $g = null, ?float $b = null): static
+    public function setColor(Color $color): static
     {
-        if ($colorOrR instanceof Color) {
-            [$r, $gv, $bv] = $colorOrR->toRgb();
-        } else {
-            $r = $colorOrR; $gv = $g ?? 0.0; $bv = $b ?? 0.0;
-        }
-        $arr = new PdfArray();
-        $arr->add(new PdfReal($r));
-        $arr->add(new PdfReal($gv));
-        $arr->add(new PdfReal($bv));
-        $this->dict->set('C', $arr);
+        $this->dict->set('C', $this->colorToArray($color));
+        return $this;
+    }
+
+    /**
+     * Make the annotation transparent by writing an empty `/C` array.
+     *
+     * An empty colour array means "no colour" (transparent background or
+     * no border) as defined in §12.5.2.
+     */
+    public function clearColor(): static
+    {
+        $this->dict->set('C', new PdfArray());
         return $this;
     }
 
@@ -271,6 +275,21 @@ abstract class Annotation
         if ($down !== null)     { $ap->set('D', $down); }
         $this->dict->set('AP', $ap);
         return $this;
+    }
+
+    /**
+     * Build a PDF colour array from a {@see Color} object.
+     *
+     * The number of elements matches the colour space (1 = gray, 3 = RGB,
+     * 4 = CMYK) so that the correct device colour space is used in the PDF.
+     */
+    protected function colorToArray(Color $color): PdfArray
+    {
+        $arr = new PdfArray();
+        foreach ($color->toArray() as $v) {
+            $arr->add(new PdfReal($v));
+        }
+        return $arr;
     }
 
     /** Return the underlying annotation dictionary. */

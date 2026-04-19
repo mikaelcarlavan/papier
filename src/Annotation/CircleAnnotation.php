@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Papier\Annotation;
 
-use Papier\Objects\{PdfArray, PdfReal};
+use Papier\Elements\Color;
+use Papier\Objects\PdfArray;
 
 /**
  * Ellipse outline annotation (`/Subtype /Circle`).
@@ -19,17 +20,24 @@ final class CircleAnnotation extends Annotation
     /**
      * Set the interior fill colour (`/IC`).
      *
-     * @param float $r  Red   [0, 1].
-     * @param float $g  Green [0, 1].
-     * @param float $b  Blue  [0, 1].
+     * Supports all device colour spaces: use {@see Color::gray()},
+     * {@see Color::rgb()}, {@see Color::hex()}, or {@see Color::cmyk()}.
+     * Pass an empty `Color` equivalent by calling {@see clearInteriorColor()}.
+     *
+     * @param Color $color  Fill colour for the ellipse interior.
      */
-    public function setInteriorColor(float $r, float $g, float $b): static
+    public function setInteriorColor(Color $color): static
     {
-        $ic = new PdfArray();
-        $ic->add(new PdfReal($r));
-        $ic->add(new PdfReal($g));
-        $ic->add(new PdfReal($b));
-        $this->dict->set('IC', $ic);
+        $this->dict->set('IC', $this->colorToArray($color));
+        return $this;
+    }
+
+    /**
+     * Remove the interior fill (transparent interior).
+     */
+    public function clearInteriorColor(): static
+    {
+        $this->dict->set('IC', new PdfArray());
         return $this;
     }
 }

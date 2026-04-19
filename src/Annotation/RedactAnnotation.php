@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Papier\Annotation;
 
-use Papier\Objects\{PdfArray, PdfBoolean, PdfReal, PdfString};
+use Papier\Elements\Color;
+use Papier\Objects\{PdfArray, PdfBoolean, PdfString};
 
 /**
  * Redaction annotation (`/Subtype /Redact`) (PDF 1.7+).
@@ -61,17 +62,15 @@ final class RedactAnnotation extends Annotation
     /**
      * Set the fill colour applied to the redacted area (`/IC`).
      *
-     * @param float $r  Red   [0, 1].
-     * @param float $g  Green [0, 1].
-     * @param float $b  Blue  [0, 1].
+     * This colour fills the bounding rectangle after the redaction is applied.
+     * Supports all device colour spaces — e.g. `Color::black()` for a solid
+     * black bar, `Color::gray(0.9)` for a light grey block.
+     *
+     * @param Color $color  Fill colour for the post-redaction overlay.
      */
-    public function setFillColor(float $r, float $g, float $b): static
+    public function setFillColor(Color $color): static
     {
-        $ic = new PdfArray();
-        $ic->add(new PdfReal($r));
-        $ic->add(new PdfReal($g));
-        $ic->add(new PdfReal($b));
-        $this->dict->set('IC', $ic);
+        $this->dict->set('IC', $this->colorToArray($color));
         return $this;
     }
 }

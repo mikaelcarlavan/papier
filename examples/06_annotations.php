@@ -48,35 +48,35 @@ $page->add(
 $textAnnot = new TextAnnotation(500, 745, 520, 765);
 $textAnnot->setContents('This is a sticky-note annotation (Text subtype).')
           ->setIcon('Note')
-          ->setColor(1.0, 0.9, 0.0)  // yellow
+          ->setColor(Color::rgb(1.0, 0.9, 0.0))  // yellow
           ->setFlags(4); // Print flag
 $page->addAnnotation($textAnnot);
 
 // ── 2. Highlight annotation ───────────────────────────────────────────────────
 $highlight = new HighlightAnnotation(72, 756, 400, 770);
 $highlight->setQuadPoints([72,770, 400,770, 72,756, 400,756])
-          ->setColor(1.0, 1.0, 0.0)  // yellow
+          ->setColor(Color::rgb(1.0, 1.0, 0.0))  // yellow
           ->setContents('Highlighted section');
 $page->addAnnotation($highlight);
 
 // ── 3. Underline annotation ───────────────────────────────────────────────────
 $underline = new UnderlineAnnotation(72, 740, 300, 754);
 $underline->setQuadPoints([72,754, 300,754, 72,740, 300,740])
-          ->setColor(0.0, 0.0, 1.0)  // blue
+          ->setColor(Color::hex('#0000ff'))  // blue
           ->setContents('Underlined text');
 $page->addAnnotation($underline);
 
 // ── 4. StrikeOut annotation ───────────────────────────────────────────────────
 $strikeOut = new StrikeOutAnnotation(72, 724, 200, 738);
 $strikeOut->setQuadPoints([72,738, 200,738, 72,724, 200,724])
-          ->setColor(1.0, 0.0, 0.0)  // red
+          ->setColor(Color::hex('#ff0000'))  // red
           ->setContents('Struck out text');
 $page->addAnnotation($strikeOut);
 
 // ── 5. Squiggly annotation ────────────────────────────────────────────────────
 $squiggly = new SquigglyAnnotation(200, 724, 400, 738);
 $squiggly->setQuadPoints([200,738, 400,738, 200,724, 400,724])
-         ->setColor(1.0, 0.5, 0.0)  // orange
+         ->setColor(Color::cmyk(0, 0.5, 1.0, 0))  // orange (CMYK)
          ->setContents('Spelling error?');
 $page->addAnnotation($squiggly);
 
@@ -102,9 +102,9 @@ $page->addAnnotation($freeText);
 // ── 8. Line annotation ────────────────────────────────────────────────────────
 $line = new LineAnnotation(72, 600, 300, 630, 72, 600, 300, 620);
 $line->setContents('A line annotation with arrows')
-     ->setColor(0.8, 0.0, 0.0)
+     ->setColor(Color::rgb(0.8, 0.0, 0.0))
      ->setLineEndings('OpenArrow', 'ClosedArrow')
-     ->setInteriorColor(1.0, 0.8, 0.0)
+     ->setInteriorColor(Color::rgb(1.0, 0.8, 0.0))
      ->setBorderStyle(2.0)
      ->finalize();
 $page->addAnnotation($line);
@@ -112,16 +112,16 @@ $page->addAnnotation($line);
 // ── 9. Square annotation ──────────────────────────────────────────────────────
 $square = new SquareAnnotation(320, 600, 500, 630);
 $square->setContents('A square annotation')
-       ->setColor(0.0, 0.5, 0.0)
-       ->setInteriorColor(0.9, 1.0, 0.9)
+       ->setColor(Color::rgb(0.0, 0.5, 0.0))
+       ->setInteriorColor(Color::hex('#e5ffe5'))
        ->setBorderStyle(1.5);
 $page->addAnnotation($square);
 
 // ── 10. Circle annotation ─────────────────────────────────────────────────────
 $circle = new CircleAnnotation(72, 560, 200, 600);
 $circle->setContents('A circle annotation')
-       ->setColor(0.0, 0.0, 0.8)
-       ->setInteriorColor(0.9, 0.9, 1.0)
+       ->setColor(Color::hex('#0000cc'))
+       ->setInteriorColor(Color::hex('#e5e5ff'))
        ->setBorderStyle(1.5);
 $page->addAnnotation($circle);
 
@@ -129,14 +129,14 @@ $page->addAnnotation($circle);
 $polygon = new PolygonAnnotation(220, 555, 380, 605);
 $polygon->setVertices([220,555, 300,605, 380,555, 340,575, 260,575])
         ->setContents('A polygon annotation')
-        ->setColor(0.5, 0.0, 0.5);
+        ->setColor(Color::cmyk(0, 1.0, 0, 0.5));  // purple (CMYK)
 $page->addAnnotation($polygon);
 
 // ── 12. Stamp annotation ──────────────────────────────────────────────────────
 $stamp = new StampAnnotation(390, 555, 520, 605);
 $stamp->setIcon('Draft')
       ->setContents('DRAFT')
-      ->setColor(1.0, 0.0, 0.0);
+      ->setColor(Color::hex('#ff0000'));
 $page->addAnnotation($stamp);
 
 // ── 13. Ink annotation ────────────────────────────────────────────────────────
@@ -144,7 +144,7 @@ $ink = new InkAnnotation(72, 500, 300, 545);
 $ink->setInkList([
     [72,520, 100,540, 140,510, 180,535, 220,515, 260,530, 300,520],
 ])
-    ->setColor(0.0, 0.6, 0.0)
+    ->setColor(Color::rgb(0.0, 0.6, 0.0))
     ->setBorderStyle(2.0)
     ->setContents('A freehand ink annotation');
 $page->addAnnotation($ink);
