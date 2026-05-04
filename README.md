@@ -17,7 +17,7 @@ Papier was built with the assistance of [Claude](https://claude.ai) (Anthropic's
 ## Installation
 
 ```bash
-composer require papier/pdf
+composer require papier/papier
 ```
 
 ## What you can do
