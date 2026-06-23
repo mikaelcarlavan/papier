@@ -164,10 +164,15 @@ final class TrueTypeFont extends Font
 
     public function stringWidth(string $text, float $size): float
     {
-        $width = 0;
-        $len   = strlen($text);
+        // Measure the same bytes that will be drawn: this font is rendered with
+        // WinAnsiEncoding, so the content stream emits the Windows-1252 form of
+        // the UTF-8 input. Measuring the raw UTF-8 bytes would over-count every
+        // multi-byte glyph (e.g. '€' is 3 UTF-8 bytes but one Windows-1252 byte).
+        $encoded = WinAnsiEncoding::fromUtf8($text);
+        $width   = 0;
+        $len     = strlen($encoded);
         for ($i = 0; $i < $len; $i++) {
-            $code  = ord($text[$i]);
+            $code  = ord($encoded[$i]);
             $width += $this->glyphWidths[$code] ?? 500;
         }
         return $width * $size / 1000;

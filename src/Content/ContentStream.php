@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Papier\Content;
 
+use Papier\Font\Encoding\WinAnsiEncoding;
+
 /**
  * PDF content stream builder (ISO 32000-1 §7.8.2, §8, §9).
  *
@@ -727,7 +729,9 @@ final class ContentStream
     private function pdfString(string $s): string
     {
         // Convert UTF-8 → Windows-1252 so Latin accented characters render correctly.
-        $s = mb_convert_encoding($s, 'Windows-1252', 'UTF-8');
+        // Same conversion drives width measurement (Font::stringWidth), so the bytes
+        // measured for alignment match the bytes drawn here.
+        $s = WinAnsiEncoding::fromUtf8($s);
 
         $escaped = '';
         $len     = strlen($s);

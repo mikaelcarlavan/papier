@@ -32,6 +32,16 @@ final class PdfResources
     private PdfDictionary $properties;
     private ?PdfArray     $procSet = null;
 
+    /**
+     * Resolver from font resource name (e.g. `F1`) to the {@see \Papier\Font\Font}
+     * object that holds glyph metrics.  Set by {@see \Papier\PdfDocument} so that
+     * elements (notably {@see \Papier\Elements\Table}) can measure text with the
+     * real advance widths of embedded fonts instead of a heuristic.
+     *
+     * @var (\Closure(string): ?\Papier\Font\Font)|null
+     */
+    private ?\Closure $fontMetricsResolver = null;
+
     public function __construct()
     {
         $this->font       = new PdfDictionary();
@@ -61,6 +71,29 @@ final class PdfResources
     public function getFonts(): PdfDictionary
     {
         return $this->font;
+    }
+
+    /**
+     * Install a resolver mapping a font resource name to its {@see \Papier\Font\Font}
+     * metrics object.  Used internally by {@see \Papier\PdfDocument}.
+     *
+     * @param \Closure(string): ?\Papier\Font\Font $resolver
+     */
+    public function setFontMetricsResolver(\Closure $resolver): static
+    {
+        $this->fontMetricsResolver = $resolver;
+        return $this;
+    }
+
+    /**
+     * Resolve the {@see \Papier\Font\Font} metrics object for a font resource
+     * name, or null if no resolver is installed or the name is unknown.
+     */
+    public function getFontMetrics(string $name): ?\Papier\Font\Font
+    {
+        return $this->fontMetricsResolver !== null
+            ? ($this->fontMetricsResolver)($name)
+            : null;
     }
 
     // ── XObjects ──────────────────────────────────────────────────────────────
