@@ -179,6 +179,7 @@ final class PdfDocument
     public function addPage(float $width = 595.28, float $height = 841.89): PdfPage
     {
         $page = new PdfPage($width, $height);
+        $this->attachFontMetrics($page);
         $this->writer->addPage($page);
         return $page;
     }
@@ -190,8 +191,21 @@ final class PdfDocument
      */
     public function appendPage(PdfPage $page): static
     {
+        $this->attachFontMetrics($page);
         $this->writer->addPage($page);
         return $this;
+    }
+
+    /**
+     * Give the page's resources a live resolver from font resource names to the
+     * registered {@see Font} metrics objects, so elements can measure text using
+     * real glyph advance widths (matching what is rendered).
+     */
+    private function attachFontMetrics(PdfPage $page): void
+    {
+        $page->getResources()->setFontMetricsResolver(
+            fn (string $name): ?Font => $this->writer->getFontMetrics($name)
+        );
     }
 
     /**
@@ -240,6 +254,7 @@ final class PdfDocument
             $imported->getWidth()  * $scale,
             $imported->getHeight() * $scale,
         );
+        $this->attachFontMetrics($page);
 
         $name = $imported->getResourceName();
         $page->getResources()->addXObject($name, $imported->getFormXObject());

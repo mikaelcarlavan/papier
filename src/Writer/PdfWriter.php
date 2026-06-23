@@ -177,6 +177,15 @@ final class PdfWriter
         return $name;
     }
 
+    /**
+     * Return the {@see Font} metrics object registered under a resource name,
+     * or null if the name is unknown.  Used for render-time text measurement.
+     */
+    public function getFontMetrics(string $name): ?Font
+    {
+        return $this->fontRegistry[$name]['font'] ?? null;
+    }
+
     // ── PDF generation ────────────────────────────────────────────────────────
 
     /**

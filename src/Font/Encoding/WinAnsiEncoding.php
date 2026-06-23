@@ -85,6 +85,22 @@ final class WinAnsiEncoding extends Encoding
         123 => 'braceleft', 124 => 'bar', 125 => 'braceright', 126 => 'asciitilde',
     ];
 
+    /**
+     * Convert a PHP UTF-8 string to its WinAnsiEncoding (Windows-1252) byte
+     * sequence — the exact bytes that simple Type 1 / TrueType fonts in this
+     * library emit to the content stream.
+     *
+     * This is the single source of truth shared by content-stream output
+     * ({@see \Papier\Content\ContentStream::pdfString()}) and width measurement
+     * ({@see \Papier\Font\Font::stringWidth()}), so the bytes measured for
+     * alignment always match the bytes actually drawn.  Characters outside
+     * Windows-1252 (e.g. CJK, the narrow no-break space) become '?'.
+     */
+    public static function fromUtf8(string $s): string
+    {
+        return mb_convert_encoding($s, 'Windows-1252', 'UTF-8');
+    }
+
     public function getName(): string { return 'WinAnsiEncoding'; }
 
     public function getGlyphName(int $charCode): ?string

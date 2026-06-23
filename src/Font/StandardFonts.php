@@ -104,10 +104,14 @@ final class StandardFonts
      */
     public static function stringWidth(string $text, string $fontName, float $fontSize): float
     {
-        $width = 0;
-        $len   = strlen($text);
+        // Standard fonts are rendered with WinAnsiEncoding; measure the
+        // Windows-1252 bytes that will be drawn (so '€', accented Latin, etc.
+        // count as one glyph each, matching ContentStream output).
+        $encoded = \Papier\Font\Encoding\WinAnsiEncoding::fromUtf8($text);
+        $width   = 0;
+        $len     = strlen($encoded);
         for ($i = 0; $i < $len; $i++) {
-            $width += self::getGlyphWidth($fontName, ord($text[$i]));
+            $width += self::getGlyphWidth($fontName, ord($encoded[$i]));
         }
         return $width * $fontSize / 1000;
     }

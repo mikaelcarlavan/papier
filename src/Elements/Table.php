@@ -103,6 +103,14 @@ final class Table implements Element
     private string $textAlign    = 'left';
     private string $valign       = 'top';
 
+    /**
+     * Resources for the current render() pass, used to resolve font resource
+     * names to {@see \Papier\Font\Font} metrics objects for accurate text
+     * measurement.  Set at the top of render(); null when measuring outside a
+     * render (falls back to heuristic metrics).
+     */
+    private ?PdfResources $renderResources = null;
+
     // ── Header style ──────────────────────────────────────────────────────────
 
     private int    $headerRows      = 0;
@@ -547,6 +555,8 @@ final class Table implements Element
             return;
         }
 
+        $this->renderResources = $resources;
+
         $numCols = $this->computeColumnCount();
         $colW    = $this->resolveColumnWidths($numCols);
 
@@ -724,7 +734,7 @@ final class Table implements Element
         [$pT, $pR, $pB, $pL]          = $this->resolveCellPadding($cell);
         $cellW  = $this->spanWidth($colW, $cell->gridCol, $cell->colspan);
         $innerW = $cellW - $pL - $pR;
-        $lines  = $this->wrapText($cell->text, max(1, $innerW), $fBase, $fSize);
+        $lines  = $this->wrapText($cell->text, max(1, $innerW), $fName, $fBase, $fSize);
         $leading = $fSize * $lh;
         return $pT + count($lines) * $leading + $pB;
     }
@@ -925,7 +935,7 @@ final class Table implements Element
 
         $innerW  = max(1, $cw - $pL - $pR);
         $leading = $fSize * $lhMul;
-        $lines   = $this->wrapText($cell->text, $innerW, $fBase, $fSize);
+        $lines   = $this->wrapText($cell->text, $innerW, $fName, $fBase, $fSize);
 
         // Vertical alignment: compute Y of first baseline
         $nLines      = count($lines);
@@ -957,7 +967,7 @@ final class Table implements Element
             }
             $tx = $cx + $pL;
             if ($align !== 'left' && $line !== '') {
-                $lineW = $this->measureWidth($line, $fBase, $fSize);
+                $lineW = $this->measureWidth($line, $fName, $fBase, $fSize);
                 $tx   += match ($align) {
                     'right'  => $innerW - $lineW,
                     'center' => ($innerW - $lineW) / 2.0,
@@ -1104,7 +1114,7 @@ final class Table implements Element
     /**
      * @return string[]
      */
-    private function wrapText(string $text, float $maxWidth, string $baseFontName, float $size): array
+    private function wrapText(string $text, float $maxWidth, string $fontName, string $baseFontName, float $size): array
     {
         $lines = [];
         foreach (explode("\n", $text) as $para) {
@@ -1116,7 +1126,7 @@ final class Table implements Element
             $current = '';
             foreach ($words as $word) {
                 $candidate = $current === '' ? $word : "$current $word";
-                if ($this->measureWidth($candidate, $baseFontName, $size) <= $maxWidth) {
+                if ($this->measureWidth($candidate, $fontName, $baseFontName, $size) <= $maxWidth) {
                     $current = $candidate;
                 } else {
                     if ($current !== '') {
@@ -1132,11 +1142,27 @@ final class Table implements Element
         return $lines ?: [''];
     }
 
-    private function measureWidth(string $text, string $baseFontName, float $size): float
+    /**
+     * Measure the advance width of $text in points.
+     *
+     * Preference order:
+     *   1. Real glyph metrics from the registered {@see \Papier\Font\Font}
+     *      resolved via $fontName (handles embedded TrueType/OTF correctly,
+     *      including '€', accented Latin and the NBSP inserted by NumberFormatter).
+     *   2. Standard-14 AFM metrics when $baseFontName names a standard font.
+     *   3. Heuristic fallback — but on the Windows-1252 byte form actually
+     *      rendered, so multi-byte UTF-8 glyphs are not over-counted.
+     */
+    private function measureWidth(string $text, string $fontName, string $baseFontName, float $size): float
     {
+        $font = $this->renderResources?->getFontMetrics($fontName);
+        if ($font !== null) {
+            return $font->stringWidth($text, $size);
+        }
         if ($baseFontName !== '' && StandardFonts::isStandard($baseFontName)) {
             return StandardFonts::stringWidth($text, $baseFontName, $size);
         }
-        return strlen($text) * $size * 0.55;
+        $encoded = \Papier\Font\Encoding\WinAnsiEncoding::fromUtf8($text);
+        return strlen($encoded) * $size * 0.55;
     }
 }
