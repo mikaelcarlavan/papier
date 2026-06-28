@@ -101,6 +101,27 @@ final class PdfDocument
         return $parser;
     }
 
+    /**
+     * Open an existing PDF for incremental update (ISO 32000-1 §7.5.6).
+     *
+     * Returns an {@see \Papier\Writer\IncrementalUpdater} that appends a new
+     * revision to the original bytes rather than rewriting the file.  Use it to
+     * edit metadata, add objects, or prepare a document for signing without
+     * disturbing the existing content.
+     *
+     * @param string $path      Path to the source PDF.
+     * @param string $password  Password, if the document is encrypted.
+     */
+    public static function openForUpdate(string $path, string $password = ''): \Papier\Writer\IncrementalUpdater
+    {
+        $parser = PdfParser::fromFile($path);
+        if ($password !== '') {
+            $parser->setPassword($password);
+        }
+        $parser->parse();
+        return new \Papier\Writer\IncrementalUpdater($parser);
+    }
+
     // ── Document metadata ─────────────────────────────────────────────────────
 
     /**
@@ -302,11 +323,14 @@ final class PdfDocument
      *
      * @return string  Resource name used in content streams (e.g. `F1`).
      */
-    public function addFont(string $baseFont, string $resourceName = ''): string
+    public function addFont(string $baseFont, string $resourceName = '', bool $subset = false): string
     {
         $ext = strtolower(pathinfo($baseFont, PATHINFO_EXTENSION));
         if ($ext === 'ttf' || $ext === 'otf' || file_exists($baseFont)) {
             $font = TrueTypeFont::fromFile($baseFont);
+            if ($subset) {
+                $font->setSubset(true);
+            }
         } else {
             $font = new Type1Font($baseFont);
         }
@@ -544,6 +568,18 @@ final class PdfDocument
     ): static {
         $handler = new StandardSecurityHandler($userPassword, $ownerPassword, $permissions, $algorithm);
         $this->writer->setEncryption($handler);
+        return $this;
+    }
+
+    /**
+     * Enable compressed object streams and a cross-reference stream (PDF 1.5+).
+     *
+     * Produces significantly smaller files by packing non-stream objects into
+     * compressed object streams.  Ignored when the document is encrypted.
+     */
+    public function useObjectStreams(bool $enabled = true): static
+    {
+        $this->writer->setUseObjectStreams($enabled);
         return $this;
     }
 

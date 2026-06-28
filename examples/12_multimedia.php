@@ -69,7 +69,7 @@ $soundAnnot = new SoundAnnotation(72, 695, 92, 715);
 $soundAnnot->setSound($soundStream->getStream())
            ->setIcon('Speaker')
            ->setContents('440 Hz tone (0.5 s, 44100 Hz PCM)')
-           ->setColor(0.1, 0.5, 0.8);
+           ->setColor(Color::rgb(0.1, 0.5, 0.8));
 $page->addAnnotation($soundAnnot);
 
 $page->add(

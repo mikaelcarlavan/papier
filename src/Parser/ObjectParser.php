@@ -72,14 +72,14 @@ final class ObjectParser
         $arr = new PdfArray();
         while (true) {
             $this->tokenizer->skipWhitespace();
+            // Save the exact position so a non-terminator token can be re-read in
+            // full by parseObject (token widths are not generally reconstructable).
+            $savedPos = $this->tokenizer->getPosition();
             $peek = $this->tokenizer->nextToken();
             if ($peek['type'] === Tokenizer::T_ARRAY_CLOSE || $peek['type'] === Tokenizer::T_EOF) {
                 break;
             }
-            // Push back the token by re-parsing from position
-            $this->tokenizer->setPosition(
-                $this->tokenizer->getPosition() - $this->tokenLen($peek)
-            );
+            $this->tokenizer->setPosition($savedPos);
             $arr->add($this->parseObject());
         }
         return $arr;
@@ -131,21 +131,5 @@ final class ObjectParser
 
         $this->tokenizer->setPosition($savedPos);
         return $dict;
-    }
-
-    /**
-     * Rough estimate of bytes consumed by a token (for backtracking).
-     * This is imprecise; use setPosition explicitly where possible.
-     */
-    private function tokenLen(array $token): int
-    {
-        return match ($token['type']) {
-            Tokenizer::T_INTEGER => strlen((string) $token['value']),
-            Tokenizer::T_REAL    => strlen((string) $token['value']),
-            Tokenizer::T_NAME    => strlen($token['value']) + 1,
-            Tokenizer::T_KEYWORD => strlen($token['value']),
-            Tokenizer::T_DICT_OPEN, Tokenizer::T_DICT_CLOSE => 2,
-            default => 1,
-        };
     }
 }

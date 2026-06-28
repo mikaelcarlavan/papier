@@ -48,6 +48,7 @@ final class FontDescriptor
         $this->fontName = $fontName;
     }
 
+    public function setFontName(string $name): static { $this->fontName = $name; return $this; }
     public function setFlags(int $flags): static { $this->flags = $flags; return $this; }
     public function setFontBBox(int $llx, int $lly, int $urx, int $ury): static { $this->fontBBox = [$llx, $lly, $urx, $ury]; return $this; }
     public function setItalicAngle(int $angle): static { $this->italicAngle = $angle; return $this; }

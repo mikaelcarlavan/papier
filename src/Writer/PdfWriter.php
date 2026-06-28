@@ -34,6 +34,7 @@ use Papier\Structure\{PdfOutline, PdfOutlineItem, PdfPage, PdfResources};
 final class PdfWriter
 {
     private string  $version   = '1.7';
+    private bool    $useObjectStreams = false;
     private array   $objects   = [];   // [int $num => PdfObject]
     private int     $nextObjNum = 1;
     /** @var array<int, int>  object number → byte offset */
@@ -76,6 +77,20 @@ final class PdfWriter
     public function __construct(string $version = '1.7')
     {
         $this->version = $version;
+    }
+
+    /**
+     * Enable object streams + a cross-reference stream (PDF 1.5+, §7.5.7–§7.5.8)
+     * for smaller output.  Ignored when the document is encrypted.  When enabled,
+     * the header version is bumped to at least 1.5.
+     */
+    public function setUseObjectStreams(bool $enabled = true): static
+    {
+        $this->useObjectStreams = $enabled;
+        if ($enabled && version_compare($this->version, '1.5', '<')) {
+            $this->version = '1.5';
+        }
+        return $this;
     }
 
     // ── Page management ───────────────────────────────────────────────────────
@@ -271,7 +286,19 @@ final class PdfWriter
             }
         }
 
-        // 13. Serialize everything to bytes
+        // 13. Serialize to bytes.  Object streams + a cross-reference stream
+        // (PDF 1.5+) are used when requested and the document is not encrypted
+        // (per-object string encryption is incompatible with object streams).
+        if ($this->useObjectStreams && $this->securityHandler === null) {
+            return $this->serializeCompressed($fileId, $catalogObjNum, $infoObjNum);
+        }
+
+        return $this->serializeClassic($fileId, $catalogObjNum, $infoObjNum, $encryptObjNum);
+    }
+
+    /** Serialise using a classic xref table and trailer (§7.5.4, §7.5.5). */
+    private function serializeClassic(string $fileId, int $catalogObjNum, ?int $infoObjNum, ?int $encryptObjNum): string
+    {
         $output  = "%PDF-{$this->version}\n";
         $output .= "%\xE2\xE3\xCF\xD3\n"; // binary comment (marks as binary file)
 
@@ -282,11 +309,9 @@ final class PdfWriter
             $output .= "\nendobj\n";
         }
 
-        // 13. Cross-reference table
         $xrefOffset = strlen($output);
         $output    .= $this->buildXRefTable();
 
-        // 14. Trailer
         $output .= "trailer\n";
         $trailer = new PdfDictionary();
         $trailer->set('Size', new PdfInteger($this->nextObjNum));
@@ -303,6 +328,125 @@ final class PdfWriter
         $trailer->set('ID', $id);
         $output .= $trailer->toString();
         $output .= "\nstartxref\n{$xrefOffset}\n%%EOF\n";
+
+        return $output;
+    }
+
+    /**
+     * Serialise using object streams (/ObjStm, §7.5.7) and a cross-reference
+     * stream (/XRef, §7.5.8).  Non-stream objects are packed and compressed
+     * into object streams; stream objects stay direct.
+     */
+    private function serializeCompressed(string $fileId, int $catalogObjNum, ?int $infoObjNum): string
+    {
+        // Partition objects: streams must remain direct; everything else is
+        // eligible to be packed into an object stream.
+        $direct     = [];   // objNum => PdfObject (written as `n 0 obj`)
+        $compressed = [];   // objNum => PdfObject (packed into an ObjStm)
+        foreach ($this->objects as $objNum => $obj) {
+            if ($obj instanceof PdfStream) {
+                $direct[$objNum] = $obj;
+            } else {
+                $compressed[$objNum] = $obj;
+            }
+        }
+
+        // Pack compressible objects into object streams (chunked).
+        $objStms     = [];   // [objStmNum => ['stream' => PdfStream, 'members' => [objNum => index]]]
+        $compressedLoc = []; // objNum => ['stm' => objStmNum, 'idx' => int]
+        $chunkSize = 200;
+        $chunks = array_chunk($compressed, $chunkSize, true);
+        foreach ($chunks as $chunk) {
+            $objStmNum = $this->nextObjNum++;
+            $header  = '';
+            $bodies  = '';
+            $index   = 0;
+            $offsets = [];
+            foreach ($chunk as $objNum => $obj) {
+                $body = $obj->toString();
+                $offsets[] = "$objNum " . strlen($bodies);
+                $bodies   .= $body . "\n";
+                $compressedLoc[$objNum] = ['stm' => $objStmNum, 'idx' => $index];
+                $index++;
+            }
+            $headerStr = implode(' ', $offsets) . ($offsets ? ' ' : '');
+            $data = $headerStr . $bodies;
+
+            $stm = new PdfStream();
+            $stm->getDictionary()->set('Type',  new PdfName('ObjStm'));
+            $stm->getDictionary()->set('N',     new PdfInteger($index));
+            $stm->getDictionary()->set('First', new PdfInteger(strlen($headerStr)));
+            $stm->setData($data);
+            $stm->compress();
+
+            $direct[$objStmNum] = $stm;
+            $objStms[$objStmNum] = true;
+        }
+
+        // The cross-reference stream is itself an indirect object.
+        $xrefObjNum = $this->nextObjNum++;
+        $size       = $this->nextObjNum;
+
+        // Serialise header + every direct object, recording byte offsets.
+        $output  = "%PDF-{$this->version}\n";
+        $output .= "%\xE2\xE3\xCF\xD3\n";
+
+        ksort($direct);
+        foreach ($direct as $objNum => $obj) {
+            $this->offsets[$objNum] = strlen($output);
+            $output .= "{$objNum} 0 obj\n";
+            $output .= $obj->toString();
+            $output .= "\nendobj\n";
+        }
+
+        $xrefOffset = strlen($output);
+
+        // Build the xref entry table for objects 0 .. size-1.
+        // W = [1, 4, 2]: type byte, 4-byte field 2, 2-byte field 3.
+        $entries = '';
+        $packEntry = function (int $type, int $f2, int $f3): string {
+            return chr($type) . pack('N', $f2) . pack('n', $f3);
+        };
+        for ($i = 0; $i < $size; $i++) {
+            if ($i === 0) {
+                $entries .= $packEntry(0, 0, 65535);              // free head
+            } elseif ($i === $xrefObjNum) {
+                $entries .= $packEntry(1, $xrefOffset, 0);        // the xref stream itself
+            } elseif (isset($this->offsets[$i])) {
+                $entries .= $packEntry(1, $this->offsets[$i], 0); // direct object
+            } elseif (isset($compressedLoc[$i])) {
+                $loc = $compressedLoc[$i];
+                $entries .= $packEntry(2, $loc['stm'], $loc['idx']); // in object stream
+            } else {
+                $entries .= $packEntry(0, 0, 0);                  // unused
+            }
+        }
+
+        // Build the cross-reference stream object.
+        $xrefStream = new PdfStream();
+        $d = $xrefStream->getDictionary();
+        $d->set('Type', new PdfName('XRef'));
+        $d->set('Size', new PdfInteger($size));
+        $d->set('Root', new PdfIndirectReference($catalogObjNum));
+        if ($infoObjNum !== null) {
+            $d->set('Info', new PdfIndirectReference($infoObjNum));
+        }
+        $w = new PdfArray();
+        $w->add(new PdfInteger(1));
+        $w->add(new PdfInteger(4));
+        $w->add(new PdfInteger(2));
+        $d->set('W', $w);
+        $id = new PdfArray();
+        $id->add(PdfString::hex($fileId));
+        $id->add(PdfString::hex($fileId));
+        $d->set('ID', $id);
+        $xrefStream->setData($entries);
+        $xrefStream->compress();
+
+        $output .= "{$xrefObjNum} 0 obj\n";
+        $output .= $xrefStream->toString();
+        $output .= "\nendobj\n";
+        $output .= "startxref\n{$xrefOffset}\n%%EOF\n";
 
         return $output;
     }
@@ -346,6 +490,13 @@ final class PdfWriter
                         $descObjNum = $this->allocateObject($desc->toDictionary());
                         $font->getDictionary()->set('FontDescriptor', new PdfIndirectReference($descObjNum));
                     }
+                }
+
+                // ToUnicode CMap → searchable / copy-pasteable text.
+                $toUni = $font->buildToUnicodeStream();
+                if ($toUni !== null) {
+                    $toUniObjNum = $this->allocateObject($toUni);
+                    $font->getDictionary()->set('ToUnicode', new PdfIndirectReference($toUniObjNum));
                 }
             }
 

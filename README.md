@@ -228,12 +228,44 @@ use Papier\Structure\PageTransition;
 $page->setTransition((new PageTransition())->setStyle('Fly')->setDuration(1.0));
 ```
 
+### Smaller files — object streams (PDF 1.5+)
+
+```php
+$doc->useObjectStreams();   // pack objects into compressed /ObjStm + /XRef stream
+$doc->save('small.pdf');
+```
+
+### Font subsetting + searchable text
+
+```php
+// Embed only the glyphs that are used; a /ToUnicode CMap is generated
+// automatically so the text stays searchable and copy-pasteable.
+$lato = $doc->addFont(__DIR__ . '/Lato-Regular.ttf', subset: true);
+```
+
+### Incremental updates (edit without rewriting)
+
+```php
+use Papier\Writer\IncrementalUpdater;
+
+$updater = PdfDocument::openForUpdate('in.pdf');     // preserves original bytes
+$updater->updateObject($infoNum, $newInfoDict);      // override an object
+$newNum = $updater->addObject($someDict);            // append a new object
+$updater->save('out.pdf');                           // appends a /Prev revision
+```
+
 ### Read and parse existing PDFs
+
+Reads classic xref tables, cross-reference streams, object streams, and
+hybrid-reference files. Encrypted documents (RC4, AES-128, AES-256) are
+decrypted transparently once the password is supplied.
 
 ```php
 use Papier\Parser\PdfParser;
 
-$parser = new PdfParser('document.pdf');
+$parser = new PdfParser(file_get_contents('document.pdf'));
+$parser->setPassword('secret');                // for encrypted documents
+$parser->parse();
 
 echo $parser->getPageCount();                  // number of pages
 echo $parser->extractText();                   // all text content
@@ -243,11 +275,15 @@ print_r($parser->getAnnotations());            // annotations
 print_r($parser->extractImages());             // embedded images
 print_r($parser->getPageInfo(1));              // page dimensions, resources
 print_r($parser->getMetadata());               // title, author, subject, …
+print_r($parser->getOutlines());               // bookmark tree
+print_r($parser->getFormFields());             // AcroForm field values
+print_r($parser->getAttachments());            // embedded file attachments
+echo $parser->getXmpMetadata();                // raw XMP packet
 ```
 
 ## Examples
 
-The `examples/` directory contains 15 runnable scripts:
+The `examples/` directory contains runnable scripts:
 
 | File | Demonstrates |
 |------|-------------|
@@ -266,6 +302,11 @@ The `examples/` directory contains 15 runnable scripts:
 | `13_transitions_and_media_elements.php` | Page transitions |
 | `14_table.php` | Tables with rowspan, footer, per-cell borders |
 | `15_ttf_fonts.php` | Embedding TTF/OTF font files |
+| `16_import_pages.php` | Importing pages from existing PDFs |
+| `17_compressed_objects.php` | Object streams + cross-reference stream (smaller files) |
+| `18_incremental_update.php` | Editing a PDF via an appended revision |
+| `19_read_encrypted.php` | Decrypting + reading outlines, forms, attachments, XMP |
+| `20_font_subsetting.php` | TrueType subsetting and ToUnicode generation |
 
 Run any example:
 

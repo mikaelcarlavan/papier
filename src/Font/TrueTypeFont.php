@@ -24,6 +24,11 @@ final class TrueTypeFont extends Font
     private ?string         $fontData     = null; // raw TrueType binary
     /** @var array<int, int> charCode → glyph width in 1/1000 units */
     private array           $glyphWidths  = [];
+    /** @var array<int, int> charCode → Unicode code point (for ToUnicode) */
+    private array           $codeToUnicode = [];
+    /** @var array<int, true> glyph ids referenced by the encoded code range */
+    private array           $usedGlyphs   = [];
+    private bool            $subset       = false;
 
     public function __construct(
         private readonly string $baseFont,
@@ -48,6 +53,19 @@ final class TrueTypeFont extends Font
         $this->descriptor = $descriptor;
         return $this;
     }
+
+    /**
+     * Embed only the glyphs reachable from the WinAnsi code range (§9.6.4),
+     * stripping unused glyph outlines from the font program.  Greatly reduces
+     * file size for large fonts.
+     */
+    public function setSubset(bool $subset = true): static
+    {
+        $this->subset = $subset;
+        return $this;
+    }
+
+    public function isSubset(): bool { return $this->subset; }
 
     /**
      * Load a TrueType font file for embedding.
@@ -191,15 +209,102 @@ final class TrueTypeFont extends Font
 
     /**
      * Build the FontFile2 stream to be registered as an indirect object.
+     *
+     * When subsetting is enabled, unused glyph outlines are stripped from the
+     * embedded program and the /BaseFont gains a six-letter subset tag.
      */
     public function buildFontFileStream(): ?PdfStream
     {
         if ($this->fontData === null) {
             return null;
         }
+
+        $program = $this->fontData;
+        if ($this->subset) {
+            $subsetted = TrueTypeSubsetter::subset($this->fontData, $this->usedGlyphs);
+            if ($subsetted !== null) {
+                $program = $subsetted;
+                $this->applySubsetTag();
+            }
+        }
+
         $stream = new PdfStream();
-        $stream->getDictionary()->set('Length1', new PdfInteger(strlen($this->fontData)));
-        $stream->setData($this->fontData);
+        $stream->getDictionary()->set('Length1', new PdfInteger(strlen($program)));
+        $stream->setData($program);
+        $stream->compress();
+        return $stream;
+    }
+
+    /**
+     * Prefix /BaseFont (and the descriptor's /FontName) with a deterministic
+     * six-uppercase-letter subset tag, e.g. "ABCDEF+Lato-Regular" (§9.6.4).
+     */
+    private function applySubsetTag(): void
+    {
+        if (str_contains($this->baseFont, '+')) {
+            return; // already tagged
+        }
+        $tag = $this->subsetTag();
+        $tagged = "$tag+{$this->baseFont}";
+        $this->dictionary->set('BaseFont', new PdfName($tagged));
+        $this->descriptor?->setFontName($tagged);
+    }
+
+    /** Derive a stable six-letter tag from the glyph set and base name. */
+    private function subsetTag(): string
+    {
+        $hash = md5($this->baseFont . ':' . implode(',', array_keys($this->usedGlyphs)));
+        $tag  = '';
+        for ($i = 0; $i < 6; $i++) {
+            $tag .= chr(65 + (hexdec($hash[$i]) % 26));
+        }
+        return $tag;
+    }
+
+    /**
+     * Build a /ToUnicode CMap stream (§9.10.3) mapping byte codes to Unicode,
+     * enabling text extraction and copy/paste from the rendered PDF.
+     */
+    public function buildToUnicodeStream(): ?PdfStream
+    {
+        if (empty($this->codeToUnicode)) {
+            return null;
+        }
+
+        $entries = [];
+        foreach ($this->codeToUnicode as $code => $unicode) {
+            if ($unicode <= 0) {
+                continue;
+            }
+            $src = sprintf('%02X', $code);
+            $dst = strtoupper(bin2hex(mb_convert_encoding(
+                mb_chr($unicode, 'UTF-8'),
+                'UTF-16BE',
+                'UTF-8',
+            )));
+            $entries[] = "<$src> <$dst>";
+        }
+        if (empty($entries)) {
+            return null;
+        }
+
+        $cmap  = "/CIDInit /ProcSet findresource begin\n";
+        $cmap .= "12 dict begin\nbegincmap\n";
+        $cmap .= "/CIDSystemInfo << /Registry (Adobe) /Ordering (UCS) /Supplement 0 >> def\n";
+        $cmap .= "/CMapName /Adobe-Identity-UCS def\n/CMapType 2 def\n";
+        $cmap .= "1 begincodespacerange\n<00> <FF>\nendcodespacerange\n";
+
+        // bfchar sections are limited to 100 entries each (§9.10.3).
+        foreach (array_chunk($entries, 100) as $chunk) {
+            $cmap .= count($chunk) . " beginbfchar\n";
+            $cmap .= implode("\n", $chunk) . "\n";
+            $cmap .= "endbfchar\n";
+        }
+
+        $cmap .= "endcmap\nCMapName currentdict /CMap defineresource pop\nend\nend\n";
+
+        $stream = new PdfStream();
+        $stream->setData($cmap);
         $stream->compress();
         return $stream;
     }
@@ -289,6 +394,10 @@ final class TrueTypeFont extends Font
                 // Normalise to 1000 units
                 $widths[$cp] = (int) round($advance * 1000 / ($unitsPerEm ?: 1000));
                 $this->glyphWidths[$cp] = $widths[$cp];
+                $this->codeToUnicode[$cp] = $unicode;
+                if ($glyphId > 0) {
+                    $this->usedGlyphs[$glyphId] = true;
+                }
             }
 
             $this->firstChar = 32;
