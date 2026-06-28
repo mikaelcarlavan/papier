@@ -129,6 +129,9 @@ final class Type1Font extends Font
             $this->dictionary->set('LastChar', new PdfInteger($this->lastChar));
             $this->dictionary->set('Widths', $this->widthsArray);
         }
+        if ($this->descriptor !== null) {
+            $this->dictionary->set('FontDescriptor', $this->descriptor->toDictionary());
+        }
         return $this->dictionary;
     }
 }

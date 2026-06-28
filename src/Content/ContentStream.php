@@ -17,6 +17,11 @@ final class ContentStream
     private string $buffer = '';
     private bool   $compress;
 
+    /** Resolver mapping a font resource name to its {@see \Papier\Font\Font}. */
+    private ?\Closure $fontResolver = null;
+    /** Font currently selected by setFont(), used to encode shown text. */
+    private ?\Papier\Font\Font $activeFont = null;
+
     public function __construct(bool $compress = true)
     {
         $this->compress = $compress;
@@ -25,6 +30,19 @@ final class ContentStream
     public function getBuffer(): string { return $this->buffer; }
 
     public function isCompressed(): bool { return $this->compress; }
+
+    /**
+     * Install a resolver so that {@see setFont()} can look up the active font
+     * and encode shown text appropriately (single-byte WinAnsi for simple fonts,
+     * two-byte glyph codes for composite Type 0 fonts).
+     *
+     * @param \Closure(string): ?\Papier\Font\Font $resolver
+     */
+    public function setFontResolver(\Closure $resolver): static
+    {
+        $this->fontResolver = $resolver;
+        return $this;
+    }
 
     // ═══════════════════════════════════════════════════════════════════════════
     // §8.4  Graphics State Operators
@@ -414,7 +432,20 @@ final class ContentStream
     /** Set text font and size (Tf). */
     public function setFont(string $fontName, float $size): static
     {
+        if ($this->fontResolver !== null) {
+            $this->activeFont = ($this->fontResolver)($fontName);
+        }
         $this->buffer .= "/$fontName {$this->f($size)} Tf\n";
+        return $this;
+    }
+
+    /**
+     * Override the font used to encode subsequent shown text without emitting a
+     * Tf operator (used when the caller manages the font selection itself).
+     */
+    public function setActiveFont(?\Papier\Font\Font $font): static
+    {
+        $this->activeFont = $font;
         return $this;
     }
 
@@ -558,6 +589,17 @@ final class ContentStream
     public function beginMarkedContentProps(string $tag, string $propsName): static
     {
         $this->buffer .= "/$tag /$propsName BDC\n";
+        return $this;
+    }
+
+    /**
+     * Begin a marked-content sequence tagged with a marked-content identifier
+     * (BDC with an inline `<< /MCID n >>` dict), linking this content to a
+     * structure element for Tagged PDF / accessibility (§14.7).
+     */
+    public function beginMarkedContentMcid(string $tag, int $mcid): static
+    {
+        $this->buffer .= "/$tag <</MCID $mcid>> BDC\n";
         return $this;
     }
 
@@ -728,6 +770,12 @@ final class ContentStream
      */
     private function pdfString(string $s): string
     {
+        // Composite (Type 0) fonts use multi-byte glyph codes, written as a
+        // hexadecimal string.
+        if ($this->activeFont !== null && $this->activeFont->isComposite()) {
+            return '<' . bin2hex($this->activeFont->encodeText($s)) . '>';
+        }
+
         // Convert UTF-8 → Windows-1252 so Latin accented characters render correctly.
         // Same conversion drives width measurement (Font::stringWidth), so the bytes
         // measured for alignment match the bytes drawn here.

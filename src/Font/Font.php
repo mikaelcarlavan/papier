@@ -54,6 +54,27 @@ abstract class Font
      */
     abstract public function stringWidth(string $text, float $size): float;
 
+    /**
+     * Whether this is a composite (Type 0) font whose codes are multi-byte and
+     * must be written as hexadecimal strings in content streams.
+     */
+    public function isComposite(): bool
+    {
+        return false;
+    }
+
+    /**
+     * Encode a UTF-8 string into the raw byte sequence used as the string
+     * operand of a text-showing operator for this font.
+     *
+     * Simple fonts default to WinAnsi (Windows-1252); composite fonts override
+     * this to emit multi-byte glyph codes.
+     */
+    public function encodeText(string $text): string
+    {
+        return \Papier\Font\Encoding\WinAnsiEncoding::fromUtf8($text);
+    }
+
     /** Return the font dictionary (populated by subclass constructors). */
     public function getDictionary(): PdfDictionary
     {

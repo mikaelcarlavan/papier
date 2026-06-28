@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Papier\OptionalContent;
 
-use Papier\Objects\{PdfArray, PdfDictionary, PdfName};
+use Papier\Objects\{PdfArray, PdfDictionary, PdfName, PdfObject};
 
 /**
  * OCG membership dictionary (ISO 32000-1 §8.11.2.2).

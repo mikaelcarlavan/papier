@@ -41,6 +41,17 @@ final class XmpMetadata
     public function setCreator(string $c): static { $this->creator  = $c; return $this; }
     public function setProducer(string $p): static{ $this->producer = $p; return $this; }
 
+    /** PDF/A identification (e.g. part 2, conformance "B"); 0 disables. */
+    private int    $pdfaPart        = 0;
+    private string $pdfaConformance = 'B';
+
+    public function setPdfAConformance(int $part, string $conformance = 'B'): static
+    {
+        $this->pdfaPart        = $part;
+        $this->pdfaConformance = strtoupper($conformance);
+        return $this;
+    }
+
     public function getStream(): PdfStream
     {
         $this->stream->setData($this->buildXml());
@@ -53,6 +64,14 @@ final class XmpMetadata
         $md = $this->modDate->format('c');
         $e  = fn(string $s) => htmlspecialchars($s, ENT_XML1 | ENT_QUOTES, 'UTF-8');
 
+        $pdfaNs  = '';
+        $pdfaBlock = '';
+        if ($this->pdfaPart > 0) {
+            $pdfaNs    = "\n    xmlns:pdfaid=\"http://www.aiim.org/pdfa/ns/id/\"";
+            $pdfaBlock = "\n  <pdfaid:part>{$this->pdfaPart}</pdfaid:part>"
+                       . "\n  <pdfaid:conformance>{$e($this->pdfaConformance)}</pdfaid:conformance>";
+        }
+
         return <<<XML
 <?xpacket begin="\xef\xbb\xbf" id="W5M0MpCehiHzreSzNTczkc9d"?>
 <x:xmpmeta xmlns:x="adobe:ns:meta/">
@@ -60,7 +79,7 @@ final class XmpMetadata
 <rdf:Description rdf:about=""
     xmlns:dc="http://purl.org/dc/elements/1.1/"
     xmlns:pdf="http://ns.adobe.com/pdf/1.3/"
-    xmlns:xmp="http://ns.adobe.com/xap/1.0/">
+    xmlns:xmp="http://ns.adobe.com/xap/1.0/"{$pdfaNs}>{$pdfaBlock}
   <dc:title><rdf:Alt><rdf:li xml:lang="x-default">{$e($this->title)}</rdf:li></rdf:Alt></dc:title>
   <dc:creator><rdf:Seq><rdf:li>{$e($this->author)}</rdf:li></rdf:Seq></dc:creator>
   <dc:description><rdf:Alt><rdf:li xml:lang="x-default">{$e($this->subject)}</rdf:li></rdf:Alt></dc:description>

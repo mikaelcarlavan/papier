@@ -15,7 +15,7 @@ use Papier\Graphics\Transparency\ExtGState;
 use Papier\LogicalStructure\{StructElement, StructTreeRoot};
 use Papier\Metadata\{DocumentInfo, XmpMetadata};
 use Papier\Objects\{
-    PdfArray, PdfDictionary, PdfIndirectReference,
+    PdfArray, PdfBoolean, PdfDictionary, PdfIndirectReference,
     PdfInteger, PdfName, PdfNull, PdfObject, PdfReal, PdfStream, PdfString
 };
 use Papier\OptionalContent\OCProperties;
@@ -35,11 +35,15 @@ final class PdfWriter
 {
     private string  $version   = '1.7';
     private bool    $useObjectStreams = false;
-    private array   $objects   = [];   // [int $num => PdfObject]
+    /** PDF/A identification [part, conformance] or null. */
+    private ?array  $pdfa      = null;
+    /** @var array<int, PdfObject>  object number → object */
+    private array   $objects   = [];
     private int     $nextObjNum = 1;
     /** @var array<int, int>  object number → byte offset */
     private array   $offsets   = [];
-    private string  $body      = '';
+    /** @var array<int, int>  spl_object_id(page dict) → object number */
+    private array   $pageObjNumByDict = [];
 
     // Document components
     /** @var PdfPage[] */
@@ -89,6 +93,22 @@ final class PdfWriter
         $this->useObjectStreams = $enabled;
         if ($enabled && version_compare($this->version, '1.5', '<')) {
             $this->version = '1.5';
+        }
+        return $this;
+    }
+
+    /**
+     * Mark the document for PDF/A conformance (§14.11.5 + ISO 19005), adding an
+     * sRGB OutputIntent.  Caller must ensure all fonts are embedded and avoid
+     * disallowed features.  PDF/A-1 forbids object streams.
+     */
+    public function enablePdfA(int $part = 2, string $conformance = 'B'): static
+    {
+        $this->pdfa = [$part, strtoupper($conformance)];
+        // PDF/A-1 → PDF 1.4; PDF/A-2/3 → PDF 1.7.
+        $this->version = $part === 1 ? '1.4' : '1.7';
+        if ($part === 1) {
+            $this->useObjectStreams = false; // not allowed in PDF/A-1
         }
         return $this;
     }
@@ -208,10 +228,11 @@ final class PdfWriter
      */
     public function generate(): string
     {
-        $this->objects = [];
-        $this->nextObjNum = 1;
-        $this->offsets    = [];
-        $this->body       = '';
+        if ($this->pdfa !== null && $this->securityHandler !== null) {
+            throw new \LogicException('PDF/A documents must not be encrypted.');
+        }
+
+        $this->resetState();
 
         // 1. Generate document file identifier
         $fileId = md5(uniqid('', true) . microtime(true), true);
@@ -369,7 +390,8 @@ final class PdfWriter
                 $compressedLoc[$objNum] = ['stm' => $objStmNum, 'idx' => $index];
                 $index++;
             }
-            $headerStr = implode(' ', $offsets) . ($offsets ? ' ' : '');
+            // Each chunk is non-empty, so the header always ends with a separator.
+            $headerStr = implode(' ', $offsets) . ' ';
             $data = $headerStr . $bodies;
 
             $stm = new PdfStream();
@@ -464,6 +486,15 @@ final class PdfWriter
 
     // ── Internal builders ─────────────────────────────────────────────────────
 
+    /** Reset the per-generation serialisation state. */
+    private function resetState(): void
+    {
+        $this->objects          = [];
+        $this->nextObjNum       = 1;
+        $this->offsets          = [];
+        $this->pageObjNumByDict = [];
+    }
+
     /** Reserve and return the next object number, registering the object. */
     private function allocateObject(PdfObject $obj): int
     {
@@ -500,6 +531,12 @@ final class PdfWriter
                 }
             }
 
+            // Type0 (composite) fonts build their own descendant CIDFont,
+            // descriptor, FontFile2, and ToUnicode objects.
+            if ($font instanceof \Papier\Font\Type0Font) {
+                $font->registerObjects(fn($obj) => $this->allocateObject($obj));
+            }
+
             // Type3 fonts: register glyph streams
             if ($font instanceof Type3Font) {
                 $charProcs = new PdfDictionary();
@@ -510,7 +547,7 @@ final class PdfWriter
                         $glyphStream->compress();
                     }
                     $glyphObjNum  = $this->allocateObject($glyphStream);
-                    $charProcs->set($glyph['name'] ?: chr($code), new PdfIndirectReference($glyphObjNum));
+                    $charProcs->set($font->glyphName($code), new PdfIndirectReference($glyphObjNum));
                 }
                 $charProcsObjNum = $this->allocateObject($charProcs);
                 $font->getDictionary()->set('CharProcs', new PdfIndirectReference($charProcsObjNum));
@@ -609,11 +646,15 @@ final class PdfWriter
 
         foreach ($page->getAnnotations() as $annot) {
             $hasAnnots = true;
-            $annotObjNum = $this->allocateObject(
-                ($annot instanceof \Papier\Annotation\Annotation)
-                    ? $annot->getDictionary()
-                    : $annot
-            );
+            $annotDict = ($annot instanceof \Papier\Annotation\Annotation)
+                ? $annot->getDictionary()
+                : $annot;
+            // Streams nested in an annotation (Sound, Movie/Media, appearance,
+            // etc.) must be promoted to indirect objects (§7.3.8).
+            if ($annotDict instanceof PdfDictionary) {
+                $this->promoteNestedStreams($annotDict);
+            }
+            $annotObjNum = $this->allocateObject($annotDict);
             $annotsArray->add(new PdfIndirectReference($annotObjNum));
         }
 
@@ -631,7 +672,9 @@ final class PdfWriter
             $pageDict->set('Annots', $annotsArray);
         }
 
-        return $this->allocateObject($pageDict);
+        $num = $this->allocateObject($pageDict);
+        $this->pageObjNumByDict[spl_object_id($pageDict)] = $num;
+        return $num;
     }
 
     /**
@@ -655,14 +698,19 @@ final class PdfWriter
                     $this->promoteNestedStreams($obj->getDictionary());
                     $num = $this->allocateObject($obj);
                     $setter($name, new PdfIndirectReference($num));
+                } elseif ($obj instanceof PdfDictionary) {
+                    // Dict-valued resources (e.g. a shading pattern whose /Shading
+                    // is a mesh stream) may contain streams that must be indirect.
+                    $this->promoteNestedStreams($obj);
                 }
             }
         }
     }
 
     /**
-     * Replace any PdfStream values inside a dictionary with indirect references.
-     * Recurses into nested PdfDictionary values.
+     * Replace any PdfStream values inside a dictionary with indirect references
+     * (streams must be indirect, §7.3.8).  Recurses into nested dictionaries and
+     * arrays (e.g. annotation /Sound, rendition media, appearance streams).
      */
     private function promoteNestedStreams(PdfDictionary $dict): void
     {
@@ -673,6 +721,23 @@ final class PdfWriter
                 $dict->set($key, new PdfIndirectReference($num));
             } elseif ($value instanceof PdfDictionary) {
                 $this->promoteNestedStreams($value);
+            } elseif ($value instanceof PdfArray) {
+                $this->promoteNestedStreamsInArray($value);
+            }
+        }
+    }
+
+    private function promoteNestedStreamsInArray(PdfArray $arr): void
+    {
+        foreach ($arr->getItems() as $i => $value) {
+            if ($value instanceof PdfStream) {
+                $this->promoteNestedStreams($value->getDictionary());
+                $num = $this->allocateObject($value);
+                $arr->set($i, new PdfIndirectReference($num));
+            } elseif ($value instanceof PdfDictionary) {
+                $this->promoteNestedStreams($value);
+            } elseif ($value instanceof PdfArray) {
+                $this->promoteNestedStreamsInArray($value);
             }
         }
     }
@@ -709,7 +774,9 @@ final class PdfWriter
 
         if ($structObjNum !== null) {
             $catalog->set('StructTreeRoot', new PdfIndirectReference($structObjNum));
-            $catalog->set('MarkInfo', new PdfDictionary());
+            $markInfo = new PdfDictionary();
+            $markInfo->set('Marked', new PdfBoolean(true));
+            $catalog->set('MarkInfo', $markInfo);
         }
 
         if ($this->viewerPrefs !== null) {
@@ -792,6 +859,27 @@ final class PdfWriter
         }
 
         $catalog->set('Lang', new PdfString('en-US'));
+
+        // PDF/A OutputIntent (sRGB) — required for device-independent colour.
+        if ($this->pdfa !== null) {
+            $icc = new PdfStream();
+            $icc->getDictionary()->set('N', new PdfInteger(\Papier\Color\IccProfile::COMPONENTS));
+            $icc->setData(\Papier\Color\IccProfile::srgb());
+            $icc->compress();
+            $iccNum = $this->allocateObject($icc);
+
+            $oi = new PdfDictionary();
+            $oi->set('Type', new PdfName('OutputIntent'));
+            $oi->set('S', new PdfName('GTS_PDFA1'));
+            $oi->set('OutputConditionIdentifier', new PdfString('sRGB IEC61966-2.1'));
+            $oi->set('Info', new PdfString('sRGB IEC61966-2.1'));
+            $oi->set('RegistryName', new PdfString('http://www.color.org'));
+            $oi->set('DestOutputProfile', new PdfIndirectReference($iccNum));
+
+            $oiArr = new PdfArray();
+            $oiArr->add($oi);
+            $catalog->set('OutputIntents', $oiArr);
+        }
 
         return $this->allocateObject($catalog);
     }
@@ -917,35 +1005,101 @@ final class PdfWriter
 
     private function buildStructTree(): int
     {
-        $root = $this->structTree;
-        $dict = $root->getDictionary();
+        $root       = $this->structTree;
+        $rootDict   = $root->getDictionary();
+        $rootObjNum = $this->nextObjNum++;   // reserve so children can set /P
 
-        $kids = $root->getKids();
-        if (!empty($kids)) {
-            $kArr = new PdfArray();
-            foreach ($kids as $kid) {
-                $kidNum = $this->buildStructElement($kid);
-                $kArr->add(new PdfIndirectReference($kidNum));
-            }
-            $dict->set('K', $kArr);
+        // pageObjNum → [mcid => structElemObjNum]; pageObjNum → page dict.
+        $parentTree = [];
+        $pageDicts  = [];
+
+        $kArr = new PdfArray();
+        foreach ($root->getKids() as $kid) {
+            $kidNum = $this->buildStructElement($kid, $rootObjNum, $parentTree, $pageDicts);
+            $kArr->add(new PdfIndirectReference($kidNum));
+        }
+        if (count($kArr) > 0) {
+            $rootDict->set('K', $kArr);
         }
 
-        return $this->allocateObject($dict);
+        // Build the /ParentTree number tree and assign /StructParents per page.
+        if (!empty($parentTree)) {
+            $nums    = new PdfArray();
+            $nextKey = 0;
+            foreach ($parentTree as $pageObjNum => $mcidMap) {
+                $index = $nextKey++;
+                if (isset($pageDicts[$pageObjNum])) {
+                    $pageDicts[$pageObjNum]->set('StructParents', new PdfInteger($index));
+                }
+                ksort($mcidMap);
+                $max  = max(array_keys($mcidMap));
+                $refs = new PdfArray();
+                for ($i = 0; $i <= $max; $i++) {
+                    $refs->add(isset($mcidMap[$i])
+                        ? new PdfIndirectReference($mcidMap[$i])
+                        : new PdfNull());
+                }
+                $nums->add(new PdfInteger($index));
+                $nums->add($refs);
+            }
+            $ptDict = new PdfDictionary();
+            $ptDict->set('Nums', $nums);
+            $ptNum = $this->allocateObject($ptDict);
+            $rootDict->set('ParentTree', new PdfIndirectReference($ptNum));
+            $rootDict->set('ParentTreeNextKey', new PdfInteger($nextKey));
+        }
+
+        $this->objects[$rootObjNum] = $rootDict;
+        return $rootObjNum;
     }
 
-    private function buildStructElement(StructElement $element): int
+    /**
+     * Build a structure element and its descendants, wiring /P parent links,
+     * /K content (child elements and MCID integers), and /Pg, while collecting
+     * the page → (MCID → element) data needed for the /ParentTree.
+     *
+     * @param array<int, array<int, int>> $parentTree
+     * @param array<int, PdfDictionary>   $pageDicts
+     */
+    private function buildStructElement(StructElement $element, int $parentObjNum, array &$parentTree, array &$pageDicts): int
     {
-        $dict = $element->getDictionary();
-        $kids = $element->getKids();
-        if (!empty($kids)) {
-            $kArr = new PdfArray();
-            foreach ($kids as $kid) {
-                $kidNum = $this->buildStructElement($kid);
-                $kArr->add(new PdfIndirectReference($kidNum));
+        $dict   = $element->getDictionary();
+        $objNum = $this->nextObjNum++;   // reserve before recursing into children
+        $dict->set('P', new PdfIndirectReference($parentObjNum));
+
+        $kArr        = new PdfArray();
+        $pgForElement = null;
+        foreach ($element->getContent() as $item) {
+            if ($item['type'] === 'elem') {
+                $childNum = $this->buildStructElement($item['elem'], $objNum, $parentTree, $pageDicts);
+                $kArr->add(new PdfIndirectReference($childNum));
+                continue;
             }
+
+            // Marked-content reference: emit the MCID integer and record it.
+            $mcid     = $item['mcid'];
+            $pageDict = $item['pg'];
+            $kArr->add(new PdfInteger($mcid));
+
+            $pageObjNum = $this->pageObjNumByDict[spl_object_id($pageDict)] ?? null;
+            if ($pageObjNum !== null) {
+                $pgForElement ??= $pageObjNum;
+                $parentTree[$pageObjNum][$mcid] = $objNum;
+                $pageDicts[$pageObjNum]         = $pageDict;
+            }
+        }
+
+        if ($pgForElement !== null) {
+            $dict->set('Pg', new PdfIndirectReference($pgForElement));
+        }
+        if (count($kArr) === 1) {
+            $dict->set('K', $kArr->get(0));   // a single kid may be stored directly
+        } elseif (count($kArr) > 0) {
             $dict->set('K', $kArr);
         }
-        return $this->allocateObject($dict);
+
+        $this->objects[$objNum] = $dict;
+        return $objNum;
     }
 
     private function buildXRefTable(): string
@@ -984,13 +1138,13 @@ final class PdfWriter
         $imgName = 'Im' . ($this->nextObjNum - 1);
         $page->getResources()->addXObject($imgName, new PdfIndirectReference($objNum));
 
-        // Calculate dimensions
-        if ($width === 0 && $height === 0) {
+        // Calculate dimensions (0 means "auto from the image's pixel size")
+        if ($width == 0.0 && $height == 0.0) {
             $width  = (float) $img->getWidth();
             $height = (float) $img->getHeight();
-        } elseif ($width === 0) {
+        } elseif ($width == 0.0) {
             $width = $height * $img->getWidth() / max(1, $img->getHeight());
-        } elseif ($height === 0) {
+        } elseif ($height == 0.0) {
             $height = $width * $img->getHeight() / max(1, $img->getWidth());
         }
 
@@ -1022,12 +1176,12 @@ final class PdfWriter
         $imgName = 'Im' . ($this->nextObjNum - 1);
         $page->getResources()->addXObject($imgName, new PdfIndirectReference($objNum));
 
-        if ($width === 0 && $height === 0) {
+        if ($width == 0.0 && $height == 0.0) {
             $width  = (float) $img->getWidth();
             $height = (float) $img->getHeight();
-        } elseif ($width === 0) {
+        } elseif ($width == 0.0) {
             $width = $height * $img->getWidth() / max(1, $img->getHeight());
-        } elseif ($height === 0) {
+        } elseif ($height == 0.0) {
             $height = $width * $img->getHeight() / max(1, $img->getWidth());
         }
 

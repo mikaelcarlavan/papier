@@ -84,7 +84,7 @@ final class StandardFonts
         125=>480,126=>541,
     ];
 
-    private static array $courierWidths = []; // Courier is monospaced: all glyphs are 600
+    // Courier is monospaced — every glyph is 600 units (handled directly in getGlyphWidth()).
 
     /**
      * Return the glyph width for a character in the given font (in 1/1000 units).

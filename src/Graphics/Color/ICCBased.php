@@ -17,9 +17,9 @@ final class ICCBased extends ColorSpace
     private PdfStream $profileStream;
 
     public function __construct(
-        private readonly string $profileData,
-        private readonly int    $components,   // 1, 3, or 4
-        private readonly string $alternate = 'DeviceRGB',
+        string $profileData,
+        private readonly int $components,   // 1, 3, or 4
+        string $alternate = 'DeviceRGB',
     ) {
         $this->profileStream = new PdfStream();
         $this->profileStream->getDictionary()->set('N', new PdfInteger($components));

@@ -269,6 +269,9 @@ final class PdfPage
     {
         foreach ($elements as $element) {
             $cs = new ContentStream();
+            // Let the content stream resolve fonts so it can encode shown text
+            // correctly (single-byte for simple fonts, two-byte for Type 0).
+            $cs->setFontResolver(fn (string $name): ?\Papier\Font\Font => $this->resources->getFontMetrics($name));
             $element->render($cs, $this->resources);
             $this->contentStreams[] = $cs;
 
@@ -289,6 +292,22 @@ final class PdfPage
     public function getContentStreams(): array
     {
         return $this->contentStreams;
+    }
+
+    /** Number of content streams currently attached. */
+    public function getContentStreamCount(): int
+    {
+        return count($this->contentStreams);
+    }
+
+    /**
+     * Drop content streams beyond the first $n, restoring the page to an earlier
+     * state.  Used to re-apply running (header/footer) overlays idempotently.
+     */
+    public function truncateContentStreams(int $n): static
+    {
+        $this->contentStreams = array_slice($this->contentStreams, 0, max(0, $n));
+        return $this;
     }
 
     // ── Resources ─────────────────────────────────────────────────────────────

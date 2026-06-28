@@ -21,7 +21,6 @@ final class PdfStream extends PdfObject
 {
     private PdfDictionary $dictionary;
     private string        $data       = '';
-    private bool          $compressed = false;
 
     public function __construct(?PdfDictionary $dictionary = null)
     {
@@ -36,8 +35,7 @@ final class PdfStream extends PdfObject
     /** Set raw (unencoded) stream data. */
     public function setData(string $data): static
     {
-        $this->data       = $data;
-        $this->compressed = false;
+        $this->data = $data;
         return $this;
     }
 
@@ -76,8 +74,7 @@ final class PdfStream extends PdfObject
             $this->dictionary->set('Filter', $newArr);
         }
 
-        $this->data       = $encoded;
-        $this->compressed = true;
+        $this->data = $encoded;
         return $this;
     }
 

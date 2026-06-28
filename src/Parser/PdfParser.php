@@ -30,6 +30,9 @@ final class PdfParser
     private ?PdfDictionary $catalog = null;
     private ?PdfDictionary $info    = null;
 
+    /** @var PdfDictionary[]|null Memoised flattened page list */
+    private ?array $pagesCache = null;
+
     /** Password supplied to open an encrypted document. */
     private string $password = '';
 
@@ -335,6 +338,9 @@ final class PdfParser
      */
     public function getPages(): array
     {
+        if ($this->pagesCache !== null) {
+            return $this->pagesCache;
+        }
         if ($this->catalog === null) { return []; }
 
         $pagesRef = $this->catalog->get('Pages');
@@ -343,12 +349,19 @@ final class PdfParser
         $pagesObj = $this->resolve($pagesRef);
         if (!$pagesObj instanceof PdfDictionary) { return []; }
 
-        return $this->collectPages($pagesObj);
+        return $this->pagesCache = $this->collectPages($pagesObj);
     }
 
     /** @return PdfDictionary[] */
-    private function collectPages(PdfDictionary $node): array
+    private function collectPages(PdfDictionary $node, array &$seen = [], int $depth = 0): array
     {
+        // Guard against malformed/cyclic page trees.
+        $id = spl_object_id($node);
+        if ($depth > 100 || isset($seen[$id])) {
+            return [];
+        }
+        $seen[$id] = true;
+
         $type = $node->get('Type');
         if ($type instanceof PdfName && $type->getValue() === 'Page') {
             return [$node];
@@ -361,7 +374,7 @@ final class PdfParser
         foreach ($kids as $kidRef) {
             $kid = $this->resolve($kidRef);
             if ($kid instanceof PdfDictionary) {
-                array_push($pages, ...$this->collectPages($kid));
+                array_push($pages, ...$this->collectPages($kid, $seen, $depth + 1));
             }
         }
         return $pages;
@@ -373,26 +386,27 @@ final class PdfParser
      */
     public function extractTextFromPage(PdfDictionary $page): string
     {
+        // Layout- and encoding-aware extraction (handles Type0/CJK/subset fonts
+        // via embedded ToUnicode CMaps, and infers spaces/line breaks).
+        $text = (new TextExtractor($this))->extractPage($page);
+        if (trim($text) !== '') {
+            return $text;
+        }
+
+        // Fallback: naive operand scan for content the walker couldn't decode.
         $contentRef = $page->get('Contents');
         if ($contentRef === null) { return ''; }
+        $contentObjs = $contentRef instanceof PdfArray
+            ? array_map(fn($r) => $this->resolve($r), $contentRef->getItems())
+            : [$this->resolve($contentRef)];
 
-        $contentObjs = [];
-        if ($contentRef instanceof PdfArray) {
-            foreach ($contentRef as $ref) {
-                $contentObjs[] = $this->resolve($ref);
-            }
-        } else {
-            $contentObjs[] = $this->resolve($contentRef);
-        }
-
-        $text = '';
+        $fallback = '';
         foreach ($contentObjs as $obj) {
             if ($obj instanceof PdfStream) {
-                $decoded = $obj->decode();
-                $text   .= $this->parseContentStreamForText($decoded);
+                $fallback .= $this->parseContentStreamForText($obj->decode());
             }
         }
-        return $text;
+        return $fallback;
     }
 
     /** Extract text strings from a raw content stream. */
@@ -1014,6 +1028,28 @@ final class PdfParser
             }
         }
         return $pairs;
+    }
+
+    // ── Tagged PDF ────────────────────────────────────────────────────────────
+
+    /** True when the document is marked as Tagged PDF (/MarkInfo /Marked true). */
+    public function isTagged(): bool
+    {
+        if ($this->catalog === null) { return false; }
+        $mi = $this->resolve($this->catalog->get('MarkInfo') ?? new PdfNull());
+        if ($mi instanceof PdfDictionary) {
+            $marked = $mi->get('Marked');
+            return $marked instanceof PdfBoolean && $marked->getValue();
+        }
+        return false;
+    }
+
+    /** Return the structure-tree root dictionary (§14.7.2), or null. */
+    public function getStructTreeRoot(): ?PdfDictionary
+    {
+        if ($this->catalog === null) { return null; }
+        $st = $this->resolve($this->catalog->get('StructTreeRoot') ?? new PdfNull());
+        return $st instanceof PdfDictionary ? $st : null;
     }
 
     // ── XMP metadata ────────────────────────────────────────────────────────────

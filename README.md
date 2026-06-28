@@ -153,7 +153,7 @@ $stamp->setIcon('Draft')->setColor(Color::rgb(1, 0, 0));
 $page->addAnnotation($stamp);
 ```
 
-13 annotation subtypes: `TextAnnotation`, `LinkAnnotation`, `FreeTextAnnotation`, `HighlightAnnotation`, `UnderlineAnnotation`, `StrikeOutAnnotation`, `SquigglyAnnotation`, `LineAnnotation`, `SquareAnnotation`, `CircleAnnotation`, `PolygonAnnotation`, `StampAnnotation`, `InkAnnotation`.
+14 annotation subtypes: `TextAnnotation`, `LinkAnnotation`, `FreeTextAnnotation`, `HighlightAnnotation`, `UnderlineAnnotation`, `StrikeOutAnnotation`, `SquigglyAnnotation`, `LineAnnotation`, `SquareAnnotation`, `CircleAnnotation`, `PolygonAnnotation`, `StampAnnotation`, `InkAnnotation`, `RedactAnnotation`.
 
 ### Bookmarks (outlines)
 
@@ -228,6 +228,161 @@ use Papier\Structure\PageTransition;
 $page->setTransition((new PageTransition())->setStyle('Fly')->setDuration(1.0));
 ```
 
+### Page operations & repeating elements
+
+```php
+// Running header/footer on every page (rendered when the total is known):
+$doc->footer(fn($page, $n, $total) =>
+    $page->add(Text::write("Page $n of $total")->at(480, 30)->font($font, 9)));
+$doc->header(fn($page, $n, $total) => /* … */, 'odd');   // 'all'|'odd'|'even'|N|callable
+
+// Document-level page operations:
+PdfDocument::merge(['a.pdf', 'b.pdf'], 'out.pdf');        // concatenate
+PdfDocument::extractPages('in.pdf', [3, 1], 'out.pdf');  // subset, reordered
+PdfDocument::nUp('in.pdf', 2, 2, 'out.pdf');             // 4-up
+$doc->importPages('in.pdf');                              // import all pages
+$page->setRotation(90);                                   // rotate
+```
+
+### Validate your own output (PDF/A)
+
+```php
+use Papier\Validation\PdfAValidator;
+
+$issues = PdfAValidator::validate($pdfBytes);   // [] = structurally conformant
+```
+
+Plus `php tools/verify.php` renders every example with Ghostscript and runs
+`qpdf --check` to confirm the files actually display.
+
+### Fill an existing form
+
+```php
+use Papier\AcroForm\FormFiller;
+
+$filler = new FormFiller(file_get_contents('form.pdf'));
+$filler->setText('person.name', 'Alice')
+       ->setCheckbox('subscribe', true);
+file_put_contents('filled.pdf', $filler->save());   // appearance regenerated, incremental
+```
+
+### Visible signatures + timestamps (PAdES)
+
+```php
+use Papier\Signature\{PdfSigner, DocumentTimestamp};
+
+$signed = (new PdfSigner($certPem, $keyPem))
+    ->setName('Alice')->setReason('Approved')
+    ->setVisibleAppearance(x: 360, y: 690, w: 170, h: 60, page: 1)
+    ->sign(file_get_contents('in.pdf'));
+
+// Optional RFC 3161 document timestamp (supply your TSA transport).
+$timestamped = (new DocumentTimestamp($tsaClient))->apply($signed);
+```
+
+### CCITT Group 4 (fax) images
+
+```php
+use Papier\Filter\CCITTFaxDecode;
+
+$codec   = new CCITTFaxDecode();
+$encoded = $codec->encode($bilevelBytes, $params);   // K=-1; ~10× on scans
+$decoded = $codec->decode($encoded, $params);        // also reads scanned PDFs
+```
+
+### Tagged PDF / accessibility
+
+```php
+use Papier\LogicalStructure\{StructElement, StructTreeRoot};
+
+$cs->beginMarkedContentMcid('P', 0)->beginText()/* … */->endText()->endMarkedContent();
+
+$tree = new StructTreeRoot();
+$p = new StructElement('P');
+$p->addMCID(0, $page->getDictionary());
+$tree->addChild($p);
+$doc->setStructTree($tree);   // emits /MarkInfo, /ParentTree, /StructParents
+```
+
+Enables screen-reader support and the accessible **PDF/A-2a / PDF/UA** levels.
+
+### Shading patterns — fill shapes & text with gradients
+
+```php
+use Papier\Graphics\Pattern\ShadingPattern;
+
+$pat = new ShadingPattern($axialShading);            // or a radial/mesh shading
+$page->getResources()->addPattern('G', $pat->getDictionary());
+$cs->setFillColorSpace('Pattern')->setFillColorN('G')->drawRect(...)->fill();
+```
+
+### Type 3 (user-defined glyph) fonts
+
+```php
+use Papier\Font\Type3Font;
+
+$f = new Type3Font();
+$f->setFontBBox(0, 0, 1000, 1000);
+$glyph = (new ContentStream())->drawCircle(500, 350, 350)->fill();
+$f->addGlyph(65, $glyph, 1000, 'disc');              // 'A' → a disc
+$name = $doc->registerFont($f, 'Icons');
+```
+
+### Recover damaged PDFs
+
+The parser rebuilds the cross-reference by scanning for objects when
+`startxref` is missing or corrupt — common with third-party files.
+
+```php
+$parser = new PdfParser($maybeBrokenBytes);
+$parser->parse();        // recovers automatically; no special flag needed
+```
+
+### Full-Unicode / CJK text (Type 0 fonts)
+
+`addFont()` produces a single-byte WinAnsi font (256 codes). For CJK, Cyrillic,
+Greek, and other scripts, use `addUnicodeFont()` — it embeds the font as a
+CIDFontType2 with Identity-H encoding, generates a `/ToUnicode` CMap, and subsets
+unused glyphs.
+
+```php
+$noto = $doc->addUnicodeFont(__DIR__ . '/NotoSansCJK-Regular.otf');
+$page->add(Text::write('日本語 / 中文 / 한국어 / Ελληνικά')->at(72, 700)->font($noto, 16));
+```
+
+### Mesh shadings (types 4–7)
+
+```php
+use Papier\Graphics\Shading\{GouraudTriangleShading, CoonsPatchShading};
+
+$tri = new GouraudTriangleShading('DeviceRGB');
+$tri->addTriangle([72, 600], [1,0,0], [222, 600], [0,1,0], [147, 740], [0,0,1]);
+$page->getResources()->addShading('M4', $tri->toStream());   // paint with `sh`
+```
+
+Supports free-form (4) and lattice (5) Gouraud triangle meshes, Coons (6) and
+tensor-product (7) patch meshes.
+
+### Digital signatures
+
+```php
+use Papier\Signature\PdfSigner;
+
+$signer = new PdfSigner($certPem, $keyPem);   // PEM strings or file paths
+$signer->setReason('Approved')->setLocation('Paris');
+file_put_contents('signed.pdf', $signer->sign(file_get_contents('in.pdf')));
+```
+
+Adds an invisible PKCS#7 (CMS) detached signature as an incremental update, so
+the original bytes and any prior signatures remain valid.
+
+### PDF/A archival conformance
+
+```php
+$doc->enablePdfA(2, 'B');                        // sRGB OutputIntent + XMP pdfaid
+$font = $doc->addFont(__DIR__ . '/Lato.ttf');    // fonts MUST be embedded
+```
+
 ### Smaller files — object streams (PDF 1.5+)
 
 ```php
@@ -292,7 +447,7 @@ The `examples/` directory contains runnable scripts:
 | `03_graphics.php` | Paths, shapes, gradients, clipping |
 | `04_images.php` | JPEG/PNG embedding, `fromFile()`, alpha, scaling |
 | `05_forms.php` | AcroForm fields |
-| `06_annotations.php` | All 13 annotation subtypes |
+| `06_annotations.php` | All 14 annotation subtypes (incl. redaction) |
 | `07_bookmarks_and_encryption.php` | Outlines, password protection |
 | `08_advanced_graphics.php` | Patterns, shadings, transparency groups |
 | `09_read_pdf.php` | Parsing an existing PDF |
@@ -307,6 +462,19 @@ The `examples/` directory contains runnable scripts:
 | `18_incremental_update.php` | Editing a PDF via an appended revision |
 | `19_read_encrypted.php` | Decrypting + reading outlines, forms, attachments, XMP |
 | `20_font_subsetting.php` | TrueType subsetting and ToUnicode generation |
+| `21_unicode_cjk.php` | Full-Unicode text via Type 0 (composite) fonts |
+| `22_mesh_shadings.php` | Mesh shadings (types 4–7) |
+| `23_digital_signature.php` | PKCS#7 digital signature via incremental update |
+| `24_pdf_a.php` | PDF/A-2b archival conformance |
+| `25_xref_recovery.php` | Recovering PDFs with a corrupt/missing xref |
+| `26_type3_font.php` | Type 3 user-defined glyph fonts |
+| `27_shading_patterns.php` | Filling shapes and text with gradient patterns |
+| `28_tagged_pdf.php` | Tagged PDF / accessibility (PDF/A-2a) |
+| `29_text_extraction.php` | ToUnicode-aware text extraction (accents, Type 0) |
+| `30_form_filling.php` | Filling an existing AcroForm |
+| `31_ccitt_fax.php` | CCITT Group 4 bilevel image compression |
+| `32_signature_appearance.php` | Visible signature + document timestamp |
+| `33_page_operations.php` | Headers/footers, merge, extract, N-up, rotate |
 
 Run any example:
 

@@ -32,14 +32,82 @@ final class CrossReferenceTable
 
     public function parse(Tokenizer $tok): void
     {
-        // Find startxref from the end of the file
+        // Normal path: follow startxref through the cross-reference sections.
         $startxref = $this->findStartXRef($tok);
-        if ($startxref === null) {
-            throw new \RuntimeException('Cannot find startxref.');
+        if ($startxref !== null) {
+            $this->startXref = $startxref;
+            try {
+                $this->parseXRefAt($tok, $startxref);
+            } catch (\Throwable) {
+                // Corrupt xref — fall through to a full rebuild.
+            }
         }
 
-        $this->startXref = $startxref;
-        $this->parseXRefAt($tok, $startxref);
+        // If the cross-reference is missing or did not yield a usable catalog,
+        // reconstruct it by scanning the file for objects (§ recovery).
+        if ($this->root === null || !isset($this->entries[$this->root])) {
+            $this->rebuild($tok);
+        }
+
+        if ($this->root === null) {
+            throw new \RuntimeException('Cannot find document catalog (file is not a recoverable PDF).');
+        }
+    }
+
+    /**
+     * Rebuild the cross-reference table by scanning the raw bytes for
+     * `N G obj` definitions and recovering the trailer/catalog.  Used when the
+     * xref is absent or corrupt (a common defect in third-party PDFs).
+     *
+     * Note: objects stored inside object streams cannot be recovered this way.
+     */
+    private function rebuild(Tokenizer $tok): void
+    {
+        $data = $tok->getData();
+
+        // 1. Locate every "N G obj"; later definitions win (incremental updates).
+        if (preg_match_all('/(\d+)\s+(\d+)\s+obj\b/', $data, $m, PREG_OFFSET_CAPTURE)) {
+            foreach ($m[1] as $i => $numMatch) {
+                $offset = $numMatch[1];
+                // Skip matches that are part of a longer number.
+                if ($offset > 0 && ctype_digit($data[$offset - 1])) {
+                    continue;
+                }
+                $objNum = (int) $numMatch[0];
+                $this->entries[$objNum] = [
+                    'offset'     => $offset,
+                    'generation' => (int) $m[2][$i][0],
+                    'inUse'      => true,
+                ];
+                $this->size = max($this->size, $objNum + 1);
+            }
+        }
+
+        // 2. Recover trailer info (Root/Info/Encrypt/ID) from the last trailer.
+        $tpos = strrpos($data, 'trailer');
+        if ($tpos !== false) {
+            $ttok = new Tokenizer($data);
+            $ttok->setPosition($tpos + strlen('trailer'));
+            $ttok->skipWhitespace();
+            $parsed = (new ObjectParser($ttok))->parseObject();
+            if ($parsed instanceof \Papier\Objects\PdfDictionary) {
+                $this->extractTrailerInfo($parsed);
+            }
+        }
+
+        // 3. If still no catalog, find the object that declares /Type /Catalog.
+        if ($this->root === null && preg_match('/\/Type\s*\/Catalog/', $data, $cm, PREG_OFFSET_CAPTURE)) {
+            $catOffset = $cm[0][1];
+            $best = null;
+            $bestOff = -1;
+            foreach ($this->entries as $num => $entry) {
+                if ($entry['offset'] <= $catOffset && $entry['offset'] > $bestOff) {
+                    $bestOff = $entry['offset'];
+                    $best = $num;
+                }
+            }
+            $this->root = $best;
+        }
     }
 
     /** Byte offset of the newest cross-reference section (for incremental updates). */
@@ -333,6 +401,7 @@ final class CrossReferenceTable
     public function getEncryptReference(): ?\Papier\Objects\PdfObject { return $this->encryptRef; }
     public function getIdArray(): ?\Papier\Objects\PdfArray { return $this->idArray; }
     public function getFileId1(): string           { return $this->fileId1; }
+    public function getFileId2(): string           { return $this->fileId2; }
     public function getSize(): int                 { return $this->size; }
 
     /** @return array<int, array{offset:int, generation:int, inUse:bool, compressed?:bool}> */

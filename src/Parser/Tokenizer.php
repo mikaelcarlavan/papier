@@ -151,6 +151,12 @@ final class Tokenizer
             }
             $this->pos++;
         }
+        // Guarantee forward progress: if the current byte is an unhandled
+        // delimiter (e.g. '{' or '}'), consume it so callers never stall.
+        if ($this->pos === $start && $this->pos < $this->len) {
+            $this->pos++;
+            return substr($this->data, $start, 1);
+        }
         return substr($this->data, $start, $this->pos - $start);
     }
 

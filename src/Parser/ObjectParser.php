@@ -81,6 +81,10 @@ final class ObjectParser
             }
             $this->tokenizer->setPosition($savedPos);
             $arr->add($this->parseObject());
+            // Defend against malformed input that fails to advance the cursor.
+            if ($this->tokenizer->getPosition() <= $savedPos) {
+                break;
+            }
         }
         return $arr;
     }
@@ -92,12 +96,17 @@ final class ObjectParser
 
         while (true) {
             $this->tokenizer->skipWhitespace();
+            $before = $this->tokenizer->getPosition();
             $key = $this->tokenizer->nextToken();
             if ($key['type'] === Tokenizer::T_DICT_CLOSE || $key['type'] === Tokenizer::T_EOF) {
                 break;
             }
             if ($key['type'] !== Tokenizer::T_NAME) {
-                continue; // malformed: skip
+                // Malformed key; skip it but never stall on zero-width input.
+                if ($this->tokenizer->getPosition() <= $before) {
+                    break;
+                }
+                continue;
             }
             $value = $this->parseObject();
             $dict->set($key['value'], $value);
@@ -115,10 +124,34 @@ final class ObjectParser
             $c = $this->tokenizer->peek();
             if ($c === "\n") { $this->tokenizer->read(); }
 
-            // Read stream data (Length bytes)
+            $start     = $this->tokenizer->getPosition();
             $lengthObj = $dict->get('Length');
-            $length    = ($lengthObj instanceof PdfInteger) ? $lengthObj->getValue() : 0;
-            $data      = $this->tokenizer->readRaw($length);
+            $data      = null;
+
+            // Trust a direct /Length only when 'endstream' actually follows it;
+            // otherwise (indirect or wrong /Length) locate 'endstream' by scanning.
+            if ($lengthObj instanceof PdfInteger) {
+                $len  = $lengthObj->getValue();
+                $tail = substr($this->tokenizer->getData(), $start + $len, 20);
+                if (preg_match('/^\s*endstream/', $tail)) {
+                    $data = $this->tokenizer->readRaw($len);
+                }
+            }
+
+            if ($data === null) {
+                $all = $this->tokenizer->getData();
+                $end = strpos($all, 'endstream', $start);
+                if ($end === false) {
+                    $data = substr($all, $start);
+                    $this->tokenizer->setPosition(strlen($all));
+                } else {
+                    $raw = substr($all, $start, $end - $start);
+                    // Drop the single EOL that precedes 'endstream'.
+                    $raw = preg_replace('/\r\n$|\r$|\n$/', '', $raw);
+                    $data = $raw;
+                    $this->tokenizer->setPosition($end);
+                }
+            }
 
             // Skip `endstream`
             $this->tokenizer->skipWhitespace();

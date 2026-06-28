@@ -992,6 +992,11 @@ final class Table implements Element
      *   2. Outer border settings for edges on the table perimeter
      *   3. Inner border settings for interior lines
      *   4. showBorder / showInnerBorder flags
+     *
+     * @param array<int, float>                  $colW
+     * @param array<int, float>                  $rowH
+     * @param array<int, array<int, TableCell>>  $grid
+     * @param array<int, array<int, array{0:int,1:int}>>  $owner  cell → owning [row, col]
      */
     private function renderBorders(
         ContentStream $cs,

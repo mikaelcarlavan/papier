@@ -118,13 +118,13 @@ final class Color
     public function toRgb(): array
     {
         return match ($this->mode) {
-            self::MODE_RGB  => $this->components,
             self::MODE_GRAY => array_fill(0, 3, $this->components[0]),
             self::MODE_CMYK => [
                 (1 - $this->components[0]) * (1 - $this->components[3]),
                 (1 - $this->components[1]) * (1 - $this->components[3]),
                 (1 - $this->components[2]) * (1 - $this->components[3]),
             ],
+            default => $this->components, // MODE_RGB
         };
     }
 
@@ -150,9 +150,9 @@ final class Color
     public function applyFill(ContentStream $cs): void
     {
         match ($this->mode) {
-            self::MODE_RGB  => $cs->setFillRGB(...$this->components),
             self::MODE_CMYK => $cs->setFillCMYK(...$this->components),
             self::MODE_GRAY => $cs->setFillGray($this->components[0]),
+            default         => $cs->setFillRGB(...$this->components), // MODE_RGB
         };
     }
 
@@ -165,9 +165,9 @@ final class Color
     public function applyStroke(ContentStream $cs): void
     {
         match ($this->mode) {
-            self::MODE_RGB  => $cs->setStrokeRGB(...$this->components),
             self::MODE_CMYK => $cs->setStrokeCMYK(...$this->components),
             self::MODE_GRAY => $cs->setStrokeGray($this->components[0]),
+            default         => $cs->setStrokeRGB(...$this->components), // MODE_RGB
         };
     }
 }

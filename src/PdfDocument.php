@@ -292,6 +292,118 @@ final class PdfDocument
         return $page;
     }
 
+    /**
+     * Import pages from another PDF into this document.
+     *
+     * @param string|PdfParser $source  Path to a PDF, or an already-parsed PdfParser.
+     * @param int[]|null       $pages   1-based page numbers to import (null = all).
+     *
+     * @return PdfPage[]  The newly created pages (in order), ready for overlays.
+     */
+    public function importPages(string|PdfParser $source, ?array $pages = null): array
+    {
+        $parser = is_string($source) ? self::open($source) : $source;
+        $count  = $parser->getPageCount();
+        $pages ??= range(1, $count);
+
+        $result = [];
+        foreach ($pages as $n) {
+            if ($n < 1 || $n > $count) {
+                continue;
+            }
+            $result[] = $this->importPage(ImportedPage::fromParser($parser, $n));
+        }
+        return $result;
+    }
+
+    /**
+     * Merge several PDFs into one file, concatenating all their pages.
+     *
+     * @param string[] $sources   Paths to the source PDFs, in order.
+     * @param string   $outPath   Destination path.
+     */
+    public static function merge(array $sources, string $outPath): void
+    {
+        $doc = self::create();
+        foreach ($sources as $src) {
+            $doc->importPages($src);
+        }
+        $doc->save($outPath);
+    }
+
+    /**
+     * Extract a subset of pages from a PDF into a new file.
+     *
+     * @param string $source   Source PDF path.
+     * @param int[]  $pages    1-based page numbers to keep, in the desired order.
+     * @param string $outPath  Destination path.
+     */
+    public static function extractPages(string $source, array $pages, string $outPath): void
+    {
+        $doc = self::create();
+        $doc->importPages($source, $pages);
+        $doc->save($outPath);
+    }
+
+    /**
+     * Place several source pages per sheet (N-up) and write the result.
+     *
+     * @param string $source   Source PDF path.
+     * @param int    $cols     Columns per sheet.
+     * @param int    $rows     Rows per sheet.
+     * @param string $outPath  Destination path.
+     * @param float  $sheetW   Output sheet width (points; default A4 portrait).
+     * @param float  $sheetH   Output sheet height (points).
+     * @param float  $margin   Outer margin (points).
+     * @param float  $gutter   Gap between cells (points).
+     */
+    public static function nUp(
+        string $source,
+        int    $cols,
+        int    $rows,
+        string $outPath,
+        float  $sheetW = 595.28,
+        float  $sheetH = 841.89,
+        float  $margin = 20.0,
+        float  $gutter = 10.0,
+    ): void {
+        $parser  = self::open($source);
+        $total   = $parser->getPageCount();
+        $perSheet = max(1, $cols * $rows);
+
+        $cellW = ($sheetW - 2 * $margin - ($cols - 1) * $gutter) / $cols;
+        $cellH = ($sheetH - 2 * $margin - ($rows - 1) * $gutter) / $rows;
+
+        $doc = self::create();
+        for ($start = 1; $start <= $total; $start += $perSheet) {
+            $sheet = $doc->addPage($sheetW, $sheetH);
+            for ($k = 0; $k < $perSheet; $k++) {
+                $pageNum = $start + $k;
+                if ($pageNum > $total) {
+                    break;
+                }
+                $imported = ImportedPage::fromParser($parser, $pageNum);
+                $scale = min($cellW / max(1, $imported->getWidth()), $cellH / max(1, $imported->getHeight()));
+
+                $col = $k % $cols;
+                $row = intdiv($k, $cols);
+                // Top-left origin within the grid; PDF y grows upward.
+                $cellX = $margin + $col * ($cellW + $gutter);
+                $cellY = $sheetH - $margin - ($row + 1) * $cellH - $row * $gutter;
+                // Centre the scaled page inside its cell.
+                $x = $cellX + ($cellW - $imported->getWidth()  * $scale) / 2;
+                $y = $cellY + ($cellH - $imported->getHeight() * $scale) / 2;
+
+                $name = 'NUp' . $pageNum;
+                $sheet->getResources()->addXObject($name, $imported->getFormXObject());
+                $cs = new ContentStream();
+                $cs->save()->transform($scale, 0, 0, $scale, $x, $y)->drawXObject($name)->restore();
+                $sheet->addContent($cs);
+            }
+        }
+        $doc->save($outPath);
+    }
+
     // ── Fonts ─────────────────────────────────────────────────────────────────
 
     /**
@@ -334,6 +446,28 @@ final class PdfDocument
         } else {
             $font = new Type1Font($baseFont);
         }
+        return $this->writer->registerFont($font, $resourceName);
+    }
+
+    /**
+     * Add a full-Unicode composite (Type 0) font from a TrueType/OpenType file
+     * and return its resource name.
+     *
+     * Unlike {@see addFont()} — which produces a single-byte WinAnsi font
+     * limited to 256 codes — this embeds the font as a CIDFontType2 with
+     * Identity-H encoding, giving access to every glyph in the file (CJK,
+     * Cyrillic, Greek, etc.).  A /ToUnicode CMap is generated automatically so
+     * the text stays searchable, and unused glyphs are subset out by default.
+     *
+     * @param string $path          Path to a .ttf/.otf file.
+     * @param string $resourceName  Override the auto-generated resource key.
+     * @param bool   $subset        Strip unused glyph outlines (default true).
+     *
+     * @return string  Resource name used in content streams.
+     */
+    public function addUnicodeFont(string $path, string $resourceName = '', bool $subset = true): string
+    {
+        $font = \Papier\Font\Type0Font::fromTrueType($path, $subset);
         return $this->writer->registerFont($font, $resourceName);
     }
 
@@ -572,6 +706,25 @@ final class PdfDocument
     }
 
     /**
+     * Mark the document for PDF/A archival conformance (ISO 19005).
+     *
+     * Adds an sRGB OutputIntent, PDF/A identification metadata in XMP, and a
+     * document ID.  You remain responsible for embedding every font
+     * (use {@see addFont()} with a TTF/OTF path or {@see addUnicodeFont()}, not
+     * the standard 14 fonts) and avoiding disallowed features (encryption,
+     * JavaScript, external references).
+     *
+     * @param int    $part         PDF/A part: 1, 2 (default), or 3.
+     * @param string $conformance  Conformance level: 'B' (visual) or 'A' (accessible).
+     */
+    public function enablePdfA(int $part = 2, string $conformance = 'B'): static
+    {
+        $this->xmp->setPdfAConformance($part, $conformance);
+        $this->writer->enablePdfA($part, $conformance);
+        return $this;
+    }
+
+    /**
      * Enable compressed object streams and a cross-reference stream (PDF 1.5+).
      *
      * Produces significantly smaller files by packing non-stream objects into
@@ -581,6 +734,85 @@ final class PdfDocument
     {
         $this->writer->setUseObjectStreams($enabled);
         return $this;
+    }
+
+    // ── Running (repeating) elements ────────────────────────────────────────────
+
+    /** @var array<int, array{render:\Closure, when:string|int|\Closure}> */
+    private array $runningElements = [];
+    /** @var array<int, int> spl_object_id(page) → content-stream count before overlays */
+    private array $pageBaseCounts = [];
+
+    /**
+     * Repeat element(s) on pages matching a rule (headers, footers, watermarks…).
+     *
+     * The callback runs once per matching page at output time, when the total
+     * page count is known, and adds elements to that page:
+     *
+     *   $doc->onEachPage(function (PdfPage $page, int $n, int $total) use ($font) {
+     *       $page->add(Text::write("Page $n of $total")->at(72, 30)->font($font, 9));
+     *   });
+     *
+     * @param \Closure $render  fn(PdfPage $page, int $pageNumber, int $pageCount): void
+     * @param string|int|\Closure $when  'all'|'odd'|'even'|'first'|'last', an int N
+     *        (every Nth page), or fn(int $pageNumber, int $pageCount): bool.
+     */
+    public function onEachPage(\Closure $render, string|int|\Closure $when = 'all'): static
+    {
+        $this->runningElements[] = ['render' => $render, 'when' => $when];
+        return $this;
+    }
+
+    /** Convenience: a running header (identical to {@see onEachPage()}). */
+    public function header(\Closure $render, string|int|\Closure $when = 'all'): static
+    {
+        return $this->onEachPage($render, $when);
+    }
+
+    /** Convenience: a running footer (identical to {@see onEachPage()}). */
+    public function footer(\Closure $render, string|int|\Closure $when = 'all'): static
+    {
+        return $this->onEachPage($render, $when);
+    }
+
+    /** Render the running elements onto every matching page (idempotent). */
+    private function applyRunningElements(): void
+    {
+        if (empty($this->runningElements)) {
+            return;
+        }
+        $pages = $this->writer->getPages();
+        $total = count($pages);
+        foreach ($pages as $i => $page) {
+            $id = spl_object_id($page);
+            // Record (once) the page's own content count, then strip prior overlays.
+            $this->pageBaseCounts[$id] ??= $page->getContentStreamCount();
+            $page->truncateContentStreams($this->pageBaseCounts[$id]);
+
+            $num = $i + 1;
+            foreach ($this->runningElements as $re) {
+                if ($this->pageMatches($re['when'], $num, $total)) {
+                    ($re['render'])($page, $num, $total);
+                }
+            }
+        }
+    }
+
+    private function pageMatches(string|int|\Closure $when, int $num, int $total): bool
+    {
+        if ($when instanceof \Closure) {
+            return (bool) $when($num, $total);
+        }
+        if (is_int($when)) {
+            return $when > 0 && $num % $when === 0;
+        }
+        return match ($when) {
+            'odd'   => $num % 2 === 1,
+            'even'  => $num % 2 === 0,
+            'first' => $num === 1,
+            'last'  => $num === $total,
+            default => true, // 'all'
+        };
     }
 
     // ── Output ────────────────────────────────────────────────────────────────
@@ -593,6 +825,7 @@ final class PdfDocument
      */
     public function toString(): string
     {
+        $this->applyRunningElements();
         return $this->writer->generate();
     }
 
@@ -603,7 +836,10 @@ final class PdfDocument
      */
     public function save(string $path): void
     {
-        $this->writer->save($path);
+        $result = file_put_contents($path, $this->toString());
+        if ($result === false) {
+            throw new \RuntimeException("Cannot write PDF to: $path");
+        }
     }
 
     /**

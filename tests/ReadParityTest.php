@@ -81,9 +81,7 @@ final class ReadParityTest extends TestCase
         $this->assertStringContainsString('xpacket', $xmp);
     }
 
-    /**
-     * @dataProvider algorithms
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('algorithms')]
     public function testDecryptionRoundTrip(int $algorithm): void
     {
         $pdf = $this->buildDoc()

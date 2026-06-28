@@ -22,7 +22,7 @@ use Papier\Annotation\{
     HighlightAnnotation, UnderlineAnnotation, StrikeOutAnnotation,
     SquareAnnotation, CircleAnnotation, LineAnnotation,
     PolygonAnnotation, StampAnnotation, InkAnnotation,
-    PopupAnnotation, SquigglyAnnotation
+    PopupAnnotation, SquigglyAnnotation, RedactAnnotation
 };
 
 $doc  = PdfDocument::create();
@@ -149,8 +149,20 @@ $ink->setInkList([
     ->setContents('A freehand ink annotation');
 $page->addAnnotation($ink);
 
+// ── 14. Redaction annotation ──────────────────────────────────────────────────
+// Marks a region for redaction. setQuadPoints() takes runs of 8 numbers
+// (x1,y1 … x4,y4) describing each quadrilateral to redact; setFillColor() is
+// the bar painted once a redaction tool applies the mark.
+$redact = new RedactAnnotation(72, 452, 300, 470);
+$redact->setQuadPoints([72, 452, 300, 452, 72, 470, 300, 470])
+       ->setOverlayText('REDACTED')
+       ->setRepeat(true)
+       ->setFillColor(Color::black())
+       ->setContents('Sensitive content marked for redaction');
+$page->addAnnotation($redact);
+
 $page->add(
-    Text::write('13 annotation types demonstrated above.')->at(72, 480)->font($bold, 12),
+    Text::write('14 annotation types demonstrated above.')->at(72, 430)->font($bold, 12),
 );
 
 $doc->save(__DIR__ . '/output/06_annotations.pdf');

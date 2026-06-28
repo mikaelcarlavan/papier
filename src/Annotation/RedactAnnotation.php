@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Papier\Annotation;
 
 use Papier\Elements\Color;
-use Papier\Objects\{PdfArray, PdfBoolean, PdfString};
+use Papier\Objects\{PdfArray, PdfBoolean, PdfReal, PdfString};
 
 /**
  * Redaction annotation (`/Subtype /Redact`) (PDF 1.7+).

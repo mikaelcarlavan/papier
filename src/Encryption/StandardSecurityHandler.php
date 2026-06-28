@@ -331,12 +331,6 @@ final class StandardSecurityHandler
         return $out;
     }
 
-    private function aesEncrypt(string $key, string $data): string
-    {
-        $iv = random_bytes(16);
-        return $iv . openssl_encrypt($data, 'AES-256-CBC', $key, OPENSSL_RAW_DATA, $iv);
-    }
-
     /**
      * Encrypt stream/string data using the derived encryption key.
      *

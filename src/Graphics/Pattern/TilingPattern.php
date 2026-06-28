@@ -25,14 +25,14 @@ final class TilingPattern
     private ContentStream $content;
 
     public function __construct(
-        private float $xStep,
-        private float $yStep,
-        private float $bboxX1 = 0.0,
-        private float $bboxY1 = 0.0,
-        private float $bboxX2 = 1.0,
-        private float $bboxY2 = 1.0,
-        private int   $paintType = 1,
-        private int   $tilingType = 1,
+        float $xStep,
+        float $yStep,
+        float $bboxX1 = 0.0,
+        float $bboxY1 = 0.0,
+        float $bboxX2 = 1.0,
+        float $bboxY2 = 1.0,
+        int   $paintType = 1,
+        int   $tilingType = 1,
     ) {
         $this->resources = new PdfResources();
         $this->content   = new ContentStream();

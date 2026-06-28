@@ -14,12 +14,17 @@ final class StructElement
     private PdfDictionary $dict;
     /** @var StructElement[] */
     private array $kids = [];
+    /**
+     * Ordered content: child elements and marked-content references, in reading order.
+     * @var array<int, array{type:'elem',elem:StructElement}|array{type:'mcid',mcid:int,pg:PdfObject}>
+     */
+    private array $content = [];
 
     public function __construct(
         private readonly string $structType,
-        private ?string $lang     = null,
-        private ?string $altText  = null,
-        private ?string $actualText = null,
+        ?string $lang       = null,
+        ?string $altText    = null,
+        ?string $actualText = null,
     ) {
         $this->dict = new PdfDictionary();
         $this->dict->set('Type', new PdfName('StructElem'));
@@ -33,20 +38,29 @@ final class StructElement
 
     public function addChild(StructElement $element): static
     {
-        $this->kids[] = $element;
+        $this->kids[]    = $element;
+        $this->content[] = ['type' => 'elem', 'elem' => $element];
         return $this;
     }
 
-    /** Add a marked-content reference (MCID) as a child. */
-    public function addMCID(int $mcid, PdfObject $pageRef): static
+    /**
+     * Attach a span of marked content to this element by its marked-content
+     * identifier (§14.7.4).  The $page is the page dictionary on which the
+     * marked content appears (e.g. `$page->getDictionary()`); pass it so the
+     * writer can build the /ParentTree and per-page /StructParents entries.
+     */
+    public function addMCID(int $mcid, PdfObject $page): static
     {
-        $mcr = new PdfDictionary();
-        $mcr->set('Type', new PdfName('MCR'));
-        $mcr->set('Pg', $pageRef);
-        $mcr->set('MCID', new PdfInteger($mcid));
-        // MCRs are stored directly; here we just track the MCID for now
+        $this->content[] = ['type' => 'mcid', 'mcid' => $mcid, 'pg' => $page];
         return $this;
     }
+
+    /**
+     * Ordered content (child elements and MCID references).
+     *
+     * @return array<int, array{type:'elem',elem:StructElement}|array{type:'mcid',mcid:int,pg:PdfObject}>
+     */
+    public function getContent(): array { return $this->content; }
 
     public function setTitle(string $title): static
     {
