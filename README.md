@@ -5,9 +5,59 @@
     <a href="https://packagist.org/packages/papier/papier"><img src="https://poser.pugx.org/papier/papier/license.svg" alt="License"></a>
 </p>
 
-A comprehensive PHP library for generating and reading PDF documents, implementing **ISO 32000-1:2008 (PDF 1.7)**.
+A comprehensive PHP library for generating and reading PDF documents, implementing **ISO 32000-1:2008 (PDF 1.7)** with selected **ISO 32000-2 (PDF 2.0)** features (AES-256, document timestamps).
 
 Papier was built with the assistance of [Claude](https://claude.ai) (Anthropic's AI assistant), which helped design the API, implement the PDF specification, and write the examples throughout the library.
+
+## Features
+
+**Documents & pages**
+- Create documents with metadata (Info dictionary + XMP), viewer preferences, page labels, named destinations, open actions
+- Page sizes/orientation, rotation, multiple content streams
+- Page operations: merge, extract/split, N-up, import pages from other PDFs
+- Repeating elements — running headers/footers with page-rule filtering (`all`/`odd`/`even`/`first`/`last`/every-Nth/callable) and "Page X of Y"
+
+**Text & fonts**
+- 14 standard Type 1 fonts; embedded TrueType/OpenType (`FontFile2`)
+- **TrueType subsetting** + automatic **`/ToUnicode`** generation (searchable, copy-pasteable)
+- **Type 0 / CIDFontType2 composite fonts** (Identity-H) for full Unicode / CJK
+- **Type 3** user-defined glyph fonts; WinAnsi & MacRoman encodings
+- Text rendering modes, char/word spacing, horizontal scaling, rise, leading; `TextBox` word-wrap
+
+**Graphics**
+- Paths, shapes, Bézier curves, clipping; line styles, dashes
+- Colour spaces: DeviceGray/RGB/CMYK, CalGray/CalRGB, Lab, ICCBased, Indexed, Separation, DeviceN, Pattern
+- Functions (sampled, exponential, stitching, PostScript calculator)
+- Shadings: axial, radial, and **mesh types 4–7** (Gouraud free-form/lattice, Coons, tensor)
+- Patterns: tiling and **shading patterns** (fill shapes/text with gradients)
+- Transparency: ExtGState, soft masks, blend modes
+- Images: JPEG, PNG (with alpha → SMask), image masks, decode arrays
+
+**Tables, forms & annotations**
+- Tables: column widths, header/footer rows, rowspan, per-side borders, padding, vertical alignment, colours, opacity
+- AcroForm fields (text, checkbox, radio, combo, list, push button, signature); **fill existing forms** with regenerated appearance streams
+- 14 annotation subtypes incl. link, text, markup, geometric, stamp, ink, **redaction**
+
+**Document features**
+- Bookmarks/outlines, optional content (layers), multimedia (sound/screen renditions), page transitions
+- File attachments; **Tagged PDF** (marked content, structure tree, `/ParentTree`) for accessibility / PDF/UA
+- **PDF/A** (2b and accessible 2a) with sRGB OutputIntent + a built-in `PdfAValidator`
+
+**Security & signatures**
+- Encryption: RC4 (40/128-bit), AES-128, **AES-256** (PDF 2.0); permission flags
+- **Decryption** of existing encrypted PDFs (RC4/AES-128/AES-256), user & owner passwords
+- **Digital signatures** (PKCS#7/CMS detached) with visible appearance; **RFC 3161 document timestamps** (PAdES)
+
+**File structure**
+- Classic xref tables **and** cross-reference streams; **object streams** (read & write) for smaller files
+- **Incremental updates** (append revisions; foundation for signing)
+- Damaged-file recovery (rebuild xref by scanning when `startxref` is missing/corrupt)
+- Filters: FlateDecode (+predictors), LZW, ASCIIHex, ASCII85, RunLength, **CCITT Group 4**; DCT/JBIG2/JPX pass-through
+
+**Reading & extraction**
+- Layout- and `ToUnicode`-aware text extraction (Type 0/CJK/subset fonts, recurses into form XObjects)
+- Read pages, fonts, images, metadata (Info + XMP), annotations, outlines, form-field values, attachments, structure tree
+- Parses object streams, hybrid-reference and linearized files; robust against malformed input
 
 ## Requirements
 
