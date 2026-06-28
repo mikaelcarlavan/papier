@@ -1,8 +1,8 @@
 # Papier
 <p>
-    <a href="https://packagist.org/packages/papier/papier"><img src="https://poser.pugx.org/papier/papier/d/total.svg" alt="Total Downloads"></a>
-    <a href="https://packagist.org/packages/papier/papier"><img src="https://poser.pugx.org/papier/papier/v/stable.svg" alt="Latest Stable Version"></a>
-    <a href="https://packagist.org/packages/papier/papier"><img src="https://poser.pugx.org/papier/papier/license.svg" alt="License"></a>
+    <a href="https://packagist.org/packages/papier/papier"><img src="https://img.shields.io/packagist/v/papier/papier" alt="Latest Stable Version"></a>
+    <a href="https://packagist.org/packages/papier/papier"><img src="https://img.shields.io/packagist/dt/papier/papier" alt="Total Downloads"></a>
+    <a href="https://packagist.org/packages/papier/papier"><img src="https://img.shields.io/packagist/l/papier/papier" alt="License"></a>
 </p>
 
 A comprehensive PHP library for generating and reading PDF documents, implementing **ISO 32000-1:2008 (PDF 1.7)** with selected **ISO 32000-2 (PDF 2.0)** features (AES-256, document timestamps).
