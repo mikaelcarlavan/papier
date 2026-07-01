@@ -281,6 +281,8 @@ $page->setTransition((new PageTransition())->setStyle('Fly')->setDuration(1.0));
 ### Page operations & repeating elements
 
 ```php
+use Papier\PageRule;
+
 // Running header/footer on every page (rendered when the total is known):
 $doc->footer(fn($page, $n, $total) =>
     $page->add(Text::write("Page $n of $total")->at(480, 30)->font($font, 9)));
@@ -425,6 +427,41 @@ file_put_contents('signed.pdf', $signer->sign(file_get_contents('in.pdf')));
 
 Adds an invisible PKCS#7 (CMS) detached signature as an incremental update, so
 the original bytes and any prior signatures remain valid.
+
+### Encrypt a document
+
+```php
+use Papier\Encryption\{EncryptionAlgorithm, StandardSecurityHandler};
+
+$doc->encrypt(
+    userPassword:  'user',                        // required to open (empty = none)
+    ownerPassword: 'owner',                       // bypasses restrictions
+    permissions:   StandardSecurityHandler::PERM_PRINT | StandardSecurityHandler::PERM_COPY,
+    algorithm:     EncryptionAlgorithm::Aes_256,   // ::Aes_128 (default), ::Rc4_128, ::Rc4_40
+);
+```
+
+Permissions are `PERM_*` flags OR-ed together (`PERM_ALL` by default).
+
+### Viewer preferences
+
+```php
+use Papier\Viewer\{ViewerPreferences, PrintScaling, Duplex, NonFullScreenPageMode, ReadingDirection};
+
+$doc->setViewerPreferences(
+    ViewerPreferences::create()
+        ->hideToolbar()                                       // boolean flags default to true
+        ->displayDocTitle()
+        ->printScaling(PrintScaling::None)                    // ::AppDefault
+        ->duplex(Duplex::FlipLongEdge)                        // ::Simplex, ::FlipShortEdge
+        ->nonFullScreenPageMode(NonFullScreenPageMode::UseOutlines)
+        ->readingDirection(ReadingDirection::LeftToRight)     // ::RightToLeft
+        ->numCopies(2)
+);
+```
+
+Uncommon keys (`/ViewArea`, `/PrintPageRange`, …) are available via
+`->set($key, $value)`.
 
 ### PDF/A archival conformance
 
