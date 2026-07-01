@@ -16,8 +16,9 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use Papier\PdfDocument;
 use Papier\Elements\{Color, Rectangle, Text};
-use Papier\Encryption\StandardSecurityHandler;
+use Papier\Encryption\{EncryptionAlgorithm, StandardSecurityHandler};
 use Papier\Structure\{PdfOutline, PdfOutlineItem};
+use Papier\Viewer\{NonFullScreenPageMode, PrintScaling, ViewerPreferences};
 
 // ── Part 1: Bookmarked multi-page document ────────────────────────────────────
 
@@ -79,14 +80,12 @@ foreach ($chapters as $title => $body) {
 $doc->setOutline($outline);
 
 // ── Part 2: Set viewer preferences ───────────────────────────────────────────
-$doc->setViewerPreferences([
-    'HideToolbar'           => false,
-    'HideMenubar'           => false,
-    'FitWindow'             => false,
-    'DisplayDocTitle'       => true,
-    'PrintScaling'          => 'None',
-    'NonFullScreenPageMode' => 'UseOutlines',
-]);
+$doc->setViewerPreferences(
+    ViewerPreferences::create()
+        ->displayDocTitle()
+        ->printScaling(PrintScaling::None)
+        ->nonFullScreenPageMode(NonFullScreenPageMode::UseOutlines)
+);
 
 $doc->save(__DIR__ . '/output/07_bookmarks.pdf');
 echo "Created: 07_bookmarks.pdf\n";
@@ -119,7 +118,7 @@ $docEnc->encrypt(
     userPassword:  'user',
     ownerPassword: 'owner',
     permissions:   $permissions,
-    algorithm:     StandardSecurityHandler::AES_128,
+    algorithm:     EncryptionAlgorithm::Aes_128,
 );
 
 $docEnc->save(__DIR__ . '/output/07_encrypted.pdf');

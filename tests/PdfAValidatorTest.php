@@ -6,6 +6,7 @@ namespace Papier\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Papier\PdfDocument;
+use Papier\Metadata\PdfAConformance;
 use Papier\Content\ContentStream;
 use Papier\Elements\Text;
 use Papier\LogicalStructure\{StructElement, StructTreeRoot};
@@ -18,7 +19,7 @@ final class PdfAValidatorTest extends TestCase
     public function testConformantPdfAPasses(): void
     {
         $doc  = PdfDocument::create();
-        $doc->setTitle('Archive')->enablePdfA(2, 'B');
+        $doc->setTitle('Archive')->enablePdfA(2, PdfAConformance::Basic);
         $font = $doc->addFont(self::FONT, '', subset: true);
         $doc->addPage()->add(Text::write('Archived.')->at(72, 750)->font($font, 12));
 
@@ -30,7 +31,7 @@ final class PdfAValidatorTest extends TestCase
     {
         // Standard-14 Helvetica is not embedded → not PDF/A.
         $doc  = PdfDocument::create();
-        $doc->setTitle('Bad')->enablePdfA(2, 'B');
+        $doc->setTitle('Bad')->enablePdfA(2, PdfAConformance::Basic);
         $font = $doc->addFont('Helvetica');
         $doc->addPage()->add(Text::write('Hi')->at(72, 750)->font($font, 12));
 
@@ -55,7 +56,7 @@ final class PdfAValidatorTest extends TestCase
     {
         // Declare A conformance but provide no structure tree → must fail.
         $doc  = PdfDocument::create();
-        $doc->setTitle('Untagged A')->enablePdfA(2, 'A');
+        $doc->setTitle('Untagged A')->enablePdfA(2, PdfAConformance::Accessible);
         $font = $doc->addFont(self::FONT, '', subset: true);
         $doc->addPage()->add(Text::write('No tags')->at(72, 750)->font($font, 12));
 
@@ -66,7 +67,7 @@ final class PdfAValidatorTest extends TestCase
     public function testTaggedLevelAPasses(): void
     {
         $doc  = PdfDocument::create();
-        $doc->setTitle('Tagged A')->enablePdfA(2, 'A');
+        $doc->setTitle('Tagged A')->enablePdfA(2, PdfAConformance::Accessible);
         $font = $doc->addFont(self::FONT, '', subset: true);
         $page = $doc->addPage();
 

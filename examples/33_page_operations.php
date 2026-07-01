@@ -16,6 +16,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Papier\PdfDocument;
+use Papier\PageRule;
 use Papier\Elements\{Color, Line, Text};
 use Papier\Structure\PdfPage;
 use Papier\Parser\PdfParser;
@@ -50,7 +51,7 @@ $doc->footer(function (PdfPage $p, int $n, int $total) use ($body) {
 });
 $doc->footer(
     fn(PdfPage $p, int $n) => $p->add(Text::write('Confidential')->at(72, 30)->font($body, 9)->color(Color::hex('#b03030'))),
-    'odd',
+    PageRule::Odd,
 );
 
 $report = "$outDir/33_report.pdf";

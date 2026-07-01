@@ -24,11 +24,6 @@ use Papier\Objects\{PdfArray, PdfDictionary, PdfInteger, PdfName, PdfString};
 final class StandardSecurityHandler
 {
     // Algorithms
-    public const RC4_40   = 1;  // V=1, R=2, 40-bit RC4
-    public const RC4_128  = 2;  // V=2, R=3, 128-bit RC4
-    public const AES_128  = 3;  // V=4, R=4, 128-bit AES
-    public const AES_256  = 4;  // V=5, R=6, 256-bit AES (PDF 1.7 ext)
-
     // Permissions (all allowed by default)
     public const PERM_PRINT      = 1 << 2;
     public const PERM_MODIFY     = 1 << 3;
@@ -45,7 +40,7 @@ final class StandardSecurityHandler
     private string $userPassword    = '';
     private string $ownerPassword   = '';
     private int    $permissions     = self::PERM_ALL;
-    private int    $algorithm       = self::AES_128;
+    private EncryptionAlgorithm $algorithm = EncryptionAlgorithm::Aes_128;
 
     // Derived encryption key
     private string $encryptionKey   = '';
@@ -54,7 +49,7 @@ final class StandardSecurityHandler
         string $userPassword   = '',
         string $ownerPassword  = '',
         int    $permissions    = self::PERM_ALL,
-        int    $algorithm      = self::AES_128,
+        EncryptionAlgorithm $algorithm = EncryptionAlgorithm::Aes_128,
     ) {
         $this->userPassword  = $userPassword;
         $this->ownerPassword = $ownerPassword ?: $userPassword;
@@ -70,11 +65,10 @@ final class StandardSecurityHandler
     public function buildEncryptDictionary(string $fileId): PdfDictionary
     {
         return match ($this->algorithm) {
-            self::RC4_40  => $this->buildRC4Dict($fileId, 1, 2, 5),
-            self::RC4_128 => $this->buildRC4Dict($fileId, 2, 3, 16),
-            self::AES_128 => $this->buildAES128Dict($fileId),
-            self::AES_256 => $this->buildAES256Dict($fileId),
-            default       => throw new \InvalidArgumentException('Unknown algorithm.'),
+            EncryptionAlgorithm::Rc4_40  => $this->buildRC4Dict($fileId, 1, 2, 5),
+            EncryptionAlgorithm::Rc4_128 => $this->buildRC4Dict($fileId, 2, 3, 16),
+            EncryptionAlgorithm::Aes_128 => $this->buildAES128Dict($fileId),
+            EncryptionAlgorithm::Aes_256 => $this->buildAES256Dict($fileId),
         };
     }
 
@@ -344,7 +338,7 @@ final class StandardSecurityHandler
             throw new \LogicException('Encryption key not computed. Call buildEncryptDictionary() first.');
         }
 
-        if ($this->algorithm === self::AES_256) {
+        if ($this->algorithm === EncryptionAlgorithm::Aes_256) {
             // AES-256 uses document key directly (no per-object diversification in V=5)
             $iv = random_bytes(16);
             return $iv . openssl_encrypt(
@@ -360,12 +354,12 @@ final class StandardSecurityHandler
         $key = $this->encryptionKey
              . substr(pack('V', $objNum), 0, 3)
              . substr(pack('V', $genNum), 0, 2);
-        if ($this->algorithm === self::AES_128) {
+        if ($this->algorithm === EncryptionAlgorithm::Aes_128) {
             $key .= 'sAlT';
         }
         $objKey = substr(md5($key, true), 0, min(16, strlen($this->encryptionKey) + 5));
 
-        if ($this->algorithm === self::AES_128) {
+        if ($this->algorithm === EncryptionAlgorithm::Aes_128) {
             $iv = random_bytes(16);
             return $iv . openssl_encrypt($data, 'AES-128-CBC', $objKey, OPENSSL_RAW_DATA, $iv);
         }

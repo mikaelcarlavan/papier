@@ -284,7 +284,7 @@ $page->setTransition((new PageTransition())->setStyle('Fly')->setDuration(1.0));
 // Running header/footer on every page (rendered when the total is known):
 $doc->footer(fn($page, $n, $total) =>
     $page->add(Text::write("Page $n of $total")->at(480, 30)->font($font, 9)));
-$doc->header(fn($page, $n, $total) => /* … */, 'odd');   // 'all'|'odd'|'even'|N|callable
+$doc->header(fn($page, $n, $total) => /* … */, PageRule::Odd);   // PageRule::All|Odd|Even|First|Last, an int N, or a callable
 
 // Document-level page operations:
 PdfDocument::merge(['a.pdf', 'b.pdf'], 'out.pdf');        // concatenate
@@ -429,7 +429,9 @@ the original bytes and any prior signatures remain valid.
 ### PDF/A archival conformance
 
 ```php
-$doc->enablePdfA(2, 'B');                        // sRGB OutputIntent + XMP pdfaid
+use Papier\Metadata\PdfAConformance;
+
+$doc->enablePdfA(2, PdfAConformance::Basic);      // sRGB OutputIntent + XMP pdfaid
 $font = $doc->addFont(__DIR__ . '/Lato.ttf');    // fonts MUST be embedded
 ```
 

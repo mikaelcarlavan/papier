@@ -6,6 +6,7 @@ namespace Papier\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Papier\PdfDocument;
+use Papier\Metadata\PdfAConformance;
 use Papier\Content\ContentStream;
 use Papier\Elements\Text;
 use Papier\LogicalStructure\{StructElement, StructTreeRoot};
@@ -114,7 +115,7 @@ final class TaggedPdfTest extends TestCase
     {
         // Tagging is what makes PDF/A-2a (accessible) meaningful.
         $doc  = PdfDocument::create();
-        $doc->setTitle('Tagged PDF/A')->enablePdfA(2, 'A');
+        $doc->setTitle('Tagged PDF/A')->enablePdfA(2, PdfAConformance::Accessible);
         $font = $doc->addFont(__DIR__ . '/../examples/Lato-Regular.ttf', '', subset: true);
         $page = $doc->addPage();
         $cs = new ContentStream();

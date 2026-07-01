@@ -22,13 +22,14 @@ use Papier\PdfDocument;
 use Papier\Content\ContentStream;
 use Papier\Elements\Text;
 use Papier\LogicalStructure\{StructElement, StructTreeRoot};
+use Papier\Metadata\PdfAConformance;
 use Papier\Parser\PdfParser;
 
 $outDir = __DIR__ . '/output';
 @mkdir($outDir, 0777, true);
 
 $doc  = PdfDocument::create();
-$doc->setTitle('Accessible Report')->enablePdfA(2, 'A'); // PDF/A-2a (accessible)
+$doc->setTitle('Accessible Report')->enablePdfA(2, PdfAConformance::Accessible); // PDF/A-2a (accessible)
 $font = $doc->addFont(__DIR__ . '/Lato-Regular.ttf', '', subset: true); // embedded font required
 $page = $doc->addPage();
 

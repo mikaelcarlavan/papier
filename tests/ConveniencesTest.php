@@ -6,6 +6,7 @@ namespace Papier\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Papier\PdfDocument;
+use Papier\PageRule;
 use Papier\Elements\Text;
 use Papier\Parser\PdfParser;
 use Papier\Structure\PdfPage;
@@ -99,8 +100,8 @@ final class ConveniencesTest extends TestCase
         $font = $doc->addFont('Helvetica');
         for ($i = 0; $i < 3; $i++) { $doc->addPage(); }
 
-        $doc->onEachPage(fn(PdfPage $p, int $n) => $p->add(Text::write('ODD')->at(72, 30)->font($font, 9)), 'odd');
-        $doc->onEachPage(fn(PdfPage $p, int $n) => $p->add(Text::write('EVEN')->at(72, 30)->font($font, 9)), 'even');
+        $doc->onEachPage(fn(PdfPage $p, int $n) => $p->add(Text::write('ODD')->at(72, 30)->font($font, 9)), PageRule::Odd);
+        $doc->onEachPage(fn(PdfPage $p, int $n) => $p->add(Text::write('EVEN')->at(72, 30)->font($font, 9)), PageRule::Even);
 
         $parser = new PdfParser($doc->toString());
         $parser->parse();

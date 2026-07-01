@@ -7,14 +7,15 @@ namespace Papier;
 use Papier\AcroForm\AcroForm;
 use Papier\Content\ContentStream;
 use Papier\Destination\XYZDestination;
-use Papier\Encryption\StandardSecurityHandler;
+use Papier\Encryption\{EncryptionAlgorithm, StandardSecurityHandler};
 use Papier\Font\{Font, TrueTypeFont, Type1Font};
 use Papier\LogicalStructure\StructTreeRoot;
-use Papier\Metadata\{DocumentInfo, XmpMetadata};
+use Papier\Metadata\{DocumentInfo, PdfAConformance, XmpMetadata};
 use Papier\Objects\{PdfArray, PdfDictionary, PdfInteger, PdfName, PdfString};
 use Papier\OptionalContent\OCProperties;
 use Papier\Parser\{ImportedPage, PdfParser};
 use Papier\Structure\{PageLabelStyle, PdfOutline, PdfPage};
+use Papier\Viewer\ViewerPreferences;
 use Papier\Writer\PdfWriter;
 
 /**
@@ -539,29 +540,20 @@ final class PdfDocument
     }
 
     /**
-     * Set viewer preference flags (`/ViewerPreferences`) (§12.2 Table 150).
+     * Set the document viewer preferences (`/ViewerPreferences`) (§12.2 Table 150).
      *
-     * @param array<string, bool|string|int> $prefs  Key-value pairs, e.g.:
-     *   `'HideToolbar'           => true`,
-     *   `'HideMenubar'           => true`,
-     *   `'FitWindow'             => true`,
-     *   `'PrintScaling'          => 'None'`,
-     *   `'Duplex'                => 'DuplexFlipLongEdge'`,
-     *   `'NonFullScreenPageMode' => 'UseNone'`.
+     * Build the argument fluently with {@see ViewerPreferences}:
+     *
+     *   $doc->setViewerPreferences(
+     *       ViewerPreferences::create()
+     *           ->hideToolbar()
+     *           ->displayDocTitle()
+     *           ->printScaling(PrintScaling::None)
+     *   );
      */
-    public function setViewerPreferences(array $prefs): static
+    public function setViewerPreferences(ViewerPreferences $prefs): static
     {
-        $dict = new PdfDictionary();
-        foreach ($prefs as $key => $value) {
-            if (is_bool($value)) {
-                $dict->set($key, $value ? new \Papier\Objects\PdfBoolean(true) : new \Papier\Objects\PdfBoolean(false));
-            } elseif (is_string($value)) {
-                $dict->set($key, new PdfName($value));
-            } elseif (is_int($value)) {
-                $dict->set($key, new \Papier\Objects\PdfInteger($value));
-            }
-        }
-        $this->writer->setViewerPreferences($dict);
+        $this->writer->setViewerPreferences($prefs->toDictionary());
         return $this;
     }
 
@@ -690,15 +682,14 @@ final class PdfDocument
      * @param string $ownerPassword  Password to bypass restrictions (defaults
      *                               to $userPassword when empty).
      * @param int    $permissions    Permission flags (OR the PERM_* constants).
-     * @param int    $algorithm      Encryption algorithm constant:
-     *                               `StandardSecurityHandler::RC4_40`,
-     *                               `::RC4_128`, `::AES_128` (default), `::AES_256`.
+     * @param EncryptionAlgorithm $algorithm  Encryption algorithm
+     *                               (default {@see EncryptionAlgorithm::Aes_128}).
      */
     public function encrypt(
         string $userPassword   = '',
         string $ownerPassword  = '',
         int    $permissions    = StandardSecurityHandler::PERM_ALL,
-        int    $algorithm      = StandardSecurityHandler::AES_128,
+        EncryptionAlgorithm $algorithm = EncryptionAlgorithm::Aes_128,
     ): static {
         $handler = new StandardSecurityHandler($userPassword, $ownerPassword, $permissions, $algorithm);
         $this->writer->setEncryption($handler);
@@ -714,13 +705,13 @@ final class PdfDocument
      * the standard 14 fonts) and avoiding disallowed features (encryption,
      * JavaScript, external references).
      *
-     * @param int    $part         PDF/A part: 1, 2 (default), or 3.
-     * @param string $conformance  Conformance level: 'B' (visual) or 'A' (accessible).
+     * @param int             $part         PDF/A part: 1, 2 (default), or 3.
+     * @param PdfAConformance $conformance  Conformance level (default {@see PdfAConformance::Basic}).
      */
-    public function enablePdfA(int $part = 2, string $conformance = 'B'): static
+    public function enablePdfA(int $part = 2, PdfAConformance $conformance = PdfAConformance::Basic): static
     {
-        $this->xmp->setPdfAConformance($part, $conformance);
-        $this->writer->enablePdfA($part, $conformance);
+        $this->xmp->setPdfAConformance($part, $conformance->value);
+        $this->writer->enablePdfA($part, $conformance->value);
         return $this;
     }
 
@@ -738,7 +729,7 @@ final class PdfDocument
 
     // ── Running (repeating) elements ────────────────────────────────────────────
 
-    /** @var array<int, array{render:\Closure, when:string|int|\Closure}> */
+    /** @var array<int, array{render:\Closure, when:PageRule|int|\Closure}> */
     private array $runningElements = [];
     /** @var array<int, int> spl_object_id(page) → content-stream count before overlays */
     private array $pageBaseCounts = [];
@@ -754,23 +745,24 @@ final class PdfDocument
      *   });
      *
      * @param \Closure $render  fn(PdfPage $page, int $pageNumber, int $pageCount): void
-     * @param string|int|\Closure $when  'all'|'odd'|'even'|'first'|'last', an int N
-     *        (every Nth page), or fn(int $pageNumber, int $pageCount): bool.
+     * @param PageRule|int|\Closure $when  a {@see PageRule} case (default
+     *        {@see PageRule::All}), an int N (every Nth page), or a predicate
+     *        fn(int $pageNumber, int $pageCount): bool.
      */
-    public function onEachPage(\Closure $render, string|int|\Closure $when = 'all'): static
+    public function onEachPage(\Closure $render, PageRule|int|\Closure $when = PageRule::All): static
     {
         $this->runningElements[] = ['render' => $render, 'when' => $when];
         return $this;
     }
 
     /** Convenience: a running header (identical to {@see onEachPage()}). */
-    public function header(\Closure $render, string|int|\Closure $when = 'all'): static
+    public function header(\Closure $render, PageRule|int|\Closure $when = PageRule::All): static
     {
         return $this->onEachPage($render, $when);
     }
 
     /** Convenience: a running footer (identical to {@see onEachPage()}). */
-    public function footer(\Closure $render, string|int|\Closure $when = 'all'): static
+    public function footer(\Closure $render, PageRule|int|\Closure $when = PageRule::All): static
     {
         return $this->onEachPage($render, $when);
     }
@@ -798,7 +790,7 @@ final class PdfDocument
         }
     }
 
-    private function pageMatches(string|int|\Closure $when, int $num, int $total): bool
+    private function pageMatches(PageRule|int|\Closure $when, int $num, int $total): bool
     {
         if ($when instanceof \Closure) {
             return (bool) $when($num, $total);
@@ -807,11 +799,11 @@ final class PdfDocument
             return $when > 0 && $num % $when === 0;
         }
         return match ($when) {
-            'odd'   => $num % 2 === 1,
-            'even'  => $num % 2 === 0,
-            'first' => $num === 1,
-            'last'  => $num === $total,
-            default => true, // 'all'
+            PageRule::Odd   => $num % 2 === 1,
+            PageRule::Even  => $num % 2 === 0,
+            PageRule::First => $num === 1,
+            PageRule::Last  => $num === $total,
+            PageRule::All   => true,
         };
     }
 

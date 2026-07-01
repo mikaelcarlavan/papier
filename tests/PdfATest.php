@@ -6,6 +6,7 @@ namespace Papier\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Papier\PdfDocument;
+use Papier\Metadata\PdfAConformance;
 use Papier\Elements\Text;
 use Papier\Color\IccProfile;
 use Papier\Parser\PdfParser;
@@ -18,7 +19,7 @@ final class PdfATest extends TestCase
     {
         $doc  = PdfDocument::create();
         $doc->setTitle('Archival Document')->setAuthor('Papier');
-        $doc->enablePdfA(2, 'B');
+        $doc->enablePdfA(2, PdfAConformance::Basic);
         $font = $doc->addFont(self::FONT, '', subset: true); // embedded font (required)
         $page = $doc->addPage();
         $page->add(Text::write('Archived for the long term.')->at(72, 750)->font($font, 14));
@@ -60,7 +61,7 @@ final class PdfATest extends TestCase
     public function testEncryptedPdfACannotBeProduced(): void
     {
         $doc  = PdfDocument::create();
-        $doc->enablePdfA(2, 'B');
+        $doc->enablePdfA(2, PdfAConformance::Basic);
         $doc->encrypt('pw');
         $doc->addPage();
 

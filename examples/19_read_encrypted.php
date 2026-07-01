@@ -17,7 +17,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use Papier\PdfDocument;
 use Papier\Elements\Text;
-use Papier\Encryption\StandardSecurityHandler;
+use Papier\Encryption\{EncryptionAlgorithm, StandardSecurityHandler};
 use Papier\AcroForm\{AcroForm, TextField};
 use Papier\Structure\{PdfOutline, PdfOutlineItem};
 use Papier\Objects\PdfString;
@@ -54,7 +54,7 @@ $doc->setAcroForm($form);
 $doc->attachFile('notes.txt', "internal review notes\nline 2", 'text/plain');
 
 // Encrypt with AES-256.
-$doc->encrypt('open-sesame', 'owner-key', StandardSecurityHandler::PERM_ALL, StandardSecurityHandler::AES_256);
+$doc->encrypt('open-sesame', 'owner-key', StandardSecurityHandler::PERM_ALL, EncryptionAlgorithm::Aes_256);
 
 $encFile = "$outDir/19_encrypted.pdf";
 $doc->save($encFile);

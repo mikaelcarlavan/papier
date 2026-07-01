@@ -14,6 +14,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Papier\PdfDocument;
+use Papier\Metadata\PdfAConformance;
 use Papier\Elements\{Color, Text};
 use Papier\Parser\PdfParser;
 
@@ -24,7 +25,7 @@ $doc = PdfDocument::create();
 $doc->setTitle('Annual Report 2025')->setAuthor('Papier')->setSubject('Archival copy');
 
 // PDF/A-2b conformance.
-$doc->enablePdfA(2, 'B');
+$doc->enablePdfA(2, PdfAConformance::Basic);
 
 // Fonts MUST be embedded for PDF/A — use a font file, not a standard-14 name.
 $font = $doc->addFont(__DIR__ . '/Lato-Regular.ttf', '', subset: true);

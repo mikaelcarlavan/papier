@@ -6,7 +6,7 @@ namespace Papier\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Papier\PdfDocument;
-use Papier\Encryption\StandardSecurityHandler;
+use Papier\Encryption\{EncryptionAlgorithm, StandardSecurityHandler};
 use Papier\AcroForm\{AcroForm, TextField};
 use Papier\Structure\{PdfOutline, PdfOutlineItem};
 use Papier\Elements\Text;
@@ -82,7 +82,7 @@ final class ReadParityTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProvider('algorithms')]
-    public function testDecryptionRoundTrip(int $algorithm): void
+    public function testDecryptionRoundTrip(EncryptionAlgorithm $algorithm): void
     {
         $pdf = $this->buildDoc()
             ->encrypt('secret', 'owner', StandardSecurityHandler::PERM_ALL, $algorithm)
@@ -105,7 +105,7 @@ final class ReadParityTest extends TestCase
     public function testWrongPasswordThrows(): void
     {
         $pdf = $this->buildDoc()
-            ->encrypt('secret', 'owner', StandardSecurityHandler::PERM_ALL, StandardSecurityHandler::AES_128)
+            ->encrypt('secret', 'owner', StandardSecurityHandler::PERM_ALL, EncryptionAlgorithm::Aes_128)
             ->toString();
 
         $this->expectException(\RuntimeException::class);
@@ -115,10 +115,10 @@ final class ReadParityTest extends TestCase
     public static function algorithms(): array
     {
         return [
-            'RC4-40'  => [StandardSecurityHandler::RC4_40],
-            'RC4-128' => [StandardSecurityHandler::RC4_128],
-            'AES-128' => [StandardSecurityHandler::AES_128],
-            'AES-256' => [StandardSecurityHandler::AES_256],
+            'RC4-40'  => [EncryptionAlgorithm::Rc4_40],
+            'RC4-128' => [EncryptionAlgorithm::Rc4_128],
+            'AES-128' => [EncryptionAlgorithm::Aes_128],
+            'AES-256' => [EncryptionAlgorithm::Aes_256],
         ];
     }
 }
