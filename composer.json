@@ -37,5 +37,23 @@
     "prefer-stable": true,
     "config": {
         "sort-packages": true
+    },
+    "scripts": {
+        "test": "phpunit --colors=always",
+        "analyse": "phpstan analyse --no-progress --memory-limit=1G",
+        "docs": "php tools/build-docs.php",
+        "docs:check": "php tools/check-docs.php",
+        "ci": [
+            "@test",
+            "@analyse",
+            "@docs:check"
+        ]
+    },
+    "scripts-descriptions": {
+        "test": "Run the PHPUnit test suite",
+        "analyse": "Run PHPStan static analysis",
+        "docs": "Regenerate the documentation site from docs/_content/",
+        "docs:check": "Validate documentation snippets, links and anchors",
+        "ci": "Run everything CI runs"
     }
 }
