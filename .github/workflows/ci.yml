@@ -58,11 +58,11 @@ jobs:
           coverage: none
 
       # composer.json declares php >=8.1, but the dev toolchain cannot be
-      # installed there. Production dependencies only, then check that the
-      # source parses and that a document round-trips — so the lowest
-      # supported version is backed by something that runs.
-      - name: Install production dependencies
-        run: composer install --no-interaction --no-progress --prefer-dist --no-dev
+      # installed there. --no-dev is not enough: without a lock file Composer
+      # still resolves require-dev and fails. Papier has no production
+      # dependencies, so generating the autoloader is the whole install.
+      - name: Generate the autoloader
+        run: composer dump-autoload --no-interaction
 
       - name: Lint every source file
         run: find src tools -name '*.php' -print0 | xargs -0 -n1 -P4 php -l > /dev/null
