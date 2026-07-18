@@ -1,0 +1,57 @@
+name: Documentation
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'docs/**'
+      - 'tools/build-docs.php'
+      - 'tools/check-docs.php'
+      - 'README.md'
+      - '.github/workflows/docs.yml'
+  pull_request:
+    paths:
+      - 'docs/**'
+      - 'tools/build-docs.php'
+      - 'tools/check-docs.php'
+      - 'README.md'
+      - '.github/workflows/docs.yml'
+
+jobs:
+  docs:
+    name: Check documentation
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: mbstring, tokenizer
+          coverage: none
+
+      - name: Validate snippets, links and anchors
+        run: php tools/check-docs.php
+
+      # docs/*.html is generated from docs/_content/ and committed, because
+      # GitHub Pages serves it directly. If someone edits a fragment without
+      # regenerating, the published site silently drifts from its source.
+      - name: Regenerate the site
+        run: php tools/build-docs.php
+
+      - name: Fail if the generated site is out of date
+        run: |
+          if ! git diff --quiet -- docs/; then
+            echo "::error::docs/ is out of date with docs/_content/."
+            echo ""
+            echo "Run 'php tools/build-docs.php' and commit the result."
+            echo ""
+            echo "Files that differ:"
+            git diff --name-only -- docs/
+            echo ""
+            git diff -- docs/
+            exit 1
+          fi
+          echo "Generated site matches its source."
