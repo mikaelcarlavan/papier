@@ -3,5 +3,6 @@
 composer.lock
 *.pdf
 .idea
+.claude
 /public
 /doc
