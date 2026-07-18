@@ -1,7 +1,10 @@
 # Papier
 <p>
+    <a href="https://github.com/mikaelcarlavan/papier/actions/workflows/ci.yml"><img src="https://github.com/mikaelcarlavan/papier/actions/workflows/ci.yml/badge.svg?branch=master" alt="CI"></a>
+    <a href="https://github.com/mikaelcarlavan/papier/actions/workflows/docs.yml"><img src="https://github.com/mikaelcarlavan/papier/actions/workflows/docs.yml/badge.svg?branch=master" alt="Documentation"></a>
     <a href="https://packagist.org/packages/papier/papier"><img src="https://img.shields.io/packagist/v/papier/papier" alt="Latest Stable Version"></a>
     <a href="https://packagist.org/packages/papier/papier"><img src="https://img.shields.io/packagist/dt/papier/papier" alt="Total Downloads"></a>
+    <a href="https://img.shields.io/packagist/php-v/papier/papier"><img src="https://img.shields.io/packagist/php-v/papier/papier" alt="PHP Version"></a>
     <a href="https://packagist.org/packages/papier/papier"><img src="https://img.shields.io/packagist/l/papier/papier" alt="License"></a>
 </p>
 
