@@ -59,6 +59,19 @@ Papier was built with the assistance of [Claude](https://claude.ai) (Anthropic's
 - Read pages, fonts, images, metadata (Info + XMP), annotations, outlines, form-field values, attachments, structure tree
 - Parses object streams, hybrid-reference and linearized files; robust against malformed input
 
+## Documentation
+
+Full guides live in [`docs/`](docs/) as a static site — installation, a quick
+start, and a chapter for each subsystem. Preview it locally with:
+
+```bash
+php -S 127.0.0.1:8000 -t docs
+```
+
+The pages are generated from the fragments in `docs/_content/` by
+`php tools/build-docs.php`. See [`docs/README.md`](docs/README.md) for the
+editing workflow.
+
 ## Requirements
 
 - PHP 8.1+
@@ -132,8 +145,10 @@ $page->add(
 Or from raw bytes if you already have them in memory:
 
 ```php
-Image::fromJpeg(file_get_contents('photo.jpg'))->at(72, 400)->size(200, 150)->opacity(0.8),
-Image::fromPng(file_get_contents('logo.png'))->at(300, 400)->fitHeight(60),
+$page->add(
+    Image::fromJpeg(file_get_contents('photo.jpg'))->at(72, 400)->size(200, 150)->opacity(0.8),
+    Image::fromPng(file_get_contents('logo.png'))->at(300, 400)->fitHeight(60),
+);
 ```
 
 PNG alpha channels are handled automatically via an SMask XObject.
@@ -157,23 +172,30 @@ For lower-level control use `ContentStream` directly (PDF operators: `re`, `m`, 
 ### Tables
 
 ```php
-use Papier\Elements\Table;
+use Papier\Elements\{Color, Table};
 
-$table = Table::create(430, [100, 150, 180])
-    ->at(72, 700)
-    ->header(['Name', 'Role', 'Email'], $bold)
-    ->row(['Alice', 'Engineer', 'alice@example.com'])
-    ->row(['Bob',   'Designer', 'bob@example.com']);
+$table = Table::create(72, 700)                  // top-left anchor
+    ->setColumnWidths(100, 150, 180)
+    ->setFont($font, 10, 'Helvetica')            // 3rd arg = metrics for wrapping
+    ->setHeaderFont($bold, 10, 'Helvetica-Bold')
+    ->setHeaderRows(1)
+    ->setHeaderBg(Color::rgb(0.12, 0.22, 0.42))
+    ->setHeaderTextColor(Color::white());
+
+$table->addRow(['Name', 'Role', 'Email']);
+$table->addRow(['Alice', 'Engineer', 'alice@example.com']);
+$table->addRow(['Bob',   'Designer', 'bob@example.com']);
 
 $page->add($table);
 ```
 
-Features: column widths, header/footer rows, row/cell colours, padding, border control per side, `rowspan`, vertical alignment, opacity.
+Pass a `TableCell` instead of a string to override the table defaults for one cell.
+Features: column widths, header/footer rows, row/cell colours, padding, border control per side, `colspan`/`rowspan`, vertical alignment, opacity.
 
 ### Interactive forms (AcroForm)
 
 ```php
-use Papier\AcroForm\{AcroForm, TextField, CheckboxField, ComboBoxField};
+use Papier\AcroForm\{AcroForm, TextField, CheckBoxField, ComboBoxField};
 
 $form = new AcroForm();
 
@@ -186,7 +208,7 @@ $form->addField($name);
 $doc->setAcroForm($form);
 ```
 
-Supported field types: `TextField`, `CheckboxField`, `RadioButtonField`, `ComboBoxField`, `ListBoxField`, `SignatureField`.
+Supported field types: `TextField`, `CheckBoxField`, `RadioButtonField`, `ComboBoxField`, `ListBoxField`, `PushButtonField`, `SignatureField`.
 
 ### Annotations
 
@@ -203,18 +225,35 @@ $stamp->setIcon('Draft')->setColor(Color::rgb(1, 0, 0));
 $page->addAnnotation($stamp);
 ```
 
-14 annotation subtypes: `TextAnnotation`, `LinkAnnotation`, `FreeTextAnnotation`, `HighlightAnnotation`, `UnderlineAnnotation`, `StrikeOutAnnotation`, `SquigglyAnnotation`, `LineAnnotation`, `SquareAnnotation`, `CircleAnnotation`, `PolygonAnnotation`, `StampAnnotation`, `InkAnnotation`, `RedactAnnotation`.
+14 page-markup subtypes: `TextAnnotation`, `LinkAnnotation`, `FreeTextAnnotation`, `HighlightAnnotation`, `UnderlineAnnotation`, `StrikeOutAnnotation`, `SquigglyAnnotation`, `LineAnnotation`, `SquareAnnotation`, `CircleAnnotation`, `PolygonAnnotation`, `StampAnnotation`, `InkAnnotation`, `RedactAnnotation`.
+
+`src/Annotation/` also holds the subtypes driven by other subsystems — `WidgetAnnotation` (form fields), `ScreenAnnotation`, `SoundAnnotation` and `MovieAnnotation` (multimedia), `PopupAnnotation`, `FileAttachmentAnnotation`, `CaretAnnotation`, `PolyLineAnnotation`, `WatermarkAnnotation`, `PrinterMarkAnnotation`, `TrapNetAnnotation` and `ThreeDAnnotation`.
+
+Rectangles are constructor arguments; `setRect()` is not part of the public API.
 
 ### Bookmarks (outlines)
 
 ```php
-use Papier\Structure\PdfOutline;
+use Papier\Structure\{PdfOutline, PdfOutlineItem};
+use Papier\Destination\XYZDestination;
 
 $outline = new PdfOutline();
-$ch1 = $outline->addItem('Chapter 1', $page1);
-$ch1->addChild('Section 1.1', $page2);
+
+$ch1 = new PdfOutlineItem('Chapter 1');
+$ch1->setBold(true)
+    ->setDestination(XYZDestination::create($page1->getDictionary(), 0, 841));
+
+$sec = new PdfOutlineItem('Section 1.1');
+$sec->setDestination(XYZDestination::create($page2->getDictionary(), 0, 841));
+
+$ch1->addChild($sec);
+$outline->addItem($ch1);
+
 $doc->setOutline($outline);
 ```
+
+Items also take `setColor()`, `setItalic()`, and `setAction()` for a non-destination
+target such as a URI.
 
 ### Document-level features
 
@@ -232,11 +271,8 @@ $doc->addPageLabel(4, PageLabelStyle::Decimal, prefix: 'p.');   // p.1, p.2, …
 // File attachments
 $doc->attachFile('data.json', file_get_contents('data.json'), 'application/json');
 
-// Password protection and permissions
-use Papier\Encryption\PdfEncryption;
-$enc = new PdfEncryption();
-$enc->setUserPassword('user')->setOwnerPassword('owner');
-$doc->setEncryption($enc);
+// Password protection and permissions (see "Encrypt a document" below)
+$doc->encrypt(userPassword: 'user', ownerPassword: 'owner');
 ```
 
 ### Optional content (layers)
@@ -258,25 +294,39 @@ Wrap content in `ContentStream::beginMarkedContentProps('OC', …) / endMarkedCo
 ### Multimedia
 
 ```php
-use Papier\Multimedia\{MediaRendition, MediaPlayParams};
+use Papier\Multimedia\{MediaClip, MediaPlayParams, MediaRendition};
 use Papier\Annotation\ScreenAnnotation;
 
 $params = (new MediaPlayParams())->setVolume(80)->setAutoPlay(true)->setShowControls(true);
-$rendition = new MediaRendition('video/mp4', 'demo.mp4');
+
+$clip      = MediaClip::fromFile('demo.mp4', 'video/mp4', 'Demo');
+$rendition = new MediaRendition($clip, 'Demo');
 $rendition->setPlayParams($params);
 
 $screen = new ScreenAnnotation(72, 400, 372, 600);
-$screen->setRendition($rendition);
+$screen->setRendition($rendition->getDictionary());
 $page->addAnnotation($screen);
 ```
+
+`MediaClip::fromEmbedded()` embeds the media in the PDF instead of referencing an
+external file.
 
 ### Page transitions
 
 ```php
 use Papier\Structure\PageTransition;
 
-$page->setTransition((new PageTransition())->setStyle('Fly')->setDuration(1.0));
+$page->setTransition(new PageTransition(PageTransition::DISSOLVE, 1.0));
+
+// Style and duration are constructor arguments; direction, dimension and motion
+// are set afterwards:
+$page2->setTransition(
+    (new PageTransition(PageTransition::WIPE, 0.6))->setDirection(0)   // left → right
+);
 ```
+
+Styles: `REPLACE`, `SPLIT`, `BLINDS`, `BOX`, `WIPE`, `DISSOLVE`, `GLITTER`, `FLY`,
+`PUSH`, `COVER`, `UNCOVER`, `FADE`.
 
 ### Page operations & repeating elements
 
@@ -286,7 +336,9 @@ use Papier\PageRule;
 // Running header/footer on every page (rendered when the total is known):
 $doc->footer(fn($page, $n, $total) =>
     $page->add(Text::write("Page $n of $total")->at(480, 30)->font($font, 9)));
-$doc->header(fn($page, $n, $total) => /* … */, PageRule::Odd);   // PageRule::All|Odd|Even|First|Last, an int N, or a callable
+// PageRule::All|Odd|Even|First|Last, an int N (every Nth page), or a callable:
+$doc->header(fn($page, $n, $total) =>
+    $page->add(Text::write('Draft')->at(72, 810)->font($font, 9)), PageRule::Odd);
 
 // Document-level page operations:
 PdfDocument::merge(['a.pdf', 'b.pdf'], 'out.pdf');        // concatenate
@@ -313,9 +365,13 @@ Plus `php tools/verify.php` renders every example with Ghostscript and runs
 use Papier\AcroForm\FormFiller;
 
 $filler = new FormFiller(file_get_contents('form.pdf'));
+
+$filler->getFieldNames();                   // discover what the form contains
 $filler->setText('person.name', 'Alice')
        ->setCheckbox('subscribe', true);
-file_put_contents('filled.pdf', $filler->save());   // appearance regenerated, incremental
+
+$filler->saveAs('filled.pdf');              // appearance regenerated, incremental
+$bytes = $filler->save();                   // or get the bytes back
 ```
 
 ### Visible signatures + timestamps (PAdES)
@@ -527,7 +583,7 @@ echo $parser->getXmpMetadata();                // raw XMP packet
 
 ## Examples
 
-The `examples/` directory contains runnable scripts:
+The `examples/` directory contains 34 runnable scripts (two share the `16_` prefix):
 
 | File | Demonstrates |
 |------|-------------|
@@ -547,6 +603,7 @@ The `examples/` directory contains runnable scripts:
 | `14_table.php` | Tables with rowspan, footer, per-cell borders |
 | `15_ttf_fonts.php` | Embedding TTF/OTF font files |
 | `16_import_pages.php` | Importing pages from existing PDFs |
+| `16_table_utf8_alignment.php` | Table column alignment with multi-byte (UTF-8) cell text |
 | `17_compressed_objects.php` | Object streams + cross-reference stream (smaller files) |
 | `18_incremental_update.php` | Editing a PDF via an appended revision |
 | `19_read_encrypted.php` | Decrypting + reading outlines, forms, attachments, XMP |
@@ -580,7 +637,7 @@ src/
 ├── PdfDocument.php           Entry point — document, pages, fonts, metadata
 ├── Elements/                 High-level fluent API (Text, TextBox, Image, Table, …)
 ├── Content/ContentStream.php Low-level PDF operators
-├── Annotation/               13 annotation types
+├── Annotation/               Annotation types (markup, widget, screen, …)
 ├── AcroForm/                 Interactive form fields
 ├── Font/                     Type1, TrueType, Type0/CID, font descriptors
 ├── Structure/                Pages, outlines, resources, transitions
