@@ -1,0 +1,331 @@
+<!-- title: Documents & pages -->
+<!-- description: Create PDF documents, set metadata, add and size pages, run headers and footers, and reorganise pages with merge, extract and N-up. -->
+<h1>Documents &amp; pages</h1>
+<p class="lead">Every Papier document starts with a <code>PdfDocument</code> and ends with a call to <code>save()</code>. In between you add pages, draw on them, and attach document-level features such as metadata, page labels, named destinations and attachments.</p>
+
+<h2 id="creating-a-document">Creating a document</h2>
+<p><code>PdfDocument::create()</code> builds an empty document with a catalog, an empty page tree and an Info dictionary. The optional argument is the PDF header version written to the file; the default of <code>1.7</code> matches ISO 32000-1 and is what you want unless you deliberately need to advertise an older or newer version.</p>
+
+<pre><code class="language-php">use Papier\PdfDocument;
+
+$doc = PdfDocument::create();          // header version 1.7
+$doc2 = PdfDocument::create('1.4');    // advertise PDF 1.4</code></pre>
+
+<p>The version in the header is only a declaration. Papier still writes whatever structures you ask for, so if you enable object streams (a PDF 1.5 feature) while declaring 1.4, strict validators will complain. Leave the default alone in normal use.</p>
+
+<h2 id="document-metadata">Document metadata</h2>
+<p>The Info dictionary carries the human-readable description of the file that viewers show in their "Document properties" panel. Papier exposes it through five chainable setters. Each returns the document, so they compose into a single statement.</p>
+
+<pre><code class="language-php">$doc-&gt;setTitle('Quarterly Report')
+    -&gt;setAuthor('Jane Doe')
+    -&gt;setSubject('Q3 revenue by product line')
+    -&gt;setKeywords('revenue, quarterly, 2026')
+    -&gt;setCreator('Acme Reporting Pipeline');</code></pre>
+
+<p>Setting a title is worth doing even for throwaway files: combined with the <code>displayDocTitle()</code> viewer preference described below, it is what appears in the reader's window title bar instead of the filename. If you need the raw dictionary — for instance to inspect what will be written — <code>$doc-&gt;getInfo()</code> returns the <code>DocumentInfo</code> object.</p>
+
+<div class="note">
+<p>Papier also emits an XMP metadata packet alongside the Info dictionary. Archival profiles such as PDF/A require the two to agree, which Papier handles for you when you call <code>enablePdfA()</code>. See <a href="file-structure.html">File structure</a>.</p>
+</div>
+
+<h2 id="adding-pages">Adding pages</h2>
+<p><code>addPage()</code> appends a blank page and returns the <code>PdfPage</code> object so you can immediately draw on it. The two arguments are width and height in points, where one point is 1/72 inch. The default is ISO A4.</p>
+
+<pre><code class="language-php">$page = $doc-&gt;addPage();                  // A4: 595.28 × 841.89 pt
+$wide = $doc-&gt;addPage(1000, 500);         // custom size</code></pre>
+
+<p>Pages are appended in call order, which is also the order they appear in the finished file. The coordinate origin is the bottom-left corner and the y axis grows upward — the opposite of most screen-drawing APIs. A y of 750 on an A4 page is near the top.</p>
+
+<h3 id="standard-page-sizes">Standard page sizes</h3>
+<p><code>PdfPage</code> exposes the common paper sizes as two-element constants, which you spread into <code>addPage()</code> with the argument-unpacking operator.</p>
+
+<pre><code class="language-php">use Papier\Structure\PdfPage;
+
+$a4      = $doc-&gt;addPage(...PdfPage::SIZE_A4);
+$letter  = $doc-&gt;addPage(...PdfPage::SIZE_LETTER);
+$tabloid = $doc-&gt;addPage(...PdfPage::SIZE_TABLOID);</code></pre>
+
+<table>
+<thead><tr><th>Constant</th><th>Points (w × h)</th></tr></thead>
+<tbody>
+<tr><td><code>SIZE_A0</code></td><td>2383.94 × 3370.39</td></tr>
+<tr><td><code>SIZE_A1</code></td><td>1683.78 × 2383.94</td></tr>
+<tr><td><code>SIZE_A2</code></td><td>1190.55 × 1683.78</td></tr>
+<tr><td><code>SIZE_A3</code></td><td>841.89 × 1190.55</td></tr>
+<tr><td><code>SIZE_A4</code></td><td>595.28 × 841.89</td></tr>
+<tr><td><code>SIZE_A5</code></td><td>419.53 × 595.28</td></tr>
+<tr><td><code>SIZE_A6</code></td><td>297.64 × 419.53</td></tr>
+<tr><td><code>SIZE_LETTER</code></td><td>612 × 792</td></tr>
+<tr><td><code>SIZE_LEGAL</code></td><td>612 × 1008</td></tr>
+<tr><td><code>SIZE_TABLOID</code></td><td>792 × 1224</td></tr>
+<tr><td><code>SIZE_EXECUTIVE</code></td><td>522 × 756</td></tr>
+</tbody>
+</table>
+
+<h3 id="orientation-and-rotation">Orientation and rotation</h3>
+<p>There are two distinct ways to get a landscape page, and they are not interchangeable.</p>
+<p><code>setLandscape()</code> swaps the width and height of the page box. The page genuinely becomes wider than it is tall, and your drawing coordinates follow: x now runs to 841.89 on an A4 sheet.</p>
+
+<pre><code class="language-php">$page = $doc-&gt;addPage()-&gt;setLandscape();   // 841.89 × 595.28</code></pre>
+
+<p><code>setRotation()</code> leaves the page box alone and sets the <code>/Rotate</code> entry, which instructs the viewer to rotate the rendered page clockwise when displaying or printing it. Your content is authored in the unrotated coordinate system. The value must be a multiple of 90.</p>
+
+<pre><code class="language-php">$page = $doc-&gt;addPage();
+$page-&gt;setRotation(90)
+     -&gt;add(Text::write('Rendered sideways')-&gt;at(72, 300)-&gt;font($body, 14));</code></pre>
+
+<p>Use <code>setLandscape()</code> when you are laying out a landscape document from scratch, and <code>setRotation()</code> when you need to reorient existing content — for example a portrait page imported from another file that should print sideways.</p>
+
+<h3 id="page-boundary-boxes">Page boundary boxes</h3>
+<p>Beyond the media box set by the page dimensions, a page can declare four further boxes used by prepress and viewing tools. All four take the two opposite corners of a rectangle.</p>
+
+<pre><code class="language-php">$page-&gt;setCropBox(0, 0, 595.28, 841.89)   // visible region
+     -&gt;setBleedBox(9, 9, 586, 833)        // production clipping
+     -&gt;setTrimBox(18, 18, 577, 824)       // finished page after trimming
+     -&gt;setArtBox(36, 36, 559, 806);       // meaningful content extent</code></pre>
+
+<p>If you are producing files for a commercial printer, the trim box is the one they will ask about — it defines where the guillotine cuts, and the bleed box tells them how far artwork must extend past that cut.</p>
+
+<h2 id="drawing-on-a-page">Drawing on a page</h2>
+<p><code>PdfPage::add()</code> accepts any number of elements and renders them into the page's content stream. Elements are the high-level fluent API: <code>Text</code>, <code>TextBox</code>, <code>Image</code>, <code>Rectangle</code>, <code>Circle</code>, <code>Line</code> and <code>Table</code>.</p>
+
+<pre><code class="language-php">use Papier\Elements\{Color, Rectangle, Text};
+
+$font = $doc-&gt;addFont('Helvetica-Bold');
+
+$page-&gt;add(
+    Rectangle::create(0, 800, 595, 42)-&gt;fill(Color::rgb(0.12, 0.22, 0.42)),
+    Text::write('Annual Report')-&gt;at(36, 815)-&gt;font($font, 16)-&gt;color(Color::white()),
+);</code></pre>
+
+<p>Elements are drawn in the order you pass them, so later elements paint over earlier ones. See <a href="text.html">Text &amp; fonts</a>, <a href="graphics.html">Graphics</a>, <a href="images.html">Images</a> and <a href="tables.html">Tables</a> for the full element catalogue.</p>
+
+<h3 id="multiple-content-streams">Multiple content streams</h3>
+<p>A PDF page may hold an array of content streams rather than a single one; viewers concatenate them before interpreting. Papier exposes this through <code>addContent()</code>, which appends a <code>ContentStream</code> you have built yourself with raw PDF operators.</p>
+
+<pre><code class="language-php">use Papier\Content\ContentStream;
+
+$cs = new ContentStream();
+$cs-&gt;save()
+   -&gt;setFillRGB(0.9, 0.3, 0.2)
+   -&gt;drawCircle(300, 400, 60)
+   -&gt;fill()
+   -&gt;restore();
+
+$page-&gt;addContent($cs);</code></pre>
+
+<p>Mixing <code>add()</code> and <code>addContent()</code> on the same page is normal and is exactly what the bundled examples do — elements for text and boxes, a hand-written stream for the shadings and patterns that have no element equivalent. The two interleave in call order.</p>
+
+<p>Splitting content across streams is also a practical way to keep each stream small, since every stream is compressed independently. <code>getContentStreams()</code> returns the current array and <code>getContentStreamCount()</code> its length; <code>truncateContentStreams($n)</code> discards everything after the first <code>$n</code> streams, which is how the running-element machinery rolls back a speculative render.</p>
+
+<h2 id="headers-and-footers">Running headers and footers</h2>
+<p>A running header or footer has an awkward dependency: the text "Page 3 of 12" cannot be written until every page exists. Papier resolves this by deferring the render. You register a closure, and Papier calls it once per matching page immediately before writing the file, when the total page count is finally known.</p>
+
+<pre><code class="language-php">use Papier\Structure\PdfPage;
+use Papier\Elements\{Color, Line, Text};
+
+$doc-&gt;header(function (PdfPage $p, int $n, int $total) use ($body) {
+    $p-&gt;add(
+        Text::write('Quarterly Report')-&gt;at(72, 800)-&gt;font($body, 9)-&gt;color(Color::gray(0.4)),
+        Line::from(72, 794)-&gt;to(523, 794)-&gt;color(Color::gray(0.8))-&gt;width(0.5),
+    );
+});
+
+$doc-&gt;footer(function (PdfPage $p, int $n, int $total) use ($body) {
+    $p-&gt;add(Text::write("Page $n of $total")-&gt;at(480, 30)-&gt;font($body, 9));
+});</code></pre>
+
+<p>The closure receives the page object, the 1-based page number, and the total page count. <code>header()</code>, <code>footer()</code> and the generic <code>onEachPage()</code> are all the same mechanism with different names; the distinction is documentary, letting you read back which callbacks were intended as chrome. You may register as many of each as you like and they run in registration order.</p>
+
+<h3 id="page-rules">Selecting pages with PageRule</h3>
+<p>The second argument of <code>header()</code>, <code>footer()</code> and <code>onEachPage()</code> restricts which pages the callback applies to. It accepts a <code>PageRule</code> enum case, an integer, or a closure.</p>
+
+<pre><code class="language-php">use Papier\PageRule;
+
+$doc-&gt;footer($render);                          // PageRule::All (default)
+$doc-&gt;onEachPage($notice,     PageRule::First); // first page only
+$doc-&gt;onEachPage($colophon,   PageRule::Last);  // last page only
+$doc-&gt;onEachPage($confidential, PageRule::Odd); // 1, 3, 5, …
+$doc-&gt;onEachPage($tab,        PageRule::Even);  // 2, 4, 6, …</code></pre>
+
+<table>
+<thead><tr><th>Rule</th><th>Applies to</th></tr></thead>
+<tbody>
+<tr><td><code>PageRule::All</code></td><td>Every page (the default)</td></tr>
+<tr><td><code>PageRule::Odd</code></td><td>Page numbers 1, 3, 5, …</td></tr>
+<tr><td><code>PageRule::Even</code></td><td>Page numbers 2, 4, 6, …</td></tr>
+<tr><td><code>PageRule::First</code></td><td>The first page only</td></tr>
+<tr><td><code>PageRule::Last</code></td><td>The last page only</td></tr>
+</tbody>
+</table>
+
+<p><code>Odd</code> and <code>Even</code> are the natural choice for double-sided printing, where the outer margin alternates sides. When a fixed rule is not enough, pass an integer for every Nth page, or a closure receiving the page number and total that returns a boolean.</p>
+
+<pre><code class="language-php">$doc-&gt;onEachPage($sectionRule, 5);   // pages 5, 10, 15, …
+
+$doc-&gt;onEachPage(
+    $watermark,
+    fn(int $n, int $total): bool =&gt; $n &gt; 1 &amp;&amp; $n &lt; $total,   // skip cover and colophon
+);</code></pre>
+
+<p>See <code>examples/33_page_operations.php</code> for a five-page report with a running header, a "Page X of Y" footer, and a confidential notice restricted to odd pages.</p>
+
+<h2 id="page-operations">Page operations</h2>
+<p>Three static helpers on <code>PdfDocument</code> take existing files and produce a new one. They parse the sources, wrap each page as a form XObject, and place it on a fresh page — so the visual result is preserved but interactive features on the source pages (annotations, form fields) are not carried across.</p>
+
+<h3 id="merging-documents">Merging documents</h3>
+<pre><code class="language-php">PdfDocument::merge(['cover.pdf', 'body.pdf', 'appendix.pdf'], 'combined.pdf');</code></pre>
+<p>Pages are concatenated in the order the source paths are given.</p>
+
+<h3 id="extracting-pages">Extracting and reordering pages</h3>
+<pre><code class="language-php">PdfDocument::extractPages('report.pdf', [2, 4], 'excerpt.pdf');
+PdfDocument::extractPages('report.pdf', [3, 1, 2], 'reordered.pdf');</code></pre>
+<p>Page numbers are 1-based and are honoured in the order supplied, so the same call both subsets and reorders. Out-of-range numbers are skipped rather than raising an error.</p>
+
+<h3 id="n-up-imposition">N-up imposition</h3>
+<p><code>nUp()</code> tiles several source pages onto each output sheet — the usual way to produce handouts or proof sheets. Each source page is scaled to fit its cell while preserving aspect ratio, then centred within it.</p>
+
+<pre><code class="language-php">PdfDocument::nUp('report.pdf', 2, 2, 'handout.pdf');   // 4 pages per sheet
+
+PdfDocument::nUp(
+    'report.pdf',
+    cols:   3,
+    rows:   3,
+    outPath:'nine-up.pdf',
+    sheetW: 841.89,   // A4 landscape
+    sheetH: 595.28,
+    margin: 24.0,
+    gutter: 12.0,
+);</code></pre>
+
+<p>Cells are filled left to right, top to bottom. The sheet defaults to A4 portrait with a 20 pt outer margin and a 10 pt gutter between cells.</p>
+
+<h3 id="importing-pages">Importing pages into a document</h3>
+<p>The static helpers above are convenience wrappers around <code>importPages()</code>, which brings pages from another PDF into a document you are still building. Because it returns the newly created <code>PdfPage</code> objects, you can then draw over the imported content — the basis for stamping, watermarking and filling pre-printed forms.</p>
+
+<pre><code class="language-php">$doc = PdfDocument::create();
+$font = $doc-&gt;addFont('Helvetica-Bold');
+
+$pages = $doc-&gt;importPages('contract.pdf');           // all pages
+$some  = $doc-&gt;importPages('contract.pdf', [1, 3]);   // selected pages
+
+$pages[0]-&gt;add(
+    Text::write('DRAFT')-&gt;at(200, 400)-&gt;font($font, 60)-&gt;opacity(0.15),
+);
+
+$doc-&gt;save('stamped.pdf');</code></pre>
+
+<p>For finer control, <code>importPage()</code> takes a single prepared <code>ImportedPage</code> plus an offset and uniform scale factor, which is what you need to place a source page at a specific position on a larger sheet. See <code>examples/16_import_pages.php</code>.</p>
+
+<h2 id="page-labels">Page labels</h2>
+<p>Page labels change the numbering that the viewer shows in its thumbnail strip and "go to page" box, without affecting the physical page order. The classic use is front matter numbered in lowercase roman numerals followed by a body restarting at 1.</p>
+
+<pre><code class="language-php">use Papier\Structure\PageLabelStyle;
+
+$doc-&gt;addPageLabel(0, PageLabelStyle::RomanLower);   // i, ii, iii, iv
+$doc-&gt;addPageLabel(4, PageLabelStyle::Decimal);      // 1, 2, 3, …</code></pre>
+
+<p>The first argument is a 0-based page index at which the range begins; the range runs until the next one starts. A range may also set its own starting number and a prefix.</p>
+
+<pre><code class="language-php">$doc-&gt;addPageLabel(4, PageLabelStyle::Decimal, startValue: 1, prefix: 'p.');
+$doc-&gt;addPageLabel(20, PageLabelStyle::AlphaUpper, startValue: 1, prefix: 'Appendix ');</code></pre>
+
+<table>
+<thead><tr><th>Style</th><th>Produces</th></tr></thead>
+<tbody>
+<tr><td><code>PageLabelStyle::Decimal</code></td><td>1, 2, 3, …</td></tr>
+<tr><td><code>PageLabelStyle::RomanLower</code></td><td>i, ii, iii, …</td></tr>
+<tr><td><code>PageLabelStyle::RomanUpper</code></td><td>I, II, III, …</td></tr>
+<tr><td><code>PageLabelStyle::AlphaLower</code></td><td>a, b, c, … aa, bb, …</td></tr>
+<tr><td><code>PageLabelStyle::AlphaUpper</code></td><td>A, B, C, … AA, BB, …</td></tr>
+<tr><td><code>PageLabelStyle::None</code></td><td>Prefix only, no number</td></tr>
+</tbody>
+</table>
+
+<h2 id="named-destinations">Named destinations</h2>
+<p>A named destination is a symbolic label for a position in the document. Link annotations, bookmarks and external URLs can target it by name, so the target survives content being reflowed onto different pages.</p>
+
+<pre><code class="language-php">$intro = $doc-&gt;addPage();
+$doc-&gt;addNamedDestination('intro', $intro, 72, 750);
+$doc-&gt;addNamedDestination('chapter-2', $chapter2Page, 0, 780, 1.0);</code></pre>
+
+<p>The three optional arguments are the left coordinate, the top coordinate and the zoom factor. Passing <code>null</code> for any of them means "leave that aspect of the current view unchanged", which is usually what you want for the zoom — forcing a zoom level overrides the reader's own preference. A zoom of <code>0</code> also means unchanged.</p>
+
+<p>See <a href="navigation.html">Navigation</a> for linking to these destinations from bookmarks and link annotations.</p>
+
+<h2 id="open-action">Open action</h2>
+<p>The open action tells the viewer where to position the document when it is first opened. Without one, readers start at the top of page 1.</p>
+
+<pre><code class="language-php">$doc-&gt;setOpenDestination($page, 0, 841);         // top of a given page
+$doc-&gt;setOpenDestination($summaryPage, 72, 500); // scrolled to a specific spot</code></pre>
+
+<p>Use it to open a long report at its executive summary, or to skip a cover sheet. As with named destinations, leaving the zoom as <code>null</code> respects the reader's default magnification.</p>
+
+<h2 id="viewer-preferences">Viewer preferences</h2>
+<p>Viewer preferences are hints about how the document should be presented — which chrome to hide, how to lay out the window, and how to print. Readers are free to ignore them, but the mainstream ones honour the common keys.</p>
+
+<pre><code class="language-php">use Papier\Viewer\{ViewerPreferences, PrintScaling, Duplex, NonFullScreenPageMode, ReadingDirection};
+
+$doc-&gt;setViewerPreferences(
+    ViewerPreferences::create()
+        -&gt;displayDocTitle()
+        -&gt;hideToolbar()
+        -&gt;fitWindow()
+        -&gt;centerWindow()
+        -&gt;printScaling(PrintScaling::None)
+        -&gt;duplex(Duplex::FlipLongEdge)
+        -&gt;nonFullScreenPageMode(NonFullScreenPageMode::UseOutlines)
+        -&gt;readingDirection(ReadingDirection::LeftToRight)
+        -&gt;numCopies(2)
+);</code></pre>
+
+<p>The boolean flags — <code>hideToolbar()</code>, <code>hideMenubar()</code>, <code>hideWindowUI()</code>, <code>fitWindow()</code>, <code>centerWindow()</code>, <code>displayDocTitle()</code> — default to <code>true</code>, so calling them with no argument turns them on. Pass <code>false</code> to write an explicit negative.</p>
+
+<p>Two are worth singling out. <code>displayDocTitle()</code> makes the reader show your <code>setTitle()</code> value in the window title instead of the filename. <code>printScaling(PrintScaling::None)</code> disables the reader's "fit to printable area" shrink, which matters whenever the document must print at exact physical size — floor plans, forms, anything with a scale bar.</p>
+
+<table>
+<thead><tr><th>Enum</th><th>Cases</th></tr></thead>
+<tbody>
+<tr><td><code>PrintScaling</code></td><td><code>None</code>, <code>AppDefault</code></td></tr>
+<tr><td><code>Duplex</code></td><td><code>Simplex</code>, <code>FlipShortEdge</code>, <code>FlipLongEdge</code></td></tr>
+<tr><td><code>NonFullScreenPageMode</code></td><td><code>UseNone</code>, <code>UseOutlines</code>, <code>UseThumbs</code>, <code>UseOC</code></td></tr>
+<tr><td><code>ReadingDirection</code></td><td><code>LeftToRight</code>, <code>RightToLeft</code></td></tr>
+</tbody>
+</table>
+
+<p>Less common keys such as <code>/ViewArea</code> or <code>/PrintPageRange</code> have no dedicated method; write them directly with <code>set($key, $value)</code>, passing a PDF object.</p>
+
+<h2 id="file-attachments">File attachments</h2>
+<p>A PDF can carry arbitrary embedded files, which readers surface in an attachments or paperclip panel. This is the standard way to ship the machine-readable source of a report alongside its human-readable rendering.</p>
+
+<pre><code class="language-php">$doc-&gt;attachFile('data.csv', file_get_contents('report.csv'), 'text/csv');
+$doc-&gt;attachFile('invoice.xml', $xmlString, 'application/xml');
+$doc-&gt;attachFile('readme.txt', 'Figures are in thousands of USD.', 'text/plain');</code></pre>
+
+<p>The first argument is the display name shown to the user, the second the raw bytes, and the third the MIME type — it defaults to <code>application/octet-stream</code>, which makes readers treat the file as an opaque download. Supplying a real type lets them offer a sensible "open with".</p>
+
+<div class="warn">
+<p>Attachments are stored uncompressed relative to their own format, so embedding large binaries inflates the PDF by roughly their own size. Compress before attaching if size matters.</p>
+</div>
+
+<p>Attachments can be read back out of an existing file with <code>PdfParser::getAttachments()</code>; see <a href="reading.html">Reading PDFs</a>.</p>
+
+<h2 id="saving-the-document">Saving the document</h2>
+<p><code>save()</code> serialises the document — running any deferred header and footer callbacks first — and writes it to disk.</p>
+
+<pre><code class="language-php">$doc-&gt;save(__DIR__ . '/output/report.pdf');</code></pre>
+
+<p>Two alternatives exist for when a file on disk is not what you want. <code>toString()</code> returns the complete PDF as a byte string, which is what you need to hand the bytes to a parser, a signer, or a cloud storage client. <code>output()</code> sends the file to the browser with the appropriate headers.</p>
+
+<pre><code class="language-php">$bytes = $doc-&gt;toString();
+
+$doc-&gt;output('report.pdf');          // inline, rendered in the browser
+$doc-&gt;output('report.pdf', false);   // as a download attachment</code></pre>
+
+<h3 id="smaller-files">Producing smaller files</h3>
+<p>Calling <code>useObjectStreams()</code> before saving packs non-stream objects into compressed object streams and writes a cross-reference stream instead of a classic table. On documents with many small objects this typically cuts file size noticeably, at the cost of requiring a PDF 1.5 reader.</p>
+
+<pre><code class="language-php">$doc-&gt;useObjectStreams();
+$doc-&gt;save('small.pdf');</code></pre>
+
+<p>See <code>examples/17_compressed_objects.php</code> for a size comparison, and <a href="file-structure.html">File structure</a> for what the two layouts actually look like on disk.</p>

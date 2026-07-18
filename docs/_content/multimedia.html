@@ -1,0 +1,285 @@
+<!-- title: Layers & multimedia -->
+<!-- description: Optional content groups for togglable layers, and embedding sound, video and screen renditions with the multimedia API. -->
+<h1>Layers &amp; multimedia</h1>
+<p class="lead">Two features that make a PDF more than a printed page: <strong>optional content</strong>, which lets the reader switch parts of the page on and off, and <strong>multimedia</strong>, which embeds or references audio and video for playback inside the document.</p>
+
+<h2 id="optional-content">Optional content (layers)</h2>
+<p>Optional content groups — OCGs, shown as "Layers" in most viewers — let a single page carry several alternative or supplementary renderings. A CAD drawing can hide its dimension annotations, a map can toggle its road and terrain layers, a multilingual form can show one language at a time. All the content is present in the file; the viewer simply decides what to paint.</p>
+<p>Three pieces have to line up:</p>
+<ol>
+<li>An <strong>OCGroup</strong> for each layer.</li>
+<li>Each group registered in the page's resources under a property name, and the page content wrapped in marked-content operators that reference that name.</li>
+<li>An <strong>OCProperties</strong> object in the document catalog listing every group and the default visibility configuration.</li>
+</ol>
+
+<h3 id="defining-groups">Defining groups</h3>
+<p>An <code>OCGroup</code> is little more than the name the viewer shows in its layers panel:</p>
+<pre><code class="language-php">use Papier\OptionalContent\OCGroup;
+
+$bgGroup    = new OCGroup('Background');
+$textGroup  = new OCGroup('Text Content');
+$annotGroup = new OCGroup('Annotations');</code></pre>
+<p><code>setIntent()</code> declares what the layer is for — <code>'View'</code> (the default) means it affects display, <code>'Design'</code> means it is metadata that viewers should not offer to toggle. <code>setUsage()</code> attaches a usage dictionary describing conditions such as zoom range or print behaviour.</p>
+
+<h3 id="binding-content-to-a-layer">Binding content to a layer</h3>
+<p>This is the step with no high-level shortcut. Layer membership is expressed with the <code>BDC</code> / <code>EMC</code> marked-content operators inside the content stream, so you need <code>ContentStream</code> directly rather than the elements API.</p>
+<p>First register each group's dictionary in the page resources under a property name:</p>
+<pre><code class="language-php">$page-&gt;getResources()-&gt;addProperties('OCBackground',  $bgGroup-&gt;getDictionary());
+$page-&gt;getResources()-&gt;addProperties('OCText',        $textGroup-&gt;getDictionary());
+$page-&gt;getResources()-&gt;addProperties('OCAnnotations', $annotGroup-&gt;getDictionary());</code></pre>
+<p>Then wrap the drawing operations in a marked-content sequence tagged <code>OC</code> and pointing at that property name:</p>
+<pre><code class="language-php">use Papier\Content\ContentStream;
+
+$cs = new ContentStream();
+
+$cs-&gt;beginMarkedContentProps('OC', 'OCBackground');
+$cs-&gt;setFillRGB(0.95, 0.95, 1.0)
+   -&gt;drawRect(0, 0, 595, 841, true, false);
+$cs-&gt;setStrokeRGB(0.5, 0.5, 0.8)-&gt;setLineWidth(3)
+   -&gt;drawRect(30, 30, 535, 781, false, true);
+$cs-&gt;endMarkedContent();
+
+$cs-&gt;beginMarkedContentProps('OC', 'OCText');
+$cs-&gt;beginText()
+       -&gt;setFont('F2', 26)-&gt;setFillRGB(0.2, 0.2, 0.6)
+       -&gt;setTextPosition(72, 760)
+       -&gt;showText('Optional Content Demo')
+   -&gt;endText();
+$cs-&gt;endMarkedContent();
+
+$page-&gt;addContent($cs);</code></pre>
+<p>Everything between <code>beginMarkedContentProps()</code> and the matching <code>endMarkedContent()</code> belongs to that layer and disappears when the reader switches it off. Content outside any marked-content sequence is always visible.</p>
+<div class="warn">
+<p>Every <code>beginMarkedContentProps()</code> must have a matching <code>endMarkedContent()</code>. Unbalanced markers produce a content stream that viewers reject or render unpredictably.</p>
+</div>
+<p>The related <code>beginMarkedContent($tag)</code> starts a sequence with no property list, and <code>beginMarkedContentMcid($tag, $mcid)</code> starts one carrying a marked-content identifier — that variant is for structural tagging rather than layers, and is covered in <a href="accessibility.html">Tagged PDF &amp; PDF/A</a>.</p>
+
+<h3 id="the-ocproperties-entry">The OCProperties entry</h3>
+<p>Finally, tell the document which groups exist and which are visible when it opens:</p>
+<pre><code class="language-php">use Papier\OptionalContent\OCProperties;
+
+$ocProps = new OCProperties();
+$ocProps-&gt;addOCG($bgGroup)
+        -&gt;addOCG($textGroup)
+        -&gt;addOCG($annotGroup)
+        -&gt;setDefaultConfig(
+            name:      'Default',
+            on:        [$bgGroup, $textGroup],
+            off:       [$annotGroup],
+            baseState: 'ON',
+        );
+
+$doc-&gt;setOCProperties($ocProps);</code></pre>
+<p>Every group referenced anywhere in the document must be passed to <code>addOCG()</code> — a group that appears in a content stream but not in <code>/OCProperties</code> makes the file invalid.</p>
+<p><code>setDefaultConfig()</code> takes the configuration name shown in the viewer UI, arrays of groups that start on and off, and a <code>$baseState</code> of <code>'ON'</code>, <code>'OFF'</code> or <code>'Unchanged'</code> governing groups in neither list. Starting from <code>baseState: 'OFF'</code> and listing only what should be visible is convenient for documents with many layers where most are hidden by default.</p>
+
+<h3 id="membership-dictionaries">Membership dictionaries</h3>
+<p>An <code>OCMembership</code> makes visibility depend on a combination of groups rather than a single one — content that appears only when two layers are both on, for instance.</p>
+<pre><code class="language-php">use Papier\OptionalContent\OCMembership;
+
+$both = new OCMembership([$layerA, $layerB], 'AllOn');
+$page-&gt;getResources()-&gt;addProperties('OCBoth', $both-&gt;getDictionary());</code></pre>
+<p>The policy is <code>'AnyOn'</code> (the default — visible if any listed group is on), <code>'AllOn'</code>, <code>'AnyOff'</code>, or <code>'AllOff'</code>. Reference the membership from a marked-content sequence exactly as you would a plain group.</p>
+
+<h3 id="toggling-layers-from-an-action">Toggling layers from an action</h3>
+<p>A button or link can change layer visibility using <code>SetOCGStateAction</code>, so the document itself can offer a "show annotations" control. See <a href="navigation.html">Bookmarks &amp; navigation</a> for how actions attach to links and form fields.</p>
+
+<h2 id="multimedia">Multimedia</h2>
+<p>PDF gained media support in stages, and the three surviving mechanisms are worth distinguishing before choosing one.</p>
+<table>
+<thead><tr><th>Mechanism</th><th>Introduced</th><th>Best for</th></tr></thead>
+<tbody>
+<tr><td><code>SoundAnnotation</code></td><td>PDF 1.2</td><td>Short audio embedded directly in the file</td></tr>
+<tr><td><code>MovieAnnotation</code></td><td>PDF 1.2</td><td>Legacy video; superseded, kept for compatibility</td></tr>
+<tr><td><code>ScreenAnnotation</code> + rendition</td><td>PDF 1.5</td><td>Modern audio and video with MIME types and playback control</td></tr>
+</tbody>
+</table>
+<div class="note">
+<p>Media playback depends entirely on the viewer. Adobe Acrobat supports renditions; most browser-based viewers ignore them and show only the static appearance. Always draw a meaningful placeholder so the page still makes sense when playback is unavailable.</p>
+</div>
+
+<h3 id="embedded-sound">Embedded sound</h3>
+<p><code>SoundStream</code> wraps raw audio samples as a PDF sound object. Static factories cover the encodings the format supports:</p>
+<pre><code class="language-php">use Papier\Multimedia\SoundStream;
+
+$sound = SoundStream::fromPcm($pcmBytes, 44100, 1, 16);  // data, rate, channels, bits
+$sound = SoundStream::fromMuLaw($bytes, 8000, 1);        // G.711 μ-law, telephony
+$sound = SoundStream::fromALaw($bytes, 8000, 1);         // G.711 A-law
+$sound = SoundStream::fromFile('chime.wav');             // read from disk</code></pre>
+<p>PCM data is interleaved and little-endian. Generating a tone directly is a compact way to test playback:</p>
+<pre><code class="language-php">$sampleRate = 44100;
+$numSamples = (int) ($sampleRate * 0.5);
+$pcm        = '';
+for ($i = 0; $i &lt; $numSamples; $i++) {
+    $env    = min(1.0, min($i / 200.0, ($numSamples - $i) / 200.0));  // fade in/out
+    $sample = (int) (28000 * $env * sin(2.0 * M_PI * 440.0 * $i / $sampleRate));
+    $pcm   .= pack('v', $sample &amp; 0xFFFF);
+}
+$sound = SoundStream::fromPcm($pcm, $sampleRate, 1, 16);</code></pre>
+<p>Attach it to the page with a <code>SoundAnnotation</code>, which renders as a clickable icon. Note that <code>setSound()</code> takes the underlying stream, obtained with <code>getStream()</code>:</p>
+<pre><code class="language-php">use Papier\Annotation\SoundAnnotation;
+use Papier\Elements\Color;
+
+$annot = new SoundAnnotation(72, 695, 92, 715);
+$annot-&gt;setSound($sound-&gt;getStream())
+      -&gt;setIcon('Speaker')                  // 'Speaker' or 'Mic'
+      -&gt;setContents('440 Hz tone (0.5 s)')
+      -&gt;setColor(Color::rgb(0.1, 0.5, 0.8));
+
+$page-&gt;addAnnotation($annot);</code></pre>
+<div class="warn">
+<p>Embedded PCM is uncompressed — roughly 88 kB per second at CD quality. Keep embedded clips short, or reference a compressed file externally instead.</p>
+</div>
+
+<h3 id="media-clips">Media clips and file references</h3>
+<p>A <code>MediaClip</code> describes a piece of media: where it lives and what MIME type it is. The choice of factory decides whether the media travels with the PDF.</p>
+<pre><code class="language-php">use Papier\Multimedia\MediaClip;
+
+// External reference — the file must sit next to the PDF
+$video = MediaClip::fromFile('demo.mp4', 'video/mp4', 'Demo Video');
+
+// Embedded — the bytes are copied into the PDF, making it self-contained
+$video = MediaClip::fromEmbedded('/path/to/demo.mp4', 'video/mp4', 'Demo Video');
+
+// From a file specification you built yourself
+$video = MediaClip::fromSpec($fileSpec, 'video/mp4', 'Demo Video');</code></pre>
+<p>External references keep the PDF small but break if the file moves. Embedding produces a self-contained document at the cost of size. <code>FileSpec</code> exposes the same choice directly:</p>
+<pre><code class="language-php">use Papier\Multimedia\FileSpec;
+
+$spec = FileSpec::external('demo.mp4', 'video/mp4');
+$spec = FileSpec::embedded('/path/to/demo.mp4', 'video/mp4');
+$spec = FileSpec::fromBytes('demo.mp4', $bytes, 'video/mp4');</code></pre>
+<p><code>setPermissions()</code> on the clip attaches a <code>MediaPermissions</code> dictionary controlling whether the viewer may write a temporary file during playback — <code>TEMP_ACCESS</code>, <code>NO_OPS</code>, or <code>NEVER_WRITTEN</code>.</p>
+
+<h3 id="play-parameters">Play parameters</h3>
+<p><code>MediaPlayParams</code> controls how the clip plays:</p>
+<pre><code class="language-php">use Papier\Multimedia\MediaPlayParams;
+
+$params = (new MediaPlayParams())
+    -&gt;setVolume(90)          // 0-100
+    -&gt;setShowControls(true)  // transport bar
+    -&gt;setAutoPlay(false)     // play on activation rather than on page open
+    -&gt;setRepeatCount(1.0)    // 0.0 = loop forever
+    -&gt;setFitStyle(MediaPlayParams::FIT_MEET);</code></pre>
+<p>The fit styles govern how the media is scaled into the annotation rectangle:</p>
+<table>
+<thead><tr><th>Constant</th><th>Behaviour</th></tr></thead>
+<tbody>
+<tr><td><code>FIT_MEET</code></td><td>Scale proportionally so the whole clip fits — letterboxed</td></tr>
+<tr><td><code>FIT_SLICE</code></td><td>Scale proportionally to fill the box — cropped</td></tr>
+<tr><td><code>FIT_FILL</code></td><td>Stretch to fill, ignoring aspect ratio</td></tr>
+<tr><td><code>FIT_SCROLL</code></td><td>Show at natural size with scroll bars</td></tr>
+<tr><td><code>FIT_HIDDEN</code></td><td>Do not display the media</td></tr>
+<tr><td><code>FIT_TIGHTEST</code></td><td>Use the media's own preferred size</td></tr>
+</tbody>
+</table>
+
+<h3 id="renditions">Renditions and screen annotations</h3>
+<p>A <code>MediaRendition</code> ties a clip to its play parameters, and a <code>ScreenAnnotation</code> gives it a place on the page.</p>
+<pre><code class="language-php">use Papier\Annotation\ScreenAnnotation;
+use Papier\Multimedia\{MediaClip, MediaPlayParams, MediaRendition};
+
+$clip   = MediaClip::fromFile('intro.mp4', 'video/mp4', 'Intro Video');
+$params = (new MediaPlayParams())
+    -&gt;setVolume(90)
+    -&gt;setShowControls(true)
+    -&gt;setAutoPlay(false)
+    -&gt;setFitStyle(MediaPlayParams::FIT_MEET);
+
+$rendition = new MediaRendition($clip, 'Intro Video');
+$rendition-&gt;setPlayParams($params);
+
+$screen = new ScreenAnnotation(72, 400, 292, 510);
+$screen-&gt;setTitle('Intro Video')
+       -&gt;setRendition($rendition-&gt;getDictionary());
+
+$page-&gt;addAnnotation($screen);</code></pre>
+<div class="note">
+<p>Two easy mistakes: <code>MediaRendition</code>'s first argument is a <code>MediaClip</code> object (not a MIME string), and <code>setRendition()</code> expects a PDF object, so pass <code>$rendition-&gt;getDictionary()</code>.</p>
+</div>
+<p>Because the screen annotation itself paints nothing until playback starts, draw a placeholder underneath it:</p>
+<pre><code class="language-php">use Papier\Elements\{Color, Rectangle, Text};
+
+$page-&gt;add(
+    Rectangle::create(72, 400, 220, 110)-&gt;fill(Color::rgb(0.05, 0.05, 0.05)),
+    Text::write('▶  intro.mp4')-&gt;at(100, 450)-&gt;font($bold, 12)-&gt;color(Color::white()),
+);
+$page-&gt;addAnnotation($screen);</code></pre>
+<p>Background audio uses the same construction with a small, unobtrusive rectangle:</p>
+<pre><code class="language-php">$audioClip   = MediaClip::fromFile('background.mp3', 'audio/mpeg', 'Background Music');
+$audioParams = (new MediaPlayParams())
+    -&gt;setVolume(60)
+    -&gt;setShowControls(false)
+    -&gt;setAutoPlay(true)
+    -&gt;setRepeatCount(0.0);   // loop forever
+
+$audioRendition = new MediaRendition($audioClip, 'Background Music');
+$audioRendition-&gt;setPlayParams($audioParams);
+
+$audioScreen = new ScreenAnnotation(320, 435, 520, 475);
+$audioScreen-&gt;setTitle('Background Music')
+            -&gt;setRendition($audioRendition-&gt;getDictionary());
+$page-&gt;addAnnotation($audioScreen);</code></pre>
+
+<h3 id="legacy-movies">Legacy movie annotations</h3>
+<p><code>MovieAnnotation</code> is the PDF 1.2 mechanism. It is simpler than a rendition but has no MIME typing and less playback control. Use it only for compatibility with older viewers.</p>
+<pre><code class="language-php">use Papier\Annotation\MovieAnnotation;
+use Papier\Multimedia\{MovieActivation, MovieDictionary};
+
+$movie = MovieDictionary::fromFile('sample.mp4')
+    -&gt;setAspect(1280, 720)
+    -&gt;setPoster(true);        // show the first frame as a still
+
+$activation = (new MovieActivation())
+    -&gt;setVolume(1.0)          // 0.0-1.0 here, unlike MediaPlayParams
+    -&gt;setShowControls(true)
+    -&gt;setMode(MovieActivation::MODE_ONCE);
+
+$annot = new MovieAnnotation(72, 560, 272, 640);
+$annot-&gt;setTitle('Sample Movie')
+      -&gt;setMovie($movie-&gt;getDictionary())
+      -&gt;setActivation($activation-&gt;getDictionary());
+
+$page-&gt;addAnnotation($annot);</code></pre>
+<p>The activation modes are <code>MODE_ONCE</code>, <code>MODE_OPEN</code> (play and leave the window open), <code>MODE_REPEAT</code> and <code>MODE_PALINDROME</code> (play forwards then backwards). <code>setRate()</code> adjusts playback speed and <code>setSynchronous()</code> blocks the viewer until playback finishes.</p>
+
+<h3 id="media-elements">Media elements</h3>
+<p>The high-level elements API wraps the common cases so you do not have to assemble the pieces or call <code>addAnnotation()</code> yourself. <code>SoundElement</code> draws a click-to-play icon and registers the sound annotation:</p>
+<pre><code class="language-php">use Papier\Elements\{Color, SoundElement};
+
+$page-&gt;add(
+    SoundElement::create($sound, 72, 670)
+        -&gt;size(22)
+        -&gt;icon('Speaker')
+        -&gt;color(Color::rgb(0.15, 0.45, 0.8))
+        -&gt;contents('440 Hz tone, 0.5 s'),
+);</code></pre>
+<p><code>VideoElement</code> draws the placeholder rectangle and attaches the screen annotation and rendition in one step:</p>
+<pre><code class="language-php">use Papier\Elements\VideoElement;
+use Papier\Multimedia\{MediaClip, MediaPlayParams};
+
+$clip = MediaClip::fromFile('demo.mp4', 'video/mp4', 'Demo Video');
+
+$page-&gt;add(
+    VideoElement::create($clip, 72, 490, 220, 138)
+        -&gt;bgColor(Color::rgb(0.05, 0.05, 0.05))
+        -&gt;label('▶  demo.mp4', $bold, 11)
+        -&gt;title('Demo Video')
+        -&gt;playParams(
+            (new MediaPlayParams())
+                -&gt;setVolume(90)
+                -&gt;setShowControls(true)
+                -&gt;setAutoPlay(false)
+                -&gt;setFitStyle(MediaPlayParams::FIT_MEET)
+        ),
+);</code></pre>
+<p>This is the recommended path for slide decks and brochures. Drop down to the raw annotation API only when you need control the elements do not expose.</p>
+
+<h2 id="examples">Examples</h2>
+<ul>
+<li><code>examples/10_optional_content_layers.php</code> — three togglable layers built with marked-content operators.</li>
+<li><code>examples/12_multimedia.php</code> — sound, movie and screen annotations side by side, with generated audio.</li>
+<li><code>examples/13_transitions_and_media_elements.php</code> — <code>SoundElement</code> and <code>VideoElement</code> in a presentation with page transitions.</li>
+</ul>
+<pre><code class="language-bash">php examples/10_optional_content_layers.php
+php examples/12_multimedia.php</code></pre>

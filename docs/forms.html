@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Forms — Papier</title>
+<meta name="description" content="Build interactive AcroForm fields — text, checkbox, radio, combo, list, button, signature — and fill existing PDF forms with regenerated appearances.">
+<meta property="og:title" content="Forms — Papier">
+<meta property="og:description" content="Build interactive AcroForm fields — text, checkbox, radio, combo, list, button, signature — and fill existing PDF forms with regenerated appearances.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<script>
+(function () {
+  var t = localStorage.getItem('papier-theme');
+  if (t) document.documentElement.setAttribute('data-theme', t);
+})();
+</script>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <button class="menu-toggle" type="button" aria-label="Toggle navigation">
+<svg viewBox="0 0 20 20" width="20" height="20"><path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="index.html">
+<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 2h8l5 5v15H6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M14 2v5h5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+<span>Papier</span>
+  </a>
+  <div class="search">
+<input type="search" id="search-input" placeholder="Search documentation…" autocomplete="off" aria-label="Search documentation">
+<kbd>/</kbd>
+<div id="search-results" role="listbox"></div>
+  </div>
+  <div class="topbar-links">
+<a href="https://packagist.org/packages/papier/papier">Packagist</a>
+<a href="https://github.com/papier/papier">GitHub</a>
+<button class="theme-toggle" type="button" aria-label="Toggle dark mode">
+  <svg class="sun" viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.5 1.5M17.6 17.6l1.5 1.5M19.1 4.9l-1.5 1.5M6.4 17.6l-1.5 1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+  <svg class="moon" viewBox="0 0 24 24" width="18" height="18"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+</button>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" aria-label="Documentation">
+<div class="nav-section"><h4>Getting started</h4><ul><li><a href="index.html">Introduction</a></li><li><a href="installation.html">Installation</a></li><li><a href="quickstart.html">Quick start</a></li></ul></div><div class="nav-section"><h4>Creating PDFs</h4><ul><li><a href="documents.html">Documents &amp; pages</a></li><li><a href="text.html">Text &amp; fonts</a></li><li><a href="graphics.html">Graphics</a></li><li><a href="images.html">Images</a></li><li><a href="tables.html">Tables</a></li></ul></div><div class="nav-section"><h4>Interactivity</h4><ul><li><a href="forms.html" class="active">Forms</a></li><li><a href="annotations.html">Annotations</a></li><li><a href="navigation.html">Bookmarks &amp; navigation</a></li><li><a href="multimedia.html">Layers &amp; multimedia</a></li></ul></div><div class="nav-section"><h4>Advanced</h4><ul><li><a href="security.html">Encryption &amp; signatures</a></li><li><a href="accessibility.html">Tagged PDF &amp; PDF/A</a></li><li><a href="file-structure.html">File structure</a></li><li><a href="reading.html">Reading PDFs</a></li></ul></div><div class="nav-section"><h4>Reference</h4><ul><li><a href="examples.html">Examples</a></li><li><a href="changelog.html">Changelog</a></li></ul></div>
+  </nav>
+
+  <main id="main">
+<article class="content">
+<h1>Forms</h1>
+<p class="lead">An AcroForm turns a static page into an interactive document: fields the reader can type into, tick, or choose from. Papier builds forms from scratch through the <code>Papier\AcroForm</code> namespace, and fills forms in existing PDFs through <code>FormFiller</code>.</p>
+
+<h2 id="how-acroforms-work">How AcroForms work</h2>
+<p>A PDF form is two structures that must agree with each other. The <strong>field tree</strong> lives in the document catalog under <code>/AcroForm</code> and describes the form logically: names, types, values, and validation flags. The <strong>widget annotations</strong> live on individual pages and describe where each field is drawn and what it looks like.</p>
+<p>Papier keeps these in sync for you, but it does mean every field needs to be registered twice — once with the form and once with the page it appears on:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\AcroForm</span><span class="t-kw">\</span><span class="t-op">{</span><span class="t-type">AcroForm</span><span class="t-op">,</span> <span class="t-type">TextField</span><span class="t-op">}</span><span class="t-op">;</span>
+<span class="t-kw">use</span> <span class="t-kw">Papier\PdfDocument</span><span class="t-op">;</span>
+
+<span class="t-var">$doc</span>  <span class="t-op">=</span> <span class="t-type">PdfDocument</span><span class="t-kw">::</span><span class="t-fn">create</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$font</span> <span class="t-op">=</span> <span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">addFont</span><span class="t-op">(</span><span class="t-string">&#039;Helvetica&#039;</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// returns a resource name such as &#039;F1&#039;</span>
+<span class="t-var">$page</span> <span class="t-op">=</span> <span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">addPage</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$form</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">AcroForm</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$field</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">TextField</span><span class="t-op">(</span><span class="t-string">&#039;reviewer&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;reviewer&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$field</span><span class="t-kw">-&gt;</span><span class="t-fn">setRect</span><span class="t-op">(</span><span class="t-number">200</span><span class="t-op">,</span> <span class="t-number">700</span><span class="t-op">,</span> <span class="t-number">400</span><span class="t-op">,</span> <span class="t-number">718</span><span class="t-op">)</span>
+      <span class="t-kw">-&gt;</span><span class="t-fn">setDefaultAppearance</span><span class="t-op">(</span><span class="t-var">$font</span><span class="t-op">,</span> <span class="t-number">12</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$form</span><span class="t-kw">-&gt;</span><span class="t-fn">addField</span><span class="t-op">(</span><span class="t-var">$field</span><span class="t-op">)</span><span class="t-op">;</span>      <span class="t-comment">// logical: joins the /AcroForm /Fields array</span>
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">addFormField</span><span class="t-op">(</span><span class="t-var">$field</span><span class="t-op">)</span><span class="t-op">;</span>  <span class="t-comment">// visual:  emits the widget annotation on this page</span>
+
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">setAcroForm</span><span class="t-op">(</span><span class="t-var">$form</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">save</span><span class="t-op">(</span><span class="t-string">&#039;form.pdf&#039;</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<div class="note">
+<p>Forgetting <code>$page-&gt;addFormField()</code> is the single most common mistake. The field will exist in the document and be readable by a parser, but nothing will be visible or clickable on the page.</p>
+</div>
+
+<h2 id="field-names">Field names</h2>
+<p>Every field constructor takes two names. The first is the <strong>fully-qualified name</strong> — the dotted path used to address the field programmatically and in form submissions. The second is the <strong>partial name</strong>, written to <code>/T</code>, which is the field's own name within its parent.</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$field</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">TextField</span><span class="t-op">(</span><span class="t-string">&#039;person.name&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;name&#039;</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>For flat forms the two are usually the same, and passing just one argument makes the partial name default to the full name:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$field</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">TextField</span><span class="t-op">(</span><span class="t-string">&#039;email&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;email&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-comment">// or simply, since partialName defaults to the full name:</span>
+<span class="t-var">$field</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">TextField</span><span class="t-op">(</span><span class="t-string">&#039;email&#039;</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>Dotted names matter when you have repeating groups — <code>invoice.line1.qty</code>, <code>invoice.line2.qty</code> — because form-filling tools and JavaScript address fields by their fully-qualified name.</p>
+
+<h2 id="positioning-and-appearance">Positioning and appearance</h2>
+<p>All fields inherit from <code>FormField</code>, which supplies the geometry and styling that every widget needs.</p>
+<p><code>setRect()</code> takes the lower-left and upper-right corners of the widget in points, in the page's default user space (origin at the bottom-left of the page):</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$field</span><span class="t-kw">-&gt;</span><span class="t-fn">setRect</span><span class="t-op">(</span><span class="t-var">$x1</span><span class="t-op">,</span> <span class="t-var">$y1</span><span class="t-op">,</span> <span class="t-var">$x2</span><span class="t-op">,</span> <span class="t-var">$y2</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p><code>setDefaultAppearance()</code> writes the <code>/DA</code> string that tells the viewer which font, size, and colour to use when it renders the field's value. Note that the first argument is the <strong>font resource name string</strong> returned by <code>addFont()</code>, not a font object:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$helv</span> <span class="t-op">=</span> <span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">addFont</span><span class="t-op">(</span><span class="t-string">&#039;Helvetica&#039;</span><span class="t-op">)</span><span class="t-op">;</span>       <span class="t-comment">// &#039;F1&#039;</span>
+
+<span class="t-var">$field</span><span class="t-kw">-&gt;</span><span class="t-fn">setDefaultAppearance</span><span class="t-op">(</span><span class="t-var">$helv</span><span class="t-op">,</span> <span class="t-number">11</span><span class="t-op">)</span><span class="t-op">;</span>              <span class="t-comment">// black text</span>
+<span class="t-var">$field</span><span class="t-kw">-&gt;</span><span class="t-fn">setDefaultAppearance</span><span class="t-op">(</span><span class="t-var">$helv</span><span class="t-op">,</span> <span class="t-number">11</span><span class="t-op">,</span> <span class="t-number">0.1</span><span class="t-op">,</span> <span class="t-number">0.1</span><span class="t-op">,</span> <span class="t-number">0.5</span><span class="t-op">)</span><span class="t-op">;</span> <span class="t-comment">// dark blue, RGB in [0,1]</span></code></pre></div>
+<p>If you need a <code>/DA</code> string that Papier does not generate, write it directly with <code>setDefaultAppearanceRaw('/F1 10 Tf 0 g')</code>.</p>
+<p>Widget chrome — the box drawn around the field — is controlled separately:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Elements\Color</span><span class="t-op">;</span>
+
+<span class="t-var">$field</span><span class="t-kw">-&gt;</span><span class="t-fn">setBackgroundColor</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">rgb</span><span class="t-op">(</span><span class="t-number">0.96</span><span class="t-op">,</span> <span class="t-number">0.96</span><span class="t-op">,</span> <span class="t-number">1.0</span><span class="t-op">)</span><span class="t-op">)</span>
+      <span class="t-kw">-&gt;</span><span class="t-fn">setBorderColor</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">gray</span><span class="t-op">(</span><span class="t-number">0.6</span><span class="t-op">)</span><span class="t-op">)</span>
+      <span class="t-kw">-&gt;</span><span class="t-fn">setHighlightMode</span><span class="t-op">(</span><span class="t-string">&#039;P&#039;</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// N=none, I=invert, O=outline, P=push, T=toggle</span></code></pre></div>
+<p>Both colour setters also accept loose components: <code>setBorderColor(0.6, 0.6, 0.6)</code>.</p>
+
+<h2 id="values-and-flags">Values and flags</h2>
+<p>Field values are PDF objects rather than plain PHP scalars, because the correct object type depends on the field type — a text value is a string, a checkbox value is a name.</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Objects\PdfString</span><span class="t-op">;</span>
+
+<span class="t-var">$field</span><span class="t-kw">-&gt;</span><span class="t-fn">setValue</span><span class="t-op">(</span><span class="t-type">PdfString</span><span class="t-kw">::</span><span class="t-fn">text</span><span class="t-op">(</span><span class="t-string">&#039;Jane Doe&#039;</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$field</span><span class="t-kw">-&gt;</span><span class="t-fn">setDefaultValue</span><span class="t-op">(</span><span class="t-type">PdfString</span><span class="t-kw">::</span><span class="t-fn">text</span><span class="t-op">(</span><span class="t-string">&#039;&#039;</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span> <span class="t-comment">// /DV — what &quot;Reset form&quot; restores</span></code></pre></div>
+<p>Use <code>PdfString::text()</code> rather than <code>new PdfString()</code> for anything a human will read: it applies the correct PDF text-string encoding, so accented and non-Latin characters survive.</p>
+<p>Behavioural flags live in the <code>/Ff</code> bit field. The two most common have convenience wrappers:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$field</span><span class="t-kw">-&gt;</span><span class="t-fn">setReadOnly</span><span class="t-op">(</span><span class="t-op">)</span>    <span class="t-comment">// display the value but forbid editing</span>
+      <span class="t-kw">-&gt;</span><span class="t-fn">setRequired</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// block submission while empty</span></code></pre></div>
+<p>Anything else is set with <code>setFlags()</code>, using the constants published by each field class:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\AcroForm\TextField</span><span class="t-op">;</span>
+
+<span class="t-var">$field</span><span class="t-kw">-&gt;</span><span class="t-fn">setFlags</span><span class="t-op">(</span><span class="t-type">TextField</span><span class="t-kw">::</span><span class="t-type">FLAG_MULTILINE</span> <span class="t-op">|</span> <span class="t-type">TextField</span><span class="t-kw">::</span><span class="t-type">FLAG_DO_NOT_SPELL_CHECK</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<div class="warn">
+<p><code>setFlags()</code> replaces the whole flag word rather than merging into it. Combine every flag you want in a single call, and set it before calling helpers like <code>setMultiline()</code> that also touch <code>/Ff</code>.</p>
+</div>
+<p>Two more inherited helpers are worth knowing: <code>setToolTip()</code> writes <code>/TU</code>, the alternate description read aloud by screen readers (see <a href="accessibility.html">Tagged PDF &amp; PDF/A</a>), and <code>setMappingName()</code> writes <code>/TM</code>, the name used when exporting form data.</p>
+
+<h2 id="text-fields">Text fields</h2>
+<p><code>TextField</code> is the workhorse: a single- or multi-line box for free-form input.</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\AcroForm\TextField</span><span class="t-op">;</span>
+
+<span class="t-var">$comments</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">TextField</span><span class="t-op">(</span><span class="t-string">&#039;Comments&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;Comments&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$comments</span><span class="t-kw">-&gt;</span><span class="t-fn">setMultiline</span><span class="t-op">(</span><span class="t-fn">true</span><span class="t-op">)</span>
+         <span class="t-kw">-&gt;</span><span class="t-fn">setDefaultAppearance</span><span class="t-op">(</span><span class="t-var">$font</span><span class="t-op">,</span> <span class="t-number">10</span><span class="t-op">)</span>
+         <span class="t-kw">-&gt;</span><span class="t-fn">setRect</span><span class="t-op">(</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">430</span><span class="t-op">,</span> <span class="t-number">523</span><span class="t-op">,</span> <span class="t-number">492</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>Beyond <code>setMultiline()</code>, the class offers <code>setMaxLength()</code>, <code>setPassword()</code> (masks input, and prevents the value being saved), and <code>setRichText()</code>. The flag constants let you reach the rest:</p>
+<table>
+<thead><tr><th>Constant</th><th>Effect</th></tr></thead>
+<tbody>
+<tr><td><code>FLAG_MULTILINE</code></td><td>Text wraps across several lines</td></tr>
+<tr><td><code>FLAG_PASSWORD</code></td><td>Input is masked and never stored</td></tr>
+<tr><td><code>FLAG_FILE_SELECT</code></td><td>The value is a file path to upload</td></tr>
+<tr><td><code>FLAG_DO_NOT_SPELL_CHECK</code></td><td>Suppress the viewer's spell checker</td></tr>
+<tr><td><code>FLAG_DO_NOT_SCROLL</code></td><td>Reject input once the box is full</td></tr>
+<tr><td><code>FLAG_COMB</code></td><td>Evenly spaced character cells (needs <code>setMaxLength()</code>)</td></tr>
+<tr><td><code>FLAG_RICH_TEXT</code></td><td>The value carries formatting markup</td></tr>
+</tbody>
+</table>
+<p>A comb field — the boxed one-character-per-cell style used on paper forms — needs both the flag and a maximum length:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$postcode</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">TextField</span><span class="t-op">(</span><span class="t-string">&#039;postcode&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$postcode</span><span class="t-kw">-&gt;</span><span class="t-fn">setMaxLength</span><span class="t-op">(</span><span class="t-number">8</span><span class="t-op">)</span>
+         <span class="t-kw">-&gt;</span><span class="t-fn">setFlags</span><span class="t-op">(</span><span class="t-type">TextField</span><span class="t-kw">::</span><span class="t-type">FLAG_COMB</span><span class="t-op">)</span>
+         <span class="t-kw">-&gt;</span><span class="t-fn">setDefaultAppearance</span><span class="t-op">(</span><span class="t-var">$font</span><span class="t-op">,</span> <span class="t-number">12</span><span class="t-op">)</span>
+         <span class="t-kw">-&gt;</span><span class="t-fn">setRect</span><span class="t-op">(</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">600</span><span class="t-op">,</span> <span class="t-number">220</span><span class="t-op">,</span> <span class="t-number">620</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<h2 id="check-boxes">Check boxes</h2>
+<p><code>CheckBoxField</code> is a two-state button. Its "on" state is a named export value — <code>Yes</code> by default — and its "off" state is always the reserved name <code>Off</code>.</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\AcroForm\CheckBoxField</span><span class="t-op">;</span>
+
+<span class="t-var">$news</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">CheckBoxField</span><span class="t-op">(</span><span class="t-string">&#039;Newsletter&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;Newsletter&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$news</span><span class="t-kw">-&gt;</span><span class="t-fn">setRect</span><span class="t-op">(</span><span class="t-number">140</span><span class="t-op">,</span> <span class="t-number">568</span><span class="t-op">,</span> <span class="t-number">155</span><span class="t-op">,</span> <span class="t-number">583</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$news</span><span class="t-kw">-&gt;</span><span class="t-fn">check</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>     <span class="t-comment">// value becomes /Yes</span>
+<span class="t-var">$news</span><span class="t-kw">-&gt;</span><span class="t-fn">uncheck</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// value becomes /Off</span></code></pre></div>
+<p>The export value is what appears in submitted form data, so give it a meaningful name when the form is going to be processed:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$news</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">CheckBoxField</span><span class="t-op">(</span><span class="t-string">&#039;Newsletter&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;Newsletter&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;subscribed&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$news</span><span class="t-kw">-&gt;</span><span class="t-fn">check</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>                       <span class="t-comment">// value becomes /subscribed</span>
+<span class="t-kw">echo</span> <span class="t-var">$news</span><span class="t-kw">-&gt;</span><span class="t-fn">getOnValue</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>             <span class="t-comment">// &#039;subscribed&#039;</span></code></pre></div>
+<div class="note">
+<p>The class name is <code>CheckBoxField</code>, with a capital <strong>B</strong>. Check boxes are square by convention and radio buttons round, but that is a viewer rendering convention, not something the field type enforces.</p>
+</div>
+
+<h2 id="radio-buttons">Radio buttons</h2>
+<p>A radio group is one <code>RadioButtonField</code> whose kids are the individual buttons. Because they share a parent, selecting one deselects the others — that mutual exclusion is a property of the field tree, not of the widgets.</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\AcroForm\RadioButtonField</span><span class="t-op">;</span>
+
+<span class="t-var">$size</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">RadioButtonField</span><span class="t-op">(</span><span class="t-string">&#039;Size&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;Size&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$size</span><span class="t-kw">-&gt;</span><span class="t-fn">setSelected</span><span class="t-op">(</span><span class="t-string">&#039;medium&#039;</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// the export value that starts selected</span>
+<span class="t-var">$form</span><span class="t-kw">-&gt;</span><span class="t-fn">addField</span><span class="t-op">(</span><span class="t-var">$size</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>Attach the individual buttons as kids with <code>addKid()</code>, giving each its own rectangle and export value.</p>
+
+<h2 id="choice-fields">Choice fields</h2>
+<p><code>ComboBoxField</code> (a drop-down) and <code>ListBoxField</code> (a scrolling list) are both choice fields. Each option has a machine value and a human label, and both classes require a call to <code>buildOpt()</code> to serialise the collected options into the <code>/Opt</code> array.</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\AcroForm\ComboBoxField</span><span class="t-op">;</span>
+
+<span class="t-var">$country</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">ComboBoxField</span><span class="t-op">(</span><span class="t-string">&#039;Country&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;Country&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$country</span><span class="t-kw">-&gt;</span><span class="t-fn">addOption</span><span class="t-op">(</span><span class="t-string">&#039;US&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;United States&#039;</span><span class="t-op">)</span>
+        <span class="t-kw">-&gt;</span><span class="t-fn">addOption</span><span class="t-op">(</span><span class="t-string">&#039;GB&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;United Kingdom&#039;</span><span class="t-op">)</span>
+        <span class="t-kw">-&gt;</span><span class="t-fn">addOption</span><span class="t-op">(</span><span class="t-string">&#039;FR&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;France&#039;</span><span class="t-op">)</span>
+        <span class="t-kw">-&gt;</span><span class="t-fn">buildOpt</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>                        <span class="t-comment">// required — writes /Opt</span>
+
+<span class="t-var">$country</span><span class="t-kw">-&gt;</span><span class="t-fn">setDefaultAppearance</span><span class="t-op">(</span><span class="t-var">$font</span><span class="t-op">,</span> <span class="t-number">10</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$country</span><span class="t-kw">-&gt;</span><span class="t-fn">setRect</span><span class="t-op">(</span><span class="t-number">140</span><span class="t-op">,</span> <span class="t-number">600</span><span class="t-op">,</span> <span class="t-number">280</span><span class="t-op">,</span> <span class="t-number">622</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>A list box works the same way and adds multi-selection:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\AcroForm\ListBoxField</span><span class="t-op">;</span>
+
+<span class="t-var">$lang</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">ListBoxField</span><span class="t-op">(</span><span class="t-string">&#039;Language&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;Language&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$lang</span><span class="t-kw">-&gt;</span><span class="t-fn">addOption</span><span class="t-op">(</span><span class="t-string">&#039;en&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;English&#039;</span><span class="t-op">)</span>
+     <span class="t-kw">-&gt;</span><span class="t-fn">addOption</span><span class="t-op">(</span><span class="t-string">&#039;fr&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;French&#039;</span><span class="t-op">)</span>
+     <span class="t-kw">-&gt;</span><span class="t-fn">addOption</span><span class="t-op">(</span><span class="t-string">&#039;de&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;German&#039;</span><span class="t-op">)</span>
+     <span class="t-kw">-&gt;</span><span class="t-fn">setMultiSelect</span><span class="t-op">(</span><span class="t-fn">true</span><span class="t-op">)</span>
+     <span class="t-kw">-&gt;</span><span class="t-fn">buildOpt</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$lang</span><span class="t-kw">-&gt;</span><span class="t-fn">setRect</span><span class="t-op">(</span><span class="t-number">375</span><span class="t-op">,</span> <span class="t-number">590</span><span class="t-op">,</span> <span class="t-number">523</span><span class="t-op">,</span> <span class="t-number">635</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<div class="warn">
+<p>Call <code>buildOpt()</code> <em>after</em> the last <code>addOption()</code>. Options added afterwards will not appear in the output.</p>
+</div>
+<p>Combo boxes accept extra flags: <code>ComboBoxField::FLAG_EDIT</code> allows the user to type a value that is not in the list, and <code>FLAG_SORT</code> asks the viewer to sort the options alphabetically.</p>
+
+<h2 id="push-buttons">Push buttons</h2>
+<p>A <code>PushButtonField</code> holds no value — it exists purely to trigger an action. Papier does not paint the button face for you, so draw it with ordinary page elements and overlay the field:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\AcroForm\PushButtonField</span><span class="t-op">;</span>
+<span class="t-kw">use</span> <span class="t-kw">Papier\Elements</span><span class="t-kw">\</span><span class="t-op">{</span><span class="t-type">Color</span><span class="t-op">,</span> <span class="t-type">Rectangle</span><span class="t-op">,</span> <span class="t-type">Text</span><span class="t-op">}</span><span class="t-op">;</span>
+
+<span class="t-var">$submit</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">PushButtonField</span><span class="t-op">(</span><span class="t-string">&#039;Submit&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;Submit&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$submit</span><span class="t-kw">-&gt;</span><span class="t-fn">setRect</span><span class="t-op">(</span><span class="t-number">310</span><span class="t-op">,</span> <span class="t-number">380</span><span class="t-op">,</span> <span class="t-number">430</span><span class="t-op">,</span> <span class="t-number">405</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$form</span><span class="t-kw">-&gt;</span><span class="t-fn">addField</span><span class="t-op">(</span><span class="t-var">$submit</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">addFormField</span><span class="t-op">(</span><span class="t-var">$submit</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">add</span><span class="t-op">(</span>
+    <span class="t-type">Rectangle</span><span class="t-kw">::</span><span class="t-fn">create</span><span class="t-op">(</span><span class="t-number">310</span><span class="t-op">,</span> <span class="t-number">380</span><span class="t-op">,</span> <span class="t-number">120</span><span class="t-op">,</span> <span class="t-number">25</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">fill</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">rgb</span><span class="t-op">(</span><span class="t-number">0.2</span><span class="t-op">,</span> <span class="t-number">0.5</span><span class="t-op">,</span> <span class="t-number">0.9</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">,</span>
+    <span class="t-type">Text</span><span class="t-kw">::</span><span class="t-fn">write</span><span class="t-op">(</span><span class="t-string">&#039;Submit Form&#039;</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">at</span><span class="t-op">(</span><span class="t-number">335</span><span class="t-op">,</span> <span class="t-number">390</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">font</span><span class="t-op">(</span><span class="t-var">$bold</span><span class="t-op">,</span> <span class="t-number">12</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">color</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">white</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">,</span>
+<span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>To make the button do something, attach an action to its widget. <code>SubmitFormAction</code> posts the form data to a URL, <code>ResetFormAction</code> restores every field to its <code>/DV</code>, and <code>JavaScriptAction</code> runs a script. See <a href="navigation.html">Bookmarks &amp; navigation</a> for the full action catalogue.</p>
+
+<h2 id="signature-fields">Signature fields</h2>
+<p>A <code>SignatureField</code> reserves a place for a digital signature. Created empty it is an unsigned placeholder that a signing tool can later fill:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\AcroForm\SignatureField</span><span class="t-op">;</span>
+
+<span class="t-var">$sig</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">SignatureField</span><span class="t-op">(</span><span class="t-string">&#039;Signature&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;Signature&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$sig</span><span class="t-kw">-&gt;</span><span class="t-fn">setRect</span><span class="t-op">(</span><span class="t-number">360</span><span class="t-op">,</span> <span class="t-number">690</span><span class="t-op">,</span> <span class="t-number">530</span><span class="t-op">,</span> <span class="t-number">750</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$form</span><span class="t-kw">-&gt;</span><span class="t-fn">addField</span><span class="t-op">(</span><span class="t-var">$sig</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">addFormField</span><span class="t-op">(</span><span class="t-var">$sig</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$form</span><span class="t-kw">-&gt;</span><span class="t-fn">setSigFlags</span><span class="t-op">(</span><span class="t-number">3</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// 1 = SignaturesExist, 2 = AppendOnly</span></code></pre></div>
+<p><code>setSigFlags(3)</code> tells viewers that the document contains signatures and must only be modified by appending, which is what keeps existing signatures valid. To actually apply a cryptographic signature, use <code>PdfSigner</code> — see <a href="security.html">Encryption &amp; signatures</a>.</p>
+
+<h2 id="form-level-settings">Form-level settings</h2>
+<p>The <code>AcroForm</code> object carries defaults and document-wide switches that apply across every field.</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\AcroForm\AcroForm</span><span class="t-op">;</span>
+<span class="t-kw">use</span> <span class="t-kw">Papier\Objects\PdfDictionary</span><span class="t-op">;</span>
+
+<span class="t-var">$form</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">AcroForm</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$form</span><span class="t-kw">-&gt;</span><span class="t-fn">setNeedAppearances</span><span class="t-op">(</span><span class="t-fn">true</span><span class="t-op">)</span><span class="t-op">;</span>        <span class="t-comment">// ask the viewer to render field values</span>
+<span class="t-var">$form</span><span class="t-kw">-&gt;</span><span class="t-fn">setDefaultAppearance</span><span class="t-op">(</span><span class="t-var">$font</span><span class="t-op">,</span> <span class="t-number">10</span><span class="t-op">)</span><span class="t-op">;</span> <span class="t-comment">// fallback /DA for fields without one</span>
+<span class="t-var">$form</span><span class="t-kw">-&gt;</span><span class="t-fn">setQuadding</span><span class="t-op">(</span><span class="t-number">0</span><span class="t-op">)</span><span class="t-op">;</span>                  <span class="t-comment">// 0 = left, 1 = centre, 2 = right</span>
+
+<span class="t-var">$resources</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">PdfDictionary</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$resources</span><span class="t-kw">-&gt;</span><span class="t-fn">set</span><span class="t-op">(</span><span class="t-string">&#039;Font&#039;</span><span class="t-op">,</span> <span class="t-kw">new</span> <span class="t-type">PdfDictionary</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$form</span><span class="t-kw">-&gt;</span><span class="t-fn">setDefaultResources</span><span class="t-op">(</span><span class="t-var">$resources</span><span class="t-op">)</span><span class="t-op">;</span> <span class="t-comment">// /DR — resources the /DA strings refer to</span></code></pre></div>
+<p><code>setNeedAppearances(true)</code> is the pragmatic choice when you are authoring a form to be filled in later: it instructs the viewer to generate appearance streams from the <code>/DA</code> string and the current value, so a field always displays correctly even if no appearance was baked in. The trade-off is that some minimal or embedded viewers ignore the flag, and a document whose appearance depends on the viewer is not suitable for archiving — see <a href="accessibility.html">Tagged PDF &amp; PDF/A</a>.</p>
+<p><code>setCalculateOrder()</code> takes an array of field references and writes <code>/CO</code>, which fixes the order in which calculation scripts run when fields depend on each other.</p>
+
+<h2 id="filling-an-existing-form">Filling an existing form</h2>
+<p>Authoring a form and filling one are different problems. <code>FormFiller</code> opens an existing PDF, sets values, and writes the result back as an <strong>incremental update</strong> — the original bytes are preserved and a new revision is appended. That keeps any prior digital signatures intact and makes the change auditable.</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\AcroForm\FormFiller</span><span class="t-op">;</span>
+
+<span class="t-var">$filler</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">FormFiller</span><span class="t-op">(</span><span class="t-fn">file_get_contents</span><span class="t-op">(</span><span class="t-string">&#039;form.pdf&#039;</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-fn">print_r</span><span class="t-op">(</span><span class="t-var">$filler</span><span class="t-kw">-&gt;</span><span class="t-fn">getFieldNames</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// discover what the form contains</span>
+
+<span class="t-var">$filler</span><span class="t-kw">-&gt;</span><span class="t-fn">setText</span><span class="t-op">(</span><span class="t-string">&#039;name&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;Alice Example&#039;</span><span class="t-op">)</span>
+       <span class="t-kw">-&gt;</span><span class="t-fn">setText</span><span class="t-op">(</span><span class="t-string">&#039;email&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;alice@example.com&#039;</span><span class="t-op">)</span>
+       <span class="t-kw">-&gt;</span><span class="t-fn">setCheckbox</span><span class="t-op">(</span><span class="t-string">&#039;subscribe&#039;</span><span class="t-op">,</span> <span class="t-fn">true</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$filler</span><span class="t-kw">-&gt;</span><span class="t-fn">saveAs</span><span class="t-op">(</span><span class="t-string">&#039;filled.pdf&#039;</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>Use <code>save()</code> instead when you want the PDF bytes back rather than a file on disk — handy for streaming a filled form straight to an HTTP response:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$pdf</span> <span class="t-op">=</span> <span class="t-var">$filler</span><span class="t-kw">-&gt;</span><span class="t-fn">save</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// returns a string</span>
+<span class="t-fn">file_put_contents</span><span class="t-op">(</span><span class="t-string">&#039;filled.pdf&#039;</span><span class="t-op">,</span> <span class="t-var">$pdf</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>The three setters map onto the field types:</p>
+<table>
+<thead><tr><th>Method</th><th>Use for</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td><code>setText($name, $value)</code></td><td>Text fields</td><td>Regenerates the appearance stream from the field's <code>/DA</code></td></tr>
+<tr><td><code>setCheckbox($name, $on)</code></td><td>Check boxes, radio buttons</td><td><code>true</code> selects the on-value; pass a string to pick a specific export value</td></tr>
+<tr><td><code>setValue($name, $value)</code></td><td>Anything else</td><td>Lower-level escape hatch for choice fields and unusual types</td></tr>
+</tbody>
+</table>
+<p>The important detail is that <code>setText()</code> <strong>regenerates the appearance stream</strong> rather than relying on <code>/NeedAppearances</code>. The value is laid out into a form XObject using the field's own default appearance, so the filled text is visible in every viewer — including ones that ignore <code>/NeedAppearances</code>, and in print output and thumbnails.</p>
+<div class="note">
+<p>Field names must match exactly, including case and any dotted prefix. Always call <code>getFieldNames()</code> first when working with a form you did not author.</p>
+</div>
+
+<h2 id="reading-values-back">Reading values back</h2>
+<p>To inspect a form without modifying it, use the parser directly:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Parser\PdfParser</span><span class="t-op">;</span>
+
+<span class="t-var">$parser</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">PdfParser</span><span class="t-op">(</span><span class="t-fn">file_get_contents</span><span class="t-op">(</span><span class="t-string">&#039;filled.pdf&#039;</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$parser</span><span class="t-kw">-&gt;</span><span class="t-fn">parse</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-kw">foreach</span> <span class="t-op">(</span><span class="t-var">$parser</span><span class="t-kw">-&gt;</span><span class="t-fn">getFormFields</span><span class="t-op">(</span><span class="t-op">)</span> <span class="t-kw">as</span> <span class="t-var">$field</span><span class="t-op">)</span> <span class="t-op">{</span>
+    <span class="t-kw">echo</span> <span class="t-op">&quot;</span><span class="t-kw">{</span><span class="t-var">$field</span><span class="t-op">[</span><span class="t-string">&#039;name&#039;</span><span class="t-op">]</span><span class="t-op">}</span><span class="t-string"> (</span><span class="t-kw">{</span><span class="t-var">$field</span><span class="t-op">[</span><span class="t-string">&#039;type&#039;</span><span class="t-op">]</span><span class="t-op">}</span><span class="t-string">) = </span><span class="t-kw">{</span><span class="t-var">$field</span><span class="t-op">[</span><span class="t-string">&#039;value&#039;</span><span class="t-op">]</span><span class="t-op">}</span><span class="t-string">\n</span><span class="t-op">&quot;</span><span class="t-op">;</span>
+<span class="t-op">}</span></code></pre></div>
+<p>Each entry reports the field's fully-qualified <code>name</code>, its <code>type</code> (<code>Tx</code>, <code>Btn</code>, <code>Ch</code>, or <code>Sig</code>), and its current <code>value</code>. This is the natural way to verify a filled form or to extract submitted data server-side. More parsing recipes are in <a href="reading.html">Reading PDFs</a>.</p>
+
+<h2 id="examples">Examples</h2>
+<ul>
+<li><code>examples/05_forms.php</code> — a complete form with text fields, check boxes, a combo box, a list box, a multiline comment area, and submit/reset buttons.</li>
+<li><code>examples/30_form_filling.php</code> — creates a blank form, fills it with <code>FormFiller</code>, and reads the values back to confirm the round trip.</li>
+<li><code>examples/19_read_encrypted.php</code> — form fields inside an encrypted document.</li>
+</ul>
+<div class="code-block" data-lang="bash"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">php</span> examples/05_forms.php
+<span class="t-kw">php</span> examples/30_form_filling.php</code></pre></div>
+
+<nav class="pager"><a class="prev" href="tables.html"><span>Previous</span>Tables</a><a class="next" href="annotations.html"><span>Next</span>Annotations</a></nav>
+</article>
+  </main>
+
+  <aside class="toc"><h4>On this page</h4><ul><li class="lvl-2"><a href="#how-acroforms-work">How AcroForms work</a></li><li class="lvl-2"><a href="#field-names">Field names</a></li><li class="lvl-2"><a href="#positioning-and-appearance">Positioning and appearance</a></li><li class="lvl-2"><a href="#values-and-flags">Values and flags</a></li><li class="lvl-2"><a href="#text-fields">Text fields</a></li><li class="lvl-2"><a href="#check-boxes">Check boxes</a></li><li class="lvl-2"><a href="#radio-buttons">Radio buttons</a></li><li class="lvl-2"><a href="#choice-fields">Choice fields</a></li><li class="lvl-2"><a href="#push-buttons">Push buttons</a></li><li class="lvl-2"><a href="#signature-fields">Signature fields</a></li><li class="lvl-2"><a href="#form-level-settings">Form-level settings</a></li><li class="lvl-2"><a href="#filling-an-existing-form">Filling an existing form</a></li><li class="lvl-2"><a href="#reading-values-back">Reading values back</a></li><li class="lvl-2"><a href="#examples">Examples</a></li></ul></aside>
+</div>
+
+<footer class="footer">
+  <p>Papier — PHP PDF library implementing ISO 32000-1:2008. Released under the MIT licence.</p>
+</footer>
+
+<script src="assets/docs.js"></script>
+</body>
+</html>

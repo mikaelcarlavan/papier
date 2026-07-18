@@ -1,0 +1,262 @@
+<!-- title: Annotations -->
+<!-- description: Add notes, links, text markup, geometric shapes, stamps, ink and redaction marks to a page with Papier's 14 annotation subtypes. -->
+<h1>Annotations</h1>
+<p class="lead">Annotations are objects that live alongside a page's content rather than inside it — sticky notes, hyperlinks, highlights, review markup. Because they sit in a separate layer, a viewer can show, hide, edit, or export them without touching the page description underneath.</p>
+
+<h2 id="the-annotation-model">The annotation model</h2>
+<p>Every annotation is a dictionary attached to a page's <code>/Annots</code> array. It has a subtype that determines its behaviour, a rectangle that positions it, and a set of optional properties shared by all subtypes.</p>
+<p>In Papier each subtype is a class extending the abstract <code>Papier\Annotation\Annotation</code>. The constructor always takes the bounding rectangle, and you attach the finished object to a page:</p>
+<pre><code class="language-php">use Papier\Annotation\TextAnnotation;
+use Papier\Elements\Color;
+
+$note = new TextAnnotation(500, 745, 520, 765);
+$note-&gt;setContents('Please review this section.')
+     -&gt;setIcon('Note')
+     -&gt;setColor(Color::rgb(1.0, 0.9, 0.0));
+
+$page-&gt;addAnnotation($note);</code></pre>
+<p>The four constructor arguments are <code>$x1, $y1, $x2, $y2</code> — the lower-left and upper-right corners in points, measured from the bottom-left of the page. This becomes the <code>/Rect</code> entry.</p>
+<div class="note">
+<p>The rectangle is fixed at construction time. <code>setRect()</code> exists on the base class but is <code>protected</code>, so if you need different geometry, construct a new annotation rather than trying to move an existing one.</p>
+</div>
+
+<h2 id="subtypes">The subtypes</h2>
+<p>Fourteen subtypes cover the annotations you will normally author. They fall into four families: notes and links, text markup, geometric markup, and stamps.</p>
+<table>
+<thead><tr><th>Class</th><th>PDF subtype</th><th>Purpose</th></tr></thead>
+<tbody>
+<tr><td><code>TextAnnotation</code></td><td><code>/Text</code></td><td>A sticky note — a small icon that opens a pop-up comment when clicked.</td></tr>
+<tr><td><code>LinkAnnotation</code></td><td><code>/Link</code></td><td>A clickable region that jumps to a destination or opens a URI.</td></tr>
+<tr><td><code>FreeTextAnnotation</code></td><td><code>/FreeText</code></td><td>Text drawn directly on the page rather than hidden in a pop-up.</td></tr>
+<tr><td><code>HighlightAnnotation</code></td><td><code>/Highlight</code></td><td>Marks a text run with a translucent colour wash.</td></tr>
+<tr><td><code>UnderlineAnnotation</code></td><td><code>/Underline</code></td><td>Draws a line beneath a text run.</td></tr>
+<tr><td><code>StrikeOutAnnotation</code></td><td><code>/StrikeOut</code></td><td>Draws a line through a text run to mark it for deletion.</td></tr>
+<tr><td><code>SquigglyAnnotation</code></td><td><code>/Squiggly</code></td><td>A wavy underline, conventionally flagging a spelling or usage problem.</td></tr>
+<tr><td><code>LineAnnotation</code></td><td><code>/Line</code></td><td>A straight line with optional arrowheads at either end.</td></tr>
+<tr><td><code>SquareAnnotation</code></td><td><code>/Square</code></td><td>A rectangle with a border and optional fill.</td></tr>
+<tr><td><code>CircleAnnotation</code></td><td><code>/Circle</code></td><td>An ellipse inscribed in the annotation rectangle.</td></tr>
+<tr><td><code>PolygonAnnotation</code></td><td><code>/Polygon</code></td><td>A closed shape through an arbitrary list of vertices.</td></tr>
+<tr><td><code>StampAnnotation</code></td><td><code>/Stamp</code></td><td>A rubber-stamp graphic such as <em>Draft</em> or <em>Approved</em>.</td></tr>
+<tr><td><code>InkAnnotation</code></td><td><code>/Ink</code></td><td>Freehand strokes — a captured pen or stylus path.</td></tr>
+<tr><td><code>RedactAnnotation</code></td><td><code>/Redact</code></td><td>Marks a region whose content is to be permanently removed.</td></tr>
+</tbody>
+</table>
+<p>The <code>src/Annotation/</code> directory also contains subtypes serving other features rather than page markup: <code>PopupAnnotation</code> (the pop-up window belonging to a markup annotation), <code>WidgetAnnotation</code> (form fields — see <a href="forms.html">Forms</a>), <code>ScreenAnnotation</code>, <code>SoundAnnotation</code> and <code>MovieAnnotation</code> (see <a href="multimedia.html">Layers &amp; multimedia</a>), plus <code>FileAttachmentAnnotation</code>, <code>CaretAnnotation</code>, <code>PolyLineAnnotation</code>, <code>WatermarkAnnotation</code>, <code>PrinterMarkAnnotation</code>, <code>TrapNetAnnotation</code> and <code>ThreeDAnnotation</code>.</p>
+
+<h2 id="common-properties">Common properties</h2>
+<p>Everything on the base class works on every subtype.</p>
+
+<h3 id="contents-and-colour">Contents and colour</h3>
+<p><code>setContents()</code> supplies the annotation's text. For a sticky note this is the comment body; for markup annotations it is the reviewer's remark shown in the pop-up. It is also what assistive technology reads aloud, so fill it in even for purely visual annotations.</p>
+<pre><code class="language-php">$annot-&gt;setContents('Figure 3 needs a caption.');</code></pre>
+<p><code>setColor()</code> sets <code>/C</code>, the annotation's characteristic colour — the note icon's fill, the highlight wash, the line stroke. It takes a <code>Color</code> in any colour space:</p>
+<pre><code class="language-php">use Papier\Elements\Color;
+
+$annot-&gt;setColor(Color::rgb(1.0, 1.0, 0.0));
+$annot-&gt;setColor(Color::hex('#ff0000'));
+$annot-&gt;setColor(Color::cmyk(0, 0.5, 1.0, 0));
+$annot-&gt;setColor(Color::gray(0.5));
+
+$annot-&gt;clearColor();   // remove /C entirely — viewer default applies</code></pre>
+
+<h3 id="borders">Borders</h3>
+<p><code>setBorderStyle()</code> writes the modern <code>/BS</code> dictionary: a width in points, a style character, and an optional dash pattern.</p>
+<pre><code class="language-php">$annot-&gt;setBorderStyle(1.5);                    // 1.5 pt solid
+$annot-&gt;setBorderStyle(1.0, 'D', [3, 2]);      // dashed: 3 on, 2 off
+$annot-&gt;setBorderStyle(0);                     // no visible border</code></pre>
+<p>The style characters are <code>S</code> (solid, the default), <code>D</code> (dashed), <code>B</code> (bevelled), <code>I</code> (inset) and <code>U</code> (underline only). Setting the width to <code>0</code> is the usual way to suppress the blue rectangle viewers draw around links.</p>
+<p><code>setBorder()</code> writes the older <code>/Border</code> array with horizontal and vertical corner radii, for viewers that predate <code>/BS</code>.</p>
+
+<h3 id="flags">Flags</h3>
+<p><code>setFlags()</code> sets the <code>/F</code> bit field, which controls how a viewer treats the annotation. There are no named constants — pass the bits directly:</p>
+<table>
+<thead><tr><th>Bit</th><th>Value</th><th>Name</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>0x001</td><td>Invisible</td><td>Hide if the subtype is unknown to the viewer</td></tr>
+<tr><td>2</td><td>0x002</td><td>Hidden</td><td>Never display or print</td></tr>
+<tr><td>3</td><td>0x004</td><td>Print</td><td>Include in printed output</td></tr>
+<tr><td>4</td><td>0x008</td><td>NoZoom</td><td>Do not scale with the page</td></tr>
+<tr><td>5</td><td>0x010</td><td>NoRotate</td><td>Do not rotate with the page</td></tr>
+<tr><td>6</td><td>0x020</td><td>NoView</td><td>Print but do not display on screen</td></tr>
+<tr><td>7</td><td>0x040</td><td>ReadOnly</td><td>Display but forbid interaction</td></tr>
+<tr><td>8</td><td>0x080</td><td>Locked</td><td>Forbid deleting or changing properties</td></tr>
+<tr><td>9</td><td>0x100</td><td>ToggleNoView</td><td>Invert visibility on selection</td></tr>
+<tr><td>10</td><td>0x200</td><td>LockedContents</td><td>Forbid changing the contents</td></tr>
+</tbody>
+</table>
+<pre><code class="language-php">$annot-&gt;setFlags(4);          // Print
+$annot-&gt;setFlags(4 | 0x40);   // Print and ReadOnly</code></pre>
+<div class="warn">
+<p>Annotations without the Print flag are invisible in printed output and in many rasterised previews. If an annotation must survive printing, set bit 3.</p>
+</div>
+
+<h3 id="other-common-setters">Other common setters</h3>
+<p><code>setName()</code> writes <code>/NM</code>, a unique identifier for the annotation within its page — useful when a <code>HideAction</code> needs to address it. <code>setModDate()</code> records the modification time. <code>setAction()</code> attaches an action triggered on activation (see <a href="navigation.html">Bookmarks &amp; navigation</a>). <code>setAppearance()</code> supplies explicit normal, rollover and down appearance streams when you want full control over rendering.</p>
+
+<h2 id="notes-and-links">Notes and links</h2>
+<p>A <code>TextAnnotation</code> is the classic sticky note. The rectangle sizes the clickable icon, not the pop-up.</p>
+<pre><code class="language-php">use Papier\Annotation\TextAnnotation;
+
+$note = new TextAnnotation(500, 745, 520, 765);
+$note-&gt;setContents('This is a sticky-note annotation.')
+     -&gt;setIcon('Note')       // Comment, Key, Note, Help, NewParagraph, Paragraph, Insert
+     -&gt;setOpen(false)        // pop-up starts closed
+     -&gt;setColor(Color::rgb(1.0, 0.9, 0.0))
+     -&gt;setFlags(4);</code></pre>
+<p><code>setState()</code> and <code>setStateModel()</code> record review status — for example the model <code>Review</code> with the state <code>Accepted</code>.</p>
+<p>A <code>LinkAnnotation</code> makes a rectangle clickable. The simplest form opens a web address:</p>
+<pre><code class="language-php">use Papier\Annotation\LinkAnnotation;
+
+$link = new LinkAnnotation(72, 680, 272, 700);
+$link-&gt;setURI('https://example.com')
+     -&gt;setHighlightMode('P')   // N=none, I=invert, O=outline, P=push
+     -&gt;setBorderStyle(0);      // suppress the default rectangle</code></pre>
+<p>A link has no appearance of its own — it is an invisible hotspot. Draw whatever the reader should see with ordinary page elements underneath it:</p>
+<pre><code class="language-php">use Papier\Elements\{Color, Rectangle, Text};
+
+$page-&gt;add(
+    Rectangle::create(72, 680, 200, 20)-&gt;fill(Color::rgb(0.2, 0.4, 0.8)),
+    Text::write('Click to visit example.com')-&gt;at(80, 686)-&gt;font($font, 11)-&gt;color(Color::white()),
+);
+$page-&gt;addAnnotation($link);</code></pre>
+<p>For links that jump within the document, use <code>setDestination()</code> with a destination array — see <a href="navigation.html">Bookmarks &amp; navigation</a>.</p>
+<p><code>FreeTextAnnotation</code> renders its contents on the page itself. Unlike other annotations it needs a default appearance string naming a font resource:</p>
+<pre><code class="language-php">use Papier\Annotation\FreeTextAnnotation;
+
+$free = new FreeTextAnnotation(72, 640, 300, 670);
+$free-&gt;setContents('Text rendered directly on the page.')
+     -&gt;setDefaultAppearance('F1', 10)      // font RESOURCE NAME, not a font object
+     -&gt;setJustification(0)                 // 0 left, 1 centre, 2 right
+     -&gt;setColor(Color::rgb(0.9, 0.95, 1.0));</code></pre>
+<p><code>setCallout()</code> adds a leader line from the text box to the thing it comments on, and <code>setIntent()</code> distinguishes a plain free text box from a callout or typewriter annotation.</p>
+
+<h2 id="text-markup">Text markup</h2>
+<p>The four markup subtypes — highlight, underline, strikeout, squiggly — all work the same way. The rectangle bounds the annotation, but the actual marked region comes from <code>setQuadPoints()</code>: a flat array of eight numbers per quadrilateral, giving the corners of each marked text run.</p>
+<pre><code class="language-php">use Papier\Annotation\HighlightAnnotation;
+
+$hl = new HighlightAnnotation(72, 756, 400, 770);
+$hl-&gt;setQuadPoints([72, 770, 400, 770, 72, 756, 400, 756])
+   -&gt;setColor(Color::rgb(1.0, 1.0, 0.0))
+   -&gt;setContents('Highlighted section');
+
+$page-&gt;addAnnotation($hl);</code></pre>
+<p>The eight numbers are the upper-left, upper-right, lower-left and lower-right corners in that order. Note that this is <em>not</em> the order you would use to trace the outline — it is the order the specification requires.</p>
+<p>Text spanning several lines needs one quadrilateral per line, concatenated into the same array:</p>
+<pre><code class="language-php">$hl-&gt;setQuadPoints([
+    72, 770, 400, 770, 72, 756, 400, 756,   // first line
+    72, 754, 310, 754, 72, 740, 310, 740,   // second line, shorter
+]);</code></pre>
+<p>Underline, strikeout and squiggly are drop-in replacements:</p>
+<pre><code class="language-php">use Papier\Annotation\{StrikeOutAnnotation, SquigglyAnnotation, UnderlineAnnotation};
+
+$ul = new UnderlineAnnotation(72, 740, 300, 754);
+$ul-&gt;setQuadPoints([72, 754, 300, 754, 72, 740, 300, 740])
+   -&gt;setColor(Color::hex('#0000ff'));
+
+$so = new StrikeOutAnnotation(72, 724, 200, 738);
+$so-&gt;setQuadPoints([72, 738, 200, 738, 72, 724, 200, 724])
+   -&gt;setColor(Color::hex('#ff0000'))
+   -&gt;setContents('Delete this clause');
+
+$sq = new SquigglyAnnotation(200, 724, 400, 738);
+$sq-&gt;setQuadPoints([200, 738, 400, 738, 200, 724, 400, 724])
+   -&gt;setColor(Color::cmyk(0, 0.5, 1.0, 0));</code></pre>
+<div class="note">
+<p>Markup annotations do not read the page's text — they mark coordinates. If you are annotating text you laid out yourself, derive the quad points from the same positions you passed to <code>Text::write()</code>. For text you did not lay out, extract positions first (see <a href="reading.html">Reading PDFs</a>).</p>
+</div>
+
+<h2 id="geometric-markup">Geometric markup</h2>
+<p>Square and circle annotations draw a shape inscribed in the annotation rectangle. Both support a separate interior colour, so the border and the fill can differ:</p>
+<pre><code class="language-php">use Papier\Annotation\{CircleAnnotation, SquareAnnotation};
+
+$sq = new SquareAnnotation(320, 600, 500, 630);
+$sq-&gt;setContents('Check these figures')
+   -&gt;setColor(Color::rgb(0.0, 0.5, 0.0))          // border
+   -&gt;setInteriorColor(Color::hex('#e5ffe5'))      // fill
+   -&gt;setBorderStyle(1.5);
+
+$ci = new CircleAnnotation(72, 560, 200, 600);
+$ci-&gt;setColor(Color::hex('#0000cc'))
+   -&gt;setInteriorColor(Color::hex('#e5e5ff'))
+   -&gt;setBorderStyle(1.5);</code></pre>
+<p>A circle annotation draws the ellipse inscribed in its rectangle, so a square rectangle gives a true circle and a wide one gives an ellipse.</p>
+<p><code>LineAnnotation</code> is unusual: it takes <strong>eight</strong> constructor arguments — the bounding rectangle followed by the line's two endpoints — and it requires an explicit <code>finalize()</code> call to write the endpoint array:</p>
+<pre><code class="language-php">use Papier\Annotation\LineAnnotation;
+
+//                        ---- rect ----  -- line endpoints --
+$line = new LineAnnotation(72, 600, 300, 630, 72, 600, 300, 620);
+$line-&gt;setContents('A line annotation with arrows')
+     -&gt;setColor(Color::rgb(0.8, 0.0, 0.0))
+     -&gt;setLineEndings('OpenArrow', 'ClosedArrow')
+     -&gt;setInteriorColor(Color::rgb(1.0, 0.8, 0.0))   // fills closed arrowheads
+     -&gt;setBorderStyle(2.0)
+     -&gt;finalize();                                    // required</code></pre>
+<div class="warn">
+<p>Without <code>finalize()</code> the <code>/L</code> array is never written and the annotation is invalid. Call it last, after the other setters.</p>
+</div>
+<p>Line ending styles include <code>None</code>, <code>Square</code>, <code>Circle</code>, <code>Diamond</code>, <code>OpenArrow</code>, <code>ClosedArrow</code>, <code>Butt</code>, <code>ROpenArrow</code>, <code>RClosedArrow</code> and <code>Slash</code>. The interior colour fills the closed shapes.</p>
+<p><code>PolygonAnnotation</code> takes a flat list of alternating x and y coordinates and closes the shape automatically:</p>
+<pre><code class="language-php">use Papier\Annotation\PolygonAnnotation;
+
+$poly = new PolygonAnnotation(220, 555, 380, 605);
+$poly-&gt;setVertices([220, 555, 300, 605, 380, 555, 340, 575, 260, 575])
+     -&gt;setContents('A polygon annotation')
+     -&gt;setColor(Color::cmyk(0, 1.0, 0, 0.5));</code></pre>
+<p>Make sure the bounding rectangle actually contains all the vertices — viewers clip to <code>/Rect</code>.</p>
+
+<h2 id="stamps-and-ink">Stamps and ink</h2>
+<p>A stamp annotation shows a predefined graphic. <code>setIcon()</code> selects it from the standard set: <code>Approved</code>, <code>Experimental</code>, <code>NotApproved</code>, <code>AsIs</code>, <code>Expired</code>, <code>NotForPublicRelease</code>, <code>Confidential</code>, <code>Final</code>, <code>Sold</code>, <code>Departmental</code>, <code>ForComment</code>, <code>TopSecret</code>, <code>Draft</code>, <code>ForPublicRelease</code>.</p>
+<pre><code class="language-php">use Papier\Annotation\StampAnnotation;
+
+$stamp = new StampAnnotation(390, 555, 520, 605);
+$stamp-&gt;setIcon('Draft')
+      -&gt;setContents('DRAFT')
+      -&gt;setColor(Color::hex('#ff0000'));</code></pre>
+<p>Viewers render the standard icons themselves, and their appearance varies. For a stamp that looks identical everywhere, supply your own appearance stream with <code>setAppearance()</code>, or draw the graphic on the page and use the stamp only to carry the metadata.</p>
+<p><code>InkAnnotation</code> captures freehand strokes. <code>setInkList()</code> takes an <em>array of arrays</em>: each inner array is one continuous stroke, given as alternating x and y coordinates. Separate strokes mean the pen was lifted.</p>
+<pre><code class="language-php">use Papier\Annotation\InkAnnotation;
+
+$ink = new InkAnnotation(72, 500, 300, 545);
+$ink-&gt;setInkList([
+    [72, 520, 100, 540, 140, 510, 180, 535, 220, 515, 260, 530, 300, 520],  // stroke 1
+    [90, 505, 130, 505],                                                     // stroke 2
+])
+    -&gt;setColor(Color::rgb(0.0, 0.6, 0.0))
+    -&gt;setBorderStyle(2.0)
+    -&gt;setContents('A freehand ink annotation');</code></pre>
+<p>The border style width sets the pen thickness.</p>
+
+<h2 id="redaction">Redaction</h2>
+<p>A redaction annotation <em>marks</em> content for removal. It does not remove anything by itself — that is a deliberate two-phase design, so a reviewer can mark regions, have them checked, and only then apply the redaction irreversibly.</p>
+<pre><code class="language-php">use Papier\Annotation\RedactAnnotation;
+
+$redact = new RedactAnnotation(72, 452, 300, 470);
+$redact-&gt;setQuadPoints([72, 452, 300, 452, 72, 470, 300, 470])
+       -&gt;setOverlayText('REDACTED')
+       -&gt;setRepeat(true)                    // tile the overlay text across the region
+       -&gt;setFillColor(Color::black())       // the bar painted after application
+       -&gt;setContents('Sensitive content marked for redaction');</code></pre>
+<p>As with text markup, <code>setQuadPoints()</code> takes runs of eight numbers describing each quadrilateral. <code>setFillColor()</code> is the colour of the bar painted once a redaction tool applies the mark, and <code>setOverlayText()</code> is the label drawn over it.</p>
+<div class="warn">
+<p>A redaction annotation in a saved PDF is a <strong>marking only</strong>. The underlying text and images are still in the file and can be extracted. Do not distribute a document whose redactions have not been applied by a tool that actually strips the content.</p>
+</div>
+
+<h2 id="reading-annotations">Reading annotations</h2>
+<p>Annotations in an existing PDF can be listed with the parser:</p>
+<pre><code class="language-php">use Papier\Parser\PdfParser;
+
+$parser = new PdfParser(file_get_contents('reviewed.pdf'));
+$parser-&gt;parse();
+
+foreach ($parser-&gt;getAnnotations() as $annot) {
+    print_r($annot);
+}</code></pre>
+<p>See <a href="reading.html">Reading PDFs</a> for the full parsing API.</p>
+
+<h2 id="examples">Examples</h2>
+<ul>
+<li><code>examples/06_annotations.php</code> — every one of the 14 subtypes on a single page, including redaction.</li>
+<li><code>examples/12_multimedia.php</code> — sound, movie and screen annotations.</li>
+<li><code>examples/07_bookmarks_and_encryption.php</code> — link annotations alongside outlines.</li>
+</ul>
+<pre><code class="language-bash">php examples/06_annotations.php</code></pre>

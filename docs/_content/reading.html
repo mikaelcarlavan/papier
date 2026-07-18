@@ -1,0 +1,203 @@
+<!-- title: Reading PDFs -->
+<!-- description: Parse existing PDFs with PdfParser — text extraction, fonts, images, metadata, annotations, outlines, form fields and attachments. -->
+<h1>Reading PDFs</h1>
+<p class="lead">Papier is not only a writer. <code>Papier\Parser\PdfParser</code> opens an existing PDF — including encrypted, compressed and damaged ones — and exposes its pages, text, fonts, images, metadata and interactive content through a small set of plain-array getters.</p>
+
+<h2 id="parsing-a-file">Parsing a file</h2>
+<p>The parser takes the complete file contents as a string, not a path. That keeps it usable with data from a database column, an HTTP upload, or an S3 object, without a temporary file.</p>
+<pre><code class="language-php">use Papier\Parser\PdfParser;
+
+$parser = new PdfParser(file_get_contents('document.pdf'));
+$parser-&gt;parse();
+
+echo $parser-&gt;getPageCount() . " pages\n";
+echo $parser-&gt;getVersion() . "\n";   // e.g. '1.7'</code></pre>
+<p><code>parse()</code> is the mandatory first step. It locates <code>startxref</code>, reads the cross-reference section and trailer, sets up decryption if the document is encrypted, and resolves the catalog and Info dictionary. Every getter below assumes it has already run. Calling it once is enough — objects are cached as they are resolved, so repeated getters do not re-read the file.</p>
+
+<h2 id="encrypted-documents">Encrypted documents</h2>
+<p>If the document is password-protected, supply the password <em>before</em> calling <code>parse()</code>. Papier decrypts RC4 (40- and 128-bit), AES-128 and AES-256 transparently; from that point onwards every string and stream you touch is already in the clear.</p>
+<pre><code class="language-php">$parser = new PdfParser(file_get_contents('protected.pdf'));
+$parser-&gt;setPassword('secret');
+$parser-&gt;parse();
+
+echo $parser-&gt;extractText();</code></pre>
+<p>Either the user password or the owner password works — the owner password additionally bypasses the permission flags. An empty password is the common case for documents that are encrypted for permissions only (no open password), and it is what you get by default, so those files need no special handling at all.</p>
+<p>To find out whether a document is encrypted before deciding what to do:</p>
+<pre><code class="language-php">if ($parser-&gt;isEncrypted()) {
+    $parser-&gt;setPassword($passwordFromUser);
+}
+$parser-&gt;parse();</code></pre>
+<div class="note">
+  <p><code>setPassword()</code> returns <code>$this</code>, so it chains: <code>(new PdfParser($bytes))-&gt;setPassword('secret')</code>. See <a href="security.html">Security</a> for the writing side.</p>
+</div>
+
+<h2 id="text-extraction">Text extraction</h2>
+<p>Extracting text from a PDF is harder than it looks. A PDF does not store paragraphs or even words — it stores instructions like "set font F3 at 11 pt, move to (72, 700), show these bytes". Recovering readable text means interpreting the content stream, tracking the text state, mapping the shown byte codes back to Unicode, and inferring word and line breaks from geometry.</p>
+<pre><code class="language-php">$all   = $parser-&gt;extractText();                  // every page, joined
+$page1 = $parser-&gt;extractTextFromPageNumber(1);   // one page, 1-based</code></pre>
+<p><code>extractText()</code> accepts a separator used between pages, which defaults to a newline:</p>
+<pre><code class="language-php">$text = $parser-&gt;extractText("\n\n--- page break ---\n\n");</code></pre>
+<p>If you already hold a page dictionary — for instance while walking <code>getPages()</code> yourself — you can extract from it directly with <code>extractTextFromPage($pageDict)</code>.</p>
+
+<h3 id="tounicode-awareness">ToUnicode awareness</h3>
+<p>The byte <code>0x41</code> in a content stream does not necessarily mean the letter "A". What it means depends on the font's encoding, and for subset or composite fonts the codes are frequently arbitrary — a subsetted font may map glyph 3 to "é" and glyph 4 to "ü" with no relationship to any standard encoding.</p>
+<p>Papier resolves this the way the specification intends: it reads each font's <code>/ToUnicode</code> CMap, which is the reverse map from character codes to Unicode code points that a well-formed PDF is required to supply for exactly this purpose. Where no <code>/ToUnicode</code> exists it falls back to the font's <code>/Encoding</code> (WinAnsi, MacRoman, or the base encoding with any <code>/Differences</code> applied).</p>
+<p>This is what makes accented Latin text, subsetted fonts, and Type 0 / CIDFontType2 composite fonts — the ones used for CJK, Cyrillic and Greek — extract as correct UTF-8 rather than as mojibake. Because Papier's own writer generates <code>/ToUnicode</code> automatically (see <a href="text.html">Text and fonts</a>), documents it produces round-trip cleanly.</p>
+<p>Multi-byte codes are handled properly too. A Type 0 font with Identity-H encoding shows two bytes per glyph, and the extractor consumes them in pairs rather than treating each byte as a separate character.</p>
+
+<h3 id="layout-awareness">Layout awareness</h3>
+<p>Content streams contain no spaces between words in the general case — a typesetter emits <code>[(Hello) -250 (world)] TJ</code> and relies on the kerning number to create the gap. Nor is there any newline character; a new line is just a <code>Td</code>/<code>TD</code>/<code>T*</code> operator moving the text position.</p>
+<p>The extractor therefore tracks the full text state — the text matrix, the text line matrix, font size, character and word spacing, horizontal scaling, leading and rise — and infers structure from the resulting geometry:</p>
+<ul>
+  <li>A negative adjustment in a <code>TJ</code> array large enough to exceed the font's natural inter-glyph gap becomes a space.</li>
+  <li>A vertical movement of the text position becomes a line break.</li>
+  <li>A large horizontal jump on the same baseline becomes a space, which keeps table columns and multi-column layouts from running together.</li>
+</ul>
+<p>The result is text you can read, search and diff — not a perfect reconstruction of the visual layout, which is not recoverable in general, but a faithful one for ordinary flowing documents.</p>
+
+<h3 id="form-xobject-recursion">Form XObject recursion</h3>
+<p>Content is not always in the page's own content stream. A <em>form XObject</em> is a reusable content stream invoked with the <code>Do</code> operator, and it is how repeated elements, imported pages, annotation appearance streams and many third-party writers place their content. A naive extractor that only reads the page stream silently returns nothing for such documents.</p>
+<p>Papier recurses into form XObjects when it encounters <code>Do</code>, resolving the XObject through the current resource dictionary and extracting its text with the graphics state in effect at the point of invocation. Nested forms are followed as well, with a depth limit so that a maliciously or accidentally self-referential file cannot loop forever.</p>
+<p>Example <code>29_text_extraction.php</code> builds a document exercising accented Latin text, subset fonts and Type 0 fonts, then reads it back and prints what came out.</p>
+
+<h2 id="pages">Pages and page info</h2>
+<p><code>getPages()</code> returns the flattened page list as <code>PdfDictionary</code> objects, in document order, with the page tree already walked and inherited attributes resolved.</p>
+<pre><code class="language-php">foreach ($parser-&gt;getPages() as $i =&gt; $page) {
+    echo 'Page ' . ($i + 1) . ': ' . $parser-&gt;extractTextFromPage($page) . "\n";
+}</code></pre>
+<p>For a structured summary of a single page, use <code>getPageInfo()</code> with a 1-based page number:</p>
+<pre><code class="language-php">$info = $parser-&gt;getPageInfo(1);</code></pre>
+<p>It returns an array with these keys:</p>
+<table>
+  <thead>
+    <tr><th>Key</th><th>Type</th><th>Meaning</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>number</code></td><td>int</td><td>The 1-based page number you asked for.</td></tr>
+    <tr><td><code>width</code></td><td>float</td><td>MediaBox width in points.</td></tr>
+    <tr><td><code>height</code></td><td>float</td><td>MediaBox height in points.</td></tr>
+    <tr><td><code>fontNames</code></td><td>string[]</td><td>Resource names of the fonts the page declares.</td></tr>
+    <tr><td><code>imageNames</code></td><td>string[]</td><td>Resource names of image XObjects on the page.</td></tr>
+    <tr><td><code>text</code></td><td>string</td><td>The page's extracted text.</td></tr>
+    <tr><td><code>annotations</code></td><td>array[]</td><td>One entry per annotation, with <code>subtype</code>, <code>rect</code> and <code>contents</code>.</td></tr>
+  </tbody>
+</table>
+<div class="warn">
+  <p><code>getPageInfo()</code> throws <code>\OutOfRangeException</code> if the page number is below 1 or beyond the page count. Validate user-supplied page numbers against <code>getPageCount()</code> first.</p>
+</div>
+
+<h2 id="fonts">Fonts</h2>
+<p><code>getFonts()</code> lists every font referenced anywhere in the document, de-duplicated:</p>
+<pre><code class="language-php">foreach ($parser-&gt;getFonts() as $font) {
+    printf("%s  %s  %s  %s\n",
+        $font['name'], $font['subtype'], $font['baseFont'], $font['encoding']);
+}</code></pre>
+<p>Each entry has <code>name</code> (the resource name, e.g. <code>F1</code>), <code>subtype</code> (<code>Type1</code>, <code>TrueType</code>, <code>Type0</code>, <code>Type3</code>), <code>baseFont</code> (the <code>/BaseFont</code> value, or <code>''</code>) and <code>encoding</code> (the <code>/Encoding</code> value, or <code>''</code>).</p>
+<p>A <code>baseFont</code> with a six-letter uppercase prefix and a plus sign — <code>ABCDEF+Lato-Regular</code> — indicates a subsetted embedded font. That is a useful signal when auditing whether a document is self-contained, since a font without such a prefix and without a descriptor may not be embedded at all.</p>
+
+<h2 id="images">Images</h2>
+<pre><code class="language-php">foreach ($parser-&gt;extractImages() as $img) {
+    printf("page %d  %s  %dx%d  %s  %d bytes\n",
+        $img['page'], $img['name'], $img['width'], $img['height'],
+        $img['filter'], strlen($img['data']));
+
+    file_put_contents("img_{$img['page']}_{$img['name']}.bin", $img['data']);
+}</code></pre>
+<p>Each entry has <code>page</code> (1-based), <code>name</code> (resource name), <code>width</code>, <code>height</code>, <code>filter</code> and <code>data</code>.</p>
+<p><code>data</code> is the result of running the stream's decode chain. For Flate- or LZW-compressed images that means raw uncompressed samples, which you must interpret using the width, height, bit depth and colour space. For <code>DCTDecode</code>, <code>JPXDecode</code> and <code>JBIG2Decode</code> those filters are pass-through, so <code>data</code> is the original JPEG, JPEG 2000 or JBIG2 bitstream — write it out with the matching extension and it opens in any image tool. See <a href="file-structure.html#stream-filters">Stream filters</a> for the full list.</p>
+
+<h2 id="metadata">Metadata</h2>
+<p>PDF stores document metadata in two places: the legacy <code>/Info</code> dictionary and an XMP packet in the catalog's <code>/Metadata</code> stream. Papier reads both.</p>
+<pre><code class="language-php">$meta = $parser-&gt;getMetadata();
+// ['title' =&gt; …, 'author' =&gt; …, 'subject' =&gt; …,
+//  'creator' =&gt; …, 'keywords' =&gt; …, 'producer' =&gt; …]
+
+echo $meta['title'];</code></pre>
+<p>Individual accessors exist for the common fields — <code>getTitle()</code>, <code>getAuthor()</code>, <code>getSubject()</code>, <code>getCreator()</code> — and all of them return <code>''</code> rather than null when the key is missing, so they are safe to print directly.</p>
+<p>Text strings in the Info dictionary may be encoded as PDFDocEncoding or as UTF-16BE with a byte-order mark. Papier detects which and returns UTF-8 either way, so titles with accents or non-Latin scripts come through correctly.</p>
+<p>For the XMP packet, which carries the richer RDF/XML metadata used by PDF/A and by digital-asset systems:</p>
+<pre><code class="language-php">$xmp = $parser-&gt;getXmpMetadata();   // raw XML string, or null if absent
+
+if ($xmp !== null) {
+    $rdf = new SimpleXMLElement($xmp);
+}</code></pre>
+
+<h2 id="annotations">Annotations</h2>
+<pre><code class="language-php">foreach ($parser-&gt;getAnnotations() as $a) {
+    printf("page %d  %-10s [%s]  %s\n",
+        $a['page'], $a['subtype'], implode(', ', $a['rect']), $a['contents']);
+}</code></pre>
+<p>Each entry has <code>page</code> (1-based), <code>subtype</code> (<code>Text</code>, <code>Link</code>, <code>Highlight</code>, <code>Widget</code>, …), <code>rect</code> as a float array <code>[llx, lly, urx, ury]</code> in default user space, and <code>contents</code>, the annotation's text note.</p>
+<p>Note that form fields appear here too, as <code>Widget</code> annotations — a widget is the visual half of an AcroForm field. If you want the field values rather than their rectangles, use <a href="#form-fields">getFormFields()</a> instead. See <a href="annotations.html">Annotations</a> for the writing side.</p>
+
+<h2 id="outlines">Outlines (bookmarks)</h2>
+<p><code>getOutlines()</code> returns the bookmark tree, preserving nesting:</p>
+<pre><code class="language-php">function printOutline(array $nodes, int $depth = 0): void
+{
+    foreach ($nodes as $node) {
+        echo str_repeat('  ', $depth) . $node['title'] . "\n";
+        printOutline($node['children'], $depth + 1);
+    }
+}
+
+printOutline($parser-&gt;getOutlines());</code></pre>
+<p>Each node has <code>title</code>, <code>dest</code> (a string summary of the <code>/Dest</code> target, or <code>''</code>) and <code>children</code>, an array of the same shape. The result is an empty array when the document has no outline. See <a href="navigation.html">Navigation</a> for building outlines.</p>
+
+<h2 id="form-fields">Form fields</h2>
+<pre><code class="language-php">foreach ($parser-&gt;getFormFields() as $field) {
+    printf("%-24s %-4s %s\n", $field['name'], $field['type'], $field['value']);
+}</code></pre>
+<p>Only terminal (leaf) fields are returned — intermediate nodes in a hierarchical field tree are traversed but not listed, since they hold no value. Each entry has <code>name</code> (the fully-qualified name, with the dot-separated path assembled from the parent chain, e.g. <code>person.name</code>), <code>type</code> (<code>Tx</code> for text, <code>Btn</code> for buttons and checkboxes, <code>Ch</code> for choice fields, <code>Sig</code> for signatures, or <code>''</code>) and <code>value</code>, the <code>/V</code> entry rendered as a string.</p>
+<p>To change field values rather than read them, use <code>Papier\AcroForm\FormFiller</code>, described in <a href="forms.html">Forms</a> — it regenerates appearance streams and writes an incremental update.</p>
+
+<h2 id="attachments">Attachments</h2>
+<p>Embedded files live in the catalog's <code>/Names /EmbeddedFiles</code> name tree. Papier flattens the tree for you:</p>
+<pre><code class="language-php">foreach ($parser-&gt;getAttachments() as $file) {
+    printf("%s (%s, %d bytes)\n", $file['name'], $file['mime'], strlen($file['data']));
+    file_put_contents('/tmp/' . basename($file['name']), $file['data']);
+}</code></pre>
+<p>Each entry has <code>name</code> (the display file name), <code>data</code> (the fully decoded contents) and <code>mime</code> (the <code>/Subtype</code> MIME type, or <code>''</code>).</p>
+<div class="warn">
+  <p>Attachments are arbitrary bytes chosen by whoever produced the PDF. Treat <code>name</code> as untrusted when writing to disk — run it through <code>basename()</code> and validate it, or a crafted name containing path separators can escape your target directory.</p>
+</div>
+
+<h2 id="tagged-documents">Tagged documents</h2>
+<p>For accessibility auditing you can check whether a document carries a logical structure tree and reach its root:</p>
+<pre><code class="language-php">if ($parser-&gt;isTagged()) {
+    $root = $parser-&gt;getStructTreeRoot();   // PdfDictionary|null
+}</code></pre>
+<p><code>isTagged()</code> reports whether the catalog declares <code>/MarkInfo</code> with <code>/Marked true</code>, which is the prerequisite for PDF/UA and the accessible PDF/A levels. See <a href="accessibility.html">Accessibility</a>.</p>
+
+<h2 id="low-level-access">Low-level access</h2>
+<p>When the high-level getters do not cover what you need, you can walk the object graph yourself. References are resolved on demand and cached.</p>
+<pre><code class="language-php">$catalog = $parser-&gt;getCatalog();                 // PdfDictionary|null
+$obj     = $parser-&gt;resolveObject(12, 0);         // by object and generation number
+$value   = $parser-&gt;resolve($someReference);      // follow a reference one step
+
+$xref    = $parser-&gt;getXref();                    // CrossReferenceTable
+$raw     = $parser-&gt;getRawData();                 // the original bytes
+$cache   = $parser-&gt;getObjectCache();             // everything resolved so far
+$id      = $parser-&gt;getFileId();                  // first half of the /ID array</code></pre>
+<p><code>resolve()</code> is the one to reach for inside loops: it returns non-reference objects unchanged, so you can call it unconditionally on any value you pulled out of a dictionary. <code>resolveObject()</code> returns <code>null</code> for object numbers the cross-reference table does not know about, rather than throwing, so a dangling reference degrades gracefully.</p>
+<p>The <code>CrossReferenceTable</code> returned by <code>getXref()</code> exposes the entry points you need for <a href="file-structure.html#incremental-updates">incremental updates</a> — <code>getCatalogObjectNumber()</code>, <code>getInfoObjectNumber()</code>, <code>getEncryptObjectNumber()</code>, <code>getSize()</code>, and per-object queries such as <code>getOffset()</code>, <code>isCompressed()</code> and <code>getCompressedLocation()</code>.</p>
+
+<h2 id="robustness">Robustness against malformed files</h2>
+<p>Files in the wild are frequently broken in ways the specification does not anticipate. The parser is written defensively throughout, on the principle that a document should yield whatever it can rather than fail wholesale:</p>
+<ul>
+  <li><strong>Broken cross-references.</strong> If <code>startxref</code> is missing, points at the wrong place, or the section will not parse, the parser scans the file for <code>N G obj</code> patterns and rebuilds the index. If the trailer has no usable <code>/Root</code> it searches for a dictionary with <code>/Type /Catalog</code>. This happens automatically — there is no flag to set. See <a href="file-structure.html#recovering-damaged-files">recovery</a>.</li>
+  <li><strong>Wrong types.</strong> Every getter checks the class of what it resolved before using it. A <code>/Width</code> that is a string instead of an integer yields <code>0</code>, not a fatal error.</li>
+  <li><strong>Missing keys.</strong> Absent dictionary entries produce empty strings and empty arrays rather than warnings.</li>
+  <li><strong>Dangling references.</strong> A reference to an object number that does not exist resolves to <code>null</code> and is skipped.</li>
+  <li><strong>Cycles.</strong> Page-tree and structure-tree walks are depth-limited, so a self-referential file cannot cause infinite recursion.</li>
+  <li><strong>Mixed structures.</strong> Classic tables, cross-reference streams, hybrid-reference files and linearized files are all handled by the same code path.</li>
+</ul>
+<p>The consequence worth internalising is that an empty result from a getter means "this document does not have that, or it was unreadable" — never "the parser crashed". Check for empty results rather than catching exceptions.</p>
+
+<h2 id="worked-examples">Worked examples</h2>
+<ul>
+  <li><code>09_read_pdf.php</code> — metadata, page count, text by page, fonts, annotations, images, and <code>getPageInfo()</code>.</li>
+  <li><code>19_read_encrypted.php</code> — decrypting RC4/AES documents, then reading outlines, form fields, attachments and XMP.</li>
+  <li><code>29_text_extraction.php</code> — layout- and <code>/ToUnicode</code>-aware extraction across accented Latin, subset and Type 0 fonts.</li>
+  <li><code>25_xref_recovery.php</code> — reading deliberately damaged files.</li>
+</ul>
+<p>See <a href="examples.html">Examples</a> for the full list and how to run them.</p>

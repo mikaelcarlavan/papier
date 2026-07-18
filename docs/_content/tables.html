@@ -1,0 +1,269 @@
+<!-- title: Tables -->
+<!-- description: Build tables with column widths, header and footer rows, rowspan and colspan, per-side borders, padding, vertical alignment, colours and opacity. -->
+<h1>Tables</h1>
+<p class="lead">The <code>Table</code> element draws a grid of rows and columns, wrapping cell text automatically and sizing rows to fit. <code>TableCell</code> overrides the table's defaults for any individual cell — its font, colours, alignment, padding, borders, and how many rows or columns it spans.</p>
+
+<h2 id="a-first-table">A first table</h2>
+<p>A table is created at a position, configured with chained setters, then filled row by row and added to a page.</p>
+
+<pre><code class="language-php">use Papier\Elements\{Color, Table};
+
+$regular = $doc-&gt;addFont('Helvetica');
+$bold    = $doc-&gt;addFont('Helvetica-Bold');
+
+$table = Table::create(36, 755)
+    -&gt;setColumnWidths(160, 70, 70, 70, 70)
+    -&gt;setFont($regular, 10, 'Helvetica')
+    -&gt;setHeaderFont($bold, 10, 'Helvetica-Bold')
+    -&gt;setHeaderRows(1)
+    -&gt;setHeaderBg(Color::rgb(0.12, 0.22, 0.42))
+    -&gt;setHeaderTextColor(Color::white())
+    -&gt;setCellPadding(5);
+
+$table-&gt;addRow(['Category', 'Q1', 'Q2', 'Q3', 'Q4']);
+$table-&gt;addRow(['Software Licenses', '1 240', '1 380', '1 510', '1 870']);
+$table-&gt;addRow(['Hardware', '340', '290', '410', '530']);
+
+$page-&gt;add($table);</code></pre>
+
+<p>The coordinates passed to <code>Table::create()</code> are the <strong>top-left</strong> corner. Rows then grow downward, toward decreasing y — the opposite direction from most elements, and deliberately so, because a table is read from the top and you almost always know where its top should sit.</p>
+
+<h2 id="rows-and-cells">Rows and cells</h2>
+<p><code>addRow()</code> takes an array whose entries may be plain strings or <code>TableCell</code> objects, mixed freely. Strings inherit every table default; cells override selectively.</p>
+
+<pre><code class="language-php">use Papier\Elements\TableCell;
+
+$table-&gt;addRow(['Alice', 'Engineer', 'alice@example.com']);
+
+$table-&gt;addRow([
+    TableCell::make('Total')-&gt;align('left')-&gt;font($bold, 10, 'Helvetica-Bold'),
+    TableCell::make('2 890')-&gt;font($bold, 10, 'Helvetica-Bold'),
+    'unstyled',
+]);</code></pre>
+
+<p>Building rows in a loop from an array of data is the normal case, and mixing forms lets you decorate only the cells that need it:</p>
+
+<pre><code class="language-php">foreach ($rows as [$name, $uptime, $state]) {
+    $table-&gt;addRow([
+        $name,
+        TableCell::make($uptime)-&gt;align('right'),
+        TableCell::make($state)-&gt;align('center')-&gt;bg(Color::rgb(0.85, 0.95, 0.82)),
+    ]);
+}</code></pre>
+
+<h2 id="column-widths">Column widths</h2>
+<p>There are two ways to size columns, and the explicit one takes priority.</p>
+
+<pre><code class="language-php">$table-&gt;setColumnWidths(160, 70, 70, 70, 70);   // five columns, in points
+$table-&gt;setWidth(451);                          // total width, split equally</code></pre>
+
+<p><code>setColumnWidths()</code> is variadic, and the number of arguments defines the column count. <code>setWidth()</code> is only consulted when no explicit widths were given; it distributes the total evenly. Give a text-heavy first column significantly more room than the numeric columns beside it — that is what makes the difference between a table that wraps sensibly and one that produces three-line cells everywhere.</p>
+
+<h2 id="text-and-wrapping">Text style and wrapping</h2>
+<p>Cell text wraps automatically at word boundaries within the column width, and the row grows taller to accommodate however many lines result.</p>
+
+<pre><code class="language-php">$table-&gt;setFont($regular, 10, 'Helvetica')
+      -&gt;setTextColor(Color::gray(0.15))
+      -&gt;setTextAlign('right')
+      -&gt;setVerticalAlign('top')
+      -&gt;setLineHeight(1.3);</code></pre>
+
+<p>The third argument to <code>setFont()</code> is the base font name used for character-width metrics. Supplying it — <code>'Helvetica'</code>, <code>'Times-Roman'</code> — gives accurate AFM measurement and therefore correct line breaks and row heights. Leave it out with a standard font and the layout falls back to an estimate, which shows up as text that overflows its column or wraps a word too early.</p>
+
+<div class="note">
+<p>Always pass the base font name when using one of the 14 standard fonts. Embedded TrueType fonts carry their own metrics and do not need the hint.</p>
+</div>
+
+<p>Horizontal alignment accepts <code>'left'</code>, <code>'center'</code> and <code>'right'</code>. Right-aligning numeric columns while leaving the label column left-aligned is worth the extra call on any table containing figures: it lines the digits up so magnitudes are comparable at a glance.</p>
+
+<h2 id="row-heights">Row heights</h2>
+<pre><code class="language-php">$table-&gt;setRowHeight(24);      // fixed height for every row
+$table-&gt;setMinRowHeight(32);   // floor; rows still grow for long content</code></pre>
+
+<p>By default rows size themselves to their content plus padding. <code>setRowHeight()</code> forces a fixed height, which gives a rigid grid but clips anything that does not fit. <code>setMinRowHeight()</code> is usually the better tool: it guarantees a comfortable minimum — useful for schedule grids and forms — while still letting a long cell expand.</p>
+
+<h2 id="padding">Padding</h2>
+<p>Padding is the gap between the cell border and its text. Three setters cover increasing levels of control.</p>
+
+<pre><code class="language-php">$table-&gt;setCellPadding(5);                       // all four sides
+$table-&gt;setCellPaddingXY(8, 5);                  // horizontal, vertical
+$table-&gt;setCellPaddingFull(5, 8, 5, 8);          // top, right, bottom, left</code></pre>
+
+<p>The default is 4 pt vertically and 6 pt horizontally. More horizontal than vertical padding is the conventional choice — it keeps columns visually separated without making rows unnecessarily tall.</p>
+
+<h2 id="header-rows">Header rows</h2>
+<p>Declaring header rows tells the table that the first N rows are headings, so they can take their own font, background and text colour.</p>
+
+<pre><code class="language-php">$table-&gt;setHeaderRows(1)
+      -&gt;setHeaderFont($bold, 10, 'Helvetica-Bold')
+      -&gt;setHeaderBg(Color::rgb(0.12, 0.22, 0.42))
+      -&gt;setHeaderTextColor(Color::white());
+
+$table-&gt;addRow(['Category', 'Q1', 'Q2', 'Q3', 'Q4']);   // styled as a header</code></pre>
+
+<p>The header rows are simply the first rows you add — there is no separate method for them. Set <code>setHeaderRows(2)</code> when a table needs a two-level heading.</p>
+
+<h2 id="footer-rows">Footer rows</h2>
+<p>Footer rows work symmetrically at the bottom of the table, and are the right way to style a totals row.</p>
+
+<pre><code class="language-php">$table-&gt;setFooterRows(1)
+      -&gt;setFooterFont($bold, 10, 'Helvetica-Bold')
+      -&gt;setFooterBg(Color::rgb(0.20, 0.42, 0.25))
+      -&gt;setFooterTextColor(Color::white());
+
+// … body rows …
+
+$table-&gt;addRow(['Total', '1 070 000', '853 000', '217 000']);   // the footer</code></pre>
+
+<p>The last N rows added are treated as the footer, so the call order stays natural: configure, add the body, add the totals last.</p>
+
+<h2 id="row-backgrounds">Row backgrounds</h2>
+<pre><code class="language-php">$table-&gt;setRowBg(Color::white())
+      -&gt;setAltRowBg(Color::rgb(0.93, 0.95, 0.99));</code></pre>
+
+<p><code>setAltRowBg()</code> turns on zebra striping: alternating body rows take the alternate colour while the rest use the base row colour. On tables wider than a few columns this measurably helps the eye track across a row, and it is the cheapest readability win available. Passing <code>null</code> to <code>setRowBg()</code> leaves rows transparent so the page shows through.</p>
+
+<h2 id="borders">Borders</h2>
+<p>The outer border of the table and the inner grid lines are configured independently, which is what makes minimal and heavily ruled styles both easy.</p>
+
+<pre><code class="language-php">$table-&gt;setBorder(Color::rgb(0.3, 0.35, 0.45), 0.5)       // outer frame
+      -&gt;setInnerBorder(Color::rgb(0.7, 0.75, 0.85), 0.3); // grid lines
+
+$table-&gt;noBorder();        // remove the outer frame
+$table-&gt;noInnerBorder();   // remove the grid lines</code></pre>
+
+<p>Calling both <code>noBorder()</code> and <code>noInnerBorder()</code> produces a borderless list — the modern look, where alternating backgrounds and generous padding carry the structure instead of rules. Where you do want rules, making the inner lines lighter and thinner than the outer frame, as above, keeps the grid from competing with the data.</p>
+
+<h3 id="per-side-borders">Per-cell and per-side borders</h3>
+<p>Individual cells can override the border colour and width, or suppress specific sides.</p>
+
+<pre><code class="language-php">TableCell::make('Total')-&gt;border(Color::black(), 1.0);
+
+TableCell::make('Total')-&gt;borderSides(null, false, null, false);   // no left/right
+
+TableCell::make('Note')-&gt;noBorder();</code></pre>
+
+<p><code>borderSides()</code> takes four nullable booleans in the order top, right, bottom, left. <code>null</code> means "inherit the table's setting", <code>true</code> forces the side on, and <code>false</code> suppresses it. Dropping the vertical rules across a totals row, as in the first pattern above, visually fuses the cells into a single summary bar without needing a colspan.</p>
+
+<h2 id="spanning-cells">Spanning cells</h2>
+
+<h3 id="colspan">Colspan</h3>
+<pre><code class="language-php">$table-&gt;addRow([
+    TableCell::make('Engineering')
+        -&gt;colspan(5)
+        -&gt;align('center')
+        -&gt;bg(Color::rgb(0.78, 0.9, 0.78))
+        -&gt;font($bold, 10, 'Helvetica-Bold'),
+]);</code></pre>
+
+<p>A cell spanning every column makes an in-table section divider, which is a cleaner way to group a long list than splitting it into several tables. The row array only needs the cells that actually exist — the spanned columns are not listed.</p>
+
+<h3 id="rowspan">Rowspan</h3>
+<pre><code class="language-php">$table-&gt;addRow([
+    TableCell::make('09:00')-&gt;align('center'),
+    TableCell::make('Team Stand-up')-&gt;align('center')-&gt;valign('middle'),
+    TableCell::make("Lab / Experiments\n(all morning)")
+        -&gt;rowspan(3)-&gt;align('center')-&gt;valign('middle'),
+]);
+
+$table-&gt;addRow([
+    TableCell::make('09:30')-&gt;align('center'),
+    TableCell::make('Sprint Planning')-&gt;align('center'),
+    // column 2 is occupied by the rowspan above — omit it
+]);</code></pre>
+
+<div class="warn">
+<p>Rows following a rowspan must <strong>omit</strong> the cells covered by the span. Including them shifts every subsequent cell in that row one column to the right.</p>
+</div>
+
+<p>Explicit newlines in cell text are honoured alongside automatic wrapping, so <code>"Lab / Experiments\n(all morning)"</code> breaks where you asked.</p>
+
+<h2 id="vertical-alignment">Vertical alignment</h2>
+<pre><code class="language-php">$table-&gt;setVerticalAlign('top');                      // table-wide default
+
+TableCell::make('Centred')-&gt;valign('middle');
+TableCell::make('Bottom')-&gt;valign('bottom');</code></pre>
+
+<p>Accepted values are <code>'top'</code>, <code>'middle'</code> and <code>'bottom'</code>. Vertical alignment only becomes visible when a row is taller than its content — because a neighbouring cell wrapped to several lines, because of a rowspan, or because a minimum row height was set. Centring merged rowspan cells is the usual reason to reach for it.</p>
+
+<h2 id="colours-per-cell">Per-cell colours and fonts</h2>
+<p>Any cell can override the table's background, text colour and font. Encoding status through colour is the classic use:</p>
+
+<pre><code class="language-php">$statusColor = match ($state) {
+    'OK'       =&gt; Color::rgb(0.1, 0.55, 0.1),
+    'DEGRADED' =&gt; Color::rgb(0.7, 0.5, 0.0),
+    default    =&gt; Color::rgb(0.75, 0.1, 0.1),
+};
+
+$table-&gt;addRow([
+    $service,
+    TableCell::make($uptime)-&gt;align('right'),
+    TableCell::make($state)
+        -&gt;align('center')
+        -&gt;bg(Color::rgb(0.98, 0.84, 0.84))
+        -&gt;color($statusColor)
+        -&gt;font($bold, 9, 'Helvetica-Bold'),
+]);</code></pre>
+
+<p>See <a href="text.html">Text &amp; fonts</a> for the <code>Color</code> constructors.</p>
+
+<h2 id="opacity">Opacity</h2>
+<pre><code class="language-php">$ghost = Table::create(36, 752)
+    -&gt;setColumnWidths(160, 80, 80, 80)
+    -&gt;setFont($regular, 10, 'Helvetica')
+    -&gt;opacity(0.25);</code></pre>
+
+<p><code>opacity()</code> applies to the whole table — borders, backgrounds and text alike. A faded table behind the real content makes a convincing "DRAFT" watermark that still reads as tabular data.</p>
+
+<h2 id="method-reference">Method reference</h2>
+
+<h3 id="table-methods">Table</h3>
+<table>
+<thead><tr><th>Method</th><th>Purpose</th></tr></thead>
+<tbody>
+<tr><td><code>Table::create($x = 72, $y = 700)</code></td><td>Create a table anchored at its top-left corner</td></tr>
+<tr><td><code>addRow(array $cells)</code></td><td>Append a row of strings and/or <code>TableCell</code>s</td></tr>
+<tr><td><code>setColumnWidths(float ...$widths)</code></td><td>Explicit widths; sets the column count</td></tr>
+<tr><td><code>setWidth($width)</code></td><td>Total width, split equally (ignored if widths are set)</td></tr>
+<tr><td><code>setRowHeight($h)</code> / <code>setMinRowHeight($h)</code></td><td>Fixed height / minimum height</td></tr>
+<tr><td><code>setCellPadding($p)</code></td><td>Uniform padding</td></tr>
+<tr><td><code>setCellPaddingXY($h, $v)</code></td><td>Horizontal and vertical padding</td></tr>
+<tr><td><code>setCellPaddingFull($t, $r, $b, $l)</code></td><td>Per-side padding</td></tr>
+<tr><td><code>setFont($name, $size, $baseName = '')</code></td><td>Body font and metrics hint</td></tr>
+<tr><td><code>setTextColor($color)</code></td><td>Body text colour</td></tr>
+<tr><td><code>setTextAlign($align)</code></td><td><code>'left'</code>, <code>'center'</code>, <code>'right'</code></td></tr>
+<tr><td><code>setVerticalAlign($valign)</code></td><td><code>'top'</code>, <code>'middle'</code>, <code>'bottom'</code></td></tr>
+<tr><td><code>setLineHeight($multiplier)</code></td><td>Line spacing as a multiple of font size</td></tr>
+<tr><td><code>setHeaderRows($n)</code></td><td>How many leading rows are headers</td></tr>
+<tr><td><code>setHeaderFont(…)</code>, <code>setHeaderBg()</code>, <code>setHeaderTextColor()</code></td><td>Header styling</td></tr>
+<tr><td><code>setFooterRows($n)</code></td><td>How many trailing rows are footers</td></tr>
+<tr><td><code>setFooterFont(…)</code>, <code>setFooterBg()</code>, <code>setFooterTextColor()</code></td><td>Footer styling</td></tr>
+<tr><td><code>setRowBg($color)</code> / <code>setAltRowBg($color)</code></td><td>Row background and zebra stripe</td></tr>
+<tr><td><code>setBorder($color, $width = 0.5)</code></td><td>Outer frame</td></tr>
+<tr><td><code>setInnerBorder($color, $width = 0.5)</code></td><td>Grid lines</td></tr>
+<tr><td><code>noBorder()</code> / <code>noInnerBorder()</code></td><td>Suppress frame / grid</td></tr>
+<tr><td><code>opacity($alpha)</code></td><td>Whole-table transparency</td></tr>
+</tbody>
+</table>
+
+<h3 id="tablecell-methods">TableCell</h3>
+<table>
+<thead><tr><th>Method</th><th>Purpose</th></tr></thead>
+<tbody>
+<tr><td><code>TableCell::make(string $text)</code></td><td>Create a cell</td></tr>
+<tr><td><code>colspan($n)</code> / <code>rowspan($n)</code></td><td>Span columns / rows</td></tr>
+<tr><td><code>align($align)</code> / <code>valign($valign)</code></td><td>Horizontal / vertical alignment</td></tr>
+<tr><td><code>font($name, $size, $baseName = '')</code></td><td>Override the font</td></tr>
+<tr><td><code>lineHeight($multiplier)</code></td><td>Override line spacing</td></tr>
+<tr><td><code>bg($color)</code> / <code>color($color)</code></td><td>Background / text colour</td></tr>
+<tr><td><code>padding($p)</code>, <code>paddingXY($h, $v)</code>, <code>paddingFull($t, $r, $b, $l)</code></td><td>Override padding</td></tr>
+<tr><td><code>border($color, $width = -1)</code></td><td>Override border colour and width</td></tr>
+<tr><td><code>borderSides(?bool $t, ?bool $r, ?bool $b, ?bool $l)</code></td><td>Show, hide or inherit each side</td></tr>
+<tr><td><code>noBorder()</code></td><td>Suppress all four sides</td></tr>
+</tbody>
+</table>
+
+<h2 id="worked-example">Worked example</h2>
+<p><code>examples/14_table.php</code> builds a six-page document covering everything above: a striped sales table, colspan section dividers in an employee directory, a borderless feature list with wrapped multi-line cells, two side-by-side dashboards with per-cell status colours, a schedule grid using rowspan and all three vertical alignments, and a budget table with a styled footer row, a 25 % opacity watermark table, and suppressed per-cell border sides.</p>
+
+<p><code>examples/16_table_utf8_alignment.php</code> covers accented and multi-byte text in cells, where correct width measurement matters most.</p>

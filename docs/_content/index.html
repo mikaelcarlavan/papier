@@ -1,0 +1,113 @@
+<!-- title: Introduction -->
+<!-- description: Papier is a comprehensive PHP library for generating and reading PDF documents, implementing ISO 32000-1:2008 (PDF 1.7) with selected PDF 2.0 features. -->
+
+<div class="hero">
+  <h1>Papier</h1>
+  <p class="tagline">A comprehensive PHP library for generating <em>and</em> reading PDF documents — implementing <strong>ISO 32000-1:2008 (PDF 1.7)</strong> with selected <strong>ISO 32000-2 (PDF 2.0)</strong> features.</p>
+  <p class="badges">
+    <a href="https://packagist.org/packages/papier/papier"><img src="https://img.shields.io/packagist/v/papier/papier" alt="Latest stable version"></a>
+    <a href="https://packagist.org/packages/papier/papier"><img src="https://img.shields.io/packagist/dt/papier/papier" alt="Total downloads"></a>
+    <a href="https://packagist.org/packages/papier/papier"><img src="https://img.shields.io/packagist/l/papier/papier" alt="Licence"></a>
+  </p>
+  <div class="cta">
+    <a class="primary" href="quickstart.html">Get started</a>
+    <a class="secondary" href="examples.html">Browse examples</a>
+    <a class="secondary" href="https://github.com/papier/papier">GitHub</a>
+  </div>
+</div>
+
+<h2 id="what-is-papier">What is Papier?</h2>
+
+<p>Papier is a zero-dependency PHP library that writes and reads PDF files directly, rather than wrapping an external binary or a rendering engine. Everything happens in PHP: object serialisation, cross-reference construction, stream compression, font embedding, encryption, and parsing.</p>
+
+<p>It covers the whole lifecycle of a document. You can compose a page with a fluent element API, drop down to raw PDF operators when you need exact control, then open the result back up, extract its text, fill its form fields, sign it, or append a revision without rewriting a byte of the original.</p>
+
+<pre><code class="language-php">use Papier\PdfDocument;
+use Papier\Elements\{Color, Text};
+
+$doc  = PdfDocument::create();
+$font = $doc->addFont('Helvetica-Bold');
+$page = $doc->addPage();
+
+$page->add(
+    Text::write('Hello, World!')->at(72, 720)->font($font, 24)->color(Color::black()),
+);
+
+$doc->save('hello.pdf');</code></pre>
+
+<h2 id="highlights">Highlights</h2>
+
+<div class="feature-grid">
+  <div class="feature">
+    <h3>Documents &amp; pages</h3>
+    <p>Metadata (Info + XMP), viewer preferences, page labels, named destinations, rotation, and page operations: merge, split, N-up, import.</p>
+  </div>
+  <div class="feature">
+    <h3>Text &amp; fonts</h3>
+    <p>14 standard fonts, embedded TrueType/OpenType with subsetting and automatic <code>/ToUnicode</code>, Type 0 composite fonts for full Unicode and CJK, plus Type 3 glyph fonts.</p>
+  </div>
+  <div class="feature">
+    <h3>Graphics</h3>
+    <p>Paths, Bézier curves, clipping, nine colour spaces, four function types, axial/radial/mesh shadings, tiling and shading patterns, blend modes and soft masks.</p>
+  </div>
+  <div class="feature">
+    <h3>Tables &amp; layout</h3>
+    <p>Column widths, header and footer rows, rowspan, per-side borders, padding, vertical alignment, and word-wrapped text boxes.</p>
+  </div>
+  <div class="feature">
+    <h3>Forms &amp; annotations</h3>
+    <p>Seven AcroForm field types, 14 annotation subtypes including redaction, and a form filler that regenerates appearance streams on existing PDFs.</p>
+  </div>
+  <div class="feature">
+    <h3>Security</h3>
+    <p>RC4, AES-128 and AES-256 encryption with permission flags; PKCS#7 digital signatures with a visible appearance; RFC 3161 document timestamps.</p>
+  </div>
+  <div class="feature">
+    <h3>Accessibility &amp; archival</h3>
+    <p>Tagged PDF with a full structure tree and <code>/ParentTree</code>, plus PDF/A-2b and accessible PDF/A-2a output with a built-in validator.</p>
+  </div>
+  <div class="feature">
+    <h3>Reading &amp; parsing</h3>
+    <p>Layout- and <code>ToUnicode</code>-aware text extraction, object streams, hybrid-reference and linearized files, and xref recovery for damaged documents.</p>
+  </div>
+</div>
+
+<h2 id="why-papier">Why Papier?</h2>
+
+<h3 id="specification-first">Specification first</h3>
+<p>Papier is written against ISO 32000-1:2008 rather than against a set of common use cases. Structures that other libraries approximate — cross-reference streams, object streams, the structure tree, mesh shadings, CID font descriptors — are implemented as the specification defines them. That matters when your output has to survive a validator, an archival ingest pipeline, or another vendor's parser.</p>
+
+<h3 id="read-and-write">Read and write, not just write</h3>
+<p>Most PHP PDF libraries only generate. Papier also parses: it reads classic xref tables, cross-reference streams, object streams and hybrid-reference files, decrypts RC4/AES documents, and recovers files whose <code>startxref</code> is corrupt. The same object model backs both directions, so an incremental update or a signature can append to a file it has just read without disturbing the original bytes.</p>
+
+<h3 id="two-levels-of-api">Two levels of API</h3>
+<p>The element API — <code>Text</code>, <code>TextBox</code>, <code>Image</code>, <code>Table</code>, <code>Rectangle</code>, <code>Circle</code>, <code>Line</code> — is fluent and immediate. Underneath it, <code>ContentStream</code> exposes the PDF operators themselves (<code>re</code>, <code>m</code>, <code>l</code>, <code>c</code>, <code>Tf</code>, <code>Tj</code>, …). You start high and drop down only where you need to, in the same document.</p>
+
+<h3 id="type-safe">Type-safe since 3.0</h3>
+<p>Stringly-typed options were replaced by enums and fluent builders in version 3.0. Conformance levels, page rules, encryption algorithms and viewer preferences are now discoverable through IDE autocompletion, and an invalid value is a type error rather than a silently wrong PDF. See the <a href="changelog.html">changelog</a> for the migration notes.</p>
+
+<h2 id="requirements">Requirements</h2>
+
+<ul>
+  <li>PHP 8.1 or newer</li>
+  <li><code>ext-zlib</code> — stream compression (FlateDecode)</li>
+  <li><code>ext-mbstring</code> — multi-byte text handling</li>
+  <li><code>ext-openssl</code> — encryption and digital signatures</li>
+</ul>
+
+<p>No other runtime dependencies. See <a href="installation.html">Installation</a> for details.</p>
+
+<h2 id="where-to-go-next">Where to go next</h2>
+
+<ul>
+  <li><a href="installation.html">Installation</a> — Composer setup and extension checks.</li>
+  <li><a href="quickstart.html">Quick start</a> — build a real document in a few minutes.</li>
+  <li><a href="documents.html">Documents &amp; pages</a> — the core model everything else builds on.</li>
+  <li><a href="examples.html">Examples</a> — 34 runnable scripts covering every feature area.</li>
+</ul>
+
+<h2 id="licence">Licence</h2>
+
+<p>Papier is open-source software released under the <a href="https://github.com/papier/papier/blob/master/LICENSE.md">MIT licence</a>.</p>
+
+<p>The library was built with the assistance of <a href="https://claude.ai">Claude</a>, Anthropic's AI assistant, which helped design the API, implement the PDF specification, and write the examples throughout the library.</p>

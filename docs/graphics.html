@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Graphics — Papier</title>
+<meta name="description" content="Draw shapes and paths, choose colour spaces, build gradients and mesh shadings, tile patterns, and control transparency, blend modes and clipping.">
+<meta property="og:title" content="Graphics — Papier">
+<meta property="og:description" content="Draw shapes and paths, choose colour spaces, build gradients and mesh shadings, tile patterns, and control transparency, blend modes and clipping.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<script>
+(function () {
+  var t = localStorage.getItem('papier-theme');
+  if (t) document.documentElement.setAttribute('data-theme', t);
+})();
+</script>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <button class="menu-toggle" type="button" aria-label="Toggle navigation">
+<svg viewBox="0 0 20 20" width="20" height="20"><path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="index.html">
+<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 2h8l5 5v15H6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M14 2v5h5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+<span>Papier</span>
+  </a>
+  <div class="search">
+<input type="search" id="search-input" placeholder="Search documentation…" autocomplete="off" aria-label="Search documentation">
+<kbd>/</kbd>
+<div id="search-results" role="listbox"></div>
+  </div>
+  <div class="topbar-links">
+<a href="https://packagist.org/packages/papier/papier">Packagist</a>
+<a href="https://github.com/papier/papier">GitHub</a>
+<button class="theme-toggle" type="button" aria-label="Toggle dark mode">
+  <svg class="sun" viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.5 1.5M17.6 17.6l1.5 1.5M19.1 4.9l-1.5 1.5M6.4 17.6l-1.5 1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+  <svg class="moon" viewBox="0 0 24 24" width="18" height="18"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+</button>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" aria-label="Documentation">
+<div class="nav-section"><h4>Getting started</h4><ul><li><a href="index.html">Introduction</a></li><li><a href="installation.html">Installation</a></li><li><a href="quickstart.html">Quick start</a></li></ul></div><div class="nav-section"><h4>Creating PDFs</h4><ul><li><a href="documents.html">Documents &amp; pages</a></li><li><a href="text.html">Text &amp; fonts</a></li><li><a href="graphics.html" class="active">Graphics</a></li><li><a href="images.html">Images</a></li><li><a href="tables.html">Tables</a></li></ul></div><div class="nav-section"><h4>Interactivity</h4><ul><li><a href="forms.html">Forms</a></li><li><a href="annotations.html">Annotations</a></li><li><a href="navigation.html">Bookmarks &amp; navigation</a></li><li><a href="multimedia.html">Layers &amp; multimedia</a></li></ul></div><div class="nav-section"><h4>Advanced</h4><ul><li><a href="security.html">Encryption &amp; signatures</a></li><li><a href="accessibility.html">Tagged PDF &amp; PDF/A</a></li><li><a href="file-structure.html">File structure</a></li><li><a href="reading.html">Reading PDFs</a></li></ul></div><div class="nav-section"><h4>Reference</h4><ul><li><a href="examples.html">Examples</a></li><li><a href="changelog.html">Changelog</a></li></ul></div>
+  </nav>
+
+  <main id="main">
+<article class="content">
+<h1>Graphics</h1>
+<p class="lead">Papier's drawing model has two layers. The <code>Rectangle</code>, <code>Circle</code> and <code>Line</code> elements cover everyday shapes in a few lines; <code>ContentStream</code> exposes the PDF operators themselves for paths, shadings, patterns, transparency and clipping, none of which have an element equivalent.</p>
+
+<h2 id="the-coordinate-system">The coordinate system</h2>
+<p>PDF user space puts the origin at the bottom-left of the page with y increasing upward, and measures everything in points at 72 to the inch. On an A4 page the top edge is at y ≈ 841.89. If you come from a screen-drawing background, remember that larger y means higher on the page.</p>
+
+<h2 id="shape-elements">Shape elements</h2>
+<p>The three shape elements are immutable-style builders: each method returns the element, and you pass the finished object to <code>PdfPage::add()</code>.</p>
+
+<h3 id="rectangles">Rectangles</h3>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Elements</span><span class="t-kw">\</span><span class="t-op">{</span><span class="t-type">Color</span><span class="t-op">,</span> <span class="t-type">Rectangle</span><span class="t-op">}</span><span class="t-op">;</span>
+
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">add</span><span class="t-op">(</span>
+    <span class="t-type">Rectangle</span><span class="t-kw">::</span><span class="t-fn">create</span><span class="t-op">(</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">400</span><span class="t-op">,</span> <span class="t-number">200</span><span class="t-op">,</span> <span class="t-number">100</span><span class="t-op">)</span>
+        <span class="t-kw">-&gt;</span><span class="t-fn">fill</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">rgb</span><span class="t-op">(</span><span class="t-number">0.2</span><span class="t-op">,</span> <span class="t-number">0.5</span><span class="t-op">,</span> <span class="t-number">0.9</span><span class="t-op">)</span><span class="t-op">)</span>
+        <span class="t-kw">-&gt;</span><span class="t-fn">stroke</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">black</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">,</span> <span class="t-number">1.5</span><span class="t-op">)</span><span class="t-op">,</span>
+<span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<p>The arguments are x, y, width and height, with x and y naming the <strong>bottom-left</strong> corner. A rectangle can be filled, stroked, or both; <code>noFill()</code> and <code>noStroke()</code> switch either off again, which is useful when you are building a shape conditionally.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-type">Rectangle</span><span class="t-kw">::</span><span class="t-fn">create</span><span class="t-op">(</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">400</span><span class="t-op">,</span> <span class="t-number">200</span><span class="t-op">,</span> <span class="t-number">100</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">noFill</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">stroke</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">gray</span><span class="t-op">(</span><span class="t-number">0.4</span><span class="t-op">)</span><span class="t-op">,</span> <span class="t-number">0.5</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<p>Available methods: <code>at()</code>, <code>size()</code>, <code>fill()</code>, <code>stroke()</code>, <code>noFill()</code>, <code>noStroke()</code>, <code>opacity()</code>.</p>
+
+<h3 id="circles-and-ellipses">Circles and ellipses</h3>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Elements\Circle</span><span class="t-op">;</span>
+
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">add</span><span class="t-op">(</span>
+    <span class="t-type">Circle</span><span class="t-kw">::</span><span class="t-fn">create</span><span class="t-op">(</span><span class="t-number">400</span><span class="t-op">,</span> <span class="t-number">450</span><span class="t-op">,</span> <span class="t-number">50</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">fill</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">hex</span><span class="t-op">(</span><span class="t-string">&#039;#e74c3c&#039;</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">,</span>
+    <span class="t-type">Circle</span><span class="t-kw">::</span><span class="t-fn">ellipse</span><span class="t-op">(</span><span class="t-number">200</span><span class="t-op">,</span> <span class="t-number">300</span><span class="t-op">,</span> <span class="t-number">80</span><span class="t-op">,</span> <span class="t-number">40</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">fill</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">gray</span><span class="t-op">(</span><span class="t-number">0.85</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">stroke</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">black</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">,</span> <span class="t-number">1</span><span class="t-op">)</span><span class="t-op">,</span>
+<span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<p><code>create()</code> takes a centre and a radius; <code>ellipse()</code> takes a centre and separate x and y radii. Both are drawn as four Bézier curves, since PDF has no native circle primitive. Like rectangles they support <code>fill()</code>, <code>stroke()</code>, <code>noFill()</code>, <code>noStroke()</code> and <code>opacity()</code>.</p>
+
+<h3 id="lines">Lines</h3>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Elements\Line</span><span class="t-op">;</span>
+
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">add</span><span class="t-op">(</span>
+    <span class="t-type">Line</span><span class="t-kw">::</span><span class="t-fn">from</span><span class="t-op">(</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">380</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">to</span><span class="t-op">(</span><span class="t-number">523</span><span class="t-op">,</span> <span class="t-number">380</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">color</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">gray</span><span class="t-op">(</span><span class="t-number">0.5</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">width</span><span class="t-op">(</span><span class="t-number">0.5</span><span class="t-op">)</span><span class="t-op">,</span>
+    <span class="t-type">Line</span><span class="t-kw">::</span><span class="t-fn">between</span><span class="t-op">(</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">360</span><span class="t-op">,</span> <span class="t-number">523</span><span class="t-op">,</span> <span class="t-number">360</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">color</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">hex</span><span class="t-op">(</span><span class="t-string">&#039;#b03030&#039;</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">dash</span><span class="t-op">(</span><span class="t-op">[</span><span class="t-number">4</span><span class="t-op">,</span> <span class="t-number">2</span><span class="t-op">]</span><span class="t-op">)</span><span class="t-op">,</span>
+<span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<p><code>from()</code> starts a line that <code>to()</code> completes; <code>between()</code> is the same thing in one call. <code>dash()</code> takes an array of on/off lengths in points — <code>[4, 2]</code> is a 4 pt dash and a 2 pt gap, <code>[1, 3]</code> a dotted line, and an empty array restores a solid stroke. <code>opacity()</code> applies here too.</p>
+
+<h2 id="contentstream-paths">Paths with ContentStream</h2>
+<p>Anything more complex than a box or a circle needs a path, built from segments and then painted. You construct a <code>ContentStream</code>, chain operators onto it, and hand it to the page.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Content\ContentStream</span><span class="t-op">;</span>
+
+<span class="t-var">$cs</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">ContentStream</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$cs</span><span class="t-kw">-&gt;</span><span class="t-fn">save</span><span class="t-op">(</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">setFillRGB</span><span class="t-op">(</span><span class="t-number">0.95</span><span class="t-op">,</span> <span class="t-number">0.75</span><span class="t-op">,</span> <span class="t-number">0.2</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">setStrokeRGB</span><span class="t-op">(</span><span class="t-number">0.4</span><span class="t-op">,</span> <span class="t-number">0.25</span><span class="t-op">,</span> <span class="t-number">0.0</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">setLineWidth</span><span class="t-op">(</span><span class="t-number">2</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">moveTo</span><span class="t-op">(</span><span class="t-number">100</span><span class="t-op">,</span> <span class="t-number">500</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">lineTo</span><span class="t-op">(</span><span class="t-number">200</span><span class="t-op">,</span> <span class="t-number">620</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">curveTo</span><span class="t-op">(</span><span class="t-number">260</span><span class="t-op">,</span> <span class="t-number">640</span><span class="t-op">,</span> <span class="t-number">320</span><span class="t-op">,</span> <span class="t-number">600</span><span class="t-op">,</span> <span class="t-number">340</span><span class="t-op">,</span> <span class="t-number">520</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">lineTo</span><span class="t-op">(</span><span class="t-number">180</span><span class="t-op">,</span> <span class="t-number">460</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">closePath</span><span class="t-op">(</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">fillStroke</span><span class="t-op">(</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">restore</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">addContent</span><span class="t-op">(</span><span class="t-var">$cs</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<p><code>save()</code> and <code>restore()</code> push and pop the graphics state. Wrapping every self-contained piece of drawing in that pair is the single most useful habit in PDF authoring: colours, line widths, transforms and clip paths all persist otherwise, and a stray setting leaks into everything drawn afterwards.</p>
+
+<h3 id="path-construction">Path construction operators</h3>
+<table>
+<thead><tr><th>Method</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>moveTo($x, $y)</code></td><td>Start a new subpath</td></tr>
+<tr><td><code>lineTo($x, $y)</code></td><td>Straight segment to a point</td></tr>
+<tr><td><code>curveTo($x1, $y1, $x2, $y2, $x3, $y3)</code></td><td>Cubic Bézier with two control points</td></tr>
+<tr><td><code>curveToV($x2, $y2, $x3, $y3)</code></td><td>Bézier whose first control point is the current point</td></tr>
+<tr><td><code>curveToY($x1, $y1, $x3, $y3)</code></td><td>Bézier whose second control point is the endpoint</td></tr>
+<tr><td><code>rectangle($x, $y, $w, $h)</code></td><td>Complete rectangular subpath</td></tr>
+<tr><td><code>closePath()</code></td><td>Close the current subpath back to its start</td></tr>
+</tbody>
+</table>
+
+<h3 id="path-painting">Painting operators</h3>
+<p>A path does nothing until it is painted, and painting also clears it. <code>fill()</code> uses the non-zero winding rule while <code>fillEvenOdd()</code> uses the even-odd rule — the difference shows up in self-intersecting shapes and in shapes with holes, where even-odd punches the hole out and non-zero may not.</p>
+
+<table>
+<thead><tr><th>Method</th><th>Effect</th></tr></thead>
+<tbody>
+<tr><td><code>stroke()</code> / <code>closeStroke()</code></td><td>Stroke the path, optionally closing it first</td></tr>
+<tr><td><code>fill()</code> / <code>fillEvenOdd()</code></td><td>Fill using non-zero winding / even-odd</td></tr>
+<tr><td><code>fillStroke()</code> / <code>fillStrokeEvenOdd()</code></td><td>Fill then stroke</td></tr>
+<tr><td><code>closeFillStroke()</code> / <code>closeFillStrokeEvenOdd()</code></td><td>Close, fill, then stroke</td></tr>
+<tr><td><code>endPath()</code></td><td>Discard the path without painting</td></tr>
+</tbody>
+</table>
+
+<h3 id="stroke-style">Stroke style</h3>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$cs</span><span class="t-kw">-&gt;</span><span class="t-fn">setLineWidth</span><span class="t-op">(</span><span class="t-number">1.5</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">setLineCap</span><span class="t-op">(</span><span class="t-number">1</span><span class="t-op">)</span>          <span class="t-comment">// 0 butt, 1 round, 2 projecting square</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">setLineJoin</span><span class="t-op">(</span><span class="t-number">1</span><span class="t-op">)</span>         <span class="t-comment">// 0 miter, 1 round, 2 bevel</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">setMiterLimit</span><span class="t-op">(</span><span class="t-number">10</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">setDash</span><span class="t-op">(</span><span class="t-op">[</span><span class="t-number">6</span><span class="t-op">,</span> <span class="t-number">3</span><span class="t-op">]</span><span class="t-op">,</span> <span class="t-number">0</span><span class="t-op">)</span><span class="t-op">;</span>    <span class="t-comment">// pattern, phase offset</span></code></pre></div>
+
+<p>A line width of 0 is legal and means "the thinnest line the device can render" — one device pixel. That sounds appealing but produces hairlines that vanish on high-resolution printers, so prefer an explicit small width such as 0.25.</p>
+
+<h3 id="transformations">Transformations</h3>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$cs</span><span class="t-kw">-&gt;</span><span class="t-fn">save</span><span class="t-op">(</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">translate</span><span class="t-op">(</span><span class="t-number">300</span><span class="t-op">,</span> <span class="t-number">400</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">rotate</span><span class="t-op">(</span><span class="t-number">30</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">scale</span><span class="t-op">(</span><span class="t-number">1.5</span><span class="t-op">,</span> <span class="t-number">1.5</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">drawRect</span><span class="t-op">(</span><span class="t-op">-</span><span class="t-number">50</span><span class="t-op">,</span> <span class="t-op">-</span><span class="t-number">20</span><span class="t-op">,</span> <span class="t-number">100</span><span class="t-op">,</span> <span class="t-number">40</span><span class="t-op">,</span> <span class="t-fn">true</span><span class="t-op">,</span> <span class="t-fn">false</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">restore</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<p>Transforms concatenate onto the current transformation matrix and affect everything drawn afterwards, which is why they must be bracketed by <code>save()</code> and <code>restore()</code>. The order matters: translating then rotating pivots about the new origin, whereas rotating then translating moves along the rotated axes. <code>transform($a, $b, $c, $d, $e, $f)</code> sets an arbitrary matrix directly.</p>
+
+<h3 id="drawing-shortcuts">Drawing shortcuts</h3>
+<p><code>ContentStream</code> carries a few convenience methods that build and paint a shape in one call, which keeps hand-written streams readable.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$cs</span><span class="t-kw">-&gt;</span><span class="t-fn">drawLine</span><span class="t-op">(</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">300</span><span class="t-op">,</span> <span class="t-number">523</span><span class="t-op">,</span> <span class="t-number">300</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">stroke</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$cs</span><span class="t-kw">-&gt;</span><span class="t-fn">drawRect</span><span class="t-op">(</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">200</span><span class="t-op">,</span> <span class="t-number">200</span><span class="t-op">,</span> <span class="t-number">60</span><span class="t-op">,</span> <span class="t-fn">fill</span><span class="t-op">:</span> <span class="t-fn">true</span><span class="t-op">,</span> <span class="t-fn">strokeRect</span><span class="t-op">:</span> <span class="t-fn">false</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$cs</span><span class="t-kw">-&gt;</span><span class="t-fn">drawCircle</span><span class="t-op">(</span><span class="t-number">300</span><span class="t-op">,</span> <span class="t-number">150</span><span class="t-op">,</span> <span class="t-number">40</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">fill</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$cs</span><span class="t-kw">-&gt;</span><span class="t-fn">drawEllipse</span><span class="t-op">(</span><span class="t-number">400</span><span class="t-op">,</span> <span class="t-number">150</span><span class="t-op">,</span> <span class="t-number">60</span><span class="t-op">,</span> <span class="t-number">30</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">stroke</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<h2 id="colour-spaces">Colour spaces</h2>
+<p>The device colour spaces need no setup — set the components and paint.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$cs</span><span class="t-kw">-&gt;</span><span class="t-fn">setFillGray</span><span class="t-op">(</span><span class="t-number">0.5</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">setStrokeGray</span><span class="t-op">(</span><span class="t-number">0.0</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$cs</span><span class="t-kw">-&gt;</span><span class="t-fn">setFillRGB</span><span class="t-op">(</span><span class="t-number">0.2</span><span class="t-op">,</span> <span class="t-number">0.5</span><span class="t-op">,</span> <span class="t-number">0.9</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">setStrokeRGB</span><span class="t-op">(</span><span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">0</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$cs</span><span class="t-kw">-&gt;</span><span class="t-fn">setFillCMYK</span><span class="t-op">(</span><span class="t-number">0.0</span><span class="t-op">,</span> <span class="t-number">0.8</span><span class="t-op">,</span> <span class="t-number">0.7</span><span class="t-op">,</span> <span class="t-number">0.1</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<p>Device spaces are convenient but not colour-managed: the same RGB triple renders differently on different devices. When colour fidelity matters, register a calibrated or ICC-based space as a page resource and select it by name.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Graphics\Color\ICCBased</span><span class="t-op">;</span>
+
+<span class="t-var">$icc</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">ICCBased</span><span class="t-op">(</span><span class="t-var">$profileBytes</span><span class="t-op">,</span> <span class="t-number">3</span><span class="t-op">)</span><span class="t-op">;</span>            <span class="t-comment">// 3-component (RGB) profile</span>
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">getResources</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">addColorSpace</span><span class="t-op">(</span><span class="t-string">&#039;CS0&#039;</span><span class="t-op">,</span> <span class="t-var">$icc</span><span class="t-kw">-&gt;</span><span class="t-fn">toPdfObject</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$cs</span><span class="t-kw">-&gt;</span><span class="t-fn">setFillColorSpace</span><span class="t-op">(</span><span class="t-string">&#039;CS0&#039;</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">setFillColor</span><span class="t-op">(</span><span class="t-number">0.2</span><span class="t-op">,</span> <span class="t-number">0.5</span><span class="t-op">,</span> <span class="t-number">0.9</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<table>
+<thead><tr><th>Class</th><th>Use</th></tr></thead>
+<tbody>
+<tr><td><code>DeviceGray</code>, <code>DeviceRGB</code>, <code>DeviceCMYK</code></td><td>Uncalibrated device colour</td></tr>
+<tr><td><code>CalGray</code>, <code>CalRGB</code></td><td>Calibrated device colour with a white point and gamma</td></tr>
+<tr><td><code>Lab</code></td><td>Device-independent perceptual colour</td></tr>
+<tr><td><code>ICCBased</code></td><td>Colour defined by an embedded ICC profile</td></tr>
+<tr><td><code>Indexed</code></td><td>Palette lookup into a base space</td></tr>
+<tr><td><code>Separation</code></td><td>A single named colorant, e.g. a spot ink or varnish</td></tr>
+<tr><td><code>DeviceN</code></td><td>Several named colorants at once</td></tr>
+<tr><td><code>PatternColorSpace</code></td><td>Selects a pattern rather than a colour</td></tr>
+</tbody>
+</table>
+
+<p>All of them live in <code>Papier\Graphics\Color</code>, extend <code>ColorSpace</code>, and expose <code>getName()</code>, <code>getComponentCount()</code> and <code>toPdfObject()</code>. <code>Separation</code> is what you reach for when a job specifies a Pantone ink: the space names the colorant and carries a tint-transform function describing how to approximate it on devices that lack that ink.</p>
+
+<div class="note">
+<p><code>setFillColor()</code> takes numeric components. <code>setFillColorN()</code> is the variant that also accepts a pattern name, which is how pattern fills are selected.</p>
+</div>
+
+<h2 id="functions">Functions</h2>
+<p>PDF functions map input numbers to output numbers, and they are the machinery behind gradients and tint transforms. Papier implements all four types.</p>
+
+<h3 id="exponential-functions">Exponential interpolation (type 2)</h3>
+<p>The workhorse for a simple two-colour gradient: it interpolates between a start colour <code>c0</code> and an end colour <code>c1</code>.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Function\ExponentialFunction</span><span class="t-op">;</span>
+
+<span class="t-var">$grad</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">ExponentialFunction</span><span class="t-op">(</span>
+    <span class="t-fn">domain</span><span class="t-op">:</span> <span class="t-op">[</span><span class="t-number">0.0</span><span class="t-op">,</span> <span class="t-number">1.0</span><span class="t-op">]</span><span class="t-op">,</span>
+    <span class="t-fn">range</span><span class="t-op">:</span>  <span class="t-op">[</span><span class="t-number">0.0</span><span class="t-op">,</span> <span class="t-number">1.0</span><span class="t-op">,</span> <span class="t-number">0.0</span><span class="t-op">,</span> <span class="t-number">1.0</span><span class="t-op">,</span> <span class="t-number">0.0</span><span class="t-op">,</span> <span class="t-number">1.0</span><span class="t-op">]</span><span class="t-op">,</span>   <span class="t-comment">// three components, each 0..1</span>
+    <span class="t-fn">n</span><span class="t-op">:</span>      <span class="t-number">1.0</span><span class="t-op">,</span>                               <span class="t-comment">// 1.0 = linear</span>
+    <span class="t-fn">c0</span><span class="t-op">:</span>     <span class="t-op">[</span><span class="t-number">0.9</span><span class="t-op">,</span> <span class="t-number">0.1</span><span class="t-op">,</span> <span class="t-number">0.1</span><span class="t-op">]</span><span class="t-op">,</span>                   <span class="t-comment">// red</span>
+    <span class="t-fn">c1</span><span class="t-op">:</span>     <span class="t-op">[</span><span class="t-number">0.1</span><span class="t-op">,</span> <span class="t-number">0.2</span><span class="t-op">,</span> <span class="t-number">0.9</span><span class="t-op">]</span><span class="t-op">,</span>                   <span class="t-comment">// blue</span>
+<span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<p>The exponent <code>n</code> controls the easing. Leave it at 1.0 for a linear ramp; raise it to bias the blend toward <code>c0</code>, which is sometimes useful for making a highlight fall off more naturally.</p>
+
+<h3 id="stitching-functions">Stitching (type 3) — multi-stop gradients</h3>
+<p>A type 2 function has exactly two colour stops. For more, stitch several of them together across subintervals of the domain.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Function</span><span class="t-kw">\</span><span class="t-op">{</span><span class="t-type">ExponentialFunction</span><span class="t-op">,</span> <span class="t-type">StitchingFunction</span><span class="t-op">}</span><span class="t-op">;</span>
+
+<span class="t-var">$stitch</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">StitchingFunction</span><span class="t-op">(</span>
+    <span class="t-fn">domain</span><span class="t-op">:</span>    <span class="t-op">[</span><span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">1</span><span class="t-op">]</span><span class="t-op">,</span>
+    <span class="t-fn">range</span><span class="t-op">:</span>     <span class="t-op">[</span><span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">1</span><span class="t-op">,</span> <span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">1</span><span class="t-op">,</span> <span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">1</span><span class="t-op">]</span><span class="t-op">,</span>
+    <span class="t-fn">functions</span><span class="t-op">:</span> <span class="t-op">[</span>
+        <span class="t-kw">new</span> <span class="t-type">ExponentialFunction</span><span class="t-op">(</span><span class="t-op">[</span><span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">1</span><span class="t-op">]</span><span class="t-op">,</span> <span class="t-op">[</span><span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">1</span><span class="t-op">,</span> <span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">1</span><span class="t-op">,</span> <span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">1</span><span class="t-op">]</span><span class="t-op">,</span> <span class="t-number">1.0</span><span class="t-op">,</span> <span class="t-op">[</span><span class="t-number">1</span><span class="t-op">,</span> <span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">0</span><span class="t-op">]</span><span class="t-op">,</span> <span class="t-op">[</span><span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">1</span><span class="t-op">,</span> <span class="t-number">0</span><span class="t-op">]</span><span class="t-op">)</span><span class="t-op">,</span>
+        <span class="t-kw">new</span> <span class="t-type">ExponentialFunction</span><span class="t-op">(</span><span class="t-op">[</span><span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">1</span><span class="t-op">]</span><span class="t-op">,</span> <span class="t-op">[</span><span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">1</span><span class="t-op">,</span> <span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">1</span><span class="t-op">,</span> <span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">1</span><span class="t-op">]</span><span class="t-op">,</span> <span class="t-number">1.0</span><span class="t-op">,</span> <span class="t-op">[</span><span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">1</span><span class="t-op">,</span> <span class="t-number">0</span><span class="t-op">]</span><span class="t-op">,</span> <span class="t-op">[</span><span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">1</span><span class="t-op">]</span><span class="t-op">)</span><span class="t-op">,</span>
+    <span class="t-op">]</span><span class="t-op">,</span>
+    <span class="t-fn">bounds</span><span class="t-op">:</span>    <span class="t-op">[</span><span class="t-number">0.5</span><span class="t-op">]</span><span class="t-op">,</span>          <span class="t-comment">// split point between the two subfunctions</span>
+    <span class="t-fn">encode</span><span class="t-op">:</span>    <span class="t-op">[</span><span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">1</span><span class="t-op">,</span> <span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">1</span><span class="t-op">]</span><span class="t-op">,</span>   <span class="t-comment">// map each subinterval onto its function&#039;s domain</span>
+<span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<p><code>bounds</code> has one entry fewer than <code>functions</code>: n subfunctions need n − 1 interior split points. <code>encode</code> has two entries per subfunction. Adjacent stops must share a colour, as above, or the gradient will band at the seam.</p>
+
+<h3 id="other-function-types">Sampled and PostScript functions</h3>
+<p><code>SampledFunction</code> (type 0) interpolates a table of sampled values, which is how a scanned transfer curve or an arbitrary measured response gets into a PDF. <code>PostScriptFunction</code> (type 4) evaluates a small calculator program written in a restricted PostScript subset, giving you arithmetic and conditionals for tint transforms that cannot be tabulated.</p>
+
+<h2 id="shadings">Shadings</h2>
+<p>A shading paints a smoothly varying colour field. Register one as a page resource, then paint it with the <code>sh</code> operator, which fills the current clipping region.</p>
+
+<h3 id="axial-shadings">Axial (linear) gradients</h3>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Graphics\Shading\AxialShading</span><span class="t-op">;</span>
+
+<span class="t-var">$axial</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">AxialShading</span><span class="t-op">(</span><span class="t-string">&#039;DeviceRGB&#039;</span><span class="t-op">,</span> <span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">523</span><span class="t-op">,</span> <span class="t-number">0</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// colour space, x0,y0, x1,y1</span>
+<span class="t-var">$axial</span><span class="t-kw">-&gt;</span><span class="t-fn">setFunction</span><span class="t-op">(</span><span class="t-var">$grad</span><span class="t-kw">-&gt;</span><span class="t-fn">toPdfObject</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">setExtend</span><span class="t-op">(</span><span class="t-fn">true</span><span class="t-op">,</span> <span class="t-fn">true</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">getResources</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">addShading</span><span class="t-op">(</span><span class="t-string">&#039;Sh1&#039;</span><span class="t-op">,</span> <span class="t-var">$axial</span><span class="t-kw">-&gt;</span><span class="t-fn">toDictionary</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$cs</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">ContentStream</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$cs</span><span class="t-kw">-&gt;</span><span class="t-fn">save</span><span class="t-op">(</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">drawRect</span><span class="t-op">(</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">720</span><span class="t-op">,</span> <span class="t-number">451</span><span class="t-op">,</span> <span class="t-number">40</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">clip</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">endPath</span><span class="t-op">(</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">shading</span><span class="t-op">(</span><span class="t-string">&#039;Sh1&#039;</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">restore</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">addContent</span><span class="t-op">(</span><span class="t-var">$cs</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<p>The two points define the gradient axis; colour is constant along lines perpendicular to it. Note the pattern of the drawing code: set a clip path, discard the path with <code>endPath()</code>, then call <code>shading()</code>. Without the clip, the shading floods the whole page.</p>
+
+<p><code>setExtend(true, true)</code> continues the end colours beyond the axis endpoints. With extension off, the area outside the axis is left unpainted, which typically shows as a hard edge.</p>
+
+<h3 id="radial-shadings">Radial gradients</h3>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Graphics\Shading\RadialShading</span><span class="t-op">;</span>
+
+<span class="t-var">$radial</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">RadialShading</span><span class="t-op">(</span><span class="t-string">&#039;DeviceRGB&#039;</span><span class="t-op">,</span> <span class="t-number">297</span><span class="t-op">,</span> <span class="t-number">660</span><span class="t-op">,</span> <span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">297</span><span class="t-op">,</span> <span class="t-number">660</span><span class="t-op">,</span> <span class="t-number">80</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$radial</span><span class="t-kw">-&gt;</span><span class="t-fn">setFunction</span><span class="t-op">(</span><span class="t-var">$grad</span><span class="t-kw">-&gt;</span><span class="t-fn">toPdfObject</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">setExtend</span><span class="t-op">(</span><span class="t-fn">true</span><span class="t-op">,</span> <span class="t-fn">true</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">getResources</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">addShading</span><span class="t-op">(</span><span class="t-string">&#039;Sh2&#039;</span><span class="t-op">,</span> <span class="t-var">$radial</span><span class="t-kw">-&gt;</span><span class="t-fn">toDictionary</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$cs</span><span class="t-kw">-&gt;</span><span class="t-fn">save</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">drawCircle</span><span class="t-op">(</span><span class="t-number">297</span><span class="t-op">,</span> <span class="t-number">660</span><span class="t-op">,</span> <span class="t-number">80</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">clip</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">endPath</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">shading</span><span class="t-op">(</span><span class="t-string">&#039;Sh2&#039;</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">restore</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<p>The six numbers are two circles: centre and radius of the start circle, then of the end circle. Concentric circles with a zero start radius give the familiar centre glow. Offsetting the centres produces a cone, which is how you fake a lit sphere.</p>
+
+<p>Both shading types also accept <code>setDomain()</code> to restrict the parameter range, <code>setBackground()</code>, <code>setBBox()</code> and <code>setAntiAlias()</code> from the shared base class.</p>
+
+<h3 id="mesh-shadings">Mesh shadings (types 4–7)</h3>
+<p>Axial and radial gradients vary in one dimension. Mesh shadings define colour across a surface, which is what you need for anything resembling a soft-shaded illustration. Papier implements all four mesh types, and each is streamed rather than stored as a plain dictionary — hence <code>toStream()</code> instead of <code>toDictionary()</code>.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Graphics\Shading\GouraudTriangleShading</span><span class="t-op">;</span>
+
+<span class="t-var">$tri</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">GouraudTriangleShading</span><span class="t-op">(</span><span class="t-string">&#039;DeviceRGB&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$tri</span><span class="t-kw">-&gt;</span><span class="t-fn">addTriangle</span><span class="t-op">(</span>
+    <span class="t-op">[</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">600</span><span class="t-op">]</span><span class="t-op">,</span>  <span class="t-op">[</span><span class="t-number">1</span><span class="t-op">,</span> <span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">0</span><span class="t-op">]</span><span class="t-op">,</span>     <span class="t-comment">// vertex, colour</span>
+    <span class="t-op">[</span><span class="t-number">222</span><span class="t-op">,</span> <span class="t-number">600</span><span class="t-op">]</span><span class="t-op">,</span> <span class="t-op">[</span><span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">1</span><span class="t-op">,</span> <span class="t-number">0</span><span class="t-op">]</span><span class="t-op">,</span>
+    <span class="t-op">[</span><span class="t-number">147</span><span class="t-op">,</span> <span class="t-number">740</span><span class="t-op">]</span><span class="t-op">,</span> <span class="t-op">[</span><span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">1</span><span class="t-op">]</span><span class="t-op">,</span>
+<span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">getResources</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">addShading</span><span class="t-op">(</span><span class="t-string">&#039;M4&#039;</span><span class="t-op">,</span> <span class="t-var">$tri</span><span class="t-kw">-&gt;</span><span class="t-fn">toStream</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$cs</span><span class="t-kw">-&gt;</span><span class="t-fn">save</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">drawRect</span><span class="t-op">(</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">600</span><span class="t-op">,</span> <span class="t-number">150</span><span class="t-op">,</span> <span class="t-number">140</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">clip</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">endPath</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">shading</span><span class="t-op">(</span><span class="t-string">&#039;M4&#039;</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">restore</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<table>
+<thead><tr><th>Type</th><th>Class</th><th>Geometry</th></tr></thead>
+<tbody>
+<tr><td>4</td><td><code>GouraudTriangleShading</code></td><td>Free-form triangle mesh</td></tr>
+<tr><td>5</td><td><code>LatticeTriangleShading</code></td><td>Triangle mesh on a regular lattice</td></tr>
+<tr><td>6</td><td><code>CoonsPatchShading</code></td><td>Coons patches, 12 control points each</td></tr>
+<tr><td>7</td><td><code>TensorPatchShading</code></td><td>Tensor-product patches, 16 control points</td></tr>
+</tbody>
+</table>
+
+<p>Type 5 takes a <code>verticesPerRow</code> count in its constructor and you feed it vertices row by row with <code>addVertex($x, $y, $color)</code> — simpler than type 4 when your data is already a grid. Types 6 and 7 take <code>addPatch($points, $colors)</code>, where the patch is bounded by four Bézier curves and the four corner colours are interpolated across the interior; the tensor variant adds four interior control points for finer shaping.</p>
+
+<p>Mesh data is encoded with 16-bit coordinates and 8-bit colour components, so the coordinate range must be declared. <code>setCoordinateRange($xmin, $xmax, $ymin, $ymax)</code> does that when the automatic bounds are not what you want. See <code>examples/22_mesh_shadings.php</code>.</p>
+
+<h2 id="patterns">Patterns</h2>
+<p>A pattern is a paint source selected through the Pattern colour space instead of a colour value. Because it is a paint rather than a shape, it fills <em>anything</em> — including text glyphs.</p>
+
+<h3 id="tiling-patterns">Tiling patterns</h3>
+<p>A tiling pattern is a small content stream repeated across the fill area.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Graphics\Pattern\TilingPattern</span><span class="t-op">;</span>
+
+<span class="t-var">$tile</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">TilingPattern</span><span class="t-op">(</span><span class="t-number">20</span><span class="t-op">,</span> <span class="t-number">20</span><span class="t-op">,</span> <span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">20</span><span class="t-op">,</span> <span class="t-number">20</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// xStep, yStep, bbox</span>
+
+<span class="t-var">$tile</span><span class="t-kw">-&gt;</span><span class="t-fn">getContent</span><span class="t-op">(</span><span class="t-op">)</span>
+     <span class="t-kw">-&gt;</span><span class="t-fn">setFillRGB</span><span class="t-op">(</span><span class="t-number">0.8</span><span class="t-op">,</span> <span class="t-number">0.9</span><span class="t-op">,</span> <span class="t-number">1.0</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">drawRect</span><span class="t-op">(</span><span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">20</span><span class="t-op">,</span> <span class="t-number">20</span><span class="t-op">,</span> <span class="t-fn">true</span><span class="t-op">,</span> <span class="t-fn">false</span><span class="t-op">)</span>
+     <span class="t-kw">-&gt;</span><span class="t-fn">setFillRGB</span><span class="t-op">(</span><span class="t-number">0.3</span><span class="t-op">,</span> <span class="t-number">0.5</span><span class="t-op">,</span> <span class="t-number">0.8</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">drawCircle</span><span class="t-op">(</span><span class="t-number">10</span><span class="t-op">,</span> <span class="t-number">10</span><span class="t-op">,</span> <span class="t-number">6</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">fill</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">getResources</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">addPattern</span><span class="t-op">(</span><span class="t-string">&#039;P1&#039;</span><span class="t-op">,</span> <span class="t-var">$tile</span><span class="t-kw">-&gt;</span><span class="t-fn">getStream</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$cs</span><span class="t-kw">-&gt;</span><span class="t-fn">save</span><span class="t-op">(</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">setFillColorSpace</span><span class="t-op">(</span><span class="t-string">&#039;Pattern&#039;</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">setFillColorN</span><span class="t-op">(</span><span class="t-string">&#039;P1&#039;</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">drawRect</span><span class="t-op">(</span><span class="t-number">310</span><span class="t-op">,</span> <span class="t-number">420</span><span class="t-op">,</span> <span class="t-number">200</span><span class="t-op">,</span> <span class="t-number">80</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">fill</span><span class="t-op">(</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">restore</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<p>The step values control the spacing between tile origins. Making them larger than the bounding box leaves gaps; smaller makes tiles overlap, which is one way to build a dense texture from a sparse cell. The pattern carries its own <code>PdfResources</code> via <code>getResources()</code>, so a tile can itself reference images or fonts.</p>
+
+<h3 id="shading-patterns">Shading patterns</h3>
+<p>A shading pattern wraps a shading so it can be used as a fill colour. This is strictly more flexible than the clip-and-<code>sh</code> approach: you paint the shape normally and the gradient follows its outline, whatever that outline is.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Graphics\Pattern\ShadingPattern</span><span class="t-op">;</span>
+
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">getResources</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">addPattern</span><span class="t-op">(</span><span class="t-string">&#039;GradH&#039;</span><span class="t-op">,</span> <span class="t-op">(</span><span class="t-kw">new</span> <span class="t-type">ShadingPattern</span><span class="t-op">(</span><span class="t-var">$axial</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">getDictionary</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$cs</span><span class="t-kw">-&gt;</span><span class="t-fn">save</span><span class="t-op">(</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">setFillColorSpace</span><span class="t-op">(</span><span class="t-string">&#039;Pattern&#039;</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">setFillColorN</span><span class="t-op">(</span><span class="t-string">&#039;GradH&#039;</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">drawRect</span><span class="t-op">(</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">690</span><span class="t-op">,</span> <span class="t-number">300</span><span class="t-op">,</span> <span class="t-number">60</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">fill</span><span class="t-op">(</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">restore</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<p>The same three lines fill text with the gradient, because glyph filling uses the same fill colour as any other painting operation:</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$cs</span><span class="t-kw">-&gt;</span><span class="t-fn">save</span><span class="t-op">(</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">setFillColorSpace</span><span class="t-op">(</span><span class="t-string">&#039;Pattern&#039;</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">setFillColorN</span><span class="t-op">(</span><span class="t-string">&#039;GradR&#039;</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">beginText</span><span class="t-op">(</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">setFont</span><span class="t-op">(</span><span class="t-string">&#039;FBig&#039;</span><span class="t-op">,</span> <span class="t-number">72</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">setTextPosition</span><span class="t-op">(</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">560</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">showText</span><span class="t-op">(</span><span class="t-string">&#039;PAPIER&#039;</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">endText</span><span class="t-op">(</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">restore</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<p><code>ShadingPattern</code> accepts an optional matrix in its constructor, or via <code>setMatrix()</code>, letting you rotate or scale the gradient independently of the shape. See <code>examples/27_shading_patterns.php</code> and <code>examples/08_advanced_graphics.php</code>.</p>
+
+<h2 id="transparency">Transparency and blend modes</h2>
+<p>Constant alpha and blend modes live in the extended graphics state, a dictionary registered as a page resource and selected by name.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Graphics\Transparency\ExtGState</span><span class="t-op">;</span>
+
+<span class="t-var">$gs</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">ExtGState</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$gs</span><span class="t-kw">-&gt;</span><span class="t-fn">setFillAlpha</span><span class="t-op">(</span><span class="t-number">0.5</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">setStrokeAlpha</span><span class="t-op">(</span><span class="t-number">0.8</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">setBlendMode</span><span class="t-op">(</span><span class="t-string">&#039;Multiply&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">getResources</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">addExtGState</span><span class="t-op">(</span><span class="t-string">&#039;GS1&#039;</span><span class="t-op">,</span> <span class="t-var">$gs</span><span class="t-kw">-&gt;</span><span class="t-fn">getDictionary</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$cs</span><span class="t-kw">-&gt;</span><span class="t-fn">save</span><span class="t-op">(</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">setExtGState</span><span class="t-op">(</span><span class="t-string">&#039;GS1&#039;</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">setFillRGB</span><span class="t-op">(</span><span class="t-number">1</span><span class="t-op">,</span> <span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">0</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">drawCircle</span><span class="t-op">(</span><span class="t-number">180</span><span class="t-op">,</span> <span class="t-number">460</span><span class="t-op">,</span> <span class="t-number">35</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">fill</span><span class="t-op">(</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">restore</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<p>Fill and stroke alpha are separate, so a shape can have a solid outline over a translucent interior. Blend modes take the standard PDF names: the separable set <code>Normal</code>, <code>Multiply</code>, <code>Screen</code>, <code>Overlay</code>, <code>Darken</code>, <code>Lighten</code>, <code>ColorDodge</code>, <code>ColorBurn</code>, <code>HardLight</code>, <code>SoftLight</code>, <code>Difference</code>, <code>Exclusion</code>, and the non-separable <code>Hue</code>, <code>Saturation</code>, <code>Color</code>, <code>Luminosity</code>.</p>
+
+<p><code>Multiply</code> darkens and never lightens, which makes it the right choice for highlighter effects and overlapping ink. <code>Screen</code> is its complement, useful for glows.</p>
+
+<p><code>ContentStream::setOpacity()</code> is a shorthand that creates and selects an ExtGState for you when all you need is a constant alpha. <code>ExtGState</code> can also set line width, dash, font, rendering intent, overprint and text knockout — anything that would otherwise be a separate operator.</p>
+
+<h3 id="soft-masks">Soft masks</h3>
+<p>A soft mask makes transparency vary across the page, driven by the luminosity or alpha of another piece of content. Build it with <code>SoftMask</code> and attach it to a graphics state:</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$gs</span><span class="t-kw">-&gt;</span><span class="t-fn">setSoftMask</span><span class="t-op">(</span><span class="t-var">$softMask</span><span class="t-kw">-&gt;</span><span class="t-fn">getDictionary</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<p>This is how you produce a gradient fade-out: paint a black-to-white gradient into a form XObject and use its luminosity as the mask. For image transparency specifically, PNG alpha is handled automatically — see <a href="images.html">Images</a>.</p>
+
+<h2 id="clipping">Clipping</h2>
+<p>The clip operators intersect the current clipping region with the current path. Everything painted afterwards is confined to that region.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$cs</span><span class="t-kw">-&gt;</span><span class="t-fn">save</span><span class="t-op">(</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">drawCircle</span><span class="t-op">(</span><span class="t-number">300</span><span class="t-op">,</span> <span class="t-number">400</span><span class="t-op">,</span> <span class="t-number">80</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">clip</span><span class="t-op">(</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">endPath</span><span class="t-op">(</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">setFillRGB</span><span class="t-op">(</span><span class="t-number">0.2</span><span class="t-op">,</span> <span class="t-number">0.6</span><span class="t-op">,</span> <span class="t-number">0.9</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">drawRect</span><span class="t-op">(</span><span class="t-number">200</span><span class="t-op">,</span> <span class="t-number">300</span><span class="t-op">,</span> <span class="t-number">200</span><span class="t-op">,</span> <span class="t-number">200</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">fill</span><span class="t-op">(</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">restore</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<p>Two details trip people up. First, <code>clip()</code> does not itself paint or clear the path — you must follow it with a painting operator, and <code>endPath()</code> is the one that paints nothing. Second, clipping only ever shrinks the region: there is no operator to widen it again. The only way back is <code>restore()</code>, which is why clipped drawing must always be bracketed by <code>save()</code> and <code>restore()</code>.</p>
+
+<p><code>clipEvenOdd()</code> is the even-odd counterpart, which you want when the clip shape has holes. Text can also contribute to the clip path through rendering modes 4 to 7; see <a href="text.html">Text &amp; fonts</a>.</p>
+
+<p>See <code>examples/03_graphics.php</code> for paths, shapes and clipping, and <code>examples/08_advanced_graphics.php</code> for shadings, patterns and transparency together.</p>
+
+<nav class="pager"><a class="prev" href="text.html"><span>Previous</span>Text &amp; fonts</a><a class="next" href="images.html"><span>Next</span>Images</a></nav>
+</article>
+  </main>
+
+  <aside class="toc"><h4>On this page</h4><ul><li class="lvl-2"><a href="#the-coordinate-system">The coordinate system</a></li><li class="lvl-2"><a href="#shape-elements">Shape elements</a></li><li class="lvl-3"><a href="#rectangles">Rectangles</a></li><li class="lvl-3"><a href="#circles-and-ellipses">Circles and ellipses</a></li><li class="lvl-3"><a href="#lines">Lines</a></li><li class="lvl-2"><a href="#contentstream-paths">Paths with ContentStream</a></li><li class="lvl-3"><a href="#path-construction">Path construction operators</a></li><li class="lvl-3"><a href="#path-painting">Painting operators</a></li><li class="lvl-3"><a href="#stroke-style">Stroke style</a></li><li class="lvl-3"><a href="#transformations">Transformations</a></li><li class="lvl-3"><a href="#drawing-shortcuts">Drawing shortcuts</a></li><li class="lvl-2"><a href="#colour-spaces">Colour spaces</a></li><li class="lvl-2"><a href="#functions">Functions</a></li><li class="lvl-3"><a href="#exponential-functions">Exponential interpolation (type 2)</a></li><li class="lvl-3"><a href="#stitching-functions">Stitching (type 3) — multi-stop gradients</a></li><li class="lvl-3"><a href="#other-function-types">Sampled and PostScript functions</a></li><li class="lvl-2"><a href="#shadings">Shadings</a></li><li class="lvl-3"><a href="#axial-shadings">Axial (linear) gradients</a></li><li class="lvl-3"><a href="#radial-shadings">Radial gradients</a></li><li class="lvl-3"><a href="#mesh-shadings">Mesh shadings (types 4–7)</a></li><li class="lvl-2"><a href="#patterns">Patterns</a></li><li class="lvl-3"><a href="#tiling-patterns">Tiling patterns</a></li><li class="lvl-3"><a href="#shading-patterns">Shading patterns</a></li><li class="lvl-2"><a href="#transparency">Transparency and blend modes</a></li><li class="lvl-3"><a href="#soft-masks">Soft masks</a></li><li class="lvl-2"><a href="#clipping">Clipping</a></li></ul></aside>
+</div>
+
+<footer class="footer">
+  <p>Papier — PHP PDF library implementing ISO 32000-1:2008. Released under the MIT licence.</p>
+</footer>
+
+<script src="assets/docs.js"></script>
+</body>
+</html>

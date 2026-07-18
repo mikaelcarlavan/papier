@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>File structure — Papier</title>
+<meta name="description" content="How a PDF file is laid out on disk — objects, xref, trailer, object streams, incremental updates, xref recovery, and stream filters.">
+<meta property="og:title" content="File structure — Papier">
+<meta property="og:description" content="How a PDF file is laid out on disk — objects, xref, trailer, object streams, incremental updates, xref recovery, and stream filters.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<script>
+(function () {
+  var t = localStorage.getItem('papier-theme');
+  if (t) document.documentElement.setAttribute('data-theme', t);
+})();
+</script>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <button class="menu-toggle" type="button" aria-label="Toggle navigation">
+<svg viewBox="0 0 20 20" width="20" height="20"><path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="index.html">
+<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 2h8l5 5v15H6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M14 2v5h5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+<span>Papier</span>
+  </a>
+  <div class="search">
+<input type="search" id="search-input" placeholder="Search documentation…" autocomplete="off" aria-label="Search documentation">
+<kbd>/</kbd>
+<div id="search-results" role="listbox"></div>
+  </div>
+  <div class="topbar-links">
+<a href="https://packagist.org/packages/papier/papier">Packagist</a>
+<a href="https://github.com/papier/papier">GitHub</a>
+<button class="theme-toggle" type="button" aria-label="Toggle dark mode">
+  <svg class="sun" viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.5 1.5M17.6 17.6l1.5 1.5M19.1 4.9l-1.5 1.5M6.4 17.6l-1.5 1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+  <svg class="moon" viewBox="0 0 24 24" width="18" height="18"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+</button>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" aria-label="Documentation">
+<div class="nav-section"><h4>Getting started</h4><ul><li><a href="index.html">Introduction</a></li><li><a href="installation.html">Installation</a></li><li><a href="quickstart.html">Quick start</a></li></ul></div><div class="nav-section"><h4>Creating PDFs</h4><ul><li><a href="documents.html">Documents &amp; pages</a></li><li><a href="text.html">Text &amp; fonts</a></li><li><a href="graphics.html">Graphics</a></li><li><a href="images.html">Images</a></li><li><a href="tables.html">Tables</a></li></ul></div><div class="nav-section"><h4>Interactivity</h4><ul><li><a href="forms.html">Forms</a></li><li><a href="annotations.html">Annotations</a></li><li><a href="navigation.html">Bookmarks &amp; navigation</a></li><li><a href="multimedia.html">Layers &amp; multimedia</a></li></ul></div><div class="nav-section"><h4>Advanced</h4><ul><li><a href="security.html">Encryption &amp; signatures</a></li><li><a href="accessibility.html">Tagged PDF &amp; PDF/A</a></li><li><a href="file-structure.html" class="active">File structure</a></li><li><a href="reading.html">Reading PDFs</a></li></ul></div><div class="nav-section"><h4>Reference</h4><ul><li><a href="examples.html">Examples</a></li><li><a href="changelog.html">Changelog</a></li></ul></div>
+  </nav>
+
+  <main id="main">
+<article class="content">
+<h1>File structure</h1>
+<p class="lead">A PDF is not a linear document format — it is a small object database with an index at the end. Understanding that layout explains why PDFs can be updated without being rewritten, why a single corrupt byte can make a file unopenable, and why Papier offers several ways to write the same content.</p>
+
+<h2 id="anatomy-of-a-pdf-file">Anatomy of a PDF file</h2>
+<p>Every PDF written by Papier has four parts, in this order:</p>
+<ol>
+  <li><strong>Header</strong> — a version comment such as <code>%PDF-1.7</code>, followed by a line of high-bit binary bytes so that naive file-transfer tools treat the file as binary rather than text.</li>
+  <li><strong>Body</strong> — a sequence of numbered <em>indirect objects</em>. Each one looks like <code>12 0 obj … endobj</code>, where <code>12</code> is the object number and <code>0</code> the generation number. Objects are dictionaries, arrays, numbers, strings, names, or streams; they reference one another with <code>12 0 R</code>.</li>
+  <li><strong>Cross-reference section</strong> — the index that maps each object number to its byte offset in the file.</li>
+  <li><strong>Trailer</strong> — a dictionary naming the entry points (<code>/Root</code>, <code>/Info</code>, <code>/Encrypt</code>, <code>/ID</code>, <code>/Size</code>), then <code>startxref</code> with the byte offset of the cross-reference section, then <code>%%EOF</code>.</li>
+</ol>
+<p>A reader opens a PDF <em>backwards</em>: it seeks to the end, reads <code>startxref</code>, jumps to the cross-reference section, reads the trailer, resolves <code>/Root</code> to the catalog, and walks down to the page tree. Nothing before <code>/Root</code> needs to be read at all, which is what makes random access to page 400 of a 500-page file cheap.</p>
+
+<div class="note">
+  <p>Papier builds this structure for you. You only need to care about it when you want smaller files (<a href="#object-streams">object streams</a>), want to edit a file you did not author (<a href="#incremental-updates">incremental updates</a>), or are handed a file that will not open (<a href="#recovering-damaged-files">recovery</a>).</p>
+</div>
+
+<h2 id="the-document-catalog">The document catalog</h2>
+<p>The trailer's <code>/Root</code> points at the <em>catalog</em>, the root of the object graph. From there hang the page tree (<code>/Pages</code>), the outline tree (<code>/Outlines</code>), the interactive form (<code>/AcroForm</code>), the name tree that holds attachments and named destinations (<code>/Names</code>), optional content properties (<code>/OCProperties</code>), the structure tree used for <a href="accessibility.html">accessibility</a>, and the XMP metadata stream (<code>/Metadata</code>).</p>
+<p>When reading, you can reach the catalog directly:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Parser\PdfParser</span><span class="t-op">;</span>
+
+<span class="t-var">$parser</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">PdfParser</span><span class="t-op">(</span><span class="t-fn">file_get_contents</span><span class="t-op">(</span><span class="t-string">&#039;document.pdf&#039;</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$parser</span><span class="t-kw">-&gt;</span><span class="t-fn">parse</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$catalog</span> <span class="t-op">=</span> <span class="t-var">$parser</span><span class="t-kw">-&gt;</span><span class="t-fn">getCatalog</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// PdfDictionary|null</span>
+<span class="t-var">$info</span>    <span class="t-op">=</span> <span class="t-var">$parser</span><span class="t-kw">-&gt;</span><span class="t-fn">getInfo</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>      <span class="t-comment">// the /Info dictionary</span>
+<span class="t-var">$version</span> <span class="t-op">=</span> <span class="t-var">$parser</span><span class="t-kw">-&gt;</span><span class="t-fn">getVersion</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// e.g. &#039;1.7&#039;</span></code></pre></div>
+
+<h2 id="classic-xref-tables">Classic cross-reference tables</h2>
+<p>The original PDF 1.0 index is a plain-text table. It starts with the keyword <code>xref</code>, then one or more subsections. Each subsection declares a starting object number and a count, followed by one fixed-width 20-byte entry per object: a 10-digit byte offset, a 5-digit generation number, and either <code>n</code> (in use) or <code>f</code> (free).</p>
+<p>The fixed width is the point — a reader can binary-search or index into the table without parsing it. The cost is size: 20 bytes per object, uncompressed, plus a trailer dictionary that cannot be compressed either. For a document with thousands of small objects that adds up.</p>
+<p>Papier writes a classic table by default, because it is readable by every PDF viewer ever shipped.</p>
+
+<h2 id="cross-reference-streams">Cross-reference streams</h2>
+<p>PDF 1.5 replaced the text table with a <em>cross-reference stream</em>: an ordinary stream object whose <code>/Type</code> is <code>/XRef</code> and whose payload is a binary table, normally Flate-compressed with a predictor. The trailer keys move into the stream's own dictionary, so the trailer keyword disappears entirely and <code>startxref</code> points at the stream object.</p>
+<p>Each entry has three fields whose widths are declared by <code>/W</code>: an entry type, and two type-dependent values. Type 1 entries are the familiar offset/generation pairs. Type 2 entries are new — they say "this object lives inside object stream <em>N</em>, at index <em>i</em>", which is what makes object streams possible.</p>
+<p>Papier's parser reads classic tables, cross-reference streams, and <em>hybrid-reference</em> files (which carry both, via <code>/XRefStm</code>, so that old and new readers both work). Linearized ("fast web view") files are handled too — their first-page-first layout is just a particular arrangement of the same structures.</p>
+
+<h2 id="object-streams">Object streams</h2>
+<p>An object stream (<code>/Type /ObjStm</code>) packs many non-stream objects into the payload of a single stream, which is then compressed as a unit. Instead of a hundred separately-written dictionaries with a hundred uncompressed <code>N 0 obj</code> headers, you get one compressed blob. Because Flate works better on more data, packing similar dictionaries together compresses far better than compressing each one alone.</p>
+<p>Streams themselves (content streams, images, fonts) cannot go inside an object stream — they are already binary and already filtered — so they stay in the body. Neither can the encryption dictionary, since it must be readable before decryption starts.</p>
+<p>Turn it on with one call before saving:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\PdfDocument</span><span class="t-op">;</span>
+
+<span class="t-var">$doc</span> <span class="t-op">=</span> <span class="t-type">PdfDocument</span><span class="t-kw">::</span><span class="t-fn">create</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-comment">// … build the document …</span>
+
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">useObjectStreams</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>       <span class="t-comment">// pack objects into /ObjStm + write an /XRef stream</span>
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">save</span><span class="t-op">(</span><span class="t-string">&#039;small.pdf&#039;</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p><code>useObjectStreams()</code> implies a cross-reference stream, because type 2 xref entries are the only way to point into an object stream. It takes an optional boolean so you can toggle it from a config flag:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">useObjectStreams</span><span class="t-op">(</span><span class="t-var">$config</span><span class="t-op">[</span><span class="t-string">&#039;compressPdf&#039;</span><span class="t-op">]</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>Example <code>17_compressed_objects.php</code> builds the same eight-page report twice, once classic and once compressed, and prints the size difference. The saving is largest on documents with many small objects — long outline trees, many annotations, many pages.</p>
+<div class="warn">
+  <p>Object streams require PDF 1.5. Every current viewer supports them, but if you must target a very old reader, or you are producing PDF/A-1 (which forbids them), leave the default classic layout in place.</p>
+</div>
+
+<h2 id="incremental-updates">Incremental updates</h2>
+<p>An incremental update appends a new revision to the end of an existing file instead of rewriting it. The original bytes stay byte-for-byte identical; after them come only the objects that changed or were added, a new cross-reference section covering just those objects, and a new trailer whose <code>/Prev</code> key points back at the previous cross-reference section. A reader follows the <code>/Prev</code> chain backwards and the newest definition of each object wins.</p>
+<p>This matters for two reasons. First, it is cheap — updating one dictionary in a 50 MB file appends a few hundred bytes. Second, and more importantly, it is what makes <a href="security.html">digital signatures</a> work: a signature covers a byte range of the file, so any later change must be <em>appended</em> rather than woven in, or every earlier signature breaks.</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\PdfDocument</span><span class="t-op">;</span>
+<span class="t-kw">use</span> <span class="t-kw">Papier\Metadata\DocumentInfo</span><span class="t-op">;</span>
+<span class="t-kw">use</span> <span class="t-kw">Papier\Objects</span><span class="t-kw">\</span><span class="t-op">{</span><span class="t-type">PdfDictionary</span><span class="t-op">,</span> <span class="t-type">PdfName</span><span class="t-op">,</span> <span class="t-type">PdfString</span><span class="t-op">}</span><span class="t-op">;</span>
+
+<span class="t-var">$updater</span> <span class="t-op">=</span> <span class="t-type">PdfDocument</span><span class="t-kw">::</span><span class="t-fn">openForUpdate</span><span class="t-op">(</span><span class="t-string">&#039;in.pdf&#039;</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// returns an IncrementalUpdater</span>
+
+<span class="t-var">$info</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">DocumentInfo</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$info</span><span class="t-kw">-&gt;</span><span class="t-fn">setTitle</span><span class="t-op">(</span><span class="t-string">&#039;Draft v2&#039;</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">setAuthor</span><span class="t-op">(</span><span class="t-string">&#039;Papier&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$updater</span><span class="t-kw">-&gt;</span><span class="t-fn">updateObject</span><span class="t-op">(</span><span class="t-var">$infoNum</span><span class="t-op">,</span> <span class="t-var">$info</span><span class="t-kw">-&gt;</span><span class="t-fn">getDictionary</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// override an existing object</span>
+
+<span class="t-var">$marker</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">PdfDictionary</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$marker</span><span class="t-kw">-&gt;</span><span class="t-fn">set</span><span class="t-op">(</span><span class="t-string">&#039;Type&#039;</span><span class="t-op">,</span> <span class="t-kw">new</span> <span class="t-type">PdfName</span><span class="t-op">(</span><span class="t-string">&#039;RevisionMarker&#039;</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$marker</span><span class="t-kw">-&gt;</span><span class="t-fn">set</span><span class="t-op">(</span><span class="t-string">&#039;Note&#039;</span><span class="t-op">,</span> <span class="t-kw">new</span> <span class="t-type">PdfString</span><span class="t-op">(</span><span class="t-string">&#039;Added without rewriting the file.&#039;</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$newNum</span> <span class="t-op">=</span> <span class="t-var">$updater</span><span class="t-kw">-&gt;</span><span class="t-fn">addObject</span><span class="t-op">(</span><span class="t-var">$marker</span><span class="t-op">)</span><span class="t-op">;</span>                     <span class="t-comment">// append a new object</span>
+
+<span class="t-var">$updater</span><span class="t-kw">-&gt;</span><span class="t-fn">save</span><span class="t-op">(</span><span class="t-string">&#039;out.pdf&#039;</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>To override an object you need its number. Get it from the parser's cross-reference table:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Parser\PdfParser</span><span class="t-op">;</span>
+
+<span class="t-var">$parser</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">PdfParser</span><span class="t-op">(</span><span class="t-fn">file_get_contents</span><span class="t-op">(</span><span class="t-string">&#039;in.pdf&#039;</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$parser</span><span class="t-kw">-&gt;</span><span class="t-fn">parse</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$xref</span>       <span class="t-op">=</span> <span class="t-var">$parser</span><span class="t-kw">-&gt;</span><span class="t-fn">getXref</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$infoNum</span>    <span class="t-op">=</span> <span class="t-var">$xref</span><span class="t-kw">-&gt;</span><span class="t-fn">getInfoObjectNumber</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$catalogNum</span> <span class="t-op">=</span> <span class="t-var">$xref</span><span class="t-kw">-&gt;</span><span class="t-fn">getCatalogObjectNumber</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<h3 id="incrementalupdater-api">The IncrementalUpdater API</h3>
+<ul>
+  <li><code>updateObject(int $objNum, PdfObject $obj)</code> — replace the definition of an existing object in the appended revision. Returns <code>$this</code>.</li>
+  <li><code>addObject(PdfObject $obj): int</code> — append a brand-new object and return its assigned number.</li>
+  <li><code>peekNextObjectNumber(): int</code> — the number <code>addObject()</code> would hand out next, useful when two objects must reference each other.</li>
+  <li><code>build(): string</code> — produce the complete updated file as a string.</li>
+  <li><code>save(string $path): void</code> — write it to disk.</li>
+</ul>
+<p><code>openForUpdate()</code> takes an optional second argument, the password, so encrypted files can be updated as well:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$updater</span> <span class="t-op">=</span> <span class="t-type">PdfDocument</span><span class="t-kw">::</span><span class="t-fn">openForUpdate</span><span class="t-op">(</span><span class="t-string">&#039;protected.pdf&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;secret&#039;</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>You can also construct the updater yourself from a parser you already have, which avoids parsing the file twice:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Writer\IncrementalUpdater</span><span class="t-op">;</span>
+
+<span class="t-var">$updater</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">IncrementalUpdater</span><span class="t-op">(</span><span class="t-var">$parser</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>Example <code>18_incremental_update.php</code> demonstrates the whole cycle and then verifies that the original bytes are still a literal prefix of the updated file. The same mechanism backs <code>FormFiller::save()</code> and <code>PdfSigner::sign()</code>.</p>
+
+<h2 id="recovering-damaged-files">Recovering damaged files</h2>
+<p>Because everything hangs off <code>startxref</code>, a PDF is unusually fragile at its tail. Truncated downloads, naive text-mode transfers, and buggy third-party writers all produce files whose <code>startxref</code> offset is wrong, whose cross-reference table is missing, or whose trailer never made it to disk.</p>
+<p>Papier's parser handles this without a special flag. If the offset does not land on a cross-reference section, or the section fails to parse, or the trailer has no <code>/Root</code>, it falls back to scanning the raw bytes for every <code>N G obj</code> pattern, rebuilding the offset table from what it finds, and then locating the catalog by looking for a dictionary with <code>/Type /Catalog</code>. Later definitions of the same object number win, which mirrors how revisions layer in a healthy file.</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Parser\PdfParser</span><span class="t-op">;</span>
+
+<span class="t-var">$parser</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">PdfParser</span><span class="t-op">(</span><span class="t-var">$maybeBrokenBytes</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$parser</span><span class="t-kw">-&gt;</span><span class="t-fn">parse</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>               <span class="t-comment">// rebuilds the xref automatically if needed</span>
+
+<span class="t-kw">echo</span> <span class="t-var">$parser</span><span class="t-kw">-&gt;</span><span class="t-fn">getPageCount</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-kw">echo</span> <span class="t-var">$parser</span><span class="t-kw">-&gt;</span><span class="t-fn">extractText</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>Example <code>25_xref_recovery.php</code> takes a valid document, deliberately breaks it two ways — corrupting the <code>startxref</code> offset, then stripping the cross-reference section and trailer entirely — and reads both back successfully.</p>
+<div class="note">
+  <p>Recovery is best-effort. It can rebuild the index, but it cannot invent objects that were truncated away. If the tail of the body is gone, the pages that lived there are gone too.</p>
+</div>
+
+<h2 id="stream-filters">Stream filters</h2>
+<p>Stream objects declare a <code>/Filter</code> — one name, or an array of names applied in order — plus optional <code>/DecodeParms</code>. Papier implements the filters from ISO 32000-1 §7.4 behind a single factory, so encoding and decoding are symmetric calls.</p>
+
+<h3 id="filter-table">Available filters</h3>
+<table>
+  <thead>
+    <tr><th>Name</th><th>Abbreviation</th><th>Purpose</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>FlateDecode</code></td><td><code>Fl</code></td><td>zlib/deflate. The default for content streams, fonts and metadata. Supports PNG and TIFF predictors.</td></tr>
+    <tr><td><code>LZWDecode</code></td><td><code>LZW</code></td><td>Legacy LZW compression from PDF 1.0–1.1. Read for compatibility; also supports predictors.</td></tr>
+    <tr><td><code>ASCIIHexDecode</code></td><td><code>AHx</code></td><td>Binary as hex digits, terminated by <code>&gt;</code>. Doubles the size; used when a stream must be 7-bit clean.</td></tr>
+    <tr><td><code>ASCII85Decode</code></td><td><code>A85</code></td><td>Base-85 ASCII encoding. ~25% overhead instead of 100%.</td></tr>
+    <tr><td><code>RunLengthDecode</code></td><td><code>RL</code></td><td>Simple run-length coding. Cheap and effective on flat-colour bitmaps.</td></tr>
+    <tr><td><code>CCITTFaxDecode</code></td><td><code>CCF</code></td><td>Group 4 (T.6) bilevel compression for scanned black-and-white pages. Encode and decode.</td></tr>
+    <tr><td><code>DCTDecode</code></td><td><code>DCT</code></td><td>Baseline JPEG. Pass-through — the JPEG bytes are embedded and extracted unchanged.</td></tr>
+    <tr><td><code>JBIG2Decode</code></td><td>—</td><td>JBIG2 bilevel images. Pass-through.</td></tr>
+    <tr><td><code>JPXDecode</code></td><td>—</td><td>JPEG 2000 images. Pass-through.</td></tr>
+    <tr><td><code>Crypt</code></td><td><code>Identity</code></td><td>Per-stream encryption selector used by the security handler.</td></tr>
+  </tbody>
+</table>
+<p>"Pass-through" means Papier stores and retrieves the compressed bytes without transcoding them. That is the correct behaviour for image codecs: the viewer's own decoder is faster and better than anything a PHP implementation could do, and re-encoding would lose quality. When you call <code>extractImages()</code> you get the JPEG or JPEG 2000 bytes, which you can hand straight to an image library or write to a file.</p>
+
+<h3 id="using-filters-directly">Using filters directly</h3>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Filter\FilterFactory</span><span class="t-op">;</span>
+
+<span class="t-var">$compressed</span> <span class="t-op">=</span> <span class="t-type">FilterFactory</span><span class="t-kw">::</span><span class="t-fn">encode</span><span class="t-op">(</span><span class="t-string">&#039;FlateDecode&#039;</span><span class="t-op">,</span> <span class="t-var">$rawBytes</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$roundTrip</span>  <span class="t-op">=</span> <span class="t-type">FilterFactory</span><span class="t-kw">::</span><span class="t-fn">decode</span><span class="t-op">(</span><span class="t-string">&#039;FlateDecode&#039;</span><span class="t-op">,</span> <span class="t-var">$compressed</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$filter</span> <span class="t-op">=</span> <span class="t-type">FilterFactory</span><span class="t-kw">::</span><span class="t-fn">create</span><span class="t-op">(</span><span class="t-string">&#039;ASCII85Decode&#039;</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// a FilterInterface instance</span></code></pre></div>
+<p>You can register your own filter for a non-standard name; it only has to implement <code>Papier\Filter\FilterInterface</code>:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-type">FilterFactory</span><span class="t-kw">::</span><span class="t-fn">register</span><span class="t-op">(</span><span class="t-string">&#039;MyCustomDecode&#039;</span><span class="t-op">,</span> <span class="t-type">MyCustomFilter</span><span class="t-kw">::</span><span class="t-kw">class</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<h3 id="predictors">Predictors</h3>
+<p>A predictor is a reversible transform applied <em>before</em> compression that makes data more compressible. Instead of storing each byte, you store its difference from a neighbour — in image data neighbours are usually similar, so the differences cluster near zero and Flate encodes them in far fewer bits.</p>
+<p>Papier's <code>FlateDecode</code> and <code>LZWDecode</code> honour the <code>/Predictor</code> parameter in <code>/DecodeParms</code>, together with <code>/Columns</code>, <code>/Colors</code> and <code>/BitsPerComponent</code>. Predictor 2 is the TIFF horizontal differencing scheme; predictors 10–15 are the PNG filters (None, Sub, Up, Average, Paeth, and Optimum, which chooses per row). Cross-reference streams almost always use predictor 12, because their entries are near-identical row to row.</p>
+
+<h3 id="ccitt-group-4">CCITT Group 4</h3>
+<p>Group 4 is the encoding behind fax machines and scanned document archives. It codes a bilevel image by describing each row relative to the one above it, which is extremely effective on text scans — an order of magnitude smaller than Flate on the same data is typical.</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Filter\CCITTFaxDecode</span><span class="t-op">;</span>
+<span class="t-kw">use</span> <span class="t-kw">Papier\Objects</span><span class="t-kw">\</span><span class="t-op">{</span><span class="t-type">PdfDictionary</span><span class="t-op">,</span> <span class="t-type">PdfInteger</span><span class="t-op">}</span><span class="t-op">;</span>
+
+<span class="t-var">$params</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">PdfDictionary</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$params</span><span class="t-kw">-&gt;</span><span class="t-fn">set</span><span class="t-op">(</span><span class="t-string">&#039;K&#039;</span><span class="t-op">,</span> <span class="t-kw">new</span> <span class="t-type">PdfInteger</span><span class="t-op">(</span><span class="t-op">-</span><span class="t-number">1</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>          <span class="t-comment">// K &lt; 0 selects Group 4 (T.6)</span>
+<span class="t-var">$params</span><span class="t-kw">-&gt;</span><span class="t-fn">set</span><span class="t-op">(</span><span class="t-string">&#039;Columns&#039;</span><span class="t-op">,</span> <span class="t-kw">new</span> <span class="t-type">PdfInteger</span><span class="t-op">(</span><span class="t-var">$cols</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$params</span><span class="t-kw">-&gt;</span><span class="t-fn">set</span><span class="t-op">(</span><span class="t-string">&#039;Rows&#039;</span><span class="t-op">,</span> <span class="t-kw">new</span> <span class="t-type">PdfInteger</span><span class="t-op">(</span><span class="t-var">$rows</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$codec</span>   <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">CCITTFaxDecode</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$encoded</span> <span class="t-op">=</span> <span class="t-var">$codec</span><span class="t-kw">-&gt;</span><span class="t-fn">encode</span><span class="t-op">(</span><span class="t-var">$bilevelBytes</span><span class="t-op">,</span> <span class="t-var">$params</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$decoded</span> <span class="t-op">=</span> <span class="t-var">$codec</span><span class="t-kw">-&gt;</span><span class="t-fn">decode</span><span class="t-op">(</span><span class="t-var">$encoded</span><span class="t-op">,</span> <span class="t-var">$params</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// also reads scanned third-party PDFs</span></code></pre></div>
+<p>The recognised <code>/DecodeParms</code> keys are <code>Columns</code> (default 1728), <code>Rows</code>, <code>K</code>, <code>BlackIs1</code> (default false) and <code>EncodedByteAlign</code> (default false). Group 3 encodings (<code>K &gt;= 0</code>) are not decoded.</p>
+<p>To embed the result, build an image XObject whose <code>/Filter</code> is <code>/CCITTFaxDecode</code>, with <code>/BitsPerComponent 1</code> and <code>/ColorSpace /DeviceGray</code>, and attach the same parameter dictionary as <code>/DecodeParms</code>. Example <code>31_ccitt_fax.php</code> shows the full construction.</p>
+
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+  <li><a href="reading.html">Reading PDFs</a> — the parser API that consumes all of these structures.</li>
+  <li><a href="security.html">Security</a> — encryption and signatures, both of which depend on incremental updates.</li>
+  <li><a href="images.html">Images</a> — how filters are chosen when you embed a JPEG or PNG.</li>
+  <li><a href="examples.html">Examples</a> — runnable scripts 17, 18, 25 and 31 cover this page end to end.</li>
+</ul>
+
+<nav class="pager"><a class="prev" href="accessibility.html"><span>Previous</span>Tagged PDF &amp; PDF/A</a><a class="next" href="reading.html"><span>Next</span>Reading PDFs</a></nav>
+</article>
+  </main>
+
+  <aside class="toc"><h4>On this page</h4><ul><li class="lvl-2"><a href="#anatomy-of-a-pdf-file">Anatomy of a PDF file</a></li><li class="lvl-2"><a href="#the-document-catalog">The document catalog</a></li><li class="lvl-2"><a href="#classic-xref-tables">Classic cross-reference tables</a></li><li class="lvl-2"><a href="#cross-reference-streams">Cross-reference streams</a></li><li class="lvl-2"><a href="#object-streams">Object streams</a></li><li class="lvl-2"><a href="#incremental-updates">Incremental updates</a></li><li class="lvl-3"><a href="#incrementalupdater-api">The IncrementalUpdater API</a></li><li class="lvl-2"><a href="#recovering-damaged-files">Recovering damaged files</a></li><li class="lvl-2"><a href="#stream-filters">Stream filters</a></li><li class="lvl-3"><a href="#filter-table">Available filters</a></li><li class="lvl-3"><a href="#using-filters-directly">Using filters directly</a></li><li class="lvl-3"><a href="#predictors">Predictors</a></li><li class="lvl-3"><a href="#ccitt-group-4">CCITT Group 4</a></li><li class="lvl-2"><a href="#where-to-go-next">Where to go next</a></li></ul></aside>
+</div>
+
+<footer class="footer">
+  <p>Papier — PHP PDF library implementing ISO 32000-1:2008. Released under the MIT licence.</p>
+</footer>
+
+<script src="assets/docs.js"></script>
+</body>
+</html>

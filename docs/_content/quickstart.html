@@ -1,0 +1,240 @@
+<!-- title: Quick start -->
+<!-- description: Build a complete PDF invoice with Papier in a few minutes — pages, fonts, text, graphics, a table, and metadata. -->
+
+<h1>Quick start</h1>
+<p class="lead">This page walks through a complete, realistic document from an empty script to a finished PDF. By the end you will have used the document, page, font, element and table APIs — which together cover most day-to-day work.</p>
+
+<h2 id="the-shape-of-a-script">The shape of a script</h2>
+
+<p>Every Papier script follows the same four steps: create a document, register the fonts you intend to use, add pages and put elements on them, then save. Fonts are registered once at the document level and referred to afterwards by the name that <code>addFont()</code> returns.</p>
+
+<pre><code class="language-php">require_once __DIR__ . '/vendor/autoload.php';
+
+use Papier\PdfDocument;
+
+$doc  = PdfDocument::create();          // 1. document
+$font = $doc->addFont('Helvetica');     // 2. fonts
+$page = $doc->addPage();                // 3. pages and content
+$doc->save('out.pdf');                  // 4. save</code></pre>
+
+<div class="note">
+  <p><strong>Coordinates.</strong> PDF places the origin at the <em>bottom-left</em> of the page, with <code>y</code> increasing upwards, and measures everything in points (1 pt = 1/72 inch). A default A4 page is 595.28 × 841.89 pt, so <code>at(72, 750)</code> is one inch from the left edge and near the top.</p>
+</div>
+
+<h2 id="create-the-document">Create the document</h2>
+
+<p><code>PdfDocument::create()</code> returns an empty document targeting PDF 1.7. The metadata setters are fluent and write to the Info dictionary, which is what a viewer shows under "Document properties".</p>
+
+<pre><code class="language-php">use Papier\PdfDocument;
+
+$doc = PdfDocument::create();
+
+$doc->setTitle('Invoice 2026-042')
+    ->setAuthor('Acme Corporation')
+    ->setSubject('Invoice for July 2026')
+    ->setKeywords('invoice, billing, acme')
+    ->setCreator('Acme Billing System');</code></pre>
+
+<h2 id="register-fonts">Register fonts</h2>
+
+<p>Papier ships with the 14 standard Type 1 fonts, which every PDF viewer is required to provide. They need no embedding, so a document that uses only these stays small.</p>
+
+<pre><code class="language-php">$regular = $doc->addFont('Helvetica');
+$bold    = $doc->addFont('Helvetica-Bold');
+$italic  = $doc->addFont('Helvetica-Oblique');</code></pre>
+
+<p><code>addFont()</code> returns a resource name string — not an object — and that string is what you pass to an element's <code>font()</code> method. Registering the same font twice returns the same name, so there is no cost to calling it defensively.</p>
+
+<p>To embed your own typeface, pass a path to a <code>.ttf</code> or <code>.otf</code> file instead. See <a href="text.html">Text &amp; fonts</a> for embedding, subsetting and Unicode.</p>
+
+<h2 id="add-a-page">Add a page</h2>
+
+<p><code>addPage()</code> appends an A4 portrait page by default. Pass explicit dimensions in points for anything else — landscape A4 is simply the two arguments swapped.</p>
+
+<pre><code class="language-php">$page = $doc->addPage();                    // A4 portrait
+$wide = $doc->addPage(841.89, 595.28);      // A4 landscape
+$us   = $doc->addPage(612, 792);            // US Letter</code></pre>
+
+<h2 id="draw-the-header">Draw the header</h2>
+
+<p>Content is composed from elements passed to <code>$page->add()</code>. It accepts any number of arguments and draws them in order, so later elements paint over earlier ones — put your background shapes first.</p>
+
+<pre><code class="language-php">use Papier\Elements\{Color, Rectangle, Text};
+
+$page->add(
+    Rectangle::create(0, 780, 595.28, 62)->fill(Color::hex('#2c3e7a')),
+
+    Text::write('ACME CORPORATION')
+        ->at(40, 812)->font($bold, 20)->color(Color::white()),
+
+    Text::write('123 Industrial Way · Paris · France')
+        ->at(40, 793)->font($regular, 9)->color(Color::hex('#c9d2ee')),
+);</code></pre>
+
+<p><code>Color</code> builds colours four ways — <code>rgb()</code>, <code>hex()</code>, <code>gray()</code> and <code>cmyk()</code> — plus the <code>black()</code> and <code>white()</code> shorthands. Use <code>cmyk()</code> when the document is going to a print shop; the values are written to the file in the colour space you chose, without conversion.</p>
+
+<h2 id="add-body-text">Add body text</h2>
+
+<p><code>Text</code> draws a single line at an exact position. <code>TextBox</code> takes a width and wraps the content across as many lines as it needs — use it for anything you did not author character by character.</p>
+
+<pre><code class="language-php">use Papier\Elements\TextBox;
+
+$page->add(
+    Text::write('INVOICE')->at(40, 730)->font($bold, 28)->color(Color::hex('#1a1a2e')),
+    Text::write('No. 2026-042')->at(40, 710)->font($regular, 11)->rgb(0.4, 0.4, 0.4),
+
+    Text::write('Billed to')->at(40, 672)->font($bold, 10),
+    TextBox::write("Jane Doe\nDoe Consulting SARL\n42 rue de la Paix\n75002 Paris")
+        ->at(40, 656)->size(240)
+        ->font($regular, 10)
+        ->lineHeight(1.4),
+
+    Text::write('Date')->at(400, 672)->font($bold, 10),
+    Text::write('18 July 2026')->at(400, 656)->font($regular, 10),
+);</code></pre>
+
+<p><code>TextBox::size()</code> takes a width and an optional height. Leave the height at its default and the box grows downwards as far as the text requires; give it one and the text is clipped to that rectangle. <code>lineHeight()</code> is a multiplier of the font size, and <code>align()</code> accepts <code>'left'</code>, <code>'center'</code> or <code>'right'</code>.</p>
+
+<p>Latin accented characters — é, à, ü, ñ — work without any configuration. For Greek, Cyrillic, Arabic or CJK you need a Unicode font; see <a href="text.html#unicode-fonts">Unicode and CJK</a>.</p>
+
+<h2 id="build-a-table">Build a table</h2>
+
+<p><code>Table</code> handles the line items. <code>Table::create($x, $y)</code> positions its top-left corner, <code>setColumnWidths()</code> defines the columns, and each call to <code>addRow()</code> appends a row of strings. Mark the first row as a header with <code>setHeaderRows(1)</code> and it gets the header font and background instead of the body styling.</p>
+
+<pre><code class="language-php">use Papier\Elements\Table;
+
+$table = Table::create(40, 600)
+    ->setColumnWidths(255, 60, 90, 110)
+    ->setFont($regular, 10, 'Helvetica')
+    ->setHeaderFont($bold, 10, 'Helvetica-Bold')
+    ->setHeaderRows(1)
+    ->setHeaderBg(Color::hex('#2c3e7a'))
+    ->setHeaderTextColor(Color::white())
+    ->setAltRowBg(Color::hex('#f2f4fa'))
+    ->setCellPaddingXY(8, 5);
+
+$table->addRow(['Description', 'Qty', 'Unit price', 'Amount']);
+$table->addRow(['Design system audit',      '1',  '2 400.00 €', '2 400.00 €']);
+$table->addRow(['Component implementation', '12', '180.00 €',   '2 160.00 €']);
+$table->addRow(['Documentation',            '4',  '180.00 €',   '720.00 €']);
+
+$page->add($table);</code></pre>
+
+<div class="note">
+  <p><strong>Why the third argument to <code>setFont()</code>?</strong> The first is the resource name returned by <code>addFont()</code>; the third is the <em>base font name</em> Papier uses to look up character widths so it can measure text for wrapping and alignment. Pass the same name you gave <code>addFont()</code>.</p>
+</div>
+
+<p>Individual cells can override the table defaults by passing a <code>TableCell</code> instead of a string. Tables also support footer rows, rowspan and colspan, per-side borders and opacity — see <a href="tables.html">Tables</a>.</p>
+
+<h2 id="finish-with-graphics">Finish with graphics</h2>
+
+<p>Rules, boxes and shapes are elements like any other. Here a hairline separates the totals and a filled rectangle emphasises the amount due.</p>
+
+<pre><code class="language-php">use Papier\Elements\Line;
+
+$page->add(
+    Line::from(40, 420)->to(555, 420)->color(Color::hex('#d0d4dd'))->width(0.75),
+
+    Rectangle::create(355, 360, 200, 44)->fill(Color::hex('#f2f4fa')),
+    Text::write('Total due')->at(370, 386)->font($regular, 11),
+    Text::write('5 280.00 €')->at(370, 368)->font($bold, 16)->color(Color::hex('#2c3e7a')),
+
+    Text::write('Payment due within 30 days.')
+        ->at(40, 60)->font($italic, 9)->rgb(0.5, 0.5, 0.5),
+);</code></pre>
+
+<p>Every shape element supports <code>fill()</code>, <code>stroke()</code> and <code>opacity()</code>; <code>Line</code> adds <code>width()</code> and <code>dash()</code>. For curves, clipping paths, gradients and blend modes, see <a href="graphics.html">Graphics</a>.</p>
+
+<h2 id="save-or-stream">Save or stream</h2>
+
+<p>Writing to disk is a single call:</p>
+
+<pre><code class="language-php">$doc->save(__DIR__ . '/invoice.pdf');</code></pre>
+
+<p>To send the file to a browser instead, <code>output()</code> emits the headers and the bytes together. Pass <code>false</code> as the second argument to force a download rather than inline display:</p>
+
+<pre><code class="language-php">$doc->output('invoice-2026-042.pdf');          // display in the browser
+$doc->output('invoice-2026-042.pdf', false);   // download</code></pre>
+
+<p>And when you need the raw bytes — to return them from a framework controller, upload them, or feed them to a signer — use <code>toString()</code>:</p>
+
+<pre><code class="language-php">$bytes = $doc->toString();</code></pre>
+
+<h2 id="the-complete-script">The complete script</h2>
+
+<p>Everything above, in one file:</p>
+
+<pre><code class="language-php">require_once __DIR__ . '/vendor/autoload.php';
+
+use Papier\PdfDocument;
+use Papier\Elements\{Color, Line, Rectangle, Table, Text, TextBox};
+
+$doc = PdfDocument::create();
+$doc->setTitle('Invoice 2026-042')
+    ->setAuthor('Acme Corporation')
+    ->setSubject('Invoice for July 2026');
+
+$regular = $doc->addFont('Helvetica');
+$bold    = $doc->addFont('Helvetica-Bold');
+$italic  = $doc->addFont('Helvetica-Oblique');
+
+$page = $doc->addPage();
+
+$page->add(
+    Rectangle::create(0, 780, 595.28, 62)->fill(Color::hex('#2c3e7a')),
+    Text::write('ACME CORPORATION')->at(40, 812)->font($bold, 20)->color(Color::white()),
+    Text::write('123 Industrial Way · Paris · France')
+        ->at(40, 793)->font($regular, 9)->color(Color::hex('#c9d2ee')),
+
+    Text::write('INVOICE')->at(40, 730)->font($bold, 28)->color(Color::hex('#1a1a2e')),
+    Text::write('No. 2026-042')->at(40, 710)->font($regular, 11)->rgb(0.4, 0.4, 0.4),
+
+    Text::write('Billed to')->at(40, 672)->font($bold, 10),
+    TextBox::write("Jane Doe\nDoe Consulting SARL\n42 rue de la Paix\n75002 Paris")
+        ->at(40, 656)->size(240)->font($regular, 10)->lineHeight(1.4),
+
+    Text::write('Date')->at(400, 672)->font($bold, 10),
+    Text::write('18 July 2026')->at(400, 656)->font($regular, 10),
+);
+
+$table = Table::create(40, 600)
+    ->setColumnWidths(255, 60, 90, 110)
+    ->setFont($regular, 10, 'Helvetica')
+    ->setHeaderFont($bold, 10, 'Helvetica-Bold')
+    ->setHeaderRows(1)
+    ->setHeaderBg(Color::hex('#2c3e7a'))
+    ->setHeaderTextColor(Color::white())
+    ->setAltRowBg(Color::hex('#f2f4fa'))
+    ->setCellPaddingXY(8, 5);
+
+$table->addRow(['Description', 'Qty', 'Unit price', 'Amount']);
+$table->addRow(['Design system audit',      '1',  '2 400.00 €', '2 400.00 €']);
+$table->addRow(['Component implementation', '12', '180.00 €',   '2 160.00 €']);
+$table->addRow(['Documentation',            '4',  '180.00 €',   '720.00 €']);
+
+$page->add($table);
+
+$page->add(
+    Line::from(40, 420)->to(555, 420)->color(Color::hex('#d0d4dd'))->width(0.75),
+    Rectangle::create(355, 360, 200, 44)->fill(Color::hex('#f2f4fa')),
+    Text::write('Total due')->at(370, 386)->font($regular, 11),
+    Text::write('5 280.00 €')->at(370, 368)->font($bold, 16)->color(Color::hex('#2c3e7a')),
+    Text::write('Payment due within 30 days.')->at(40, 60)->font($italic, 9)->rgb(0.5, 0.5, 0.5),
+);
+
+$doc->save(__DIR__ . '/invoice.pdf');</code></pre>
+
+<h2 id="where-to-go-next">Where to go next</h2>
+
+<p>You now have the core loop. From here, each guide goes deep on one area:</p>
+
+<ul>
+  <li><a href="documents.html">Documents &amp; pages</a> — running headers and footers, page labels, merging and splitting, viewer preferences.</li>
+  <li><a href="text.html">Text &amp; fonts</a> — embedding TrueType fonts, subsetting, and full Unicode support.</li>
+  <li><a href="graphics.html">Graphics</a> — paths, gradients, patterns, transparency.</li>
+  <li><a href="forms.html">Forms</a> and <a href="annotations.html">Annotations</a> — making documents interactive.</li>
+  <li><a href="security.html">Encryption &amp; signatures</a> — passwords, permissions, PKCS#7 signing.</li>
+  <li><a href="reading.html">Reading PDFs</a> — parsing, text extraction, and inspecting existing files.</li>
+</ul>
+
+<p>Or start from working code: the <a href="examples.html">examples</a> directory has 34 runnable scripts, each focused on a single feature.</p>

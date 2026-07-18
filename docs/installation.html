@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Installation — Papier</title>
+<meta name="description" content="Install Papier with Composer, check the required PHP extensions, and verify your setup by generating a first PDF.">
+<meta property="og:title" content="Installation — Papier">
+<meta property="og:description" content="Install Papier with Composer, check the required PHP extensions, and verify your setup by generating a first PDF.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<script>
+(function () {
+  var t = localStorage.getItem('papier-theme');
+  if (t) document.documentElement.setAttribute('data-theme', t);
+})();
+</script>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <button class="menu-toggle" type="button" aria-label="Toggle navigation">
+<svg viewBox="0 0 20 20" width="20" height="20"><path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="index.html">
+<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 2h8l5 5v15H6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M14 2v5h5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+<span>Papier</span>
+  </a>
+  <div class="search">
+<input type="search" id="search-input" placeholder="Search documentation…" autocomplete="off" aria-label="Search documentation">
+<kbd>/</kbd>
+<div id="search-results" role="listbox"></div>
+  </div>
+  <div class="topbar-links">
+<a href="https://packagist.org/packages/papier/papier">Packagist</a>
+<a href="https://github.com/papier/papier">GitHub</a>
+<button class="theme-toggle" type="button" aria-label="Toggle dark mode">
+  <svg class="sun" viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.5 1.5M17.6 17.6l1.5 1.5M19.1 4.9l-1.5 1.5M6.4 17.6l-1.5 1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+  <svg class="moon" viewBox="0 0 24 24" width="18" height="18"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+</button>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" aria-label="Documentation">
+<div class="nav-section"><h4>Getting started</h4><ul><li><a href="index.html">Introduction</a></li><li><a href="installation.html" class="active">Installation</a></li><li><a href="quickstart.html">Quick start</a></li></ul></div><div class="nav-section"><h4>Creating PDFs</h4><ul><li><a href="documents.html">Documents &amp; pages</a></li><li><a href="text.html">Text &amp; fonts</a></li><li><a href="graphics.html">Graphics</a></li><li><a href="images.html">Images</a></li><li><a href="tables.html">Tables</a></li></ul></div><div class="nav-section"><h4>Interactivity</h4><ul><li><a href="forms.html">Forms</a></li><li><a href="annotations.html">Annotations</a></li><li><a href="navigation.html">Bookmarks &amp; navigation</a></li><li><a href="multimedia.html">Layers &amp; multimedia</a></li></ul></div><div class="nav-section"><h4>Advanced</h4><ul><li><a href="security.html">Encryption &amp; signatures</a></li><li><a href="accessibility.html">Tagged PDF &amp; PDF/A</a></li><li><a href="file-structure.html">File structure</a></li><li><a href="reading.html">Reading PDFs</a></li></ul></div><div class="nav-section"><h4>Reference</h4><ul><li><a href="examples.html">Examples</a></li><li><a href="changelog.html">Changelog</a></li></ul></div>
+  </nav>
+
+  <main id="main">
+<article class="content">
+
+<h1>Installation</h1>
+<p class="lead">Papier is distributed on Packagist and installs with a single Composer command. It has no runtime dependencies beyond three standard PHP extensions.</p>
+
+<h2 id="requirements">Requirements</h2>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Requirement</th><th>Version</th><th>Used for</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>PHP</td><td>8.1 or newer</td><td>Enums, readonly properties, and first-class callable syntax throughout the API</td></tr>
+    <tr><td><code>ext-zlib</code></td><td>bundled</td><td>FlateDecode stream compression, object streams, cross-reference streams</td></tr>
+    <tr><td><code>ext-mbstring</code></td><td>bundled</td><td>Multi-byte text encoding, Unicode fonts, <code>/ToUnicode</code> CMaps</td></tr>
+    <tr><td><code>ext-openssl</code></td><td>bundled</td><td>RC4/AES encryption, PKCS#7 digital signatures, document timestamps</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>All three extensions ship with most PHP distributions. Confirm they are enabled before installing:</p>
+
+<div class="code-block" data-lang="bash"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">php</span> <span class="t-op">-r</span> &quot;printf(&#039;PHP %s%s&#039;, PHP_VERSION, PHP_EOL);&quot;
+<span class="t-kw">php</span> <span class="t-op">-m</span> | grep <span class="t-op">-E</span> &#039;^(zlib|mbstring|openssl)$&#039;</code></pre></div>
+
+<p>The second command should print all three names. If one is missing, install it through your platform's package manager (for example <code>apt install php8.1-mbstring</code>) or enable it in <code>php.ini</code>.</p>
+
+<div class="note">
+  <p><strong>Optional:</strong> a few examples use the <code>gd</code> extension to synthesise sample images at runtime. It is not required by the library itself — image embedding works from file paths and raw bytes without it.</p>
+</div>
+
+<h2 id="install-with-composer">Install with Composer</h2>
+
+<div class="code-block" data-lang="bash"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">composer</span> require papier/papier</code></pre></div>
+
+<p>Then include Composer's autoloader in your script. Papier follows PSR-4 under the <code>Papier\</code> namespace, so every class is autoloaded on first use.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">require_once</span> <span class="t-kw">__DIR__</span> <span class="t-op">.</span> <span class="t-string">&#039;/vendor/autoload.php&#039;</span><span class="t-op">;</span>
+
+<span class="t-kw">use</span> <span class="t-kw">Papier\PdfDocument</span><span class="t-op">;</span></code></pre></div>
+
+<h3 id="version-constraints">Version constraints</h3>
+
+<p>Version 3.0 changed four public method signatures, replacing string parameters with enums. If you are pinning a constraint by hand, use a caret range so you receive patch and minor updates but not the next major:</p>
+
+<div class="code-block" data-lang="bash"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">composer</span> require papier/papier:^3.0</code></pre></div>
+
+<p>Upgrading from 2.x? The <a href="changelog.html">changelog</a> lists every breaking change with a before/after snippet. There are four call sites to update, and the output format is unchanged — regenerating a document after the upgrade produces identical bytes.</p>
+
+<h2 id="verify-your-installation">Verify your installation</h2>
+
+<p>Create <code>test.php</code> in your project root:</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">require_once</span> <span class="t-kw">__DIR__</span> <span class="t-op">.</span> <span class="t-string">&#039;/vendor/autoload.php&#039;</span><span class="t-op">;</span>
+
+<span class="t-kw">use</span> <span class="t-kw">Papier\PdfDocument</span><span class="t-op">;</span>
+<span class="t-kw">use</span> <span class="t-kw">Papier\Elements</span><span class="t-kw">\</span><span class="t-op">{</span><span class="t-type">Color</span><span class="t-op">,</span> <span class="t-type">Text</span><span class="t-op">}</span><span class="t-op">;</span>
+
+<span class="t-var">$doc</span>  <span class="t-op">=</span> <span class="t-type">PdfDocument</span><span class="t-kw">::</span><span class="t-fn">create</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$font</span> <span class="t-op">=</span> <span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">addFont</span><span class="t-op">(</span><span class="t-string">&#039;Helvetica-Bold&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$page</span> <span class="t-op">=</span> <span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">addPage</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">add</span><span class="t-op">(</span>
+    <span class="t-type">Text</span><span class="t-kw">::</span><span class="t-fn">write</span><span class="t-op">(</span><span class="t-string">&#039;Papier is installed.&#039;</span><span class="t-op">)</span>
+        <span class="t-kw">-&gt;</span><span class="t-fn">at</span><span class="t-op">(</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">720</span><span class="t-op">)</span>
+        <span class="t-kw">-&gt;</span><span class="t-fn">font</span><span class="t-op">(</span><span class="t-var">$font</span><span class="t-op">,</span> <span class="t-number">20</span><span class="t-op">)</span>
+        <span class="t-kw">-&gt;</span><span class="t-fn">color</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">hex</span><span class="t-op">(</span><span class="t-string">&#039;#2c3e7a&#039;</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">,</span>
+<span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">save</span><span class="t-op">(</span><span class="t-kw">__DIR__</span> <span class="t-op">.</span> <span class="t-string">&#039;/test.pdf&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-kw">echo</span> <span class="t-string">&quot;Wrote test.pdf\n&quot;</span><span class="t-op">;</span></code></pre></div>
+
+<p>Run it and open the result:</p>
+
+<div class="code-block" data-lang="bash"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">php</span> test.php</code></pre></div>
+
+<p>If <code>test.pdf</code> opens in your viewer with the line of text on an A4 page, the installation is complete. Continue with the <a href="quickstart.html">quick start</a>.</p>
+
+<h2 id="installing-from-source">Installing from source</h2>
+
+<p>To work on the library itself, or to run the bundled examples and test suite, clone the repository and install the development dependencies:</p>
+
+<div class="code-block" data-lang="bash"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">git</span> clone https://github.com/papier/papier.git
+cd papier
+<span class="t-kw">composer</span> install</code></pre></div>
+
+<p>This pulls in PHPUnit and PHPStan alongside the library.</p>
+
+<h3 id="running-the-tests">Running the tests</h3>
+
+<div class="code-block" data-lang="bash"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code>vendor/bin/phpunit
+vendor/bin/phpstan analyse</code></pre></div>
+
+<h3 id="running-the-examples">Running the examples</h3>
+
+<p>The <code>examples/</code> directory holds 34 runnable scripts. Each writes its output to <code>examples/output/</code>:</p>
+
+<div class="code-block" data-lang="bash"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">php</span> examples/01_hello_world.php</code></pre></div>
+
+<p>See <a href="examples.html">Examples</a> for the full catalogue.</p>
+
+<h3 id="verifying-rendered-output">Verifying rendered output</h3>
+
+<p>The repository includes a verification harness that renders every example with Ghostscript and runs <code>qpdf --check</code> against the result, confirming the files not only parse but actually display:</p>
+
+<div class="code-block" data-lang="bash"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">php</span> tools/verify.php</code></pre></div>
+
+<p>This requires <code>gs</code> and <code>qpdf</code> on your <code>PATH</code>. It is a development tool — nothing in the library depends on either binary.</p>
+
+<h2 id="framework-integration">Framework integration</h2>
+
+<p>Papier has no framework coupling. In a Laravel or Symfony application, autoloading is already configured by Composer, so the classes are available immediately. To send a generated document as an HTTP response rather than writing it to disk, use <code>output()</code>, which emits the appropriate headers followed by the file:</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">output</span><span class="t-op">(</span><span class="t-string">&#039;report.pdf&#039;</span><span class="t-op">)</span><span class="t-op">;</span>          <span class="t-comment">// inline, in the browser&#039;s viewer</span>
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">output</span><span class="t-op">(</span><span class="t-string">&#039;report.pdf&#039;</span><span class="t-op">,</span> <span class="t-fn">false</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// as a download</span></code></pre></div>
+
+<p>When you need the bytes themselves — to return them from a controller, store them in S3, or pass them to a signer — use <code>toString()</code>:</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$pdf</span> <span class="t-op">=</span> <span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">toString</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// the complete file as a binary string</span>
+
+<span class="t-kw">return</span> <span class="t-fn">response</span><span class="t-op">(</span><span class="t-var">$pdf</span><span class="t-op">,</span> <span class="t-number">200</span><span class="t-op">,</span> <span class="t-op">[</span>
+    <span class="t-string">&#039;Content-Type&#039;</span>        <span class="t-kw">=&gt;</span> <span class="t-string">&#039;application/pdf&#039;</span><span class="t-op">,</span>
+    <span class="t-string">&#039;Content-Disposition&#039;</span> <span class="t-kw">=&gt;</span> <span class="t-string">&#039;inline; filename=&quot;report.pdf&quot;&#039;</span><span class="t-op">,</span>
+<span class="t-op">]</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<div class="warn">
+  <p>Make sure no output — whitespace outside PHP tags, a debug <code>echo</code>, a BOM in an included file — is emitted before the headers and the PDF bytes. Any stray byte corrupts the file, and most viewers will refuse to open it with a misleading error.</p>
+</div>
+
+<h2 id="troubleshooting">Troubleshooting</h2>
+
+<h3 id="memory-limits">Memory limits</h3>
+
+<p>Large documents, embedded fonts and high-resolution images all live in memory until the file is written. If you hit PHP's <code>memory_limit</code> on a big job, raise it for the script, or reduce the footprint with <a href="file-structure.html#object-streams">object streams</a> and <a href="text.html#subsetting">font subsetting</a>, which cut the output size considerably.</p>
+
+<h3 id="fonts-not-found">Embedded font file not found</h3>
+
+<p><code>addFont()</code> accepts either one of the 14 standard font names or a filesystem path to a <code>.ttf</code> or <code>.otf</code> file. A path that does not resolve throws rather than silently falling back, so check it with an absolute path built from <code>__DIR__</code> when a relative path fails.</p>
+
+<h3 id="openssl-signature-errors">OpenSSL signature errors</h3>
+
+<p>Digital signing needs a certificate and a private key in PEM form. If <code>PdfSigner</code> reports that it cannot read them, verify the files independently with <code>openssl x509 -in cert.pem -text -noout</code>. See <a href="security.html">Encryption &amp; signatures</a>.</p>
+
+<nav class="pager"><a class="prev" href="index.html"><span>Previous</span>Introduction</a><a class="next" href="quickstart.html"><span>Next</span>Quick start</a></nav>
+</article>
+  </main>
+
+  <aside class="toc"><h4>On this page</h4><ul><li class="lvl-2"><a href="#requirements">Requirements</a></li><li class="lvl-2"><a href="#install-with-composer">Install with Composer</a></li><li class="lvl-3"><a href="#version-constraints">Version constraints</a></li><li class="lvl-2"><a href="#verify-your-installation">Verify your installation</a></li><li class="lvl-2"><a href="#installing-from-source">Installing from source</a></li><li class="lvl-3"><a href="#running-the-tests">Running the tests</a></li><li class="lvl-3"><a href="#running-the-examples">Running the examples</a></li><li class="lvl-3"><a href="#verifying-rendered-output">Verifying rendered output</a></li><li class="lvl-2"><a href="#framework-integration">Framework integration</a></li><li class="lvl-2"><a href="#troubleshooting">Troubleshooting</a></li><li class="lvl-3"><a href="#memory-limits">Memory limits</a></li><li class="lvl-3"><a href="#fonts-not-found">Embedded font file not found</a></li><li class="lvl-3"><a href="#openssl-signature-errors">OpenSSL signature errors</a></li></ul></aside>
+</div>
+
+<footer class="footer">
+  <p>Papier — PHP PDF library implementing ISO 32000-1:2008. Released under the MIT licence.</p>
+</footer>
+
+<script src="assets/docs.js"></script>
+</body>
+</html>

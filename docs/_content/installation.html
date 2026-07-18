@@ -1,0 +1,145 @@
+<!-- title: Installation -->
+<!-- description: Install Papier with Composer, check the required PHP extensions, and verify your setup by generating a first PDF. -->
+
+<h1>Installation</h1>
+<p class="lead">Papier is distributed on Packagist and installs with a single Composer command. It has no runtime dependencies beyond three standard PHP extensions.</p>
+
+<h2 id="requirements">Requirements</h2>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Requirement</th><th>Version</th><th>Used for</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>PHP</td><td>8.1 or newer</td><td>Enums, readonly properties, and first-class callable syntax throughout the API</td></tr>
+    <tr><td><code>ext-zlib</code></td><td>bundled</td><td>FlateDecode stream compression, object streams, cross-reference streams</td></tr>
+    <tr><td><code>ext-mbstring</code></td><td>bundled</td><td>Multi-byte text encoding, Unicode fonts, <code>/ToUnicode</code> CMaps</td></tr>
+    <tr><td><code>ext-openssl</code></td><td>bundled</td><td>RC4/AES encryption, PKCS#7 digital signatures, document timestamps</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>All three extensions ship with most PHP distributions. Confirm they are enabled before installing:</p>
+
+<pre><code class="language-bash">php -r "printf('PHP %s%s', PHP_VERSION, PHP_EOL);"
+php -m | grep -E '^(zlib|mbstring|openssl)$'</code></pre>
+
+<p>The second command should print all three names. If one is missing, install it through your platform's package manager (for example <code>apt install php8.1-mbstring</code>) or enable it in <code>php.ini</code>.</p>
+
+<div class="note">
+  <p><strong>Optional:</strong> a few examples use the <code>gd</code> extension to synthesise sample images at runtime. It is not required by the library itself — image embedding works from file paths and raw bytes without it.</p>
+</div>
+
+<h2 id="install-with-composer">Install with Composer</h2>
+
+<pre><code class="language-bash">composer require papier/papier</code></pre>
+
+<p>Then include Composer's autoloader in your script. Papier follows PSR-4 under the <code>Papier\</code> namespace, so every class is autoloaded on first use.</p>
+
+<pre><code class="language-php">require_once __DIR__ . '/vendor/autoload.php';
+
+use Papier\PdfDocument;</code></pre>
+
+<h3 id="version-constraints">Version constraints</h3>
+
+<p>Version 3.0 changed four public method signatures, replacing string parameters with enums. If you are pinning a constraint by hand, use a caret range so you receive patch and minor updates but not the next major:</p>
+
+<pre><code class="language-bash">composer require papier/papier:^3.0</code></pre>
+
+<p>Upgrading from 2.x? The <a href="changelog.html">changelog</a> lists every breaking change with a before/after snippet. There are four call sites to update, and the output format is unchanged — regenerating a document after the upgrade produces identical bytes.</p>
+
+<h2 id="verify-your-installation">Verify your installation</h2>
+
+<p>Create <code>test.php</code> in your project root:</p>
+
+<pre><code class="language-php">require_once __DIR__ . '/vendor/autoload.php';
+
+use Papier\PdfDocument;
+use Papier\Elements\{Color, Text};
+
+$doc  = PdfDocument::create();
+$font = $doc->addFont('Helvetica-Bold');
+$page = $doc->addPage();
+
+$page->add(
+    Text::write('Papier is installed.')
+        ->at(72, 720)
+        ->font($font, 20)
+        ->color(Color::hex('#2c3e7a')),
+);
+
+$doc->save(__DIR__ . '/test.pdf');
+
+echo "Wrote test.pdf\n";</code></pre>
+
+<p>Run it and open the result:</p>
+
+<pre><code class="language-bash">php test.php</code></pre>
+
+<p>If <code>test.pdf</code> opens in your viewer with the line of text on an A4 page, the installation is complete. Continue with the <a href="quickstart.html">quick start</a>.</p>
+
+<h2 id="installing-from-source">Installing from source</h2>
+
+<p>To work on the library itself, or to run the bundled examples and test suite, clone the repository and install the development dependencies:</p>
+
+<pre><code class="language-bash">git clone https://github.com/papier/papier.git
+cd papier
+composer install</code></pre>
+
+<p>This pulls in PHPUnit and PHPStan alongside the library.</p>
+
+<h3 id="running-the-tests">Running the tests</h3>
+
+<pre><code class="language-bash">vendor/bin/phpunit
+vendor/bin/phpstan analyse</code></pre>
+
+<h3 id="running-the-examples">Running the examples</h3>
+
+<p>The <code>examples/</code> directory holds 34 runnable scripts. Each writes its output to <code>examples/output/</code>:</p>
+
+<pre><code class="language-bash">php examples/01_hello_world.php</code></pre>
+
+<p>See <a href="examples.html">Examples</a> for the full catalogue.</p>
+
+<h3 id="verifying-rendered-output">Verifying rendered output</h3>
+
+<p>The repository includes a verification harness that renders every example with Ghostscript and runs <code>qpdf --check</code> against the result, confirming the files not only parse but actually display:</p>
+
+<pre><code class="language-bash">php tools/verify.php</code></pre>
+
+<p>This requires <code>gs</code> and <code>qpdf</code> on your <code>PATH</code>. It is a development tool — nothing in the library depends on either binary.</p>
+
+<h2 id="framework-integration">Framework integration</h2>
+
+<p>Papier has no framework coupling. In a Laravel or Symfony application, autoloading is already configured by Composer, so the classes are available immediately. To send a generated document as an HTTP response rather than writing it to disk, use <code>output()</code>, which emits the appropriate headers followed by the file:</p>
+
+<pre><code class="language-php">$doc->output('report.pdf');          // inline, in the browser's viewer
+$doc->output('report.pdf', false);   // as a download</code></pre>
+
+<p>When you need the bytes themselves — to return them from a controller, store them in S3, or pass them to a signer — use <code>toString()</code>:</p>
+
+<pre><code class="language-php">$pdf = $doc->toString();   // the complete file as a binary string
+
+return response($pdf, 200, [
+    'Content-Type'        => 'application/pdf',
+    'Content-Disposition' => 'inline; filename="report.pdf"',
+]);</code></pre>
+
+<div class="warn">
+  <p>Make sure no output — whitespace outside PHP tags, a debug <code>echo</code>, a BOM in an included file — is emitted before the headers and the PDF bytes. Any stray byte corrupts the file, and most viewers will refuse to open it with a misleading error.</p>
+</div>
+
+<h2 id="troubleshooting">Troubleshooting</h2>
+
+<h3 id="memory-limits">Memory limits</h3>
+
+<p>Large documents, embedded fonts and high-resolution images all live in memory until the file is written. If you hit PHP's <code>memory_limit</code> on a big job, raise it for the script, or reduce the footprint with <a href="file-structure.html#object-streams">object streams</a> and <a href="text.html#subsetting">font subsetting</a>, which cut the output size considerably.</p>
+
+<h3 id="fonts-not-found">Embedded font file not found</h3>
+
+<p><code>addFont()</code> accepts either one of the 14 standard font names or a filesystem path to a <code>.ttf</code> or <code>.otf</code> file. A path that does not resolve throws rather than silently falling back, so check it with an absolute path built from <code>__DIR__</code> when a relative path fails.</p>
+
+<h3 id="openssl-signature-errors">OpenSSL signature errors</h3>
+
+<p>Digital signing needs a certificate and a private key in PEM form. If <code>PdfSigner</code> reports that it cannot read them, verify the files independently with <code>openssl x509 -in cert.pem -text -noout</code>. See <a href="security.html">Encryption &amp; signatures</a>.</p>

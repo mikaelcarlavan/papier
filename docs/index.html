@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Papier — PHP PDF library</title>
+<meta name="description" content="Papier is a comprehensive PHP library for generating and reading PDF documents, implementing ISO 32000-1:2008 (PDF 1.7) with selected PDF 2.0 features.">
+<meta property="og:title" content="Papier — PHP PDF library">
+<meta property="og:description" content="Papier is a comprehensive PHP library for generating and reading PDF documents, implementing ISO 32000-1:2008 (PDF 1.7) with selected PDF 2.0 features.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<script>
+(function () {
+  var t = localStorage.getItem('papier-theme');
+  if (t) document.documentElement.setAttribute('data-theme', t);
+})();
+</script>
+</head>
+<body class="home">
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <button class="menu-toggle" type="button" aria-label="Toggle navigation">
+<svg viewBox="0 0 20 20" width="20" height="20"><path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="index.html">
+<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 2h8l5 5v15H6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M14 2v5h5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+<span>Papier</span>
+  </a>
+  <div class="search">
+<input type="search" id="search-input" placeholder="Search documentation…" autocomplete="off" aria-label="Search documentation">
+<kbd>/</kbd>
+<div id="search-results" role="listbox"></div>
+  </div>
+  <div class="topbar-links">
+<a href="https://packagist.org/packages/papier/papier">Packagist</a>
+<a href="https://github.com/papier/papier">GitHub</a>
+<button class="theme-toggle" type="button" aria-label="Toggle dark mode">
+  <svg class="sun" viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.5 1.5M17.6 17.6l1.5 1.5M19.1 4.9l-1.5 1.5M6.4 17.6l-1.5 1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+  <svg class="moon" viewBox="0 0 24 24" width="18" height="18"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+</button>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" aria-label="Documentation">
+<div class="nav-section"><h4>Getting started</h4><ul><li><a href="index.html" class="active">Introduction</a></li><li><a href="installation.html">Installation</a></li><li><a href="quickstart.html">Quick start</a></li></ul></div><div class="nav-section"><h4>Creating PDFs</h4><ul><li><a href="documents.html">Documents &amp; pages</a></li><li><a href="text.html">Text &amp; fonts</a></li><li><a href="graphics.html">Graphics</a></li><li><a href="images.html">Images</a></li><li><a href="tables.html">Tables</a></li></ul></div><div class="nav-section"><h4>Interactivity</h4><ul><li><a href="forms.html">Forms</a></li><li><a href="annotations.html">Annotations</a></li><li><a href="navigation.html">Bookmarks &amp; navigation</a></li><li><a href="multimedia.html">Layers &amp; multimedia</a></li></ul></div><div class="nav-section"><h4>Advanced</h4><ul><li><a href="security.html">Encryption &amp; signatures</a></li><li><a href="accessibility.html">Tagged PDF &amp; PDF/A</a></li><li><a href="file-structure.html">File structure</a></li><li><a href="reading.html">Reading PDFs</a></li></ul></div><div class="nav-section"><h4>Reference</h4><ul><li><a href="examples.html">Examples</a></li><li><a href="changelog.html">Changelog</a></li></ul></div>
+  </nav>
+
+  <main id="main">
+<article class="content">
+
+<div class="hero">
+  <h1>Papier</h1>
+  <p class="tagline">A comprehensive PHP library for generating <em>and</em> reading PDF documents — implementing <strong>ISO 32000-1:2008 (PDF 1.7)</strong> with selected <strong>ISO 32000-2 (PDF 2.0)</strong> features.</p>
+  <p class="badges">
+    <a href="https://packagist.org/packages/papier/papier"><img src="https://img.shields.io/packagist/v/papier/papier" alt="Latest stable version"></a>
+    <a href="https://packagist.org/packages/papier/papier"><img src="https://img.shields.io/packagist/dt/papier/papier" alt="Total downloads"></a>
+    <a href="https://packagist.org/packages/papier/papier"><img src="https://img.shields.io/packagist/l/papier/papier" alt="Licence"></a>
+  </p>
+  <div class="cta">
+    <a class="primary" href="quickstart.html">Get started</a>
+    <a class="secondary" href="examples.html">Browse examples</a>
+    <a class="secondary" href="https://github.com/papier/papier">GitHub</a>
+  </div>
+</div>
+
+<h2 id="what-is-papier">What is Papier?</h2>
+
+<p>Papier is a zero-dependency PHP library that writes and reads PDF files directly, rather than wrapping an external binary or a rendering engine. Everything happens in PHP: object serialisation, cross-reference construction, stream compression, font embedding, encryption, and parsing.</p>
+
+<p>It covers the whole lifecycle of a document. You can compose a page with a fluent element API, drop down to raw PDF operators when you need exact control, then open the result back up, extract its text, fill its form fields, sign it, or append a revision without rewriting a byte of the original.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\PdfDocument</span><span class="t-op">;</span>
+<span class="t-kw">use</span> <span class="t-kw">Papier\Elements</span><span class="t-kw">\</span><span class="t-op">{</span><span class="t-type">Color</span><span class="t-op">,</span> <span class="t-type">Text</span><span class="t-op">}</span><span class="t-op">;</span>
+
+<span class="t-var">$doc</span>  <span class="t-op">=</span> <span class="t-type">PdfDocument</span><span class="t-kw">::</span><span class="t-fn">create</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$font</span> <span class="t-op">=</span> <span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">addFont</span><span class="t-op">(</span><span class="t-string">&#039;Helvetica-Bold&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$page</span> <span class="t-op">=</span> <span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">addPage</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">add</span><span class="t-op">(</span>
+    <span class="t-type">Text</span><span class="t-kw">::</span><span class="t-fn">write</span><span class="t-op">(</span><span class="t-string">&#039;Hello, World!&#039;</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">at</span><span class="t-op">(</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">720</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">font</span><span class="t-op">(</span><span class="t-var">$font</span><span class="t-op">,</span> <span class="t-number">24</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">color</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">black</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">,</span>
+<span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">save</span><span class="t-op">(</span><span class="t-string">&#039;hello.pdf&#039;</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<h2 id="highlights">Highlights</h2>
+
+<div class="feature-grid">
+  <div class="feature">
+    <h3>Documents &amp; pages</h3>
+    <p>Metadata (Info + XMP), viewer preferences, page labels, named destinations, rotation, and page operations: merge, split, N-up, import.</p>
+  </div>
+  <div class="feature">
+    <h3>Text &amp; fonts</h3>
+    <p>14 standard fonts, embedded TrueType/OpenType with subsetting and automatic <code>/ToUnicode</code>, Type 0 composite fonts for full Unicode and CJK, plus Type 3 glyph fonts.</p>
+  </div>
+  <div class="feature">
+    <h3>Graphics</h3>
+    <p>Paths, Bézier curves, clipping, nine colour spaces, four function types, axial/radial/mesh shadings, tiling and shading patterns, blend modes and soft masks.</p>
+  </div>
+  <div class="feature">
+    <h3>Tables &amp; layout</h3>
+    <p>Column widths, header and footer rows, rowspan, per-side borders, padding, vertical alignment, and word-wrapped text boxes.</p>
+  </div>
+  <div class="feature">
+    <h3>Forms &amp; annotations</h3>
+    <p>Seven AcroForm field types, 14 annotation subtypes including redaction, and a form filler that regenerates appearance streams on existing PDFs.</p>
+  </div>
+  <div class="feature">
+    <h3>Security</h3>
+    <p>RC4, AES-128 and AES-256 encryption with permission flags; PKCS#7 digital signatures with a visible appearance; RFC 3161 document timestamps.</p>
+  </div>
+  <div class="feature">
+    <h3>Accessibility &amp; archival</h3>
+    <p>Tagged PDF with a full structure tree and <code>/ParentTree</code>, plus PDF/A-2b and accessible PDF/A-2a output with a built-in validator.</p>
+  </div>
+  <div class="feature">
+    <h3>Reading &amp; parsing</h3>
+    <p>Layout- and <code>ToUnicode</code>-aware text extraction, object streams, hybrid-reference and linearized files, and xref recovery for damaged documents.</p>
+  </div>
+</div>
+
+<h2 id="why-papier">Why Papier?</h2>
+
+<h3 id="specification-first">Specification first</h3>
+<p>Papier is written against ISO 32000-1:2008 rather than against a set of common use cases. Structures that other libraries approximate — cross-reference streams, object streams, the structure tree, mesh shadings, CID font descriptors — are implemented as the specification defines them. That matters when your output has to survive a validator, an archival ingest pipeline, or another vendor's parser.</p>
+
+<h3 id="read-and-write">Read and write, not just write</h3>
+<p>Most PHP PDF libraries only generate. Papier also parses: it reads classic xref tables, cross-reference streams, object streams and hybrid-reference files, decrypts RC4/AES documents, and recovers files whose <code>startxref</code> is corrupt. The same object model backs both directions, so an incremental update or a signature can append to a file it has just read without disturbing the original bytes.</p>
+
+<h3 id="two-levels-of-api">Two levels of API</h3>
+<p>The element API — <code>Text</code>, <code>TextBox</code>, <code>Image</code>, <code>Table</code>, <code>Rectangle</code>, <code>Circle</code>, <code>Line</code> — is fluent and immediate. Underneath it, <code>ContentStream</code> exposes the PDF operators themselves (<code>re</code>, <code>m</code>, <code>l</code>, <code>c</code>, <code>Tf</code>, <code>Tj</code>, …). You start high and drop down only where you need to, in the same document.</p>
+
+<h3 id="type-safe">Type-safe since 3.0</h3>
+<p>Stringly-typed options were replaced by enums and fluent builders in version 3.0. Conformance levels, page rules, encryption algorithms and viewer preferences are now discoverable through IDE autocompletion, and an invalid value is a type error rather than a silently wrong PDF. See the <a href="changelog.html">changelog</a> for the migration notes.</p>
+
+<h2 id="requirements">Requirements</h2>
+
+<ul>
+  <li>PHP 8.1 or newer</li>
+  <li><code>ext-zlib</code> — stream compression (FlateDecode)</li>
+  <li><code>ext-mbstring</code> — multi-byte text handling</li>
+  <li><code>ext-openssl</code> — encryption and digital signatures</li>
+</ul>
+
+<p>No other runtime dependencies. See <a href="installation.html">Installation</a> for details.</p>
+
+<h2 id="where-to-go-next">Where to go next</h2>
+
+<ul>
+  <li><a href="installation.html">Installation</a> — Composer setup and extension checks.</li>
+  <li><a href="quickstart.html">Quick start</a> — build a real document in a few minutes.</li>
+  <li><a href="documents.html">Documents &amp; pages</a> — the core model everything else builds on.</li>
+  <li><a href="examples.html">Examples</a> — 34 runnable scripts covering every feature area.</li>
+</ul>
+
+<h2 id="licence">Licence</h2>
+
+<p>Papier is open-source software released under the <a href="https://github.com/papier/papier/blob/master/LICENSE.md">MIT licence</a>.</p>
+
+<p>The library was built with the assistance of <a href="https://claude.ai">Claude</a>, Anthropic's AI assistant, which helped design the API, implement the PDF specification, and write the examples throughout the library.</p>
+
+<nav class="pager"><a class="next" href="installation.html"><span>Next</span>Installation</a></nav>
+</article>
+  </main>
+
+  <aside class="toc"><h4>On this page</h4><ul><li class="lvl-2"><a href="#what-is-papier">What is Papier?</a></li><li class="lvl-2"><a href="#highlights">Highlights</a></li><li class="lvl-2"><a href="#why-papier">Why Papier?</a></li><li class="lvl-3"><a href="#specification-first">Specification first</a></li><li class="lvl-3"><a href="#read-and-write">Read and write, not just write</a></li><li class="lvl-3"><a href="#two-levels-of-api">Two levels of API</a></li><li class="lvl-3"><a href="#type-safe">Type-safe since 3.0</a></li><li class="lvl-2"><a href="#requirements">Requirements</a></li><li class="lvl-2"><a href="#where-to-go-next">Where to go next</a></li><li class="lvl-2"><a href="#licence">Licence</a></li></ul></aside>
+</div>
+
+<footer class="footer">
+  <p>Papier — PHP PDF library implementing ISO 32000-1:2008. Released under the MIT licence.</p>
+</footer>
+
+<script src="assets/docs.js"></script>
+</body>
+</html>

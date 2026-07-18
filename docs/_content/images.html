@@ -1,0 +1,220 @@
+<!-- title: Images -->
+<!-- description: Embed JPEG and PNG images, scale them proportionally, apply opacity, use PNG alpha and image masks, and compress bilevel scans with CCITT Group 4. -->
+<h1>Images</h1>
+<p class="lead">The <code>Image</code> element loads JPEG and PNG data, embeds it as an image XObject, and places it on the page. Transparency, colour space and bit depth are worked out from the file, so the common case is a single chained expression.</p>
+
+<h2 id="loading-an-image">Loading an image</h2>
+<p>There are three constructors. <code>fromFile()</code> reads a path and sniffs the format; the other two take raw bytes when you already have the data in memory — from a database, an upload, or an image you generated with GD.</p>
+
+<pre><code class="language-php">use Papier\Elements\Image;
+
+Image::fromFile(__DIR__ . '/photo.png');      // JPEG or PNG, auto-detected
+Image::fromJpeg(file_get_contents('photo.jpg'));
+Image::fromPng($pngBytes);</code></pre>
+
+<p>Nothing is drawn until you add the element to a page:</p>
+
+<pre><code class="language-php">$page-&gt;add(
+    Image::fromFile(__DIR__ . '/photo.png')-&gt;at(72, 500)-&gt;fitWidth(300),
+);</code></pre>
+
+<p>JPEG data is passed straight through to the PDF with a <code>/DCTDecode</code> filter — the bytes are copied verbatim, with no decode and re-encode, so there is no generation loss and no CPU cost. PNG is decoded, then re-compressed with Flate, which is the closest PDF equivalent.</p>
+
+<h2 id="positioning">Positioning</h2>
+<p><code>at()</code> sets the <strong>bottom-left</strong> corner of the placed image, matching the PDF coordinate system where y grows upward. To place an image so its top edge sits at a known y, subtract the height you are about to give it.</p>
+
+<pre><code class="language-php">$page-&gt;add(Image::fromFile($path)-&gt;at(72, 640)-&gt;size(150, 100));</code></pre>
+
+<h2 id="sizing">Sizing</h2>
+<p>An image element must be told how large to draw. Three methods cover the cases, and the last one called wins.</p>
+
+<h3 id="explicit-size">Explicit size</h3>
+<pre><code class="language-php">Image::fromJpeg($bytes)-&gt;at(72, 640)-&gt;size(150, 100);</code></pre>
+<p><code>size()</code> takes width and height in points and does not preserve aspect ratio. Use it when the target box is fixed and you know the source already matches it, or when distortion is intentional.</p>
+
+<h3 id="proportional-fitting">Proportional fitting</h3>
+<pre><code class="language-php">Image::fromJpeg($wide)-&gt;at(72, 240)-&gt;fitWidth(160);
+Image::fromJpeg($tall)-&gt;at(250, 200)-&gt;fitHeight(80);</code></pre>
+
+<p><code>fitWidth()</code> sets the width and derives the height from the source aspect ratio; <code>fitHeight()</code> does the reverse. These are what you want almost all the time — laying out a column of images at a fixed width, or a row of thumbnails at a fixed height, without having to know or compute each source's proportions.</p>
+
+<table>
+<thead><tr><th>Method</th><th>Behaviour</th></tr></thead>
+<tbody>
+<tr><td><code>size($w, $h)</code></td><td>Exact dimensions; aspect ratio not preserved</td></tr>
+<tr><td><code>fitWidth($w)</code></td><td>Width fixed, height derived from the source</td></tr>
+<tr><td><code>fitHeight($h)</code></td><td>Height fixed, width derived from the source</td></tr>
+</tbody>
+</table>
+
+<div class="note">
+<p>Points are not pixels. A 600 × 400 pixel photograph drawn at <code>fitWidth(300)</code> occupies 300 pt — about 4.2 inches — and therefore prints at roughly 144 dpi. To hit 300 dpi, draw at pixel width divided by 300 times 72; for the same image that is 144 pt.</p>
+</div>
+
+<h2 id="opacity">Opacity</h2>
+<pre><code class="language-php">Image::fromJpeg($bytes)-&gt;at(350, 240)-&gt;size(140, 42)-&gt;opacity(0.4);</code></pre>
+
+<p><code>opacity()</code> takes a value from 0 to 1 and is applied through an extended graphics state, so it composites with whatever is already on the page. It is independent of any alpha channel in the image itself; a translucent PNG drawn at <code>opacity(0.5)</code> ends up half as opaque again.</p>
+
+<p>The obvious use is a background watermark image behind body text.</p>
+
+<h2 id="png-alpha">PNG alpha and soft masks</h2>
+<p>PDF has no alpha channel on image XObjects. Transparency is expressed instead through a separate greyscale image, referenced from the main image's <code>/SMask</code> entry, whose grey values are read as opacity.</p>
+
+<p>Papier does this for you. When <code>fromPng()</code> or <code>fromFile()</code> encounters a PNG with an alpha channel, it splits the alpha out into its own stream, embeds it as an SMask, and links the two. Nothing in your code changes:</p>
+
+<pre><code class="language-php">use Papier\Elements\{Color, Image, Rectangle};
+
+$page-&gt;add(
+    Rectangle::create(72, 490, 200, 100)-&gt;fill(Color::rgb(0.9, 0.9, 0.2)),
+    Image::fromPng($transparentPng)-&gt;at(72, 490)-&gt;size(200, 100),
+);</code></pre>
+
+<p>The yellow rectangle shows through wherever the PNG is transparent, with full 8-bit gradation — not just a binary cut-out. This handles anti-aliased edges and soft shadows correctly, which is why PNG is the right format for logos and overlays and JPEG is not.</p>
+
+<p>At the lower level, <code>PngImage</code> exposes <code>hasAlpha()</code> and <code>getSMaskStream()</code> if you need to inspect or reuse the mask, and any <code>PdfImage</code> accepts an explicit <code>setSoftMask()</code>.</p>
+
+<h2 id="image-masks">Image masks and stencils</h2>
+<p>A stencil mask is a 1-bit image that does not carry colour at all. Instead it selects which pixels of the fill colour get painted, so the same mask can be stamped in any colour you like — the usual way to place a monochrome logo or a signature scan.</p>
+
+<pre><code class="language-php">use Papier\Graphics\Image\PdfImage;
+
+$mask = new PngImage($bilevelPngBytes);
+$mask-&gt;setImageMask(true)
+     -&gt;setBitsPerComponent(1)
+     -&gt;setDecode(new PdfArray([new PdfInteger(0), new PdfInteger(1)]));
+
+$page-&gt;getResources()-&gt;addXObject('Stencil', $mask-&gt;getStream());
+
+$cs-&gt;save()
+   -&gt;setFillRGB(0.75, 0.1, 0.1)
+   -&gt;transform(120, 0, 0, 60, 72, 500)   // width, 0, 0, height, x, y
+   -&gt;drawXObject('Stencil')
+   -&gt;restore();</code></pre>
+
+<p>Two things to notice. First, an image mask carries no colour space, so it takes the current fill colour — set it before drawing. Second, image XObjects are always drawn into the unit square, so you scale and position them with a transformation matrix rather than with coordinates. The six numbers above mean "120 wide, 60 tall, bottom-left at (72, 500)".</p>
+
+<h2 id="decode-arrays">Decode arrays</h2>
+<p>The <code>/Decode</code> array remaps each sample value's range before the image is interpreted. Supplying <code>[1, 0]</code> for a single-component image inverts it — what was black becomes white.</p>
+
+<pre><code class="language-php">$img-&gt;setDecode(new PdfArray([new PdfInteger(1), new PdfInteger(0)]));   // invert</code></pre>
+
+<p>The array has two entries per component, giving the output value that the minimum and maximum sample values map to. For an image mask, the decode array decides which bit value paints and which is transparent, which is how you flip a stencil that came out inverted. Inverting through <code>/Decode</code> costs nothing, since the reader applies it during decode rather than requiring you to rewrite the pixel data.</p>
+
+<h2 id="lower-level-image-control">Lower-level image control</h2>
+<p>Behind the element sit <code>JpegImage</code> and <code>PngImage</code>, both extending <code>PdfImage</code>. Use them directly when you need to set entries the element does not expose.</p>
+
+<pre><code class="language-php">use Papier\Graphics\Image\JpegImage;
+
+$img = JpegImage::fromFile(__DIR__ . '/photo.jpg');
+$img-&gt;setInterpolate(true);
+
+echo $img-&gt;getWidth() . '×' . $img-&gt;getHeight();
+
+$page-&gt;getResources()-&gt;addXObject('Im1', $img-&gt;getStream());
+$cs-&gt;save()-&gt;transform(300, 0, 0, 200, 72, 400)-&gt;drawXObject('Im1')-&gt;restore();</code></pre>
+
+<table>
+<thead><tr><th>Method</th><th>Purpose</th></tr></thead>
+<tbody>
+<tr><td><code>getWidth()</code> / <code>getHeight()</code></td><td>Source dimensions in pixels</td></tr>
+<tr><td><code>setColorSpace(string $cs)</code></td><td>Override the detected colour space</td></tr>
+<tr><td><code>setBitsPerComponent(int $bpc)</code></td><td>1, 2, 4, 8 or 16</td></tr>
+<tr><td><code>setInterpolate(bool $on)</code></td><td>Smooth the image when scaled up</td></tr>
+<tr><td><code>setImageMask(bool $on)</code></td><td>Treat as a 1-bit stencil</td></tr>
+<tr><td><code>setSoftMask(PdfObject $mask)</code></td><td>Attach an alpha mask</td></tr>
+<tr><td><code>setDecode(PdfObject $decode)</code></td><td>Sample value remapping</td></tr>
+<tr><td><code>getStream()</code></td><td>The image XObject stream</td></tr>
+</tbody>
+</table>
+
+<p><code>setInterpolate(true)</code> asks the reader to smooth the image when it is scaled beyond its native resolution. It helps with a low-resolution photograph and hurts with a deliberately pixelated graphic or a barcode, where you want hard edges.</p>
+
+<h2 id="reusing-an-image">Reusing one image many times</h2>
+<p>Every <code>Image</code> element embeds its own XObject, so adding the same photograph to fifty pages through fifty elements embeds it fifty times. When an image repeats — a logo in a running header, a background on every page — register the XObject once and draw it by name instead.</p>
+
+<pre><code class="language-php">use Papier\Graphics\Image\PngImage;
+use Papier\Content\ContentStream;
+
+$logo = PngImage::fromFile(__DIR__ . '/logo.png');
+
+$doc-&gt;header(function ($page, int $n, int $total) use ($logo) {
+    $page-&gt;getResources()-&gt;addXObject('Logo', $logo-&gt;getStream());
+
+    $cs = new ContentStream();
+    $cs-&gt;save()-&gt;transform(90, 0, 0, 30, 72, 795)-&gt;drawXObject('Logo')-&gt;restore();
+    $page-&gt;addContent($cs);
+});</code></pre>
+
+<p>Because <code>getStream()</code> returns the same stream object each time, the writer emits it once and every page references it. See <a href="documents.html">Documents &amp; pages</a> for running headers and footers.</p>
+
+<h2 id="inline-images">Inline images</h2>
+<p>PDF also allows an image to be written directly into a content stream rather than as a separate XObject, using the <code>BI … ID … EI</code> operators. The saving is the object overhead, so it only pays for genuinely tiny images — a few dozen bytes of icon or a one-pixel spacer.</p>
+
+<pre><code class="language-php">$cs-&gt;save()
+   -&gt;transform(20, 0, 0, 20, 72, 400)
+   -&gt;inlineImage([
+       'W'   =&gt; 4,               // Width
+       'H'   =&gt; 4,               // Height
+       'CS'  =&gt; 'G',             // ColorSpace: DeviceGray
+       'BPC' =&gt; 8,               // BitsPerComponent
+   ], $rawSamples)
+   -&gt;restore();</code></pre>
+
+<p>Inline image dictionaries use abbreviated keys, as shown. The data is uncompressed unless you specify a filter, and the spec caps inline images at 4 KB of data — beyond that an XObject is required. For anything you would recognise as a picture, use the <code>Image</code> element.</p>
+
+<h2 id="ccitt-group-4">CCITT Group 4 for scanned documents</h2>
+<p>Bilevel scans — faxes, signed contracts, archived paperwork — compress far better with CCITT Group 4 than with Flate, because the algorithm is built around runs of black and white on a page rather than general-purpose byte patterns. Ratios around 10× on typical scans are normal.</p>
+
+<pre><code class="language-php">use Papier\Filter\CCITTFaxDecode;
+use Papier\Objects\{PdfDictionary, PdfInteger};
+
+$params = new PdfDictionary();
+$params-&gt;set('K', new PdfInteger(-1));          // -1 = pure Group 4
+$params-&gt;set('Columns', new PdfInteger($cols));
+$params-&gt;set('Rows', new PdfInteger($rows));
+
+$codec   = new CCITTFaxDecode();
+$encoded = $codec-&gt;encode($raw1bpp, $params);
+$decoded = $codec-&gt;decode($encoded, $params);   // lossless round trip</code></pre>
+
+<p>The input is 1 bit per pixel packed MSB first, one row at a time, padded to a byte boundary at the end of each row. Embedding the result means building the image XObject by hand, because the data is already compressed and must not be filtered again:</p>
+
+<pre><code class="language-php">use Papier\Objects\{PdfName, PdfStream};
+
+$img = new PdfStream();
+$d   = $img-&gt;getDictionary();
+$d-&gt;set('Type', new PdfName('XObject'));
+$d-&gt;set('Subtype', new PdfName('Image'));
+$d-&gt;set('Width', new PdfInteger($cols));
+$d-&gt;set('Height', new PdfInteger($rows));
+$d-&gt;set('BitsPerComponent', new PdfInteger(1));
+$d-&gt;set('ColorSpace', new PdfName('DeviceGray'));
+$d-&gt;set('Filter', new PdfName('CCITTFaxDecode'));
+$d-&gt;set('DecodeParms', $params);
+$img-&gt;setData($encoded);
+
+$page-&gt;getResources()-&gt;addXObject('Fax', $img);
+
+$cs = new ContentStream();
+$cs-&gt;save()-&gt;transform(360, 0, 0, 240, 100, 480)-&gt;drawXObject('Fax')-&gt;restore();
+$page-&gt;addContent($cs);</code></pre>
+
+<p>The decoder works on existing files too, so scanned PDFs from third parties can be read back. See <code>examples/31_ccitt_fax.php</code>, which prints the compression ratio and verifies the round trip.</p>
+
+<h2 id="other-image-filters">Other image filters</h2>
+<p>Papier passes DCT (JPEG), JBIG2 and JPX (JPEG 2000) data through unchanged when reading and writing, so images in those formats survive a merge or an import without being recompressed. Only CCITT and the general-purpose filters — Flate, LZW, ASCIIHex, ASCII85, RunLength — are implemented as codecs. See <a href="file-structure.html">File structure</a>.</p>
+
+<h2 id="extracting-images">Extracting images from a PDF</h2>
+<p>Reading works in the other direction as well:</p>
+
+<pre><code class="language-php">use Papier\Parser\PdfParser;
+
+$parser = new PdfParser(file_get_contents('scanned.pdf'));
+$parser-&gt;parse();
+
+foreach ($parser-&gt;extractImages() as $image) {
+    // width, height, colour space, bit depth, filter and raw data
+}</code></pre>
+
+<p>See <a href="reading.html">Reading PDFs</a> for the full parser API, and <code>examples/04_images.php</code> for a page exercising JPEG, PNG, alpha, scaling, the fit helpers, opacity and <code>fromFile()</code> together.</p>

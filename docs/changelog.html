@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changelog — Papier</title>
+<meta name="description" content="Notable changes to Papier, including the type-safe API introduced in 3.0.0 and its breaking changes.">
+<meta property="og:title" content="Changelog — Papier">
+<meta property="og:description" content="Notable changes to Papier, including the type-safe API introduced in 3.0.0 and its breaking changes.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<script>
+(function () {
+  var t = localStorage.getItem('papier-theme');
+  if (t) document.documentElement.setAttribute('data-theme', t);
+})();
+</script>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <button class="menu-toggle" type="button" aria-label="Toggle navigation">
+<svg viewBox="0 0 20 20" width="20" height="20"><path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="index.html">
+<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 2h8l5 5v15H6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M14 2v5h5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+<span>Papier</span>
+  </a>
+  <div class="search">
+<input type="search" id="search-input" placeholder="Search documentation…" autocomplete="off" aria-label="Search documentation">
+<kbd>/</kbd>
+<div id="search-results" role="listbox"></div>
+  </div>
+  <div class="topbar-links">
+<a href="https://packagist.org/packages/papier/papier">Packagist</a>
+<a href="https://github.com/papier/papier">GitHub</a>
+<button class="theme-toggle" type="button" aria-label="Toggle dark mode">
+  <svg class="sun" viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.5 1.5M17.6 17.6l1.5 1.5M19.1 4.9l-1.5 1.5M6.4 17.6l-1.5 1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+  <svg class="moon" viewBox="0 0 24 24" width="18" height="18"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+</button>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" aria-label="Documentation">
+<div class="nav-section"><h4>Getting started</h4><ul><li><a href="index.html">Introduction</a></li><li><a href="installation.html">Installation</a></li><li><a href="quickstart.html">Quick start</a></li></ul></div><div class="nav-section"><h4>Creating PDFs</h4><ul><li><a href="documents.html">Documents &amp; pages</a></li><li><a href="text.html">Text &amp; fonts</a></li><li><a href="graphics.html">Graphics</a></li><li><a href="images.html">Images</a></li><li><a href="tables.html">Tables</a></li></ul></div><div class="nav-section"><h4>Interactivity</h4><ul><li><a href="forms.html">Forms</a></li><li><a href="annotations.html">Annotations</a></li><li><a href="navigation.html">Bookmarks &amp; navigation</a></li><li><a href="multimedia.html">Layers &amp; multimedia</a></li></ul></div><div class="nav-section"><h4>Advanced</h4><ul><li><a href="security.html">Encryption &amp; signatures</a></li><li><a href="accessibility.html">Tagged PDF &amp; PDF/A</a></li><li><a href="file-structure.html">File structure</a></li><li><a href="reading.html">Reading PDFs</a></li></ul></div><div class="nav-section"><h4>Reference</h4><ul><li><a href="examples.html">Examples</a></li><li><a href="changelog.html" class="active">Changelog</a></li></ul></div>
+  </nav>
+
+  <main id="main">
+<article class="content">
+<h1>Changelog</h1>
+<p class="lead">All notable changes to this project are documented here.</p>
+
+<h2 id="3-0-0">[3.0.0] &mdash; 2026-07-01</h2>
+<p>Type-safe public API: stringly-typed and loosely-typed parameters are replaced with enums and a fluent builder. Invalid values are now caught at the type level instead of silently producing a wrong PDF, and IDE autocompletion makes the options discoverable.</p>
+
+<h3 id="3-0-0-breaking-changes">Breaking changes</h3>
+<p>Four public method signatures changed.</p>
+
+<h4 id="enable-pdf-a">PdfDocument::enablePdfA()</h4>
+<p>The conformance level is now a <code>Papier\Metadata\PdfAConformance</code> enum instead of a string.</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-comment">// before</span>
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">enablePdfA</span><span class="t-op">(</span><span class="t-number">2</span><span class="t-op">,</span> <span class="t-string">&#039;B&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-comment">// after</span>
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">enablePdfA</span><span class="t-op">(</span><span class="t-number">2</span><span class="t-op">,</span> <span class="t-type">PdfAConformance</span><span class="t-kw">::</span><span class="t-type">Basic</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// ::Accessible, ::Unicode</span></code></pre></div>
+
+<h4 id="page-rules">PdfDocument::onEachPage() / header() / footer()</h4>
+<p>The page rule is now a <code>Papier\PageRule</code> enum. <code>int</code> (every Nth page) and <code>Closure</code> predicates are still accepted. This also fixes a latent bug where a misspelled rule string silently matched every page.</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-comment">// before</span>
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">header</span><span class="t-op">(</span><span class="t-var">$render</span><span class="t-op">,</span> <span class="t-string">&#039;odd&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-comment">// after</span>
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">header</span><span class="t-op">(</span><span class="t-var">$render</span><span class="t-op">,</span> <span class="t-type">PageRule</span><span class="t-kw">::</span><span class="t-type">Odd</span><span class="t-op">)</span><span class="t-op">;</span>          <span class="t-comment">// ::All (default), ::Even, ::First, ::Last</span></code></pre></div>
+
+<h4 id="viewer-preferences">PdfDocument::setViewerPreferences()</h4>
+<p>Now takes a <code>Papier\Viewer\ViewerPreferences</code> fluent builder instead of an untyped array. Uncommon keys remain available via <code>-&gt;set(string $key, PdfObject $value)</code>.</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-comment">// before</span>
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">setViewerPreferences</span><span class="t-op">(</span><span class="t-op">[</span>
+    <span class="t-string">&#039;DisplayDocTitle&#039;</span>       <span class="t-kw">=&gt;</span> <span class="t-fn">true</span><span class="t-op">,</span>
+    <span class="t-string">&#039;PrintScaling&#039;</span>          <span class="t-kw">=&gt;</span> <span class="t-string">&#039;None&#039;</span><span class="t-op">,</span>
+    <span class="t-string">&#039;NonFullScreenPageMode&#039;</span> <span class="t-kw">=&gt;</span> <span class="t-string">&#039;UseOutlines&#039;</span><span class="t-op">,</span>
+<span class="t-op">]</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-comment">// after</span>
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">setViewerPreferences</span><span class="t-op">(</span>
+    <span class="t-type">ViewerPreferences</span><span class="t-kw">::</span><span class="t-fn">create</span><span class="t-op">(</span><span class="t-op">)</span>
+        <span class="t-kw">-&gt;</span><span class="t-fn">displayDocTitle</span><span class="t-op">(</span><span class="t-op">)</span>
+        <span class="t-kw">-&gt;</span><span class="t-fn">printScaling</span><span class="t-op">(</span><span class="t-type">PrintScaling</span><span class="t-kw">::</span><span class="t-type">None</span><span class="t-op">)</span>
+        <span class="t-kw">-&gt;</span><span class="t-fn">nonFullScreenPageMode</span><span class="t-op">(</span><span class="t-type">NonFullScreenPageMode</span><span class="t-kw">::</span><span class="t-type">UseOutlines</span><span class="t-op">)</span>
+<span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<h4 id="encrypt">PdfDocument::encrypt()</h4>
+<p>The <code>$algorithm</code> argument is now a <code>Papier\Encryption\EncryptionAlgorithm</code> enum. The <code>StandardSecurityHandler::RC4_40 / RC4_128 / AES_128 / AES_256</code> constants have been <strong>removed</strong>; the <code>PERM_*</code> permission flags are unchanged.</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-comment">// before</span>
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">encrypt</span><span class="t-op">(</span><span class="t-string">&#039;pw&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;&#039;</span><span class="t-op">,</span> <span class="t-var">$perms</span><span class="t-op">,</span> <span class="t-type">StandardSecurityHandler</span><span class="t-kw">::</span><span class="t-type">AES_256</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-comment">// after</span>
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">encrypt</span><span class="t-op">(</span><span class="t-string">&#039;pw&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;&#039;</span><span class="t-op">,</span> <span class="t-var">$perms</span><span class="t-op">,</span> <span class="t-type">EncryptionAlgorithm</span><span class="t-kw">::</span><span class="t-type">Aes_256</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<h3 id="3-0-0-added">Added</h3>
+<ul>
+  <li><code>Papier\Metadata\PdfAConformance</code> enum (<code>Basic</code>, <code>Accessible</code>, <code>Unicode</code>).</li>
+  <li><code>Papier\PageRule</code> enum (<code>All</code>, <code>Odd</code>, <code>Even</code>, <code>First</code>, <code>Last</code>).</li>
+  <li><code>Papier\Encryption\EncryptionAlgorithm</code> enum (<code>Rc4_40</code>, <code>Rc4_128</code>, <code>Aes_128</code>, <code>Aes_256</code>).</li>
+  <li><code>Papier\Viewer\ViewerPreferences</code> fluent builder, with value enums <code>PrintScaling</code>, <code>Duplex</code>, <code>NonFullScreenPageMode</code>, and <code>ReadingDirection</code>.</li>
+</ul>
+
+<h3 id="3-0-0-notes">Notes</h3>
+<ul>
+  <li>No changes to output format &mdash; regenerating a document with the updated call sites produces the same bytes.</li>
+</ul>
+
+<nav class="pager"><a class="prev" href="examples.html"><span>Previous</span>Examples</a></nav>
+</article>
+  </main>
+
+  <aside class="toc"><h4>On this page</h4><ul><li class="lvl-2"><a href="#3-0-0">[3.0.0] &amp;mdash; 2026-07-01</a></li><li class="lvl-3"><a href="#3-0-0-breaking-changes">Breaking changes</a></li><li class="lvl-3"><a href="#3-0-0-added">Added</a></li><li class="lvl-3"><a href="#3-0-0-notes">Notes</a></li></ul></aside>
+</div>
+
+<footer class="footer">
+  <p>Papier — PHP PDF library implementing ISO 32000-1:2008. Released under the MIT licence.</p>
+</footer>
+
+<script src="assets/docs.js"></script>
+</body>
+</html>

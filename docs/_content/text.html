@@ -1,0 +1,305 @@
+<!-- title: Text & fonts -->
+<!-- description: Draw text with the 14 standard fonts, embed TrueType and OpenType files, subset glyphs, support full Unicode, and control spacing and rendering modes. -->
+<h1>Text &amp; fonts</h1>
+<p class="lead">Papier gives you two levels of text API: the <code>Text</code> and <code>TextBox</code> elements for ordinary typesetting, and <code>ContentStream</code> for the PDF text operators underneath. Fonts are registered once on the document and referenced everywhere by the resource name that registration returns.</p>
+
+<h2 id="registering-a-font">Registering a font</h2>
+<p>Before you can draw any text you must register a font with the document. <code>addFont()</code> returns a short resource name — <code>F1</code>, <code>F2</code> and so on — that identifies the font inside content streams. You pass that string to every element that draws text.</p>
+
+<pre><code class="language-php">use Papier\PdfDocument;
+use Papier\Elements\Text;
+
+$doc  = PdfDocument::create();
+$page = $doc-&gt;addPage();
+
+$regular = $doc-&gt;addFont('Helvetica');
+$bold    = $doc-&gt;addFont('Helvetica-Bold');
+
+$page-&gt;add(Text::write('Hello')-&gt;at(72, 750)-&gt;font($bold, 24));</code></pre>
+
+<p>The variables <code>$regular</code> and <code>$bold</code> hold strings, not font objects. Registering the same font twice returns the same name, so it is safe to call <code>addFont()</code> wherever it reads best. You can override the generated name with the second argument when you need a predictable key inside a hand-written content stream.</p>
+
+<pre><code class="language-php">$doc-&gt;addFont('Helvetica-Bold', 'FBig');   // always resource /FBig</code></pre>
+
+<h2 id="standard-fonts">The 14 standard fonts</h2>
+<p>Every conforming PDF reader ships with fourteen Type 1 fonts, so documents using them need embed nothing at all. This keeps files tiny and is the right default for internal or short-lived documents.</p>
+
+<pre><code class="language-php">$doc-&gt;addFont('Helvetica');
+$doc-&gt;addFont('Times-Roman');
+$doc-&gt;addFont('Courier');</code></pre>
+
+<table>
+<thead><tr><th>Family</th><th>Names</th></tr></thead>
+<tbody>
+<tr><td>Helvetica</td><td><code>Helvetica</code>, <code>Helvetica-Bold</code>, <code>Helvetica-Oblique</code>, <code>Helvetica-BoldOblique</code></td></tr>
+<tr><td>Times</td><td><code>Times-Roman</code>, <code>Times-Bold</code>, <code>Times-Italic</code>, <code>Times-BoldItalic</code></td></tr>
+<tr><td>Courier</td><td><code>Courier</code>, <code>Courier-Bold</code>, <code>Courier-Oblique</code>, <code>Courier-BoldOblique</code></td></tr>
+<tr><td>Symbol</td><td><code>Symbol</code></td></tr>
+<tr><td>Dingbats</td><td><code>ZapfDingbats</code></td></tr>
+</tbody>
+</table>
+
+<p>The names are case-sensitive and must be spelled exactly as above. Papier ships the AFM metrics for all fourteen, so line-breaking and table column measurement are accurate rather than estimated.</p>
+
+<div class="warn">
+<p>Standard fonts are not embedded, which means the reader substitutes its own copy. That is fine for screen viewing but is forbidden by PDF/A. Archival documents must embed every font — see <a href="#embedded-fonts">embedded fonts</a> below.</p>
+</div>
+
+<h2 id="the-text-element">The Text element</h2>
+<p><code>Text</code> draws a single run of text at an exact position. It does not wrap, does not measure, and does not interpret newlines — it is the direct equivalent of positioning the text cursor and showing a string.</p>
+
+<pre><code class="language-php">use Papier\Elements\{Color, Text};
+
+$page-&gt;add(
+    Text::write('Quarterly Report')
+        -&gt;at(72, 780)
+        -&gt;font($bold, 20)
+        -&gt;color(Color::hex('#1a1a2e')),
+);</code></pre>
+
+<p>The anchor passed to <code>at()</code> is the baseline origin of the first glyph, not the top-left of a box. Descenders on letters like <em>g</em> and <em>y</em> extend below it.</p>
+
+<table>
+<thead><tr><th>Method</th><th>Purpose</th></tr></thead>
+<tbody>
+<tr><td><code>Text::write(string $text)</code></td><td>Create the element</td></tr>
+<tr><td><code>at(float $x, float $y)</code></td><td>Baseline origin in points</td></tr>
+<tr><td><code>font(string $fontName, float $size)</code></td><td>Resource name from <code>addFont()</code>, size in points</td></tr>
+<tr><td><code>color(Color $color)</code></td><td>Fill colour</td></tr>
+<tr><td><code>rgb(float $r, float $g, float $b)</code></td><td>Shorthand for an RGB fill colour</td></tr>
+<tr><td><code>opacity(float $opacity)</code></td><td>Fill alpha from 0 to 1</td></tr>
+</tbody>
+</table>
+
+<p>All the setters return the element, so they chain in any order. <code>opacity()</code> is the natural way to build a watermark:</p>
+
+<pre><code class="language-php">$page-&gt;add(
+    Text::write('DRAFT')-&gt;at(150, 400)-&gt;font($bold, 90)-&gt;opacity(0.12),
+);</code></pre>
+
+<h3 id="colours">Colours</h3>
+<p><code>Color</code> is a small value object with four constructors covering the device colour spaces, plus two named shorthands. All component values run from 0 to 1.</p>
+
+<pre><code class="language-php">use Papier\Elements\Color;
+
+Color::rgb(0.2, 0.5, 0.9);
+Color::hex('#e74c3c');            // also accepts 'e74c3c' and 3-digit forms
+Color::gray(0.35);
+Color::cmyk(0.0, 0.8, 0.7, 0.1);  // for print output
+Color::black();
+Color::white();</code></pre>
+
+<p>Choose CMYK when the document is destined for a commercial press and the colours must be specified in ink rather than light; otherwise RGB is both smaller to encode and what screen readers expect.</p>
+
+<h2 id="the-textbox-element">The TextBox element</h2>
+<p><code>TextBox</code> lays a paragraph out inside a bounding width, breaking lines at word boundaries. Use it whenever the text is long enough that you cannot predict where it ends — which is to say, whenever the content is data rather than a label.</p>
+
+<pre><code class="language-php">use Papier\Elements\TextBox;
+
+$page-&gt;add(
+    TextBox::write(
+        'The TextBox element automatically wraps long text to fit a bounding '
+      . 'width, using font metrics for accurate line breaking. It supports '
+      . 'left, center, and right alignment and a configurable line height.'
+    )
+        -&gt;at(72, 700)
+        -&gt;size(451, 80)
+        -&gt;font($regular, 11, 'Times-Roman')
+        -&gt;lineHeight(1.5)
+        -&gt;align('left'),
+);</code></pre>
+
+<table>
+<thead><tr><th>Method</th><th>Purpose</th></tr></thead>
+<tbody>
+<tr><td><code>TextBox::write(string $text)</code></td><td>Create the element</td></tr>
+<tr><td><code>at(float $x, float $y)</code></td><td>Top-left corner of the box</td></tr>
+<tr><td><code>size(float $width, float $height = 0)</code></td><td>Wrap width; height 0 means unbounded</td></tr>
+<tr><td><code>font(string $fontName, float $size, string $baseFontName = '')</code></td><td>Font, size, and optional metrics hint</td></tr>
+<tr><td><code>lineHeight(float $multiplier)</code></td><td>Line spacing as a multiple of font size</td></tr>
+<tr><td><code>align(string $align)</code></td><td><code>'left'</code>, <code>'center'</code> or <code>'right'</code></td></tr>
+<tr><td><code>color(Color $color)</code> / <code>rgb(…)</code></td><td>Text colour</td></tr>
+</tbody>
+</table>
+
+<p>The third argument to <code>font()</code> deserves explanation. To break lines correctly the box must know how wide each character is. When you pass the base font name — <code>'Times-Roman'</code>, <code>'Helvetica'</code> — Papier looks up the real AFM metrics. Omit it and it falls back to a crude estimate of 0.55 times the font size per character, which produces visibly ragged or overflowing lines.</p>
+
+<div class="note">
+<p>Pass the base font name whenever you use a standard font. For embedded TrueType fonts the metrics come from the font file itself and the hint is unnecessary.</p>
+</div>
+
+<p>A height of <code>0</code> lets the paragraph run as long as it needs. Giving a real height clips the text to the box, which is what you want in fixed-layout designs where overflow must not collide with the next block. See <code>examples/02_text_formatting.php</code>.</p>
+
+<h2 id="embedded-fonts">Embedded TrueType and OpenType fonts</h2>
+<p>Pass a file path to <code>addFont()</code> and Papier parses the font binary, extracts the PostScript name from its <code>name</code> table, reads metrics from <code>hhea</code>, <code>OS/2</code> and <code>hmtx</code>, and embeds the font program as a <code>FontFile2</code> stream.</p>
+
+<pre><code class="language-php">$lato     = $doc-&gt;addFont(__DIR__ . '/fonts/Lato-Regular.ttf');
+$latoBold = $doc-&gt;addFont(__DIR__ . '/fonts/Lato-Bold.ttf');
+
+$page-&gt;add(
+    Text::write('Lato at 18 pt')-&gt;at(72, 680)-&gt;font($lato, 18),
+);</code></pre>
+
+<p>Embedding guarantees the document renders identically everywhere, and is mandatory for PDF/A. The cost is file size: a full Latin TrueType face adds a few hundred kilobytes, which is where subsetting comes in.</p>
+
+<p>These fonts are encoded as single-byte WinAnsi, giving you 256 code points. That covers Western European Latin — accented characters such as é, à, ü and ñ work without any special handling — but not Greek, Cyrillic or CJK. For those, see <a href="#unicode-fonts">Unicode fonts</a>. Papier also implements MacRoman encoding for documents that need it.</p>
+
+<h3 id="subsetting">Subsetting</h3>
+<p>Subsetting strips every glyph outline that your document does not actually use, then rewrites the font tables to match. A report using two hundred distinct characters ends up embedding two hundred glyphs rather than several thousand.</p>
+
+<pre><code class="language-php">$lato = $doc-&gt;addFont(__DIR__ . '/fonts/Lato-Regular.ttf', subset: true);</code></pre>
+
+<p>Subsetting is off by default for <code>addFont()</code> because it requires Papier to know the complete set of characters in advance, which it collects as you add elements. If you build content in unusual ways — writing raw operators that Papier cannot inspect — a glyph could be dropped. In the normal element-based flow this does not happen.</p>
+
+<h3 id="tounicode">ToUnicode and searchable text</h3>
+<p>A subset font's internal glyph codes bear no relation to Unicode, so without extra information a reader has no idea that glyph 37 means the letter "e". Text would render correctly but be unsearchable and would copy out as gibberish.</p>
+
+<p>Papier avoids this by generating a <code>/ToUnicode</code> CMap automatically, mapping every code back to its Unicode value. Search, copy-paste, screen readers and text extraction all keep working. You do not need to do anything to enable it.</p>
+
+<p>See <code>examples/20_font_subsetting.php</code> for a before-and-after size comparison, and <code>examples/29_text_extraction.php</code> for extraction round-tripping through accented and subset text.</p>
+
+<h2 id="unicode-fonts">Full Unicode and CJK — Type 0 fonts</h2>
+<p>When 256 code points are not enough, use <code>addUnicodeFont()</code>. It embeds the font as a CIDFontType2 descendant of a Type 0 composite font with Identity-H encoding, which addresses glyphs with two-byte codes and so reaches every glyph in the file.</p>
+
+<pre><code class="language-php">$noto = $doc-&gt;addUnicodeFont(__DIR__ . '/fonts/NotoSansCJK-Regular.otf');
+
+$page-&gt;add(
+    Text::write('日本語 / 中文 / 한국어 / Ελληνικά / Русский')
+        -&gt;at(72, 700)
+        -&gt;font($noto, 16),
+);</code></pre>
+
+<p>The returned resource name is used exactly like any other, so switching a document from <code>addFont()</code> to <code>addUnicodeFont()</code> is a one-line change. Papier handles the encoding of your UTF-8 strings into two-byte glyph codes internally.</p>
+
+<p>Subsetting is <strong>on</strong> by default here, and for good reason: a full CJK font can exceed 15 MB. A <code>/ToUnicode</code> CMap is generated as always, so the text stays searchable.</p>
+
+<pre><code class="language-php">$doc-&gt;addUnicodeFont($path);                    // subset (default)
+$doc-&gt;addUnicodeFont($path, subset: false);     // embed every glyph
+$doc-&gt;addUnicodeFont($path, 'FCJK');            // fixed resource name</code></pre>
+
+<div class="note">
+<p>Use <code>addFont()</code> when your text is Western European and file size or simplicity matters; use <code>addUnicodeFont()</code> whenever any other script appears. There is no penalty to using the Unicode path for Latin text beyond slightly larger encoded strings.</p>
+</div>
+
+<p>See <code>examples/21_unicode_cjk.php</code>.</p>
+
+<h2 id="type-3-fonts">Type 3 fonts</h2>
+<p>A Type 3 font defines each glyph as a content stream of arbitrary graphics operators rather than an outline in a font format. That makes it the tool for icon sets, custom symbols and bitmap glyphs — anything you want to position, size and colour as if it were text.</p>
+
+<pre><code class="language-php">use Papier\Content\ContentStream;
+use Papier\Font\Type3Font;
+
+$icons = new Type3Font();
+$icons-&gt;setFontBBox(0, 0, 1000, 1000);
+
+$disc = (new ContentStream())-&gt;drawCircle(500, 350, 350)-&gt;fill();
+$icons-&gt;addGlyph(65, $disc, 1000, 'disc');          // code 65 = 'A'
+
+$square = (new ContentStream())-&gt;rectangle(150, 0, 700, 700)-&gt;fill();
+$icons-&gt;addGlyph(66, $square, 1000, 'square');      // 'B'
+
+$tri = (new ContentStream())-&gt;moveTo(500, 700)-&gt;lineTo(150, 0)-&gt;lineTo(850, 0)-&gt;closePath()-&gt;fill();
+$icons-&gt;addGlyph(67, $tri, 1000, 'triangle');       // 'C'
+
+$iconFont = $doc-&gt;registerFont($icons, 'Icons');
+
+$page-&gt;add(Text::write('ABC')-&gt;at(72, 680)-&gt;font($iconFont, 48)-&gt;color(Color::hex('#c0392b')));</code></pre>
+
+<p>The arguments to <code>addGlyph()</code> are the character code, the drawing stream, the advance width, and an optional glyph name. Glyph coordinates live in a 1000-unit design space by convention, mapped into text space by the font matrix; <code>setFontMatrix()</code> lets you change that mapping if you prefer a different scale.</p>
+
+<p>Because the glyphs are content streams, they inherit the current fill colour — which is why <code>'ABC'</code> above comes out red. Note that a Type 3 font is not registered with <code>addFont()</code> but with <code>registerFont()</code>, which takes a <code>Font</code> object. See <code>examples/26_type3_font.php</code>.</p>
+
+<h2 id="typography-via-contentstream">Typography via ContentStream</h2>
+<p>The element API covers position, font, size and colour. Everything else in the PDF text model — spacing, scaling, rise, rendering modes — is reached through <code>ContentStream</code>, which you build yourself and hand to <code>PdfPage::addContent()</code>.</p>
+
+<p>Text operators only apply between <code>beginText()</code> and <code>endText()</code>. Inside that block you set state, position the cursor, and show strings.</p>
+
+<pre><code class="language-php">use Papier\Content\ContentStream;
+
+$cs = new ContentStream();
+$cs-&gt;beginText()
+   -&gt;setFont($regular, 12)
+   -&gt;setTextPosition(72, 600)
+   -&gt;showText('Normal text')
+   -&gt;endText();
+
+$page-&gt;addContent($cs);</code></pre>
+
+<h3 id="character-and-word-spacing">Character and word spacing</h3>
+<p><code>setCharSpacing()</code> adds a fixed amount to every glyph advance and <code>setWordSpacing()</code> adds to the advance of the space character only. Both take points and both accept negatives for tightening.</p>
+
+<pre><code class="language-php">$cs-&gt;beginText()
+   -&gt;setFont($regular, 12)
+   -&gt;setTextPosition(72, 580)-&gt;setCharSpacing(3)
+   -&gt;showText('L e t t e r s p a c e d')
+   -&gt;setTextPosition(72, 560)-&gt;setCharSpacing(0)-&gt;setWordSpacing(10)
+   -&gt;showText('Wide word spacing here')
+   -&gt;endText();</code></pre>
+
+<p>Letterspacing is conventional for small-caps headings and all-caps labels. Word spacing is mostly useful for crude justification, though the reader will not rebreak lines for you.</p>
+
+<div class="warn">
+<p>Both settings are part of the graphics state and persist until changed. Reset them to 0 before showing normal text, or wrap the styled run in <code>save()</code> and <code>restore()</code>.</p>
+</div>
+
+<h3 id="scaling-rise-and-leading">Horizontal scaling, rise and leading</h3>
+<pre><code class="language-php">$cs-&gt;beginText()
+   -&gt;setFont($regular, 12)
+   -&gt;setHorizontalScaling(80)     // condense to 80% width
+   -&gt;setTextRise(4)               // raise baseline: superscript
+   -&gt;setTextLeading(18)           // line spacing for nextLine()
+   -&gt;setTextPosition(72, 520)
+   -&gt;showText('First line')
+   -&gt;nextLine()
+   -&gt;showText('Second line, 18 pt below')
+   -&gt;endText();</code></pre>
+
+<p><code>setHorizontalScaling()</code> takes a percentage; 100 is normal. Stretching glyphs is a poor substitute for a properly condensed font face, but it is occasionally the only way to squeeze a fixed string into a fixed width. <code>setTextRise()</code> shifts the baseline and, paired with a smaller size, produces superscripts and subscripts. <code>setTextLeading()</code> defines the vertical step that <code>nextLine()</code> takes.</p>
+
+<h3 id="rendering-modes">Text rendering modes</h3>
+<p>The rendering mode decides whether glyphs are filled, stroked, both, invisible, or added to the clipping path. Outlined headings and invisible OCR layers both come from this one setting.</p>
+
+<pre><code class="language-php">$cs-&gt;beginText()
+   -&gt;setFont($bold, 32)
+   -&gt;setFillRGB(1, 1, 1)
+   -&gt;setStrokeRGB(0.1, 0.2, 0.6)
+   -&gt;setLineWidth(0.7)
+   -&gt;setTextRenderMode(1)          // stroke only: outlined letters
+   -&gt;setTextPosition(72, 460)
+   -&gt;showText('OUTLINED')
+   -&gt;setTextRenderMode(0)          // always reset
+   -&gt;endText();</code></pre>
+
+<table>
+<thead><tr><th>Mode</th><th>Effect</th></tr></thead>
+<tbody>
+<tr><td>0</td><td>Fill (the default)</td></tr>
+<tr><td>1</td><td>Stroke</td></tr>
+<tr><td>2</td><td>Fill then stroke</td></tr>
+<tr><td>3</td><td>Invisible — renders nothing but remains searchable</td></tr>
+<tr><td>4</td><td>Fill and add to clipping path</td></tr>
+<tr><td>5</td><td>Stroke and add to clipping path</td></tr>
+<tr><td>6</td><td>Fill, stroke and add to clipping path</td></tr>
+<tr><td>7</td><td>Add to clipping path only</td></tr>
+</tbody>
+</table>
+
+<p>Mode 3 is how scanned documents carry an invisible OCR text layer over the page image: the words are selectable and searchable, but only the scan is visible. Modes 4 to 7 add the glyph outlines to the clip path, so subsequent painting — an image, a gradient — shows through the letterforms. See <a href="graphics.html">Graphics</a> for clipping, and <code>examples/27_shading_patterns.php</code> for filling text with a gradient pattern.</p>
+
+<h3 id="positioning-and-kerning">Positioning and manual kerning</h3>
+<pre><code class="language-php">$cs-&gt;beginText()
+   -&gt;setFont($regular, 12)
+   -&gt;setTextPosition(72, 420)
+   -&gt;showTextArray(['A', -120, 'V', -80, 'ATAR'])
+   -&gt;endText();</code></pre>
+
+<p><code>showTextArray()</code> interleaves strings with numeric adjustments expressed in thousandths of the font size, subtracted from the advance. Positive numbers pull glyphs closer, negative push them apart — note the sign is inverted relative to intuition. This is the mechanism readers use for kerning, and it is available if you are implementing your own kern-pair logic.</p>
+
+<p>Other positioning helpers: <code>moveText($tx, $ty)</code> offsets relative to the start of the current line, <code>moveTextSetLeading()</code> does the same while setting the leading, <code>setTextMatrix()</code> installs an arbitrary transform for rotated or sheared text, and <code>moveShowText()</code> advances a line and shows a string in one operator.</p>
+
+<h3 id="writetext-shorthand">A one-line shorthand</h3>
+<p>When you are already inside a hand-written stream and just need a label, <code>writeText()</code> wraps the whole begin/set/position/show/end sequence.</p>
+
+<pre><code class="language-php">$cs-&gt;writeText('Figure 1', $regular, 9, 72, 400);</code></pre>
+
+<p>For anything more than a label, prefer the <code>Text</code> element — it is shorter still and participates in the element pipeline.</p>

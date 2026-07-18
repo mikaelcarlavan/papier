@@ -1,0 +1,256 @@
+<!-- title: Bookmarks & navigation -->
+<!-- description: Outlines, named destinations, open actions, page labels, the Action classes, link annotations and presentation-mode page transitions. -->
+<h1>Bookmarks &amp; navigation</h1>
+<p class="lead">A long PDF is only usable if the reader can move around it. This page covers the machinery for that: the outline tree that fills the bookmarks panel, destinations that name places in the document, actions that respond to clicks, page labels that fix the numbering shown in the viewer, and transitions for presentation mode.</p>
+
+<h2 id="outlines">Outlines (bookmarks)</h2>
+<p>The document outline is the collapsible tree in the viewer's sidebar. It is built from two classes: <code>PdfOutline</code> is the root container, and <code>PdfOutlineItem</code> is a single bookmark that may have children.</p>
+<pre><code class="language-php">use Papier\Structure\{PdfOutline, PdfOutlineItem};
+
+$outline = new PdfOutline();
+
+$intro = new PdfOutlineItem('Introduction');
+$outline-&gt;addItem($intro);
+
+$ch1 = new PdfOutlineItem('Chapter 1: Basics');
+$outline-&gt;addItem($ch1);
+
+$doc-&gt;setOutline($outline);</code></pre>
+<div class="note">
+<p><code>PdfOutline::addItem()</code> takes a <code>PdfOutlineItem</code> object. Construct the item first with its title, configure it, then add it.</p>
+</div>
+
+<h3 id="nesting-bookmarks">Nesting bookmarks</h3>
+<p>Hierarchy comes from <code>addChild()</code> on the item, not from the root. Only top-level items go through <code>addItem()</code>:</p>
+<pre><code class="language-php">$ch1 = new PdfOutlineItem('Chapter 1: Basics');
+$ch1-&gt;addChild(new PdfOutlineItem('1.1 File structure'))
+    -&gt;addChild(new PdfOutlineItem('1.2 Objects'));
+
+$sec13 = new PdfOutlineItem('1.3 Streams');
+$sec13-&gt;addChild(new PdfOutlineItem('1.3.1 Filters'));
+$ch1-&gt;addChild($sec13);
+
+$outline-&gt;addItem($ch1);</code></pre>
+<p>Nesting is unlimited. Papier computes the <code>/First</code>, <code>/Last</code>, <code>/Next</code>, <code>/Prev</code>, <code>/Parent</code> and <code>/Count</code> links that the outline tree requires.</p>
+
+<h3 id="styling-bookmarks">Styling bookmarks</h3>
+<p>Bookmarks can carry a colour and a bold or italic style — useful for distinguishing chapter headings from sections at a glance:</p>
+<pre><code class="language-php">$ch1-&gt;setBold(true)
+    -&gt;setItalic(false)
+    -&gt;setColor(0.2, 0.3, 0.6);   // RGB components in [0, 1]</code></pre>
+<p><code>setColor()</code> also accepts a <code>Color</code> object:</p>
+<pre><code class="language-php">use Papier\Elements\Color;
+
+$ch1-&gt;setColor(Color::hex('#334d99'));</code></pre>
+
+<h3 id="bookmark-targets">Bookmark targets</h3>
+<p>A bookmark with no destination is just a label. Give it a target with <code>setDestination()</code>, which accepts either a named destination string or an explicit destination array:</p>
+<pre><code class="language-php">use Papier\Destination\XYZDestination;
+
+// By name — resolved through the document's name tree
+$ch1-&gt;setDestination('chapter1');
+
+// Explicit: scroll page 2 so that (72, 750) is at the top-left, zoom unchanged
+$ch1-&gt;setDestination(XYZDestination::create($page2-&gt;getDictionary(), 72, 750, null));</code></pre>
+<p>Named destinations are usually the better choice: the bookmark refers to a name, the name refers to a page, and reorganising the document only means updating the name definition. Alternatively, <code>setAction()</code> attaches any action instead of a destination — for example a bookmark that opens a web page.</p>
+
+<h2 id="destinations">Destinations</h2>
+<p>A destination says which page to show and how to fit it in the window. Papier provides one class per fit style in <code>Papier\Destination</code>; each has a static <code>create()</code> returning the destination array.</p>
+<table>
+<thead><tr><th>Class</th><th>Arguments after the page</th><th>Behaviour</th></tr></thead>
+<tbody>
+<tr><td><code>XYZDestination</code></td><td><code>$left, $top, $zoom</code></td><td>Position a specific point at the top-left, with an explicit zoom</td></tr>
+<tr><td><code>FitDestination</code></td><td>—</td><td>Fit the whole page in the window</td></tr>
+<tr><td><code>FitHDestination</code></td><td><code>$top</code></td><td>Fit the page width, positioned at a given vertical coordinate</td></tr>
+<tr><td><code>FitVDestination</code></td><td><code>$left</code></td><td>Fit the page height, positioned at a given horizontal coordinate</td></tr>
+<tr><td><code>FitRDestination</code></td><td><code>$left, $bottom, $right, $top</code></td><td>Fit a specific rectangle in the window</td></tr>
+<tr><td><code>FitBDestination</code></td><td>—</td><td>Fit the page's bounding box (its inked area)</td></tr>
+<tr><td><code>FitBHDestination</code></td><td><code>$top</code></td><td>Fit the bounding box width</td></tr>
+<tr><td><code>FitBVDestination</code></td><td><code>$left</code></td><td>Fit the bounding box height</td></tr>
+</tbody>
+</table>
+<pre><code class="language-php">use Papier\Destination\{FitDestination, FitHDestination, FitRDestination};
+
+$whole  = FitDestination::create($page-&gt;getDictionary());
+$byWide = FitHDestination::create($page-&gt;getDictionary(), 750);
+$onFig  = FitRDestination::create($page-&gt;getDictionary(), 72, 400, 523, 640);</code></pre>
+<p>In <code>XYZDestination</code>, passing <code>null</code> for a parameter means "leave this as the reader had it" — so <code>XYZDestination::create($p, null, 750, null)</code> scrolls vertically without changing the horizontal position or the zoom. Passing <code>0</code> for the zoom also means "unchanged", which is why <code>null</code> is the clearer way to express it.</p>
+<div class="note">
+<p><code>FitDestination</code> is the friendliest default for bookmarks: it makes no assumption about the reader's window size or preferred zoom. Fixed <code>XYZ</code> zooms can be jarring on small screens.</p>
+</div>
+
+<h2 id="named-destinations">Named destinations</h2>
+<p>A named destination gives a stable, human-readable label to a place in the document. Links, bookmarks and external references can then target the name rather than a page object, and the target survives editing.</p>
+<pre><code class="language-php">$doc-&gt;addNamedDestination('intro',    $page1, 72, 750);
+$doc-&gt;addNamedDestination('chapter1', $page2, 72, 780);
+$doc-&gt;addNamedDestination('appendix', $page9, null, null, null);</code></pre>
+<p>The signature is <code>addNamedDestination(string $name, PdfPage $page, ?float $left, ?float $top, ?float $zoom)</code>. It always creates an XYZ destination; omit or pass <code>null</code> for the coordinates you want to leave alone.</p>
+<p>Named destinations are also what makes cross-document linking work — <code>GoToRAction</code> can open another PDF at a named destination without knowing its page numbering.</p>
+
+<h2 id="the-open-action">The open action</h2>
+<p>By default a viewer opens a document at page one. <code>setOpenDestination()</code> overrides that:</p>
+<pre><code class="language-php">$doc-&gt;setOpenDestination($page, 0, 841);   // top-left of the page
+$doc-&gt;setOpenDestination($tocPage);        // the table of contents, position unchanged</code></pre>
+<p>The parameters mirror <code>addNamedDestination()</code>: a page plus optional left, top and zoom. This is how you make a report open on its summary, or a manual open on its index.</p>
+<p>Related presentation settings — whether the bookmarks panel is open on load, whether the toolbar is hidden — live in viewer preferences, covered in <a href="documents.html">Documents &amp; pages</a>.</p>
+
+<h2 id="actions">Actions</h2>
+<p>An action is something that happens when the user activates a link, a bookmark, or a form field. Papier's <code>Papier\Action</code> namespace has a class per action type, each extending the abstract <code>Action</code>.</p>
+
+<h3 id="navigation-actions">Navigation actions</h3>
+<pre><code class="language-php">use Papier\Action\{GoToAction, GoToRAction, NamedAction, URIAction};
+
+// Jump within this document — by name or by explicit destination
+$goto = new GoToAction('chapter1');
+$goto = new GoToAction(XYZDestination::create($page-&gt;getDictionary(), 72, 750, null));
+
+// Open a URL in the browser
+$uri = new URIAction('https://example.com');
+
+// Open a destination in another PDF file
+$remote = new GoToRAction(/* file spec, destination, new window */);
+
+// Trigger a built-in viewer command
+$next = new NamedAction('NextPage');   // also FirstPage, LastPage, PrevPage, Print</code></pre>
+<p><code>URIAction</code> takes an optional second argument, <code>$isMap</code>, which appends the click coordinates to the URL for server-side image maps.</p>
+
+<h3 id="interactive-actions">Interactive actions</h3>
+<pre><code class="language-php">use Papier\Action\{HideAction, JavaScriptAction, LaunchAction, ResetFormAction, SubmitFormAction};
+
+// Run a script (see the warning below)
+$js = new JavaScriptAction('app.alert("Please complete all required fields.");');
+
+// Reset every form field to its default value
+$reset = new ResetFormAction();
+
+// Show or hide annotations, addressed by their /NM name
+$hide = new HideAction($annotationRef, true);
+
+// Launch an external application or file
+$launch = new LaunchAction($fileSpec, newWindow: true);</code></pre>
+<p><code>SubmitFormAction</code> posts form data to a URL, and pairs naturally with a push button — see <a href="forms.html">Forms</a>.</p>
+<div class="warn">
+<p>JavaScript actions are disabled by default in most modern viewers and are forbidden outright in PDF/A. Never make required functionality depend on one — see <a href="accessibility.html">Tagged PDF &amp; PDF/A</a>.</p>
+</div>
+
+<h3 id="feature-actions">Feature actions</h3>
+<p>The remaining actions drive specific document features: <code>SetOCGStateAction</code> toggles optional content layers, <code>RenditionAction</code> controls media playback, <code>SoundAction</code> plays an embedded sound, <code>MovieAction</code> drives a legacy movie annotation, <code>TransitionAction</code> triggers a page transition, <code>ThreadAction</code> follows an article thread, <code>ImportDataAction</code> loads form data from a file, <code>GoToEAction</code> targets an embedded file, and <code>GoTo3DViewAction</code> selects a view in a 3D annotation.</p>
+<pre><code class="language-php">use Papier\Action\SetOCGStateAction;
+
+$toggle = new SetOCGStateAction($stateArray);   // see the multimedia page for state arrays</code></pre>
+
+<h3 id="chaining-actions">Chaining actions</h3>
+<p><code>setNext()</code> makes one action run after another, so a single click can do several things:</p>
+<pre><code class="language-php">$jump = new GoToAction('summary');
+$jump-&gt;setNext($someOtherAction-&gt;getDictionary());</code></pre>
+
+<h2 id="link-annotations">Link annotations</h2>
+<p>Actions and destinations need something to activate them. That is the job of the link annotation — an invisible rectangle that responds to clicks.</p>
+<pre><code class="language-php">use Papier\Annotation\LinkAnnotation;
+
+$link = new LinkAnnotation(72, 680, 272, 700);
+$link-&gt;setURI('https://example.com')
+     -&gt;setBorderStyle(0);        // suppress the default blue rectangle
+$page-&gt;addAnnotation($link);</code></pre>
+<p><code>setURI()</code> is a shortcut for the common web-link case. For anything else, attach an action or a destination:</p>
+<pre><code class="language-php">use Papier\Action\GoToAction;
+use Papier\Destination\FitDestination;
+
+// Internal jump via an action
+$internal = new LinkAnnotation(72, 650, 272, 670);
+$internal-&gt;setAction(new GoToAction('chapter1'))
+         -&gt;setBorderStyle(0);
+
+// Internal jump via a destination array
+$direct = new LinkAnnotation(72, 620, 272, 640);
+$direct-&gt;setDestination(FitDestination::create($page5-&gt;getDictionary()))
+       -&gt;setBorderStyle(0);</code></pre>
+<p><code>setHighlightMode()</code> controls the visual feedback while the mouse is down: <code>N</code> none, <code>I</code> invert, <code>O</code> outline, <code>P</code> push.</p>
+<p>A link is a hotspot with no appearance of its own, so draw the visible affordance yourself:</p>
+<pre><code class="language-php">use Papier\Elements\{Color, Text};
+
+$page-&gt;add(
+    Text::write('See Chapter 1')-&gt;at(80, 686)-&gt;font($font, 11)-&gt;color(Color::rgb(0.1, 0.3, 0.8)),
+);
+$page-&gt;addAnnotation($internal);</code></pre>
+<p>Full annotation coverage is in <a href="annotations.html">Annotations</a>.</p>
+
+<h2 id="page-labels">Page labels</h2>
+<p>Page labels decouple the numbering the reader sees from the physical page index. Front matter numbered <code>i, ii, iii</code> followed by a body starting at <code>1</code> is the classic case: without labels the viewer's page box and the printed folio disagree, and jumping to "page 12" lands in the wrong place.</p>
+<pre><code class="language-php">use Papier\Structure\PageLabelStyle;
+
+$doc-&gt;addPageLabel(0, PageLabelStyle::RomanLower);   // pages 1-4 shown as i, ii, iii, iv
+$doc-&gt;addPageLabel(4, PageLabelStyle::Decimal);      // page 5 onward shown as 1, 2, 3 …</code></pre>
+<p>Each call opens a range starting at a <strong>0-based</strong> page index and running until the next range begins. The styles are:</p>
+<table>
+<thead><tr><th>Style</th><th>Produces</th></tr></thead>
+<tbody>
+<tr><td><code>PageLabelStyle::Decimal</code></td><td>1, 2, 3 …</td></tr>
+<tr><td><code>PageLabelStyle::RomanLower</code></td><td>i, ii, iii …</td></tr>
+<tr><td><code>PageLabelStyle::RomanUpper</code></td><td>I, II, III …</td></tr>
+<tr><td><code>PageLabelStyle::AlphaLower</code></td><td>a, b, c … aa, bb …</td></tr>
+<tr><td><code>PageLabelStyle::AlphaUpper</code></td><td>A, B, C … AA, BB …</td></tr>
+<tr><td><code>PageLabelStyle::None</code></td><td>No number — prefix only</td></tr>
+</tbody>
+</table>
+<p>Two further parameters control the range. <code>$startValue</code> sets the first number, and <code>$prefix</code> is prepended to every label:</p>
+<pre><code class="language-php">$doc-&gt;addPageLabel(4, PageLabelStyle::Decimal, prefix: 'p.');        // p.1, p.2, p.3 …
+$doc-&gt;addPageLabel(12, PageLabelStyle::Decimal, startValue: 100);   // 100, 101, 102 …
+$doc-&gt;addPageLabel(20, PageLabelStyle::None, prefix: 'Appendix');   // Appendix, Appendix …</code></pre>
+<p>The full signature is <code>addPageLabel(int $startPage, PageLabelStyle $style, int $startValue, string $prefix)</code>.</p>
+
+<h2 id="page-transitions">Page transitions</h2>
+<p>Transitions animate the change from one page to the next in full-screen presentation mode. They are ignored during normal scrolling, so they cost nothing in an ordinary document.</p>
+<pre><code class="language-php">use Papier\Structure\PageTransition;
+
+$page-&gt;setTransition(new PageTransition(PageTransition::DISSOLVE, 1.0));</code></pre>
+<p>The constructor takes a style constant and a duration in seconds. The available styles:</p>
+<table>
+<thead><tr><th>Constant</th><th>Effect</th></tr></thead>
+<tbody>
+<tr><td><code>REPLACE</code></td><td>Instant swap — the default, no animation</td></tr>
+<tr><td><code>SPLIT</code></td><td>Two lines sweep inward or outward</td></tr>
+<tr><td><code>BLINDS</code></td><td>Multiple parallel lines sweep across</td></tr>
+<tr><td><code>BOX</code></td><td>A rectangle expands or contracts from the centre</td></tr>
+<tr><td><code>WIPE</code></td><td>A single line sweeps across the page</td></tr>
+<tr><td><code>DISSOLVE</code></td><td>Random pixel dissolve</td></tr>
+<tr><td><code>GLITTER</code></td><td>Dissolve with a directional sweep</td></tr>
+<tr><td><code>FLY</code></td><td>The new page flies in (PDF 1.5)</td></tr>
+<tr><td><code>PUSH</code></td><td>The new page pushes the old one off (PDF 1.5)</td></tr>
+<tr><td><code>COVER</code></td><td>The new page slides over the old (PDF 1.5)</td></tr>
+<tr><td><code>UNCOVER</code></td><td>The old page slides away (PDF 1.5)</td></tr>
+<tr><td><code>FADE</code></td><td>Cross-fade through the backdrop (PDF 1.5)</td></tr>
+</tbody>
+</table>
+<p>Several styles take a direction or motion modifier:</p>
+<pre><code class="language-php">// Wipe left to right
+$page-&gt;setTransition(
+    (new PageTransition(PageTransition::WIPE, 0.6))-&gt;setDirection(0)
+);
+
+// Box expanding outward
+$page-&gt;setTransition(
+    (new PageTransition(PageTransition::BOX, 0.8))-&gt;setMotion(PageTransition::MOTION_OUT)
+);
+
+// Horizontal blinds
+$page-&gt;setTransition(
+    (new PageTransition(PageTransition::BLINDS, 0.7))-&gt;setDimension(PageTransition::DIM_H)
+);</code></pre>
+<p><code>setDirection()</code> takes degrees — <code>0</code> left-to-right, <code>90</code> bottom-to-top, <code>180</code> right-to-left, <code>270</code> top-to-bottom, and <code>315</code> for the diagonal used by <code>GLITTER</code>. <code>setMotion()</code> takes <code>MOTION_IN</code> or <code>MOTION_OUT</code>. <code>setDimension()</code> takes <code>DIM_H</code> or <code>DIM_V</code>. For <code>FLY</code>, <code>setStartingScale()</code> and <code>setOpaque()</code> tune how the incoming page enters.</p>
+
+<h3 id="auto-advance">Auto-advance</h3>
+<p>Pair a transition with <code>setDuration()</code> on the page to build a self-running slideshow. Note the naming: the duration passed to <code>PageTransition</code> is how long the <em>animation</em> takes, while <code>PdfPage::setDuration()</code> is how long the <em>page is displayed</em> before advancing.</p>
+<pre><code class="language-php">$page1-&gt;setTransition(new PageTransition(PageTransition::DISSOLVE, 1.0));
+$page1-&gt;setDuration(5.0);   // hold for 5 s, then advance automatically</code></pre>
+<p>To make the document open straight into full-screen mode, set the page mode through viewer preferences — see <a href="documents.html">Documents &amp; pages</a>.</p>
+
+<h2 id="examples">Examples</h2>
+<ul>
+<li><code>examples/07_bookmarks_and_encryption.php</code> — a multi-page document with a nested, styled outline tree and viewer preferences.</li>
+<li><code>examples/13_transitions_and_media_elements.php</code> — a slide deck using every transition style with auto-advance.</li>
+<li><code>examples/06_annotations.php</code> — link annotations in context.</li>
+<li><code>examples/19_read_encrypted.php</code> — reading an outline tree back out of a document.</li>
+</ul>
+<pre><code class="language-bash">php examples/07_bookmarks_and_encryption.php
+php examples/13_transitions_and_media_elements.php</code></pre>

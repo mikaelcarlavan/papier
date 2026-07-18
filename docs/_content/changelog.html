@@ -1,0 +1,60 @@
+<!-- title: Changelog -->
+<!-- description: Notable changes to Papier, including the type-safe API introduced in 3.0.0 and its breaking changes. -->
+<h1>Changelog</h1>
+<p class="lead">All notable changes to this project are documented here.</p>
+
+<h2 id="3-0-0">[3.0.0] &mdash; 2026-07-01</h2>
+<p>Type-safe public API: stringly-typed and loosely-typed parameters are replaced with enums and a fluent builder. Invalid values are now caught at the type level instead of silently producing a wrong PDF, and IDE autocompletion makes the options discoverable.</p>
+
+<h3 id="3-0-0-breaking-changes">Breaking changes</h3>
+<p>Four public method signatures changed.</p>
+
+<h4 id="enable-pdf-a">PdfDocument::enablePdfA()</h4>
+<p>The conformance level is now a <code>Papier\Metadata\PdfAConformance</code> enum instead of a string.</p>
+<pre><code class="language-php">// before
+$doc-&gt;enablePdfA(2, 'B');
+// after
+$doc-&gt;enablePdfA(2, PdfAConformance::Basic);   // ::Accessible, ::Unicode</code></pre>
+
+<h4 id="page-rules">PdfDocument::onEachPage() / header() / footer()</h4>
+<p>The page rule is now a <code>Papier\PageRule</code> enum. <code>int</code> (every Nth page) and <code>Closure</code> predicates are still accepted. This also fixes a latent bug where a misspelled rule string silently matched every page.</p>
+<pre><code class="language-php">// before
+$doc-&gt;header($render, 'odd');
+// after
+$doc-&gt;header($render, PageRule::Odd);          // ::All (default), ::Even, ::First, ::Last</code></pre>
+
+<h4 id="viewer-preferences">PdfDocument::setViewerPreferences()</h4>
+<p>Now takes a <code>Papier\Viewer\ViewerPreferences</code> fluent builder instead of an untyped array. Uncommon keys remain available via <code>-&gt;set(string $key, PdfObject $value)</code>.</p>
+<pre><code class="language-php">// before
+$doc-&gt;setViewerPreferences([
+    'DisplayDocTitle'       =&gt; true,
+    'PrintScaling'          =&gt; 'None',
+    'NonFullScreenPageMode' =&gt; 'UseOutlines',
+]);
+// after
+$doc-&gt;setViewerPreferences(
+    ViewerPreferences::create()
+        -&gt;displayDocTitle()
+        -&gt;printScaling(PrintScaling::None)
+        -&gt;nonFullScreenPageMode(NonFullScreenPageMode::UseOutlines)
+);</code></pre>
+
+<h4 id="encrypt">PdfDocument::encrypt()</h4>
+<p>The <code>$algorithm</code> argument is now a <code>Papier\Encryption\EncryptionAlgorithm</code> enum. The <code>StandardSecurityHandler::RC4_40 / RC4_128 / AES_128 / AES_256</code> constants have been <strong>removed</strong>; the <code>PERM_*</code> permission flags are unchanged.</p>
+<pre><code class="language-php">// before
+$doc-&gt;encrypt('pw', '', $perms, StandardSecurityHandler::AES_256);
+// after
+$doc-&gt;encrypt('pw', '', $perms, EncryptionAlgorithm::Aes_256);</code></pre>
+
+<h3 id="3-0-0-added">Added</h3>
+<ul>
+  <li><code>Papier\Metadata\PdfAConformance</code> enum (<code>Basic</code>, <code>Accessible</code>, <code>Unicode</code>).</li>
+  <li><code>Papier\PageRule</code> enum (<code>All</code>, <code>Odd</code>, <code>Even</code>, <code>First</code>, <code>Last</code>).</li>
+  <li><code>Papier\Encryption\EncryptionAlgorithm</code> enum (<code>Rc4_40</code>, <code>Rc4_128</code>, <code>Aes_128</code>, <code>Aes_256</code>).</li>
+  <li><code>Papier\Viewer\ViewerPreferences</code> fluent builder, with value enums <code>PrintScaling</code>, <code>Duplex</code>, <code>NonFullScreenPageMode</code>, and <code>ReadingDirection</code>.</li>
+</ul>
+
+<h3 id="3-0-0-notes">Notes</h3>
+<ul>
+  <li>No changes to output format &mdash; regenerating a document with the updated call sites produces the same bytes.</li>
+</ul>

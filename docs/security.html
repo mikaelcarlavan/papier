@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Encryption & signatures — Papier</title>
+<meta name="description" content="Password-protect documents with RC4, AES-128 or AES-256, set permission flags, read encrypted PDFs, and apply PKCS#7 signatures and RFC 3161 timestamps.">
+<meta property="og:title" content="Encryption & signatures — Papier">
+<meta property="og:description" content="Password-protect documents with RC4, AES-128 or AES-256, set permission flags, read encrypted PDFs, and apply PKCS#7 signatures and RFC 3161 timestamps.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<script>
+(function () {
+  var t = localStorage.getItem('papier-theme');
+  if (t) document.documentElement.setAttribute('data-theme', t);
+})();
+</script>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <button class="menu-toggle" type="button" aria-label="Toggle navigation">
+<svg viewBox="0 0 20 20" width="20" height="20"><path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="index.html">
+<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 2h8l5 5v15H6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M14 2v5h5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+<span>Papier</span>
+  </a>
+  <div class="search">
+<input type="search" id="search-input" placeholder="Search documentation…" autocomplete="off" aria-label="Search documentation">
+<kbd>/</kbd>
+<div id="search-results" role="listbox"></div>
+  </div>
+  <div class="topbar-links">
+<a href="https://packagist.org/packages/papier/papier">Packagist</a>
+<a href="https://github.com/papier/papier">GitHub</a>
+<button class="theme-toggle" type="button" aria-label="Toggle dark mode">
+  <svg class="sun" viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.5 1.5M17.6 17.6l1.5 1.5M19.1 4.9l-1.5 1.5M6.4 17.6l-1.5 1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+  <svg class="moon" viewBox="0 0 24 24" width="18" height="18"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+</button>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" aria-label="Documentation">
+<div class="nav-section"><h4>Getting started</h4><ul><li><a href="index.html">Introduction</a></li><li><a href="installation.html">Installation</a></li><li><a href="quickstart.html">Quick start</a></li></ul></div><div class="nav-section"><h4>Creating PDFs</h4><ul><li><a href="documents.html">Documents &amp; pages</a></li><li><a href="text.html">Text &amp; fonts</a></li><li><a href="graphics.html">Graphics</a></li><li><a href="images.html">Images</a></li><li><a href="tables.html">Tables</a></li></ul></div><div class="nav-section"><h4>Interactivity</h4><ul><li><a href="forms.html">Forms</a></li><li><a href="annotations.html">Annotations</a></li><li><a href="navigation.html">Bookmarks &amp; navigation</a></li><li><a href="multimedia.html">Layers &amp; multimedia</a></li></ul></div><div class="nav-section"><h4>Advanced</h4><ul><li><a href="security.html" class="active">Encryption &amp; signatures</a></li><li><a href="accessibility.html">Tagged PDF &amp; PDF/A</a></li><li><a href="file-structure.html">File structure</a></li><li><a href="reading.html">Reading PDFs</a></li></ul></div><div class="nav-section"><h4>Reference</h4><ul><li><a href="examples.html">Examples</a></li><li><a href="changelog.html">Changelog</a></li></ul></div>
+  </nav>
+
+  <main id="main">
+<article class="content">
+<h1>Encryption &amp; signatures</h1>
+<p class="lead">Encryption and digital signatures answer two different questions. Encryption controls <strong>who can open</strong> a document and what they may do with it. A signature proves <strong>who produced</strong> it and that nothing has changed since. They are independent, and most workflows need only one.</p>
+
+<h2 id="encrypting-a-document">Encrypting a document</h2>
+<p>One call on the document sets up the standard security handler:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Encryption</span><span class="t-kw">\</span><span class="t-op">{</span><span class="t-type">EncryptionAlgorithm</span><span class="t-op">,</span> <span class="t-type">StandardSecurityHandler</span><span class="t-op">}</span><span class="t-op">;</span>
+
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">encrypt</span><span class="t-op">(</span>
+    <span class="t-fn">userPassword</span><span class="t-op">:</span>  <span class="t-string">&#039;user&#039;</span><span class="t-op">,</span>
+    <span class="t-fn">ownerPassword</span><span class="t-op">:</span> <span class="t-string">&#039;owner&#039;</span><span class="t-op">,</span>
+    <span class="t-fn">permissions</span><span class="t-op">:</span>   <span class="t-type">StandardSecurityHandler</span><span class="t-kw">::</span><span class="t-type">PERM_PRINT</span> <span class="t-op">|</span> <span class="t-type">StandardSecurityHandler</span><span class="t-kw">::</span><span class="t-type">PERM_COPY</span><span class="t-op">,</span>
+    <span class="t-fn">algorithm</span><span class="t-op">:</span>     <span class="t-type">EncryptionAlgorithm</span><span class="t-kw">::</span><span class="t-type">Aes_256</span><span class="t-op">,</span>
+<span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">save</span><span class="t-op">(</span><span class="t-string">&#039;protected.pdf&#039;</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>Call <code>encrypt()</code> before <code>save()</code>. Every string and stream in the file is encrypted as it is written.</p>
+
+<h3 id="the-two-passwords">The two passwords</h3>
+<p>The standard security handler defines two roles, which is the part people most often get wrong.</p>
+<p>The <strong>user password</strong> is required to open the document. Leave it empty and anyone can open the file — but the permission restrictions still apply, which is the usual configuration for a document that should be readable but not printable or copyable.</p>
+<p>The <strong>owner password</strong> bypasses every restriction. Someone who knows it gets full access regardless of the permission flags. If it is empty it defaults to the user password, which means the restrictions are trivially removable — so always set a distinct owner password when the permissions matter.</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-comment">// Anyone can open; only the owner can change the restrictions</span>
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">encrypt</span><span class="t-op">(</span><span class="t-string">&#039;&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;owner-secret&#039;</span><span class="t-op">,</span> <span class="t-type">StandardSecurityHandler</span><span class="t-kw">::</span><span class="t-type">PERM_PRINT</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-comment">// A password is needed to open at all</span>
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">encrypt</span><span class="t-op">(</span><span class="t-string">&#039;open-sesame&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;owner-secret&#039;</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<div class="warn">
+<p>Permission flags are advisory. They are enforced by cooperating viewers, not by cryptography — a reader holding the user password holds the decryption key, and any tool that ignores the flags can print or copy freely. Use permissions to express intent, not to enforce confidentiality. Only the user password provides real protection.</p>
+</div>
+
+<h3 id="permission-flags">Permission flags</h3>
+<p>Permissions are a bit field. OR the constants together to build the set you want:</p>
+<table>
+<thead><tr><th>Constant</th><th>Grants</th></tr></thead>
+<tbody>
+<tr><td><code>PERM_PRINT</code></td><td>Printing (at degraded resolution unless <code>PERM_PRINT_HQ</code> is also set)</td></tr>
+<tr><td><code>PERM_MODIFY</code></td><td>Changing the document's contents</td></tr>
+<tr><td><code>PERM_COPY</code></td><td>Copying text and graphics to the clipboard</td></tr>
+<tr><td><code>PERM_ANNOT</code></td><td>Adding or modifying annotations and form fields</td></tr>
+<tr><td><code>PERM_FILL_FORM</code></td><td>Filling in existing form fields</td></tr>
+<tr><td><code>PERM_EXTRACT</code></td><td>Extracting content for accessibility purposes</td></tr>
+<tr><td><code>PERM_ASSEMBLE</code></td><td>Inserting, rotating or deleting pages, and adding bookmarks</td></tr>
+<tr><td><code>PERM_PRINT_HQ</code></td><td>Printing at full resolution</td></tr>
+<tr><td><code>PERM_ALL</code></td><td>All of the above — the default</td></tr>
+</tbody>
+</table>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-comment">// Read and print, but no copying and no editing</span>
+<span class="t-var">$permissions</span> <span class="t-op">=</span> <span class="t-type">StandardSecurityHandler</span><span class="t-kw">::</span><span class="t-type">PERM_PRINT</span>
+             <span class="t-op">|</span> <span class="t-type">StandardSecurityHandler</span><span class="t-kw">::</span><span class="t-type">PERM_PRINT_HQ</span>
+             <span class="t-op">|</span> <span class="t-type">StandardSecurityHandler</span><span class="t-kw">::</span><span class="t-type">PERM_FILL_FORM</span>
+             <span class="t-op">|</span> <span class="t-type">StandardSecurityHandler</span><span class="t-kw">::</span><span class="t-type">PERM_EXTRACT</span><span class="t-op">;</span>
+
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">encrypt</span><span class="t-op">(</span><span class="t-string">&#039;user&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;owner&#039;</span><span class="t-op">,</span> <span class="t-var">$permissions</span><span class="t-op">,</span> <span class="t-type">EncryptionAlgorithm</span><span class="t-kw">::</span><span class="t-type">Aes_128</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<div class="note">
+<p>Leave <code>PERM_EXTRACT</code> set unless you have a strong reason not to. It is the flag screen readers rely on, and clearing it makes the document inaccessible to assistive technology. See <a href="accessibility.html">Tagged PDF &amp; PDF/A</a>.</p>
+</div>
+
+<h3 id="choosing-an-algorithm">Choosing an algorithm</h3>
+<p>The <code>EncryptionAlgorithm</code> enum offers four options spanning twenty years of the specification:</p>
+<table>
+<thead><tr><th>Case</th><th>Cipher</th><th>PDF version</th><th>Recommendation</th></tr></thead>
+<tbody>
+<tr><td><code>Rc4_40</code></td><td>RC4, 40-bit key</td><td>1.1</td><td>Broken. Legacy compatibility only.</td></tr>
+<tr><td><code>Rc4_128</code></td><td>RC4, 128-bit key</td><td>1.4</td><td>Weak cipher. Avoid for new documents.</td></tr>
+<tr><td><code>Aes_128</code></td><td>AES-128</td><td>1.6</td><td>The default. Sound, and universally supported.</td></tr>
+<tr><td><code>Aes_256</code></td><td>AES-256</td><td>2.0</td><td>Strongest. Needs a reasonably modern viewer.</td></tr>
+</tbody>
+</table>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">encrypt</span><span class="t-op">(</span><span class="t-string">&#039;user&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;owner&#039;</span><span class="t-op">,</span> <span class="t-type">StandardSecurityHandler</span><span class="t-kw">::</span><span class="t-type">PERM_ALL</span><span class="t-op">,</span> <span class="t-type">EncryptionAlgorithm</span><span class="t-kw">::</span><span class="t-type">Aes_256</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p><code>Aes_128</code> is the default because it is both secure and supported everywhere. Choose <code>Aes_256</code> when you control the audience's tooling — it also uses a stronger password-derivation scheme, which matters if the passwords are short.</p>
+<div class="warn">
+<p>Encryption strength is bounded by password strength. Any of these algorithms falls quickly to a dictionary attack against a weak password. Use long, random passwords for anything genuinely sensitive.</p>
+</div>
+
+<h3 id="the-security-handler">Using the handler directly</h3>
+<p><code>StandardSecurityHandler</code> is what <code>encrypt()</code> constructs internally. You rarely need it directly, but it is available for low-level work — <code>buildEncryptDictionary()</code> produces the <code>/Encrypt</code> dictionary, <code>getEncryptionKey()</code> exposes the derived file key, and <code>encryptData()</code> encrypts a single object's bytes.</p>
+
+<h2 id="reading-encrypted-pdfs">Reading encrypted PDFs</h2>
+<p>The parser decrypts transparently once a password is supplied. Set it before calling <code>parse()</code>:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Parser\PdfParser</span><span class="t-op">;</span>
+
+<span class="t-var">$parser</span> <span class="t-op">=</span> <span class="t-op">(</span><span class="t-kw">new</span> <span class="t-type">PdfParser</span><span class="t-op">(</span><span class="t-fn">file_get_contents</span><span class="t-op">(</span><span class="t-string">&#039;protected.pdf&#039;</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">)</span>
+    <span class="t-kw">-&gt;</span><span class="t-fn">setPassword</span><span class="t-op">(</span><span class="t-string">&#039;open-sesame&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$parser</span><span class="t-kw">-&gt;</span><span class="t-fn">parse</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-kw">echo</span> <span class="t-var">$parser</span><span class="t-kw">-&gt;</span><span class="t-fn">isEncrypted</span><span class="t-op">(</span><span class="t-op">)</span> <span class="t-op">?</span> <span class="t-string">&quot;encrypted\n&quot;</span> <span class="t-op">:</span> <span class="t-string">&quot;not encrypted\n&quot;</span><span class="t-op">;</span>
+<span class="t-kw">echo</span> <span class="t-var">$parser</span><span class="t-kw">-&gt;</span><span class="t-fn">getTitle</span><span class="t-op">(</span><span class="t-op">)</span> <span class="t-op">.</span> <span class="t-string">&quot;\n&quot;</span><span class="t-op">;</span>
+<span class="t-kw">echo</span> <span class="t-var">$parser</span><span class="t-kw">-&gt;</span><span class="t-fn">extractText</span><span class="t-op">(</span><span class="t-op">)</span> <span class="t-op">.</span> <span class="t-string">&quot;\n&quot;</span><span class="t-op">;</span></code></pre></div>
+<p>Either password works — the parser detects which one it was given and derives the file key accordingly:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$asUser</span>  <span class="t-op">=</span> <span class="t-op">(</span><span class="t-kw">new</span> <span class="t-type">PdfParser</span><span class="t-op">(</span><span class="t-var">$pdf</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">setPassword</span><span class="t-op">(</span><span class="t-string">&#039;open-sesame&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$asOwner</span> <span class="t-op">=</span> <span class="t-op">(</span><span class="t-kw">new</span> <span class="t-type">PdfParser</span><span class="t-op">(</span><span class="t-var">$pdf</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">setPassword</span><span class="t-op">(</span><span class="t-string">&#039;owner-key&#039;</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>Once decrypted, every read-side feature works normally — outlines, form fields, attachments, XMP:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$parser</span><span class="t-kw">-&gt;</span><span class="t-fn">parse</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-kw">foreach</span> <span class="t-op">(</span><span class="t-var">$parser</span><span class="t-kw">-&gt;</span><span class="t-fn">getOutlines</span><span class="t-op">(</span><span class="t-op">)</span> <span class="t-kw">as</span> <span class="t-var">$item</span><span class="t-op">)</span> <span class="t-op">{</span>
+    <span class="t-kw">echo</span> <span class="t-op">&quot;</span><span class="t-string">• </span><span class="t-kw">{</span><span class="t-var">$item</span><span class="t-op">[</span><span class="t-string">&#039;title&#039;</span><span class="t-op">]</span><span class="t-op">}</span><span class="t-string">\n</span><span class="t-op">&quot;</span><span class="t-op">;</span>
+<span class="t-op">}</span>
+<span class="t-kw">foreach</span> <span class="t-op">(</span><span class="t-var">$parser</span><span class="t-kw">-&gt;</span><span class="t-fn">getFormFields</span><span class="t-op">(</span><span class="t-op">)</span> <span class="t-kw">as</span> <span class="t-var">$f</span><span class="t-op">)</span> <span class="t-op">{</span>
+    <span class="t-kw">echo</span> <span class="t-op">&quot;</span><span class="t-string">  </span><span class="t-kw">{</span><span class="t-var">$f</span><span class="t-op">[</span><span class="t-string">&#039;name&#039;</span><span class="t-op">]</span><span class="t-op">}</span><span class="t-string"> (</span><span class="t-kw">{</span><span class="t-var">$f</span><span class="t-op">[</span><span class="t-string">&#039;type&#039;</span><span class="t-op">]</span><span class="t-op">}</span><span class="t-string">) = </span><span class="t-kw">{</span><span class="t-var">$f</span><span class="t-op">[</span><span class="t-string">&#039;value&#039;</span><span class="t-op">]</span><span class="t-op">}</span><span class="t-string">\n</span><span class="t-op">&quot;</span><span class="t-op">;</span>
+<span class="t-op">}</span>
+<span class="t-kw">foreach</span> <span class="t-op">(</span><span class="t-var">$parser</span><span class="t-kw">-&gt;</span><span class="t-fn">getAttachments</span><span class="t-op">(</span><span class="t-op">)</span> <span class="t-kw">as</span> <span class="t-var">$a</span><span class="t-op">)</span> <span class="t-op">{</span>
+    <span class="t-kw">echo</span> <span class="t-op">&quot;</span><span class="t-string">  </span><span class="t-kw">{</span><span class="t-var">$a</span><span class="t-op">[</span><span class="t-string">&#039;name&#039;</span><span class="t-op">]</span><span class="t-op">}</span><span class="t-string"> [</span><span class="t-kw">{</span><span class="t-var">$a</span><span class="t-op">[</span><span class="t-string">&#039;mime&#039;</span><span class="t-op">]</span><span class="t-op">}</span><span class="t-string">], </span><span class="t-op">&quot;</span> <span class="t-op">.</span> <span class="t-fn">strlen</span><span class="t-op">(</span><span class="t-var">$a</span><span class="t-op">[</span><span class="t-string">&#039;data&#039;</span><span class="t-op">]</span><span class="t-op">)</span> <span class="t-op">.</span> <span class="t-string">&quot; bytes\n&quot;</span><span class="t-op">;</span>
+<span class="t-op">}</span>
+<span class="t-kw">echo</span> <span class="t-var">$parser</span><span class="t-kw">-&gt;</span><span class="t-fn">getXmpMetadata</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>Documents with an empty user password need no <code>setPassword()</code> call at all. RC4-40, RC4-128, AES-128 and AES-256 are all handled; <code>StandardDecryptor</code> does the work internally.</p>
+
+<h2 id="digital-signatures">Digital signatures</h2>
+<p>A digital signature binds a document's bytes to a certificate. Papier produces PKCS#7 (CMS) detached signatures and adds them as an <strong>incremental update</strong>: the original bytes are preserved verbatim and a new revision is appended. That is what allows several signatures to coexist, each one validating the state of the document at the moment it was applied.</p>
+
+<h3 id="signing">Signing a document</h3>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Signature\PdfSigner</span><span class="t-op">;</span>
+
+<span class="t-var">$signer</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">PdfSigner</span><span class="t-op">(</span><span class="t-var">$certPem</span><span class="t-op">,</span> <span class="t-var">$keyPem</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// PEM strings or file paths</span>
+<span class="t-var">$signer</span><span class="t-kw">-&gt;</span><span class="t-fn">setName</span><span class="t-op">(</span><span class="t-string">&#039;Alice Example&#039;</span><span class="t-op">)</span>
+       <span class="t-kw">-&gt;</span><span class="t-fn">setReason</span><span class="t-op">(</span><span class="t-string">&#039;I approve this agreement&#039;</span><span class="t-op">)</span>
+       <span class="t-kw">-&gt;</span><span class="t-fn">setLocation</span><span class="t-op">(</span><span class="t-string">&#039;Paris&#039;</span><span class="t-op">)</span>
+       <span class="t-kw">-&gt;</span><span class="t-fn">setContactInfo</span><span class="t-op">(</span><span class="t-string">&#039;alice@example.com&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$signed</span> <span class="t-op">=</span> <span class="t-var">$signer</span><span class="t-kw">-&gt;</span><span class="t-fn">sign</span><span class="t-op">(</span><span class="t-fn">file_get_contents</span><span class="t-op">(</span><span class="t-string">&#039;agreement.pdf&#039;</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-fn">file_put_contents</span><span class="t-op">(</span><span class="t-string">&#039;signed.pdf&#039;</span><span class="t-op">,</span> <span class="t-var">$signed</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p><code>sign()</code> takes and returns PDF bytes, so it composes naturally with <code>toString()</code>:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$unsigned</span> <span class="t-op">=</span> <span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">toString</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$signed</span>   <span class="t-op">=</span> <span class="t-var">$signer</span><span class="t-kw">-&gt;</span><span class="t-fn">sign</span><span class="t-op">(</span><span class="t-var">$unsigned</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-comment">// The original is preserved as a literal prefix of the signed file</span>
+<span class="t-fn">var_dump</span><span class="t-op">(</span><span class="t-fn">str_starts_with</span><span class="t-op">(</span><span class="t-var">$signed</span><span class="t-op">,</span> <span class="t-var">$unsigned</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// true</span></code></pre></div>
+<p>That prefix property is the whole point of incremental signing: a verifier can reconstruct exactly the bytes that were signed.</p>
+<p>Additional options: <code>setDate('YYYYMMDDHHMMSS')</code> pins the claimed signing time, <code>addCertificate($pem)</code> embeds intermediate CA certificates so verifiers can build the trust chain, and <code>setSignatureCapacity($bytes)</code> enlarges the reserved <code>/Contents</code> placeholder when a long certificate chain will not fit the default.</p>
+
+<h3 id="obtaining-a-certificate">Obtaining a certificate</h3>
+<p>Production signing needs a certificate from a CA your recipients trust. For testing, generate a throwaway self-signed pair with the OpenSSL extension:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$pkey</span> <span class="t-op">=</span> <span class="t-fn">openssl_pkey_new</span><span class="t-op">(</span><span class="t-op">[</span><span class="t-string">&#039;private_key_bits&#039;</span> <span class="t-kw">=&gt;</span> <span class="t-number">2048</span><span class="t-op">,</span> <span class="t-string">&#039;private_key_type&#039;</span> <span class="t-kw">=&gt;</span> <span class="t-type">OPENSSL_KEYTYPE_RSA</span><span class="t-op">]</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$csr</span>  <span class="t-op">=</span> <span class="t-fn">openssl_csr_new</span><span class="t-op">(</span>
+    <span class="t-op">[</span><span class="t-string">&#039;commonName&#039;</span> <span class="t-kw">=&gt;</span> <span class="t-string">&#039;Papier Demo&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;organizationName&#039;</span> <span class="t-kw">=&gt;</span> <span class="t-string">&#039;Papier&#039;</span><span class="t-op">]</span><span class="t-op">,</span>
+    <span class="t-var">$pkey</span><span class="t-op">,</span>
+    <span class="t-op">[</span><span class="t-string">&#039;digest_alg&#039;</span> <span class="t-kw">=&gt;</span> <span class="t-string">&#039;sha256&#039;</span><span class="t-op">]</span><span class="t-op">,</span>
+<span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$x509</span> <span class="t-op">=</span> <span class="t-fn">openssl_csr_sign</span><span class="t-op">(</span><span class="t-var">$csr</span><span class="t-op">,</span> <span class="t-fn">null</span><span class="t-op">,</span> <span class="t-var">$pkey</span><span class="t-op">,</span> <span class="t-number">365</span><span class="t-op">,</span> <span class="t-op">[</span><span class="t-string">&#039;digest_alg&#039;</span> <span class="t-kw">=&gt;</span> <span class="t-string">&#039;sha256&#039;</span><span class="t-op">]</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-fn">openssl_x509_export</span><span class="t-op">(</span><span class="t-var">$x509</span><span class="t-op">,</span> <span class="t-var">$certPem</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-fn">openssl_pkey_export</span><span class="t-op">(</span><span class="t-var">$pkey</span><span class="t-op">,</span> <span class="t-var">$keyPem</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<div class="warn">
+<p>A self-signed certificate produces a cryptographically valid signature that viewers will still flag as untrusted, because nothing vouches for the identity. Use it for development only.</p>
+</div>
+
+<h3 id="visible-signatures">Visible signatures</h3>
+<p>By default the signature is invisible — present and verifiable, but with nothing drawn on the page. <code>setVisibleAppearance()</code> adds a signature box showing the name, reason, location and date:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$signer</span> <span class="t-op">=</span> <span class="t-op">(</span><span class="t-kw">new</span> <span class="t-type">PdfSigner</span><span class="t-op">(</span><span class="t-var">$certPem</span><span class="t-op">,</span> <span class="t-var">$keyPem</span><span class="t-op">)</span><span class="t-op">)</span>
+    <span class="t-kw">-&gt;</span><span class="t-fn">setName</span><span class="t-op">(</span><span class="t-string">&#039;Alice Example&#039;</span><span class="t-op">)</span>
+    <span class="t-kw">-&gt;</span><span class="t-fn">setReason</span><span class="t-op">(</span><span class="t-string">&#039;I approve this agreement&#039;</span><span class="t-op">)</span>
+    <span class="t-kw">-&gt;</span><span class="t-fn">setLocation</span><span class="t-op">(</span><span class="t-string">&#039;Paris&#039;</span><span class="t-op">)</span>
+    <span class="t-kw">-&gt;</span><span class="t-fn">setVisibleAppearance</span><span class="t-op">(</span><span class="t-fn">x</span><span class="t-op">:</span> <span class="t-number">360</span><span class="t-op">,</span> <span class="t-fn">y</span><span class="t-op">:</span> <span class="t-number">690</span><span class="t-op">,</span> <span class="t-fn">w</span><span class="t-op">:</span> <span class="t-number">170</span><span class="t-op">,</span> <span class="t-fn">h</span><span class="t-op">:</span> <span class="t-number">60</span><span class="t-op">,</span> <span class="t-fn">page</span><span class="t-op">:</span> <span class="t-number">1</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$signed</span> <span class="t-op">=</span> <span class="t-var">$signer</span><span class="t-kw">-&gt;</span><span class="t-fn">sign</span><span class="t-op">(</span><span class="t-var">$unsigned</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>The coordinates are in points from the bottom-left of the page, and <code>page</code> is <strong>1-based</strong>. The appearance is a form XObject attached to a signature widget annotation.</p>
+<p>Whether a signature is visible has no bearing on its cryptographic validity — a visible box is a convenience for human readers, and an invisible signature is equally binding.</p>
+
+<h3 id="multiple-signatures">Multiple signatures</h3>
+<p>Because each signature is an appended revision, signing an already-signed document is just another call:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$signedOnce</span>  <span class="t-op">=</span> <span class="t-op">(</span><span class="t-kw">new</span> <span class="t-type">PdfSigner</span><span class="t-op">(</span><span class="t-var">$aliceCert</span><span class="t-op">,</span> <span class="t-var">$aliceKey</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">setName</span><span class="t-op">(</span><span class="t-string">&#039;Alice&#039;</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">sign</span><span class="t-op">(</span><span class="t-var">$pdf</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$signedTwice</span> <span class="t-op">=</span> <span class="t-op">(</span><span class="t-kw">new</span> <span class="t-type">PdfSigner</span><span class="t-op">(</span><span class="t-var">$bobCert</span><span class="t-op">,</span>   <span class="t-var">$bobKey</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">setName</span><span class="t-op">(</span><span class="t-string">&#039;Bob&#039;</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">sign</span><span class="t-op">(</span><span class="t-var">$signedOnce</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>Alice's signature still validates against the revision she signed, and Bob's covers the whole file including her signature. Each <code>%%EOF</code> marker in the output marks one revision.</p>
+<p>If you plan to reserve a signature slot in the document itself rather than signing after the fact, add a <code>SignatureField</code> — see <a href="forms.html">Forms</a>.</p>
+
+<h2 id="document-timestamps">Document timestamps</h2>
+<p>A signature asserts a signing time, but that time comes from the signer's own clock and can be set to anything. A <strong>document timestamp</strong> fixes the problem by having a trusted third party — a Time Stamping Authority — attest that the document existed at a given moment. This is the <code>/DocTimeStamp</code> mechanism of RFC 3161, and it is what raises a plain signature to PAdES baseline conformance.</p>
+<p><code>DocumentTimestamp</code> takes a closure that performs the TSA round trip. Papier deliberately does not include an HTTP client: you supply the transport, so the class works with any TSA and any HTTP library.</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Signature\DocumentTimestamp</span><span class="t-op">;</span>
+
+<span class="t-var">$ts</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">DocumentTimestamp</span><span class="t-op">(</span><span class="t-kw">function</span> <span class="t-op">(</span><span class="t-fn">string</span> <span class="t-var">$digest</span><span class="t-op">)</span><span class="t-op">:</span> <span class="t-fn">string</span> <span class="t-op">{</span>
+    <span class="t-var">$request</span>  <span class="t-op">=</span> <span class="t-type">DocumentTimestamp</span><span class="t-kw">::</span><span class="t-fn">buildRequest</span><span class="t-op">(</span><span class="t-var">$digest</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// RFC 3161 request, DER encoded</span>
+
+    <span class="t-var">$ch</span> <span class="t-op">=</span> <span class="t-fn">curl_init</span><span class="t-op">(</span><span class="t-string">&#039;https://tsa.example.com/tsr&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+    <span class="t-fn">curl_setopt_array</span><span class="t-op">(</span><span class="t-var">$ch</span><span class="t-op">,</span> <span class="t-op">[</span>
+        <span class="t-type">CURLOPT_POST</span>           <span class="t-kw">=&gt;</span> <span class="t-fn">true</span><span class="t-op">,</span>
+        <span class="t-type">CURLOPT_POSTFIELDS</span>     <span class="t-kw">=&gt;</span> <span class="t-var">$request</span><span class="t-op">,</span>
+        <span class="t-type">CURLOPT_HTTPHEADER</span>     <span class="t-kw">=&gt;</span> <span class="t-op">[</span><span class="t-string">&#039;Content-Type: application/timestamp-query&#039;</span><span class="t-op">]</span><span class="t-op">,</span>
+        <span class="t-type">CURLOPT_RETURNTRANSFER</span> <span class="t-kw">=&gt;</span> <span class="t-fn">true</span><span class="t-op">,</span>
+    <span class="t-op">]</span><span class="t-op">)</span><span class="t-op">;</span>
+    <span class="t-var">$response</span> <span class="t-op">=</span> <span class="t-fn">curl_exec</span><span class="t-op">(</span><span class="t-var">$ch</span><span class="t-op">)</span><span class="t-op">;</span>
+    <span class="t-fn">curl_close</span><span class="t-op">(</span><span class="t-var">$ch</span><span class="t-op">)</span><span class="t-op">;</span>
+
+    <span class="t-kw">return</span> <span class="t-type">DocumentTimestamp</span><span class="t-kw">::</span><span class="t-fn">extractToken</span><span class="t-op">(</span><span class="t-var">$response</span><span class="t-op">)</span><span class="t-op">;</span>      <span class="t-comment">// pull the token out</span>
+<span class="t-op">}</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$timestamped</span> <span class="t-op">=</span> <span class="t-var">$ts</span><span class="t-kw">-&gt;</span><span class="t-fn">apply</span><span class="t-op">(</span><span class="t-var">$signed</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-fn">file_put_contents</span><span class="t-op">(</span><span class="t-string">&#039;timestamped.pdf&#039;</span><span class="t-op">,</span> <span class="t-var">$timestamped</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>The closure receives the message digest to be timestamped and must return the DER-encoded timestamp token. The two static helpers handle the protocol details: <code>buildRequest()</code> builds a valid RFC 3161 query (its second argument, <code>$certReq</code>, asks the TSA to include its certificate), and <code>extractToken()</code> pulls the token out of the response.</p>
+<p><code>setCapacity()</code> enlarges the reserved space if your TSA returns an unusually large token.</p>
+<p>Like signing, <code>apply()</code> appends a revision, so a timestamp can be added to an already-signed document without invalidating the signature.</p>
+
+<h2 id="combining-signing-and-encryption">Combining signing and encryption</h2>
+<p>The two features interact awkwardly, and the order matters. Encrypt first and then sign: the signature then covers the encrypted bytes as they will actually be distributed. Signing first and encrypting afterwards rewrites the whole file and breaks the signature.</p>
+<div class="warn">
+<p>PDF/A forbids encryption outright — an archival document must remain readable without a key. Signatures are permitted. See <a href="accessibility.html">Tagged PDF &amp; PDF/A</a>.</p>
+</div>
+
+<h2 id="examples">Examples</h2>
+<ul>
+<li><code>examples/07_bookmarks_and_encryption.php</code> — AES-128 encryption with restrictive permission flags.</li>
+<li><code>examples/19_read_encrypted.php</code> — AES-256 round trip: encrypt, reopen with both passwords, read outlines, form fields, attachments and XMP.</li>
+<li><code>examples/23_digital_signature.php</code> — an invisible PKCS#7 signature applied as an incremental update, with a generated test certificate.</li>
+<li><code>examples/32_signature_appearance.php</code> — a visible signature box plus a document timestamp, using a mock TSA client so the example runs offline.</li>
+</ul>
+<div class="code-block" data-lang="bash"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">php</span> examples/07_bookmarks_and_encryption.php
+<span class="t-kw">php</span> examples/19_read_encrypted.php
+<span class="t-kw">php</span> examples/23_digital_signature.php
+<span class="t-kw">php</span> examples/32_signature_appearance.php</code></pre></div>
+
+<nav class="pager"><a class="prev" href="multimedia.html"><span>Previous</span>Layers &amp; multimedia</a><a class="next" href="accessibility.html"><span>Next</span>Tagged PDF &amp; PDF/A</a></nav>
+</article>
+  </main>
+
+  <aside class="toc"><h4>On this page</h4><ul><li class="lvl-2"><a href="#encrypting-a-document">Encrypting a document</a></li><li class="lvl-3"><a href="#the-two-passwords">The two passwords</a></li><li class="lvl-3"><a href="#permission-flags">Permission flags</a></li><li class="lvl-3"><a href="#choosing-an-algorithm">Choosing an algorithm</a></li><li class="lvl-3"><a href="#the-security-handler">Using the handler directly</a></li><li class="lvl-2"><a href="#reading-encrypted-pdfs">Reading encrypted PDFs</a></li><li class="lvl-2"><a href="#digital-signatures">Digital signatures</a></li><li class="lvl-3"><a href="#signing">Signing a document</a></li><li class="lvl-3"><a href="#obtaining-a-certificate">Obtaining a certificate</a></li><li class="lvl-3"><a href="#visible-signatures">Visible signatures</a></li><li class="lvl-3"><a href="#multiple-signatures">Multiple signatures</a></li><li class="lvl-2"><a href="#document-timestamps">Document timestamps</a></li><li class="lvl-2"><a href="#combining-signing-and-encryption">Combining signing and encryption</a></li><li class="lvl-2"><a href="#examples">Examples</a></li></ul></aside>
+</div>
+
+<footer class="footer">
+  <p>Papier — PHP PDF library implementing ISO 32000-1:2008. Released under the MIT licence.</p>
+</footer>
+
+<script src="assets/docs.js"></script>
+</body>
+</html>

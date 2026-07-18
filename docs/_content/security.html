@@ -1,0 +1,210 @@
+<!-- title: Encryption & signatures -->
+<!-- description: Password-protect documents with RC4, AES-128 or AES-256, set permission flags, read encrypted PDFs, and apply PKCS#7 signatures and RFC 3161 timestamps. -->
+<h1>Encryption &amp; signatures</h1>
+<p class="lead">Encryption and digital signatures answer two different questions. Encryption controls <strong>who can open</strong> a document and what they may do with it. A signature proves <strong>who produced</strong> it and that nothing has changed since. They are independent, and most workflows need only one.</p>
+
+<h2 id="encrypting-a-document">Encrypting a document</h2>
+<p>One call on the document sets up the standard security handler:</p>
+<pre><code class="language-php">use Papier\Encryption\{EncryptionAlgorithm, StandardSecurityHandler};
+
+$doc-&gt;encrypt(
+    userPassword:  'user',
+    ownerPassword: 'owner',
+    permissions:   StandardSecurityHandler::PERM_PRINT | StandardSecurityHandler::PERM_COPY,
+    algorithm:     EncryptionAlgorithm::Aes_256,
+);
+
+$doc-&gt;save('protected.pdf');</code></pre>
+<p>Call <code>encrypt()</code> before <code>save()</code>. Every string and stream in the file is encrypted as it is written.</p>
+
+<h3 id="the-two-passwords">The two passwords</h3>
+<p>The standard security handler defines two roles, which is the part people most often get wrong.</p>
+<p>The <strong>user password</strong> is required to open the document. Leave it empty and anyone can open the file — but the permission restrictions still apply, which is the usual configuration for a document that should be readable but not printable or copyable.</p>
+<p>The <strong>owner password</strong> bypasses every restriction. Someone who knows it gets full access regardless of the permission flags. If it is empty it defaults to the user password, which means the restrictions are trivially removable — so always set a distinct owner password when the permissions matter.</p>
+<pre><code class="language-php">// Anyone can open; only the owner can change the restrictions
+$doc-&gt;encrypt('', 'owner-secret', StandardSecurityHandler::PERM_PRINT);
+
+// A password is needed to open at all
+$doc-&gt;encrypt('open-sesame', 'owner-secret');</code></pre>
+<div class="warn">
+<p>Permission flags are advisory. They are enforced by cooperating viewers, not by cryptography — a reader holding the user password holds the decryption key, and any tool that ignores the flags can print or copy freely. Use permissions to express intent, not to enforce confidentiality. Only the user password provides real protection.</p>
+</div>
+
+<h3 id="permission-flags">Permission flags</h3>
+<p>Permissions are a bit field. OR the constants together to build the set you want:</p>
+<table>
+<thead><tr><th>Constant</th><th>Grants</th></tr></thead>
+<tbody>
+<tr><td><code>PERM_PRINT</code></td><td>Printing (at degraded resolution unless <code>PERM_PRINT_HQ</code> is also set)</td></tr>
+<tr><td><code>PERM_MODIFY</code></td><td>Changing the document's contents</td></tr>
+<tr><td><code>PERM_COPY</code></td><td>Copying text and graphics to the clipboard</td></tr>
+<tr><td><code>PERM_ANNOT</code></td><td>Adding or modifying annotations and form fields</td></tr>
+<tr><td><code>PERM_FILL_FORM</code></td><td>Filling in existing form fields</td></tr>
+<tr><td><code>PERM_EXTRACT</code></td><td>Extracting content for accessibility purposes</td></tr>
+<tr><td><code>PERM_ASSEMBLE</code></td><td>Inserting, rotating or deleting pages, and adding bookmarks</td></tr>
+<tr><td><code>PERM_PRINT_HQ</code></td><td>Printing at full resolution</td></tr>
+<tr><td><code>PERM_ALL</code></td><td>All of the above — the default</td></tr>
+</tbody>
+</table>
+<pre><code class="language-php">// Read and print, but no copying and no editing
+$permissions = StandardSecurityHandler::PERM_PRINT
+             | StandardSecurityHandler::PERM_PRINT_HQ
+             | StandardSecurityHandler::PERM_FILL_FORM
+             | StandardSecurityHandler::PERM_EXTRACT;
+
+$doc-&gt;encrypt('user', 'owner', $permissions, EncryptionAlgorithm::Aes_128);</code></pre>
+<div class="note">
+<p>Leave <code>PERM_EXTRACT</code> set unless you have a strong reason not to. It is the flag screen readers rely on, and clearing it makes the document inaccessible to assistive technology. See <a href="accessibility.html">Tagged PDF &amp; PDF/A</a>.</p>
+</div>
+
+<h3 id="choosing-an-algorithm">Choosing an algorithm</h3>
+<p>The <code>EncryptionAlgorithm</code> enum offers four options spanning twenty years of the specification:</p>
+<table>
+<thead><tr><th>Case</th><th>Cipher</th><th>PDF version</th><th>Recommendation</th></tr></thead>
+<tbody>
+<tr><td><code>Rc4_40</code></td><td>RC4, 40-bit key</td><td>1.1</td><td>Broken. Legacy compatibility only.</td></tr>
+<tr><td><code>Rc4_128</code></td><td>RC4, 128-bit key</td><td>1.4</td><td>Weak cipher. Avoid for new documents.</td></tr>
+<tr><td><code>Aes_128</code></td><td>AES-128</td><td>1.6</td><td>The default. Sound, and universally supported.</td></tr>
+<tr><td><code>Aes_256</code></td><td>AES-256</td><td>2.0</td><td>Strongest. Needs a reasonably modern viewer.</td></tr>
+</tbody>
+</table>
+<pre><code class="language-php">$doc-&gt;encrypt('user', 'owner', StandardSecurityHandler::PERM_ALL, EncryptionAlgorithm::Aes_256);</code></pre>
+<p><code>Aes_128</code> is the default because it is both secure and supported everywhere. Choose <code>Aes_256</code> when you control the audience's tooling — it also uses a stronger password-derivation scheme, which matters if the passwords are short.</p>
+<div class="warn">
+<p>Encryption strength is bounded by password strength. Any of these algorithms falls quickly to a dictionary attack against a weak password. Use long, random passwords for anything genuinely sensitive.</p>
+</div>
+
+<h3 id="the-security-handler">Using the handler directly</h3>
+<p><code>StandardSecurityHandler</code> is what <code>encrypt()</code> constructs internally. You rarely need it directly, but it is available for low-level work — <code>buildEncryptDictionary()</code> produces the <code>/Encrypt</code> dictionary, <code>getEncryptionKey()</code> exposes the derived file key, and <code>encryptData()</code> encrypts a single object's bytes.</p>
+
+<h2 id="reading-encrypted-pdfs">Reading encrypted PDFs</h2>
+<p>The parser decrypts transparently once a password is supplied. Set it before calling <code>parse()</code>:</p>
+<pre><code class="language-php">use Papier\Parser\PdfParser;
+
+$parser = (new PdfParser(file_get_contents('protected.pdf')))
+    -&gt;setPassword('open-sesame');
+$parser-&gt;parse();
+
+echo $parser-&gt;isEncrypted() ? "encrypted\n" : "not encrypted\n";
+echo $parser-&gt;getTitle() . "\n";
+echo $parser-&gt;extractText() . "\n";</code></pre>
+<p>Either password works — the parser detects which one it was given and derives the file key accordingly:</p>
+<pre><code class="language-php">$asUser  = (new PdfParser($pdf))-&gt;setPassword('open-sesame');
+$asOwner = (new PdfParser($pdf))-&gt;setPassword('owner-key');</code></pre>
+<p>Once decrypted, every read-side feature works normally — outlines, form fields, attachments, XMP:</p>
+<pre><code class="language-php">$parser-&gt;parse();
+
+foreach ($parser-&gt;getOutlines() as $item) {
+    echo "• {$item['title']}\n";
+}
+foreach ($parser-&gt;getFormFields() as $f) {
+    echo "  {$f['name']} ({$f['type']}) = {$f['value']}\n";
+}
+foreach ($parser-&gt;getAttachments() as $a) {
+    echo "  {$a['name']} [{$a['mime']}], " . strlen($a['data']) . " bytes\n";
+}
+echo $parser-&gt;getXmpMetadata();</code></pre>
+<p>Documents with an empty user password need no <code>setPassword()</code> call at all. RC4-40, RC4-128, AES-128 and AES-256 are all handled; <code>StandardDecryptor</code> does the work internally.</p>
+
+<h2 id="digital-signatures">Digital signatures</h2>
+<p>A digital signature binds a document's bytes to a certificate. Papier produces PKCS#7 (CMS) detached signatures and adds them as an <strong>incremental update</strong>: the original bytes are preserved verbatim and a new revision is appended. That is what allows several signatures to coexist, each one validating the state of the document at the moment it was applied.</p>
+
+<h3 id="signing">Signing a document</h3>
+<pre><code class="language-php">use Papier\Signature\PdfSigner;
+
+$signer = new PdfSigner($certPem, $keyPem);   // PEM strings or file paths
+$signer-&gt;setName('Alice Example')
+       -&gt;setReason('I approve this agreement')
+       -&gt;setLocation('Paris')
+       -&gt;setContactInfo('alice@example.com');
+
+$signed = $signer-&gt;sign(file_get_contents('agreement.pdf'));
+file_put_contents('signed.pdf', $signed);</code></pre>
+<p><code>sign()</code> takes and returns PDF bytes, so it composes naturally with <code>toString()</code>:</p>
+<pre><code class="language-php">$unsigned = $doc-&gt;toString();
+$signed   = $signer-&gt;sign($unsigned);
+
+// The original is preserved as a literal prefix of the signed file
+var_dump(str_starts_with($signed, $unsigned));   // true</code></pre>
+<p>That prefix property is the whole point of incremental signing: a verifier can reconstruct exactly the bytes that were signed.</p>
+<p>Additional options: <code>setDate('YYYYMMDDHHMMSS')</code> pins the claimed signing time, <code>addCertificate($pem)</code> embeds intermediate CA certificates so verifiers can build the trust chain, and <code>setSignatureCapacity($bytes)</code> enlarges the reserved <code>/Contents</code> placeholder when a long certificate chain will not fit the default.</p>
+
+<h3 id="obtaining-a-certificate">Obtaining a certificate</h3>
+<p>Production signing needs a certificate from a CA your recipients trust. For testing, generate a throwaway self-signed pair with the OpenSSL extension:</p>
+<pre><code class="language-php">$pkey = openssl_pkey_new(['private_key_bits' =&gt; 2048, 'private_key_type' =&gt; OPENSSL_KEYTYPE_RSA]);
+$csr  = openssl_csr_new(
+    ['commonName' =&gt; 'Papier Demo', 'organizationName' =&gt; 'Papier'],
+    $pkey,
+    ['digest_alg' =&gt; 'sha256'],
+);
+$x509 = openssl_csr_sign($csr, null, $pkey, 365, ['digest_alg' =&gt; 'sha256']);
+
+openssl_x509_export($x509, $certPem);
+openssl_pkey_export($pkey, $keyPem);</code></pre>
+<div class="warn">
+<p>A self-signed certificate produces a cryptographically valid signature that viewers will still flag as untrusted, because nothing vouches for the identity. Use it for development only.</p>
+</div>
+
+<h3 id="visible-signatures">Visible signatures</h3>
+<p>By default the signature is invisible — present and verifiable, but with nothing drawn on the page. <code>setVisibleAppearance()</code> adds a signature box showing the name, reason, location and date:</p>
+<pre><code class="language-php">$signer = (new PdfSigner($certPem, $keyPem))
+    -&gt;setName('Alice Example')
+    -&gt;setReason('I approve this agreement')
+    -&gt;setLocation('Paris')
+    -&gt;setVisibleAppearance(x: 360, y: 690, w: 170, h: 60, page: 1);
+
+$signed = $signer-&gt;sign($unsigned);</code></pre>
+<p>The coordinates are in points from the bottom-left of the page, and <code>page</code> is <strong>1-based</strong>. The appearance is a form XObject attached to a signature widget annotation.</p>
+<p>Whether a signature is visible has no bearing on its cryptographic validity — a visible box is a convenience for human readers, and an invisible signature is equally binding.</p>
+
+<h3 id="multiple-signatures">Multiple signatures</h3>
+<p>Because each signature is an appended revision, signing an already-signed document is just another call:</p>
+<pre><code class="language-php">$signedOnce  = (new PdfSigner($aliceCert, $aliceKey))-&gt;setName('Alice')-&gt;sign($pdf);
+$signedTwice = (new PdfSigner($bobCert,   $bobKey))-&gt;setName('Bob')-&gt;sign($signedOnce);</code></pre>
+<p>Alice's signature still validates against the revision she signed, and Bob's covers the whole file including her signature. Each <code>%%EOF</code> marker in the output marks one revision.</p>
+<p>If you plan to reserve a signature slot in the document itself rather than signing after the fact, add a <code>SignatureField</code> — see <a href="forms.html">Forms</a>.</p>
+
+<h2 id="document-timestamps">Document timestamps</h2>
+<p>A signature asserts a signing time, but that time comes from the signer's own clock and can be set to anything. A <strong>document timestamp</strong> fixes the problem by having a trusted third party — a Time Stamping Authority — attest that the document existed at a given moment. This is the <code>/DocTimeStamp</code> mechanism of RFC 3161, and it is what raises a plain signature to PAdES baseline conformance.</p>
+<p><code>DocumentTimestamp</code> takes a closure that performs the TSA round trip. Papier deliberately does not include an HTTP client: you supply the transport, so the class works with any TSA and any HTTP library.</p>
+<pre><code class="language-php">use Papier\Signature\DocumentTimestamp;
+
+$ts = new DocumentTimestamp(function (string $digest): string {
+    $request  = DocumentTimestamp::buildRequest($digest);   // RFC 3161 request, DER encoded
+
+    $ch = curl_init('https://tsa.example.com/tsr');
+    curl_setopt_array($ch, [
+        CURLOPT_POST           =&gt; true,
+        CURLOPT_POSTFIELDS     =&gt; $request,
+        CURLOPT_HTTPHEADER     =&gt; ['Content-Type: application/timestamp-query'],
+        CURLOPT_RETURNTRANSFER =&gt; true,
+    ]);
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+    return DocumentTimestamp::extractToken($response);      // pull the token out
+});
+
+$timestamped = $ts-&gt;apply($signed);
+file_put_contents('timestamped.pdf', $timestamped);</code></pre>
+<p>The closure receives the message digest to be timestamped and must return the DER-encoded timestamp token. The two static helpers handle the protocol details: <code>buildRequest()</code> builds a valid RFC 3161 query (its second argument, <code>$certReq</code>, asks the TSA to include its certificate), and <code>extractToken()</code> pulls the token out of the response.</p>
+<p><code>setCapacity()</code> enlarges the reserved space if your TSA returns an unusually large token.</p>
+<p>Like signing, <code>apply()</code> appends a revision, so a timestamp can be added to an already-signed document without invalidating the signature.</p>
+
+<h2 id="combining-signing-and-encryption">Combining signing and encryption</h2>
+<p>The two features interact awkwardly, and the order matters. Encrypt first and then sign: the signature then covers the encrypted bytes as they will actually be distributed. Signing first and encrypting afterwards rewrites the whole file and breaks the signature.</p>
+<div class="warn">
+<p>PDF/A forbids encryption outright — an archival document must remain readable without a key. Signatures are permitted. See <a href="accessibility.html">Tagged PDF &amp; PDF/A</a>.</p>
+</div>
+
+<h2 id="examples">Examples</h2>
+<ul>
+<li><code>examples/07_bookmarks_and_encryption.php</code> — AES-128 encryption with restrictive permission flags.</li>
+<li><code>examples/19_read_encrypted.php</code> — AES-256 round trip: encrypt, reopen with both passwords, read outlines, form fields, attachments and XMP.</li>
+<li><code>examples/23_digital_signature.php</code> — an invisible PKCS#7 signature applied as an incremental update, with a generated test certificate.</li>
+<li><code>examples/32_signature_appearance.php</code> — a visible signature box plus a document timestamp, using a mock TSA client so the example runs offline.</li>
+</ul>
+<pre><code class="language-bash">php examples/07_bookmarks_and_encryption.php
+php examples/19_read_encrypted.php
+php examples/23_digital_signature.php
+php examples/32_signature_appearance.php</code></pre>

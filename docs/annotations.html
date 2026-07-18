@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Annotations — Papier</title>
+<meta name="description" content="Add notes, links, text markup, geometric shapes, stamps, ink and redaction marks to a page with Papier's 14 annotation subtypes.">
+<meta property="og:title" content="Annotations — Papier">
+<meta property="og:description" content="Add notes, links, text markup, geometric shapes, stamps, ink and redaction marks to a page with Papier's 14 annotation subtypes.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<script>
+(function () {
+  var t = localStorage.getItem('papier-theme');
+  if (t) document.documentElement.setAttribute('data-theme', t);
+})();
+</script>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <button class="menu-toggle" type="button" aria-label="Toggle navigation">
+<svg viewBox="0 0 20 20" width="20" height="20"><path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="index.html">
+<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 2h8l5 5v15H6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M14 2v5h5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+<span>Papier</span>
+  </a>
+  <div class="search">
+<input type="search" id="search-input" placeholder="Search documentation…" autocomplete="off" aria-label="Search documentation">
+<kbd>/</kbd>
+<div id="search-results" role="listbox"></div>
+  </div>
+  <div class="topbar-links">
+<a href="https://packagist.org/packages/papier/papier">Packagist</a>
+<a href="https://github.com/papier/papier">GitHub</a>
+<button class="theme-toggle" type="button" aria-label="Toggle dark mode">
+  <svg class="sun" viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.5 1.5M17.6 17.6l1.5 1.5M19.1 4.9l-1.5 1.5M6.4 17.6l-1.5 1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+  <svg class="moon" viewBox="0 0 24 24" width="18" height="18"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+</button>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" aria-label="Documentation">
+<div class="nav-section"><h4>Getting started</h4><ul><li><a href="index.html">Introduction</a></li><li><a href="installation.html">Installation</a></li><li><a href="quickstart.html">Quick start</a></li></ul></div><div class="nav-section"><h4>Creating PDFs</h4><ul><li><a href="documents.html">Documents &amp; pages</a></li><li><a href="text.html">Text &amp; fonts</a></li><li><a href="graphics.html">Graphics</a></li><li><a href="images.html">Images</a></li><li><a href="tables.html">Tables</a></li></ul></div><div class="nav-section"><h4>Interactivity</h4><ul><li><a href="forms.html">Forms</a></li><li><a href="annotations.html" class="active">Annotations</a></li><li><a href="navigation.html">Bookmarks &amp; navigation</a></li><li><a href="multimedia.html">Layers &amp; multimedia</a></li></ul></div><div class="nav-section"><h4>Advanced</h4><ul><li><a href="security.html">Encryption &amp; signatures</a></li><li><a href="accessibility.html">Tagged PDF &amp; PDF/A</a></li><li><a href="file-structure.html">File structure</a></li><li><a href="reading.html">Reading PDFs</a></li></ul></div><div class="nav-section"><h4>Reference</h4><ul><li><a href="examples.html">Examples</a></li><li><a href="changelog.html">Changelog</a></li></ul></div>
+  </nav>
+
+  <main id="main">
+<article class="content">
+<h1>Annotations</h1>
+<p class="lead">Annotations are objects that live alongside a page's content rather than inside it — sticky notes, hyperlinks, highlights, review markup. Because they sit in a separate layer, a viewer can show, hide, edit, or export them without touching the page description underneath.</p>
+
+<h2 id="the-annotation-model">The annotation model</h2>
+<p>Every annotation is a dictionary attached to a page's <code>/Annots</code> array. It has a subtype that determines its behaviour, a rectangle that positions it, and a set of optional properties shared by all subtypes.</p>
+<p>In Papier each subtype is a class extending the abstract <code>Papier\Annotation\Annotation</code>. The constructor always takes the bounding rectangle, and you attach the finished object to a page:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Annotation\TextAnnotation</span><span class="t-op">;</span>
+<span class="t-kw">use</span> <span class="t-kw">Papier\Elements\Color</span><span class="t-op">;</span>
+
+<span class="t-var">$note</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">TextAnnotation</span><span class="t-op">(</span><span class="t-number">500</span><span class="t-op">,</span> <span class="t-number">745</span><span class="t-op">,</span> <span class="t-number">520</span><span class="t-op">,</span> <span class="t-number">765</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$note</span><span class="t-kw">-&gt;</span><span class="t-fn">setContents</span><span class="t-op">(</span><span class="t-string">&#039;Please review this section.&#039;</span><span class="t-op">)</span>
+     <span class="t-kw">-&gt;</span><span class="t-fn">setIcon</span><span class="t-op">(</span><span class="t-string">&#039;Note&#039;</span><span class="t-op">)</span>
+     <span class="t-kw">-&gt;</span><span class="t-fn">setColor</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">rgb</span><span class="t-op">(</span><span class="t-number">1.0</span><span class="t-op">,</span> <span class="t-number">0.9</span><span class="t-op">,</span> <span class="t-number">0.0</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">addAnnotation</span><span class="t-op">(</span><span class="t-var">$note</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>The four constructor arguments are <code>$x1, $y1, $x2, $y2</code> — the lower-left and upper-right corners in points, measured from the bottom-left of the page. This becomes the <code>/Rect</code> entry.</p>
+<div class="note">
+<p>The rectangle is fixed at construction time. <code>setRect()</code> exists on the base class but is <code>protected</code>, so if you need different geometry, construct a new annotation rather than trying to move an existing one.</p>
+</div>
+
+<h2 id="subtypes">The subtypes</h2>
+<p>Fourteen subtypes cover the annotations you will normally author. They fall into four families: notes and links, text markup, geometric markup, and stamps.</p>
+<table>
+<thead><tr><th>Class</th><th>PDF subtype</th><th>Purpose</th></tr></thead>
+<tbody>
+<tr><td><code>TextAnnotation</code></td><td><code>/Text</code></td><td>A sticky note — a small icon that opens a pop-up comment when clicked.</td></tr>
+<tr><td><code>LinkAnnotation</code></td><td><code>/Link</code></td><td>A clickable region that jumps to a destination or opens a URI.</td></tr>
+<tr><td><code>FreeTextAnnotation</code></td><td><code>/FreeText</code></td><td>Text drawn directly on the page rather than hidden in a pop-up.</td></tr>
+<tr><td><code>HighlightAnnotation</code></td><td><code>/Highlight</code></td><td>Marks a text run with a translucent colour wash.</td></tr>
+<tr><td><code>UnderlineAnnotation</code></td><td><code>/Underline</code></td><td>Draws a line beneath a text run.</td></tr>
+<tr><td><code>StrikeOutAnnotation</code></td><td><code>/StrikeOut</code></td><td>Draws a line through a text run to mark it for deletion.</td></tr>
+<tr><td><code>SquigglyAnnotation</code></td><td><code>/Squiggly</code></td><td>A wavy underline, conventionally flagging a spelling or usage problem.</td></tr>
+<tr><td><code>LineAnnotation</code></td><td><code>/Line</code></td><td>A straight line with optional arrowheads at either end.</td></tr>
+<tr><td><code>SquareAnnotation</code></td><td><code>/Square</code></td><td>A rectangle with a border and optional fill.</td></tr>
+<tr><td><code>CircleAnnotation</code></td><td><code>/Circle</code></td><td>An ellipse inscribed in the annotation rectangle.</td></tr>
+<tr><td><code>PolygonAnnotation</code></td><td><code>/Polygon</code></td><td>A closed shape through an arbitrary list of vertices.</td></tr>
+<tr><td><code>StampAnnotation</code></td><td><code>/Stamp</code></td><td>A rubber-stamp graphic such as <em>Draft</em> or <em>Approved</em>.</td></tr>
+<tr><td><code>InkAnnotation</code></td><td><code>/Ink</code></td><td>Freehand strokes — a captured pen or stylus path.</td></tr>
+<tr><td><code>RedactAnnotation</code></td><td><code>/Redact</code></td><td>Marks a region whose content is to be permanently removed.</td></tr>
+</tbody>
+</table>
+<p>The <code>src/Annotation/</code> directory also contains subtypes serving other features rather than page markup: <code>PopupAnnotation</code> (the pop-up window belonging to a markup annotation), <code>WidgetAnnotation</code> (form fields — see <a href="forms.html">Forms</a>), <code>ScreenAnnotation</code>, <code>SoundAnnotation</code> and <code>MovieAnnotation</code> (see <a href="multimedia.html">Layers &amp; multimedia</a>), plus <code>FileAttachmentAnnotation</code>, <code>CaretAnnotation</code>, <code>PolyLineAnnotation</code>, <code>WatermarkAnnotation</code>, <code>PrinterMarkAnnotation</code>, <code>TrapNetAnnotation</code> and <code>ThreeDAnnotation</code>.</p>
+
+<h2 id="common-properties">Common properties</h2>
+<p>Everything on the base class works on every subtype.</p>
+
+<h3 id="contents-and-colour">Contents and colour</h3>
+<p><code>setContents()</code> supplies the annotation's text. For a sticky note this is the comment body; for markup annotations it is the reviewer's remark shown in the pop-up. It is also what assistive technology reads aloud, so fill it in even for purely visual annotations.</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$annot</span><span class="t-kw">-&gt;</span><span class="t-fn">setContents</span><span class="t-op">(</span><span class="t-string">&#039;Figure 3 needs a caption.&#039;</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p><code>setColor()</code> sets <code>/C</code>, the annotation's characteristic colour — the note icon's fill, the highlight wash, the line stroke. It takes a <code>Color</code> in any colour space:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Elements\Color</span><span class="t-op">;</span>
+
+<span class="t-var">$annot</span><span class="t-kw">-&gt;</span><span class="t-fn">setColor</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">rgb</span><span class="t-op">(</span><span class="t-number">1.0</span><span class="t-op">,</span> <span class="t-number">1.0</span><span class="t-op">,</span> <span class="t-number">0.0</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$annot</span><span class="t-kw">-&gt;</span><span class="t-fn">setColor</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">hex</span><span class="t-op">(</span><span class="t-string">&#039;#ff0000&#039;</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$annot</span><span class="t-kw">-&gt;</span><span class="t-fn">setColor</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">cmyk</span><span class="t-op">(</span><span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">0.5</span><span class="t-op">,</span> <span class="t-number">1.0</span><span class="t-op">,</span> <span class="t-number">0</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$annot</span><span class="t-kw">-&gt;</span><span class="t-fn">setColor</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">gray</span><span class="t-op">(</span><span class="t-number">0.5</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$annot</span><span class="t-kw">-&gt;</span><span class="t-fn">clearColor</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// remove /C entirely — viewer default applies</span></code></pre></div>
+
+<h3 id="borders">Borders</h3>
+<p><code>setBorderStyle()</code> writes the modern <code>/BS</code> dictionary: a width in points, a style character, and an optional dash pattern.</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$annot</span><span class="t-kw">-&gt;</span><span class="t-fn">setBorderStyle</span><span class="t-op">(</span><span class="t-number">1.5</span><span class="t-op">)</span><span class="t-op">;</span>                    <span class="t-comment">// 1.5 pt solid</span>
+<span class="t-var">$annot</span><span class="t-kw">-&gt;</span><span class="t-fn">setBorderStyle</span><span class="t-op">(</span><span class="t-number">1.0</span><span class="t-op">,</span> <span class="t-string">&#039;D&#039;</span><span class="t-op">,</span> <span class="t-op">[</span><span class="t-number">3</span><span class="t-op">,</span> <span class="t-number">2</span><span class="t-op">]</span><span class="t-op">)</span><span class="t-op">;</span>      <span class="t-comment">// dashed: 3 on, 2 off</span>
+<span class="t-var">$annot</span><span class="t-kw">-&gt;</span><span class="t-fn">setBorderStyle</span><span class="t-op">(</span><span class="t-number">0</span><span class="t-op">)</span><span class="t-op">;</span>                     <span class="t-comment">// no visible border</span></code></pre></div>
+<p>The style characters are <code>S</code> (solid, the default), <code>D</code> (dashed), <code>B</code> (bevelled), <code>I</code> (inset) and <code>U</code> (underline only). Setting the width to <code>0</code> is the usual way to suppress the blue rectangle viewers draw around links.</p>
+<p><code>setBorder()</code> writes the older <code>/Border</code> array with horizontal and vertical corner radii, for viewers that predate <code>/BS</code>.</p>
+
+<h3 id="flags">Flags</h3>
+<p><code>setFlags()</code> sets the <code>/F</code> bit field, which controls how a viewer treats the annotation. There are no named constants — pass the bits directly:</p>
+<table>
+<thead><tr><th>Bit</th><th>Value</th><th>Name</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>0x001</td><td>Invisible</td><td>Hide if the subtype is unknown to the viewer</td></tr>
+<tr><td>2</td><td>0x002</td><td>Hidden</td><td>Never display or print</td></tr>
+<tr><td>3</td><td>0x004</td><td>Print</td><td>Include in printed output</td></tr>
+<tr><td>4</td><td>0x008</td><td>NoZoom</td><td>Do not scale with the page</td></tr>
+<tr><td>5</td><td>0x010</td><td>NoRotate</td><td>Do not rotate with the page</td></tr>
+<tr><td>6</td><td>0x020</td><td>NoView</td><td>Print but do not display on screen</td></tr>
+<tr><td>7</td><td>0x040</td><td>ReadOnly</td><td>Display but forbid interaction</td></tr>
+<tr><td>8</td><td>0x080</td><td>Locked</td><td>Forbid deleting or changing properties</td></tr>
+<tr><td>9</td><td>0x100</td><td>ToggleNoView</td><td>Invert visibility on selection</td></tr>
+<tr><td>10</td><td>0x200</td><td>LockedContents</td><td>Forbid changing the contents</td></tr>
+</tbody>
+</table>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$annot</span><span class="t-kw">-&gt;</span><span class="t-fn">setFlags</span><span class="t-op">(</span><span class="t-number">4</span><span class="t-op">)</span><span class="t-op">;</span>          <span class="t-comment">// Print</span>
+<span class="t-var">$annot</span><span class="t-kw">-&gt;</span><span class="t-fn">setFlags</span><span class="t-op">(</span><span class="t-number">4</span> <span class="t-op">|</span> <span class="t-number">0x40</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// Print and ReadOnly</span></code></pre></div>
+<div class="warn">
+<p>Annotations without the Print flag are invisible in printed output and in many rasterised previews. If an annotation must survive printing, set bit 3.</p>
+</div>
+
+<h3 id="other-common-setters">Other common setters</h3>
+<p><code>setName()</code> writes <code>/NM</code>, a unique identifier for the annotation within its page — useful when a <code>HideAction</code> needs to address it. <code>setModDate()</code> records the modification time. <code>setAction()</code> attaches an action triggered on activation (see <a href="navigation.html">Bookmarks &amp; navigation</a>). <code>setAppearance()</code> supplies explicit normal, rollover and down appearance streams when you want full control over rendering.</p>
+
+<h2 id="notes-and-links">Notes and links</h2>
+<p>A <code>TextAnnotation</code> is the classic sticky note. The rectangle sizes the clickable icon, not the pop-up.</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Annotation\TextAnnotation</span><span class="t-op">;</span>
+
+<span class="t-var">$note</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">TextAnnotation</span><span class="t-op">(</span><span class="t-number">500</span><span class="t-op">,</span> <span class="t-number">745</span><span class="t-op">,</span> <span class="t-number">520</span><span class="t-op">,</span> <span class="t-number">765</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$note</span><span class="t-kw">-&gt;</span><span class="t-fn">setContents</span><span class="t-op">(</span><span class="t-string">&#039;This is a sticky-note annotation.&#039;</span><span class="t-op">)</span>
+     <span class="t-kw">-&gt;</span><span class="t-fn">setIcon</span><span class="t-op">(</span><span class="t-string">&#039;Note&#039;</span><span class="t-op">)</span>       <span class="t-comment">// Comment, Key, Note, Help, NewParagraph, Paragraph, Insert</span>
+     <span class="t-kw">-&gt;</span><span class="t-fn">setOpen</span><span class="t-op">(</span><span class="t-fn">false</span><span class="t-op">)</span>        <span class="t-comment">// pop-up starts closed</span>
+     <span class="t-kw">-&gt;</span><span class="t-fn">setColor</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">rgb</span><span class="t-op">(</span><span class="t-number">1.0</span><span class="t-op">,</span> <span class="t-number">0.9</span><span class="t-op">,</span> <span class="t-number">0.0</span><span class="t-op">)</span><span class="t-op">)</span>
+     <span class="t-kw">-&gt;</span><span class="t-fn">setFlags</span><span class="t-op">(</span><span class="t-number">4</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p><code>setState()</code> and <code>setStateModel()</code> record review status — for example the model <code>Review</code> with the state <code>Accepted</code>.</p>
+<p>A <code>LinkAnnotation</code> makes a rectangle clickable. The simplest form opens a web address:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Annotation\LinkAnnotation</span><span class="t-op">;</span>
+
+<span class="t-var">$link</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">LinkAnnotation</span><span class="t-op">(</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">680</span><span class="t-op">,</span> <span class="t-number">272</span><span class="t-op">,</span> <span class="t-number">700</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$link</span><span class="t-kw">-&gt;</span><span class="t-fn">setURI</span><span class="t-op">(</span><span class="t-string">&#039;https://example.com&#039;</span><span class="t-op">)</span>
+     <span class="t-kw">-&gt;</span><span class="t-fn">setHighlightMode</span><span class="t-op">(</span><span class="t-string">&#039;P&#039;</span><span class="t-op">)</span>   <span class="t-comment">// N=none, I=invert, O=outline, P=push</span>
+     <span class="t-kw">-&gt;</span><span class="t-fn">setBorderStyle</span><span class="t-op">(</span><span class="t-number">0</span><span class="t-op">)</span><span class="t-op">;</span>      <span class="t-comment">// suppress the default rectangle</span></code></pre></div>
+<p>A link has no appearance of its own — it is an invisible hotspot. Draw whatever the reader should see with ordinary page elements underneath it:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Elements</span><span class="t-kw">\</span><span class="t-op">{</span><span class="t-type">Color</span><span class="t-op">,</span> <span class="t-type">Rectangle</span><span class="t-op">,</span> <span class="t-type">Text</span><span class="t-op">}</span><span class="t-op">;</span>
+
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">add</span><span class="t-op">(</span>
+    <span class="t-type">Rectangle</span><span class="t-kw">::</span><span class="t-fn">create</span><span class="t-op">(</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">680</span><span class="t-op">,</span> <span class="t-number">200</span><span class="t-op">,</span> <span class="t-number">20</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">fill</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">rgb</span><span class="t-op">(</span><span class="t-number">0.2</span><span class="t-op">,</span> <span class="t-number">0.4</span><span class="t-op">,</span> <span class="t-number">0.8</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">,</span>
+    <span class="t-type">Text</span><span class="t-kw">::</span><span class="t-fn">write</span><span class="t-op">(</span><span class="t-string">&#039;Click to visit example.com&#039;</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">at</span><span class="t-op">(</span><span class="t-number">80</span><span class="t-op">,</span> <span class="t-number">686</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">font</span><span class="t-op">(</span><span class="t-var">$font</span><span class="t-op">,</span> <span class="t-number">11</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">color</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">white</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">,</span>
+<span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">addAnnotation</span><span class="t-op">(</span><span class="t-var">$link</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>For links that jump within the document, use <code>setDestination()</code> with a destination array — see <a href="navigation.html">Bookmarks &amp; navigation</a>.</p>
+<p><code>FreeTextAnnotation</code> renders its contents on the page itself. Unlike other annotations it needs a default appearance string naming a font resource:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Annotation\FreeTextAnnotation</span><span class="t-op">;</span>
+
+<span class="t-var">$free</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">FreeTextAnnotation</span><span class="t-op">(</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">640</span><span class="t-op">,</span> <span class="t-number">300</span><span class="t-op">,</span> <span class="t-number">670</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$free</span><span class="t-kw">-&gt;</span><span class="t-fn">setContents</span><span class="t-op">(</span><span class="t-string">&#039;Text rendered directly on the page.&#039;</span><span class="t-op">)</span>
+     <span class="t-kw">-&gt;</span><span class="t-fn">setDefaultAppearance</span><span class="t-op">(</span><span class="t-string">&#039;F1&#039;</span><span class="t-op">,</span> <span class="t-number">10</span><span class="t-op">)</span>      <span class="t-comment">// font RESOURCE NAME, not a font object</span>
+     <span class="t-kw">-&gt;</span><span class="t-fn">setJustification</span><span class="t-op">(</span><span class="t-number">0</span><span class="t-op">)</span>                 <span class="t-comment">// 0 left, 1 centre, 2 right</span>
+     <span class="t-kw">-&gt;</span><span class="t-fn">setColor</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">rgb</span><span class="t-op">(</span><span class="t-number">0.9</span><span class="t-op">,</span> <span class="t-number">0.95</span><span class="t-op">,</span> <span class="t-number">1.0</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p><code>setCallout()</code> adds a leader line from the text box to the thing it comments on, and <code>setIntent()</code> distinguishes a plain free text box from a callout or typewriter annotation.</p>
+
+<h2 id="text-markup">Text markup</h2>
+<p>The four markup subtypes — highlight, underline, strikeout, squiggly — all work the same way. The rectangle bounds the annotation, but the actual marked region comes from <code>setQuadPoints()</code>: a flat array of eight numbers per quadrilateral, giving the corners of each marked text run.</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Annotation\HighlightAnnotation</span><span class="t-op">;</span>
+
+<span class="t-var">$hl</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">HighlightAnnotation</span><span class="t-op">(</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">756</span><span class="t-op">,</span> <span class="t-number">400</span><span class="t-op">,</span> <span class="t-number">770</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$hl</span><span class="t-kw">-&gt;</span><span class="t-fn">setQuadPoints</span><span class="t-op">(</span><span class="t-op">[</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">770</span><span class="t-op">,</span> <span class="t-number">400</span><span class="t-op">,</span> <span class="t-number">770</span><span class="t-op">,</span> <span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">756</span><span class="t-op">,</span> <span class="t-number">400</span><span class="t-op">,</span> <span class="t-number">756</span><span class="t-op">]</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">setColor</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">rgb</span><span class="t-op">(</span><span class="t-number">1.0</span><span class="t-op">,</span> <span class="t-number">1.0</span><span class="t-op">,</span> <span class="t-number">0.0</span><span class="t-op">)</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">setContents</span><span class="t-op">(</span><span class="t-string">&#039;Highlighted section&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">addAnnotation</span><span class="t-op">(</span><span class="t-var">$hl</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>The eight numbers are the upper-left, upper-right, lower-left and lower-right corners in that order. Note that this is <em>not</em> the order you would use to trace the outline — it is the order the specification requires.</p>
+<p>Text spanning several lines needs one quadrilateral per line, concatenated into the same array:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$hl</span><span class="t-kw">-&gt;</span><span class="t-fn">setQuadPoints</span><span class="t-op">(</span><span class="t-op">[</span>
+    <span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">770</span><span class="t-op">,</span> <span class="t-number">400</span><span class="t-op">,</span> <span class="t-number">770</span><span class="t-op">,</span> <span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">756</span><span class="t-op">,</span> <span class="t-number">400</span><span class="t-op">,</span> <span class="t-number">756</span><span class="t-op">,</span>   <span class="t-comment">// first line</span>
+    <span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">754</span><span class="t-op">,</span> <span class="t-number">310</span><span class="t-op">,</span> <span class="t-number">754</span><span class="t-op">,</span> <span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">740</span><span class="t-op">,</span> <span class="t-number">310</span><span class="t-op">,</span> <span class="t-number">740</span><span class="t-op">,</span>   <span class="t-comment">// second line, shorter</span>
+<span class="t-op">]</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>Underline, strikeout and squiggly are drop-in replacements:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Annotation</span><span class="t-kw">\</span><span class="t-op">{</span><span class="t-type">StrikeOutAnnotation</span><span class="t-op">,</span> <span class="t-type">SquigglyAnnotation</span><span class="t-op">,</span> <span class="t-type">UnderlineAnnotation</span><span class="t-op">}</span><span class="t-op">;</span>
+
+<span class="t-var">$ul</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">UnderlineAnnotation</span><span class="t-op">(</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">740</span><span class="t-op">,</span> <span class="t-number">300</span><span class="t-op">,</span> <span class="t-number">754</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$ul</span><span class="t-kw">-&gt;</span><span class="t-fn">setQuadPoints</span><span class="t-op">(</span><span class="t-op">[</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">754</span><span class="t-op">,</span> <span class="t-number">300</span><span class="t-op">,</span> <span class="t-number">754</span><span class="t-op">,</span> <span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">740</span><span class="t-op">,</span> <span class="t-number">300</span><span class="t-op">,</span> <span class="t-number">740</span><span class="t-op">]</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">setColor</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">hex</span><span class="t-op">(</span><span class="t-string">&#039;#0000ff&#039;</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$so</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">StrikeOutAnnotation</span><span class="t-op">(</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">724</span><span class="t-op">,</span> <span class="t-number">200</span><span class="t-op">,</span> <span class="t-number">738</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$so</span><span class="t-kw">-&gt;</span><span class="t-fn">setQuadPoints</span><span class="t-op">(</span><span class="t-op">[</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">738</span><span class="t-op">,</span> <span class="t-number">200</span><span class="t-op">,</span> <span class="t-number">738</span><span class="t-op">,</span> <span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">724</span><span class="t-op">,</span> <span class="t-number">200</span><span class="t-op">,</span> <span class="t-number">724</span><span class="t-op">]</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">setColor</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">hex</span><span class="t-op">(</span><span class="t-string">&#039;#ff0000&#039;</span><span class="t-op">)</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">setContents</span><span class="t-op">(</span><span class="t-string">&#039;Delete this clause&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$sq</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">SquigglyAnnotation</span><span class="t-op">(</span><span class="t-number">200</span><span class="t-op">,</span> <span class="t-number">724</span><span class="t-op">,</span> <span class="t-number">400</span><span class="t-op">,</span> <span class="t-number">738</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$sq</span><span class="t-kw">-&gt;</span><span class="t-fn">setQuadPoints</span><span class="t-op">(</span><span class="t-op">[</span><span class="t-number">200</span><span class="t-op">,</span> <span class="t-number">738</span><span class="t-op">,</span> <span class="t-number">400</span><span class="t-op">,</span> <span class="t-number">738</span><span class="t-op">,</span> <span class="t-number">200</span><span class="t-op">,</span> <span class="t-number">724</span><span class="t-op">,</span> <span class="t-number">400</span><span class="t-op">,</span> <span class="t-number">724</span><span class="t-op">]</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">setColor</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">cmyk</span><span class="t-op">(</span><span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">0.5</span><span class="t-op">,</span> <span class="t-number">1.0</span><span class="t-op">,</span> <span class="t-number">0</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<div class="note">
+<p>Markup annotations do not read the page's text — they mark coordinates. If you are annotating text you laid out yourself, derive the quad points from the same positions you passed to <code>Text::write()</code>. For text you did not lay out, extract positions first (see <a href="reading.html">Reading PDFs</a>).</p>
+</div>
+
+<h2 id="geometric-markup">Geometric markup</h2>
+<p>Square and circle annotations draw a shape inscribed in the annotation rectangle. Both support a separate interior colour, so the border and the fill can differ:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Annotation</span><span class="t-kw">\</span><span class="t-op">{</span><span class="t-type">CircleAnnotation</span><span class="t-op">,</span> <span class="t-type">SquareAnnotation</span><span class="t-op">}</span><span class="t-op">;</span>
+
+<span class="t-var">$sq</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">SquareAnnotation</span><span class="t-op">(</span><span class="t-number">320</span><span class="t-op">,</span> <span class="t-number">600</span><span class="t-op">,</span> <span class="t-number">500</span><span class="t-op">,</span> <span class="t-number">630</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$sq</span><span class="t-kw">-&gt;</span><span class="t-fn">setContents</span><span class="t-op">(</span><span class="t-string">&#039;Check these figures&#039;</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">setColor</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">rgb</span><span class="t-op">(</span><span class="t-number">0.0</span><span class="t-op">,</span> <span class="t-number">0.5</span><span class="t-op">,</span> <span class="t-number">0.0</span><span class="t-op">)</span><span class="t-op">)</span>          <span class="t-comment">// border</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">setInteriorColor</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">hex</span><span class="t-op">(</span><span class="t-string">&#039;#e5ffe5&#039;</span><span class="t-op">)</span><span class="t-op">)</span>      <span class="t-comment">// fill</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">setBorderStyle</span><span class="t-op">(</span><span class="t-number">1.5</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$ci</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">CircleAnnotation</span><span class="t-op">(</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">560</span><span class="t-op">,</span> <span class="t-number">200</span><span class="t-op">,</span> <span class="t-number">600</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$ci</span><span class="t-kw">-&gt;</span><span class="t-fn">setColor</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">hex</span><span class="t-op">(</span><span class="t-string">&#039;#0000cc&#039;</span><span class="t-op">)</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">setInteriorColor</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">hex</span><span class="t-op">(</span><span class="t-string">&#039;#e5e5ff&#039;</span><span class="t-op">)</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">setBorderStyle</span><span class="t-op">(</span><span class="t-number">1.5</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>A circle annotation draws the ellipse inscribed in its rectangle, so a square rectangle gives a true circle and a wide one gives an ellipse.</p>
+<p><code>LineAnnotation</code> is unusual: it takes <strong>eight</strong> constructor arguments — the bounding rectangle followed by the line's two endpoints — and it requires an explicit <code>finalize()</code> call to write the endpoint array:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Annotation\LineAnnotation</span><span class="t-op">;</span>
+
+<span class="t-comment">//                        ---- rect ----  -- line endpoints --</span>
+<span class="t-var">$line</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">LineAnnotation</span><span class="t-op">(</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">600</span><span class="t-op">,</span> <span class="t-number">300</span><span class="t-op">,</span> <span class="t-number">630</span><span class="t-op">,</span> <span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">600</span><span class="t-op">,</span> <span class="t-number">300</span><span class="t-op">,</span> <span class="t-number">620</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$line</span><span class="t-kw">-&gt;</span><span class="t-fn">setContents</span><span class="t-op">(</span><span class="t-string">&#039;A line annotation with arrows&#039;</span><span class="t-op">)</span>
+     <span class="t-kw">-&gt;</span><span class="t-fn">setColor</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">rgb</span><span class="t-op">(</span><span class="t-number">0.8</span><span class="t-op">,</span> <span class="t-number">0.0</span><span class="t-op">,</span> <span class="t-number">0.0</span><span class="t-op">)</span><span class="t-op">)</span>
+     <span class="t-kw">-&gt;</span><span class="t-fn">setLineEndings</span><span class="t-op">(</span><span class="t-string">&#039;OpenArrow&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;ClosedArrow&#039;</span><span class="t-op">)</span>
+     <span class="t-kw">-&gt;</span><span class="t-fn">setInteriorColor</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">rgb</span><span class="t-op">(</span><span class="t-number">1.0</span><span class="t-op">,</span> <span class="t-number">0.8</span><span class="t-op">,</span> <span class="t-number">0.0</span><span class="t-op">)</span><span class="t-op">)</span>   <span class="t-comment">// fills closed arrowheads</span>
+     <span class="t-kw">-&gt;</span><span class="t-fn">setBorderStyle</span><span class="t-op">(</span><span class="t-number">2.0</span><span class="t-op">)</span>
+     <span class="t-kw">-&gt;</span><span class="t-fn">finalize</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>                                    <span class="t-comment">// required</span></code></pre></div>
+<div class="warn">
+<p>Without <code>finalize()</code> the <code>/L</code> array is never written and the annotation is invalid. Call it last, after the other setters.</p>
+</div>
+<p>Line ending styles include <code>None</code>, <code>Square</code>, <code>Circle</code>, <code>Diamond</code>, <code>OpenArrow</code>, <code>ClosedArrow</code>, <code>Butt</code>, <code>ROpenArrow</code>, <code>RClosedArrow</code> and <code>Slash</code>. The interior colour fills the closed shapes.</p>
+<p><code>PolygonAnnotation</code> takes a flat list of alternating x and y coordinates and closes the shape automatically:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Annotation\PolygonAnnotation</span><span class="t-op">;</span>
+
+<span class="t-var">$poly</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">PolygonAnnotation</span><span class="t-op">(</span><span class="t-number">220</span><span class="t-op">,</span> <span class="t-number">555</span><span class="t-op">,</span> <span class="t-number">380</span><span class="t-op">,</span> <span class="t-number">605</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$poly</span><span class="t-kw">-&gt;</span><span class="t-fn">setVertices</span><span class="t-op">(</span><span class="t-op">[</span><span class="t-number">220</span><span class="t-op">,</span> <span class="t-number">555</span><span class="t-op">,</span> <span class="t-number">300</span><span class="t-op">,</span> <span class="t-number">605</span><span class="t-op">,</span> <span class="t-number">380</span><span class="t-op">,</span> <span class="t-number">555</span><span class="t-op">,</span> <span class="t-number">340</span><span class="t-op">,</span> <span class="t-number">575</span><span class="t-op">,</span> <span class="t-number">260</span><span class="t-op">,</span> <span class="t-number">575</span><span class="t-op">]</span><span class="t-op">)</span>
+     <span class="t-kw">-&gt;</span><span class="t-fn">setContents</span><span class="t-op">(</span><span class="t-string">&#039;A polygon annotation&#039;</span><span class="t-op">)</span>
+     <span class="t-kw">-&gt;</span><span class="t-fn">setColor</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">cmyk</span><span class="t-op">(</span><span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">1.0</span><span class="t-op">,</span> <span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">0.5</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>Make sure the bounding rectangle actually contains all the vertices — viewers clip to <code>/Rect</code>.</p>
+
+<h2 id="stamps-and-ink">Stamps and ink</h2>
+<p>A stamp annotation shows a predefined graphic. <code>setIcon()</code> selects it from the standard set: <code>Approved</code>, <code>Experimental</code>, <code>NotApproved</code>, <code>AsIs</code>, <code>Expired</code>, <code>NotForPublicRelease</code>, <code>Confidential</code>, <code>Final</code>, <code>Sold</code>, <code>Departmental</code>, <code>ForComment</code>, <code>TopSecret</code>, <code>Draft</code>, <code>ForPublicRelease</code>.</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Annotation\StampAnnotation</span><span class="t-op">;</span>
+
+<span class="t-var">$stamp</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">StampAnnotation</span><span class="t-op">(</span><span class="t-number">390</span><span class="t-op">,</span> <span class="t-number">555</span><span class="t-op">,</span> <span class="t-number">520</span><span class="t-op">,</span> <span class="t-number">605</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$stamp</span><span class="t-kw">-&gt;</span><span class="t-fn">setIcon</span><span class="t-op">(</span><span class="t-string">&#039;Draft&#039;</span><span class="t-op">)</span>
+      <span class="t-kw">-&gt;</span><span class="t-fn">setContents</span><span class="t-op">(</span><span class="t-string">&#039;DRAFT&#039;</span><span class="t-op">)</span>
+      <span class="t-kw">-&gt;</span><span class="t-fn">setColor</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">hex</span><span class="t-op">(</span><span class="t-string">&#039;#ff0000&#039;</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>Viewers render the standard icons themselves, and their appearance varies. For a stamp that looks identical everywhere, supply your own appearance stream with <code>setAppearance()</code>, or draw the graphic on the page and use the stamp only to carry the metadata.</p>
+<p><code>InkAnnotation</code> captures freehand strokes. <code>setInkList()</code> takes an <em>array of arrays</em>: each inner array is one continuous stroke, given as alternating x and y coordinates. Separate strokes mean the pen was lifted.</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Annotation\InkAnnotation</span><span class="t-op">;</span>
+
+<span class="t-var">$ink</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">InkAnnotation</span><span class="t-op">(</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">500</span><span class="t-op">,</span> <span class="t-number">300</span><span class="t-op">,</span> <span class="t-number">545</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$ink</span><span class="t-kw">-&gt;</span><span class="t-fn">setInkList</span><span class="t-op">(</span><span class="t-op">[</span>
+    <span class="t-op">[</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">520</span><span class="t-op">,</span> <span class="t-number">100</span><span class="t-op">,</span> <span class="t-number">540</span><span class="t-op">,</span> <span class="t-number">140</span><span class="t-op">,</span> <span class="t-number">510</span><span class="t-op">,</span> <span class="t-number">180</span><span class="t-op">,</span> <span class="t-number">535</span><span class="t-op">,</span> <span class="t-number">220</span><span class="t-op">,</span> <span class="t-number">515</span><span class="t-op">,</span> <span class="t-number">260</span><span class="t-op">,</span> <span class="t-number">530</span><span class="t-op">,</span> <span class="t-number">300</span><span class="t-op">,</span> <span class="t-number">520</span><span class="t-op">]</span><span class="t-op">,</span>  <span class="t-comment">// stroke 1</span>
+    <span class="t-op">[</span><span class="t-number">90</span><span class="t-op">,</span> <span class="t-number">505</span><span class="t-op">,</span> <span class="t-number">130</span><span class="t-op">,</span> <span class="t-number">505</span><span class="t-op">]</span><span class="t-op">,</span>                                                     <span class="t-comment">// stroke 2</span>
+<span class="t-op">]</span><span class="t-op">)</span>
+    <span class="t-kw">-&gt;</span><span class="t-fn">setColor</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">rgb</span><span class="t-op">(</span><span class="t-number">0.0</span><span class="t-op">,</span> <span class="t-number">0.6</span><span class="t-op">,</span> <span class="t-number">0.0</span><span class="t-op">)</span><span class="t-op">)</span>
+    <span class="t-kw">-&gt;</span><span class="t-fn">setBorderStyle</span><span class="t-op">(</span><span class="t-number">2.0</span><span class="t-op">)</span>
+    <span class="t-kw">-&gt;</span><span class="t-fn">setContents</span><span class="t-op">(</span><span class="t-string">&#039;A freehand ink annotation&#039;</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>The border style width sets the pen thickness.</p>
+
+<h2 id="redaction">Redaction</h2>
+<p>A redaction annotation <em>marks</em> content for removal. It does not remove anything by itself — that is a deliberate two-phase design, so a reviewer can mark regions, have them checked, and only then apply the redaction irreversibly.</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Annotation\RedactAnnotation</span><span class="t-op">;</span>
+
+<span class="t-var">$redact</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">RedactAnnotation</span><span class="t-op">(</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">452</span><span class="t-op">,</span> <span class="t-number">300</span><span class="t-op">,</span> <span class="t-number">470</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$redact</span><span class="t-kw">-&gt;</span><span class="t-fn">setQuadPoints</span><span class="t-op">(</span><span class="t-op">[</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">452</span><span class="t-op">,</span> <span class="t-number">300</span><span class="t-op">,</span> <span class="t-number">452</span><span class="t-op">,</span> <span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">470</span><span class="t-op">,</span> <span class="t-number">300</span><span class="t-op">,</span> <span class="t-number">470</span><span class="t-op">]</span><span class="t-op">)</span>
+       <span class="t-kw">-&gt;</span><span class="t-fn">setOverlayText</span><span class="t-op">(</span><span class="t-string">&#039;REDACTED&#039;</span><span class="t-op">)</span>
+       <span class="t-kw">-&gt;</span><span class="t-fn">setRepeat</span><span class="t-op">(</span><span class="t-fn">true</span><span class="t-op">)</span>                    <span class="t-comment">// tile the overlay text across the region</span>
+       <span class="t-kw">-&gt;</span><span class="t-fn">setFillColor</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">black</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">)</span>       <span class="t-comment">// the bar painted after application</span>
+       <span class="t-kw">-&gt;</span><span class="t-fn">setContents</span><span class="t-op">(</span><span class="t-string">&#039;Sensitive content marked for redaction&#039;</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>As with text markup, <code>setQuadPoints()</code> takes runs of eight numbers describing each quadrilateral. <code>setFillColor()</code> is the colour of the bar painted once a redaction tool applies the mark, and <code>setOverlayText()</code> is the label drawn over it.</p>
+<div class="warn">
+<p>A redaction annotation in a saved PDF is a <strong>marking only</strong>. The underlying text and images are still in the file and can be extracted. Do not distribute a document whose redactions have not been applied by a tool that actually strips the content.</p>
+</div>
+
+<h2 id="reading-annotations">Reading annotations</h2>
+<p>Annotations in an existing PDF can be listed with the parser:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Parser\PdfParser</span><span class="t-op">;</span>
+
+<span class="t-var">$parser</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">PdfParser</span><span class="t-op">(</span><span class="t-fn">file_get_contents</span><span class="t-op">(</span><span class="t-string">&#039;reviewed.pdf&#039;</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$parser</span><span class="t-kw">-&gt;</span><span class="t-fn">parse</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-kw">foreach</span> <span class="t-op">(</span><span class="t-var">$parser</span><span class="t-kw">-&gt;</span><span class="t-fn">getAnnotations</span><span class="t-op">(</span><span class="t-op">)</span> <span class="t-kw">as</span> <span class="t-var">$annot</span><span class="t-op">)</span> <span class="t-op">{</span>
+    <span class="t-fn">print_r</span><span class="t-op">(</span><span class="t-var">$annot</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-op">}</span></code></pre></div>
+<p>See <a href="reading.html">Reading PDFs</a> for the full parsing API.</p>
+
+<h2 id="examples">Examples</h2>
+<ul>
+<li><code>examples/06_annotations.php</code> — every one of the 14 subtypes on a single page, including redaction.</li>
+<li><code>examples/12_multimedia.php</code> — sound, movie and screen annotations.</li>
+<li><code>examples/07_bookmarks_and_encryption.php</code> — link annotations alongside outlines.</li>
+</ul>
+<div class="code-block" data-lang="bash"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">php</span> examples/06_annotations.php</code></pre></div>
+
+<nav class="pager"><a class="prev" href="forms.html"><span>Previous</span>Forms</a><a class="next" href="navigation.html"><span>Next</span>Bookmarks &amp; navigation</a></nav>
+</article>
+  </main>
+
+  <aside class="toc"><h4>On this page</h4><ul><li class="lvl-2"><a href="#the-annotation-model">The annotation model</a></li><li class="lvl-2"><a href="#subtypes">The subtypes</a></li><li class="lvl-2"><a href="#common-properties">Common properties</a></li><li class="lvl-3"><a href="#contents-and-colour">Contents and colour</a></li><li class="lvl-3"><a href="#borders">Borders</a></li><li class="lvl-3"><a href="#flags">Flags</a></li><li class="lvl-3"><a href="#other-common-setters">Other common setters</a></li><li class="lvl-2"><a href="#notes-and-links">Notes and links</a></li><li class="lvl-2"><a href="#text-markup">Text markup</a></li><li class="lvl-2"><a href="#geometric-markup">Geometric markup</a></li><li class="lvl-2"><a href="#stamps-and-ink">Stamps and ink</a></li><li class="lvl-2"><a href="#redaction">Redaction</a></li><li class="lvl-2"><a href="#reading-annotations">Reading annotations</a></li><li class="lvl-2"><a href="#examples">Examples</a></li></ul></aside>
+</div>
+
+<footer class="footer">
+  <p>Papier — PHP PDF library implementing ISO 32000-1:2008. Released under the MIT licence.</p>
+</footer>
+
+<script src="assets/docs.js"></script>
+</body>
+</html>

@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Documents & pages — Papier</title>
+<meta name="description" content="Create PDF documents, set metadata, add and size pages, run headers and footers, and reorganise pages with merge, extract and N-up.">
+<meta property="og:title" content="Documents & pages — Papier">
+<meta property="og:description" content="Create PDF documents, set metadata, add and size pages, run headers and footers, and reorganise pages with merge, extract and N-up.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<script>
+(function () {
+  var t = localStorage.getItem('papier-theme');
+  if (t) document.documentElement.setAttribute('data-theme', t);
+})();
+</script>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <button class="menu-toggle" type="button" aria-label="Toggle navigation">
+<svg viewBox="0 0 20 20" width="20" height="20"><path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="index.html">
+<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 2h8l5 5v15H6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M14 2v5h5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+<span>Papier</span>
+  </a>
+  <div class="search">
+<input type="search" id="search-input" placeholder="Search documentation…" autocomplete="off" aria-label="Search documentation">
+<kbd>/</kbd>
+<div id="search-results" role="listbox"></div>
+  </div>
+  <div class="topbar-links">
+<a href="https://packagist.org/packages/papier/papier">Packagist</a>
+<a href="https://github.com/papier/papier">GitHub</a>
+<button class="theme-toggle" type="button" aria-label="Toggle dark mode">
+  <svg class="sun" viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.5 1.5M17.6 17.6l1.5 1.5M19.1 4.9l-1.5 1.5M6.4 17.6l-1.5 1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+  <svg class="moon" viewBox="0 0 24 24" width="18" height="18"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+</button>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" aria-label="Documentation">
+<div class="nav-section"><h4>Getting started</h4><ul><li><a href="index.html">Introduction</a></li><li><a href="installation.html">Installation</a></li><li><a href="quickstart.html">Quick start</a></li></ul></div><div class="nav-section"><h4>Creating PDFs</h4><ul><li><a href="documents.html" class="active">Documents &amp; pages</a></li><li><a href="text.html">Text &amp; fonts</a></li><li><a href="graphics.html">Graphics</a></li><li><a href="images.html">Images</a></li><li><a href="tables.html">Tables</a></li></ul></div><div class="nav-section"><h4>Interactivity</h4><ul><li><a href="forms.html">Forms</a></li><li><a href="annotations.html">Annotations</a></li><li><a href="navigation.html">Bookmarks &amp; navigation</a></li><li><a href="multimedia.html">Layers &amp; multimedia</a></li></ul></div><div class="nav-section"><h4>Advanced</h4><ul><li><a href="security.html">Encryption &amp; signatures</a></li><li><a href="accessibility.html">Tagged PDF &amp; PDF/A</a></li><li><a href="file-structure.html">File structure</a></li><li><a href="reading.html">Reading PDFs</a></li></ul></div><div class="nav-section"><h4>Reference</h4><ul><li><a href="examples.html">Examples</a></li><li><a href="changelog.html">Changelog</a></li></ul></div>
+  </nav>
+
+  <main id="main">
+<article class="content">
+<h1>Documents &amp; pages</h1>
+<p class="lead">Every Papier document starts with a <code>PdfDocument</code> and ends with a call to <code>save()</code>. In between you add pages, draw on them, and attach document-level features such as metadata, page labels, named destinations and attachments.</p>
+
+<h2 id="creating-a-document">Creating a document</h2>
+<p><code>PdfDocument::create()</code> builds an empty document with a catalog, an empty page tree and an Info dictionary. The optional argument is the PDF header version written to the file; the default of <code>1.7</code> matches ISO 32000-1 and is what you want unless you deliberately need to advertise an older or newer version.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\PdfDocument</span><span class="t-op">;</span>
+
+<span class="t-var">$doc</span> <span class="t-op">=</span> <span class="t-type">PdfDocument</span><span class="t-kw">::</span><span class="t-fn">create</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>          <span class="t-comment">// header version 1.7</span>
+<span class="t-var">$doc2</span> <span class="t-op">=</span> <span class="t-type">PdfDocument</span><span class="t-kw">::</span><span class="t-fn">create</span><span class="t-op">(</span><span class="t-string">&#039;1.4&#039;</span><span class="t-op">)</span><span class="t-op">;</span>    <span class="t-comment">// advertise PDF 1.4</span></code></pre></div>
+
+<p>The version in the header is only a declaration. Papier still writes whatever structures you ask for, so if you enable object streams (a PDF 1.5 feature) while declaring 1.4, strict validators will complain. Leave the default alone in normal use.</p>
+
+<h2 id="document-metadata">Document metadata</h2>
+<p>The Info dictionary carries the human-readable description of the file that viewers show in their "Document properties" panel. Papier exposes it through five chainable setters. Each returns the document, so they compose into a single statement.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">setTitle</span><span class="t-op">(</span><span class="t-string">&#039;Quarterly Report&#039;</span><span class="t-op">)</span>
+    <span class="t-kw">-&gt;</span><span class="t-fn">setAuthor</span><span class="t-op">(</span><span class="t-string">&#039;Jane Doe&#039;</span><span class="t-op">)</span>
+    <span class="t-kw">-&gt;</span><span class="t-fn">setSubject</span><span class="t-op">(</span><span class="t-string">&#039;Q3 revenue by product line&#039;</span><span class="t-op">)</span>
+    <span class="t-kw">-&gt;</span><span class="t-fn">setKeywords</span><span class="t-op">(</span><span class="t-string">&#039;revenue, quarterly, 2026&#039;</span><span class="t-op">)</span>
+    <span class="t-kw">-&gt;</span><span class="t-fn">setCreator</span><span class="t-op">(</span><span class="t-string">&#039;Acme Reporting Pipeline&#039;</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<p>Setting a title is worth doing even for throwaway files: combined with the <code>displayDocTitle()</code> viewer preference described below, it is what appears in the reader's window title bar instead of the filename. If you need the raw dictionary — for instance to inspect what will be written — <code>$doc-&gt;getInfo()</code> returns the <code>DocumentInfo</code> object.</p>
+
+<div class="note">
+<p>Papier also emits an XMP metadata packet alongside the Info dictionary. Archival profiles such as PDF/A require the two to agree, which Papier handles for you when you call <code>enablePdfA()</code>. See <a href="file-structure.html">File structure</a>.</p>
+</div>
+
+<h2 id="adding-pages">Adding pages</h2>
+<p><code>addPage()</code> appends a blank page and returns the <code>PdfPage</code> object so you can immediately draw on it. The two arguments are width and height in points, where one point is 1/72 inch. The default is ISO A4.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$page</span> <span class="t-op">=</span> <span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">addPage</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>                  <span class="t-comment">// A4: 595.28 × 841.89 pt</span>
+<span class="t-var">$wide</span> <span class="t-op">=</span> <span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">addPage</span><span class="t-op">(</span><span class="t-number">1000</span><span class="t-op">,</span> <span class="t-number">500</span><span class="t-op">)</span><span class="t-op">;</span>         <span class="t-comment">// custom size</span></code></pre></div>
+
+<p>Pages are appended in call order, which is also the order they appear in the finished file. The coordinate origin is the bottom-left corner and the y axis grows upward — the opposite of most screen-drawing APIs. A y of 750 on an A4 page is near the top.</p>
+
+<h3 id="standard-page-sizes">Standard page sizes</h3>
+<p><code>PdfPage</code> exposes the common paper sizes as two-element constants, which you spread into <code>addPage()</code> with the argument-unpacking operator.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Structure\PdfPage</span><span class="t-op">;</span>
+
+<span class="t-var">$a4</span>      <span class="t-op">=</span> <span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">addPage</span><span class="t-op">(</span><span class="t-kw">...</span><span class="t-type">PdfPage</span><span class="t-kw">::</span><span class="t-type">SIZE_A4</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$letter</span>  <span class="t-op">=</span> <span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">addPage</span><span class="t-op">(</span><span class="t-kw">...</span><span class="t-type">PdfPage</span><span class="t-kw">::</span><span class="t-type">SIZE_LETTER</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$tabloid</span> <span class="t-op">=</span> <span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">addPage</span><span class="t-op">(</span><span class="t-kw">...</span><span class="t-type">PdfPage</span><span class="t-kw">::</span><span class="t-type">SIZE_TABLOID</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<table>
+<thead><tr><th>Constant</th><th>Points (w × h)</th></tr></thead>
+<tbody>
+<tr><td><code>SIZE_A0</code></td><td>2383.94 × 3370.39</td></tr>
+<tr><td><code>SIZE_A1</code></td><td>1683.78 × 2383.94</td></tr>
+<tr><td><code>SIZE_A2</code></td><td>1190.55 × 1683.78</td></tr>
+<tr><td><code>SIZE_A3</code></td><td>841.89 × 1190.55</td></tr>
+<tr><td><code>SIZE_A4</code></td><td>595.28 × 841.89</td></tr>
+<tr><td><code>SIZE_A5</code></td><td>419.53 × 595.28</td></tr>
+<tr><td><code>SIZE_A6</code></td><td>297.64 × 419.53</td></tr>
+<tr><td><code>SIZE_LETTER</code></td><td>612 × 792</td></tr>
+<tr><td><code>SIZE_LEGAL</code></td><td>612 × 1008</td></tr>
+<tr><td><code>SIZE_TABLOID</code></td><td>792 × 1224</td></tr>
+<tr><td><code>SIZE_EXECUTIVE</code></td><td>522 × 756</td></tr>
+</tbody>
+</table>
+
+<h3 id="orientation-and-rotation">Orientation and rotation</h3>
+<p>There are two distinct ways to get a landscape page, and they are not interchangeable.</p>
+<p><code>setLandscape()</code> swaps the width and height of the page box. The page genuinely becomes wider than it is tall, and your drawing coordinates follow: x now runs to 841.89 on an A4 sheet.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$page</span> <span class="t-op">=</span> <span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">addPage</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">setLandscape</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// 841.89 × 595.28</span></code></pre></div>
+
+<p><code>setRotation()</code> leaves the page box alone and sets the <code>/Rotate</code> entry, which instructs the viewer to rotate the rendered page clockwise when displaying or printing it. Your content is authored in the unrotated coordinate system. The value must be a multiple of 90.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$page</span> <span class="t-op">=</span> <span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">addPage</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">setRotation</span><span class="t-op">(</span><span class="t-number">90</span><span class="t-op">)</span>
+     <span class="t-kw">-&gt;</span><span class="t-fn">add</span><span class="t-op">(</span><span class="t-type">Text</span><span class="t-kw">::</span><span class="t-fn">write</span><span class="t-op">(</span><span class="t-string">&#039;Rendered sideways&#039;</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">at</span><span class="t-op">(</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">300</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">font</span><span class="t-op">(</span><span class="t-var">$body</span><span class="t-op">,</span> <span class="t-number">14</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<p>Use <code>setLandscape()</code> when you are laying out a landscape document from scratch, and <code>setRotation()</code> when you need to reorient existing content — for example a portrait page imported from another file that should print sideways.</p>
+
+<h3 id="page-boundary-boxes">Page boundary boxes</h3>
+<p>Beyond the media box set by the page dimensions, a page can declare four further boxes used by prepress and viewing tools. All four take the two opposite corners of a rectangle.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">setCropBox</span><span class="t-op">(</span><span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">595.28</span><span class="t-op">,</span> <span class="t-number">841.89</span><span class="t-op">)</span>   <span class="t-comment">// visible region</span>
+     <span class="t-kw">-&gt;</span><span class="t-fn">setBleedBox</span><span class="t-op">(</span><span class="t-number">9</span><span class="t-op">,</span> <span class="t-number">9</span><span class="t-op">,</span> <span class="t-number">586</span><span class="t-op">,</span> <span class="t-number">833</span><span class="t-op">)</span>        <span class="t-comment">// production clipping</span>
+     <span class="t-kw">-&gt;</span><span class="t-fn">setTrimBox</span><span class="t-op">(</span><span class="t-number">18</span><span class="t-op">,</span> <span class="t-number">18</span><span class="t-op">,</span> <span class="t-number">577</span><span class="t-op">,</span> <span class="t-number">824</span><span class="t-op">)</span>       <span class="t-comment">// finished page after trimming</span>
+     <span class="t-kw">-&gt;</span><span class="t-fn">setArtBox</span><span class="t-op">(</span><span class="t-number">36</span><span class="t-op">,</span> <span class="t-number">36</span><span class="t-op">,</span> <span class="t-number">559</span><span class="t-op">,</span> <span class="t-number">806</span><span class="t-op">)</span><span class="t-op">;</span>       <span class="t-comment">// meaningful content extent</span></code></pre></div>
+
+<p>If you are producing files for a commercial printer, the trim box is the one they will ask about — it defines where the guillotine cuts, and the bleed box tells them how far artwork must extend past that cut.</p>
+
+<h2 id="drawing-on-a-page">Drawing on a page</h2>
+<p><code>PdfPage::add()</code> accepts any number of elements and renders them into the page's content stream. Elements are the high-level fluent API: <code>Text</code>, <code>TextBox</code>, <code>Image</code>, <code>Rectangle</code>, <code>Circle</code>, <code>Line</code> and <code>Table</code>.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Elements</span><span class="t-kw">\</span><span class="t-op">{</span><span class="t-type">Color</span><span class="t-op">,</span> <span class="t-type">Rectangle</span><span class="t-op">,</span> <span class="t-type">Text</span><span class="t-op">}</span><span class="t-op">;</span>
+
+<span class="t-var">$font</span> <span class="t-op">=</span> <span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">addFont</span><span class="t-op">(</span><span class="t-string">&#039;Helvetica-Bold&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">add</span><span class="t-op">(</span>
+    <span class="t-type">Rectangle</span><span class="t-kw">::</span><span class="t-fn">create</span><span class="t-op">(</span><span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">800</span><span class="t-op">,</span> <span class="t-number">595</span><span class="t-op">,</span> <span class="t-number">42</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">fill</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">rgb</span><span class="t-op">(</span><span class="t-number">0.12</span><span class="t-op">,</span> <span class="t-number">0.22</span><span class="t-op">,</span> <span class="t-number">0.42</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">,</span>
+    <span class="t-type">Text</span><span class="t-kw">::</span><span class="t-fn">write</span><span class="t-op">(</span><span class="t-string">&#039;Annual Report&#039;</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">at</span><span class="t-op">(</span><span class="t-number">36</span><span class="t-op">,</span> <span class="t-number">815</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">font</span><span class="t-op">(</span><span class="t-var">$font</span><span class="t-op">,</span> <span class="t-number">16</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">color</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">white</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">,</span>
+<span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<p>Elements are drawn in the order you pass them, so later elements paint over earlier ones. See <a href="text.html">Text &amp; fonts</a>, <a href="graphics.html">Graphics</a>, <a href="images.html">Images</a> and <a href="tables.html">Tables</a> for the full element catalogue.</p>
+
+<h3 id="multiple-content-streams">Multiple content streams</h3>
+<p>A PDF page may hold an array of content streams rather than a single one; viewers concatenate them before interpreting. Papier exposes this through <code>addContent()</code>, which appends a <code>ContentStream</code> you have built yourself with raw PDF operators.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Content\ContentStream</span><span class="t-op">;</span>
+
+<span class="t-var">$cs</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">ContentStream</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$cs</span><span class="t-kw">-&gt;</span><span class="t-fn">save</span><span class="t-op">(</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">setFillRGB</span><span class="t-op">(</span><span class="t-number">0.9</span><span class="t-op">,</span> <span class="t-number">0.3</span><span class="t-op">,</span> <span class="t-number">0.2</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">drawCircle</span><span class="t-op">(</span><span class="t-number">300</span><span class="t-op">,</span> <span class="t-number">400</span><span class="t-op">,</span> <span class="t-number">60</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">fill</span><span class="t-op">(</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">restore</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">addContent</span><span class="t-op">(</span><span class="t-var">$cs</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<p>Mixing <code>add()</code> and <code>addContent()</code> on the same page is normal and is exactly what the bundled examples do — elements for text and boxes, a hand-written stream for the shadings and patterns that have no element equivalent. The two interleave in call order.</p>
+
+<p>Splitting content across streams is also a practical way to keep each stream small, since every stream is compressed independently. <code>getContentStreams()</code> returns the current array and <code>getContentStreamCount()</code> its length; <code>truncateContentStreams($n)</code> discards everything after the first <code>$n</code> streams, which is how the running-element machinery rolls back a speculative render.</p>
+
+<h2 id="headers-and-footers">Running headers and footers</h2>
+<p>A running header or footer has an awkward dependency: the text "Page 3 of 12" cannot be written until every page exists. Papier resolves this by deferring the render. You register a closure, and Papier calls it once per matching page immediately before writing the file, when the total page count is finally known.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Structure\PdfPage</span><span class="t-op">;</span>
+<span class="t-kw">use</span> <span class="t-kw">Papier\Elements</span><span class="t-kw">\</span><span class="t-op">{</span><span class="t-type">Color</span><span class="t-op">,</span> <span class="t-type">Line</span><span class="t-op">,</span> <span class="t-type">Text</span><span class="t-op">}</span><span class="t-op">;</span>
+
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">header</span><span class="t-op">(</span><span class="t-kw">function</span> <span class="t-op">(</span><span class="t-type">PdfPage</span> <span class="t-var">$p</span><span class="t-op">,</span> <span class="t-fn">int</span> <span class="t-var">$n</span><span class="t-op">,</span> <span class="t-fn">int</span> <span class="t-var">$total</span><span class="t-op">)</span> <span class="t-kw">use</span> <span class="t-op">(</span><span class="t-var">$body</span><span class="t-op">)</span> <span class="t-op">{</span>
+    <span class="t-var">$p</span><span class="t-kw">-&gt;</span><span class="t-fn">add</span><span class="t-op">(</span>
+        <span class="t-type">Text</span><span class="t-kw">::</span><span class="t-fn">write</span><span class="t-op">(</span><span class="t-string">&#039;Quarterly Report&#039;</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">at</span><span class="t-op">(</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">800</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">font</span><span class="t-op">(</span><span class="t-var">$body</span><span class="t-op">,</span> <span class="t-number">9</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">color</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">gray</span><span class="t-op">(</span><span class="t-number">0.4</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">,</span>
+        <span class="t-type">Line</span><span class="t-kw">::</span><span class="t-fn">from</span><span class="t-op">(</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">794</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">to</span><span class="t-op">(</span><span class="t-number">523</span><span class="t-op">,</span> <span class="t-number">794</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">color</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">gray</span><span class="t-op">(</span><span class="t-number">0.8</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">width</span><span class="t-op">(</span><span class="t-number">0.5</span><span class="t-op">)</span><span class="t-op">,</span>
+    <span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-op">}</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">footer</span><span class="t-op">(</span><span class="t-kw">function</span> <span class="t-op">(</span><span class="t-type">PdfPage</span> <span class="t-var">$p</span><span class="t-op">,</span> <span class="t-fn">int</span> <span class="t-var">$n</span><span class="t-op">,</span> <span class="t-fn">int</span> <span class="t-var">$total</span><span class="t-op">)</span> <span class="t-kw">use</span> <span class="t-op">(</span><span class="t-var">$body</span><span class="t-op">)</span> <span class="t-op">{</span>
+    <span class="t-var">$p</span><span class="t-kw">-&gt;</span><span class="t-fn">add</span><span class="t-op">(</span><span class="t-type">Text</span><span class="t-kw">::</span><span class="t-fn">write</span><span class="t-op">(</span><span class="t-op">&quot;</span><span class="t-string">Page </span><span class="t-var">$n</span><span class="t-string"> of </span><span class="t-var">$total</span><span class="t-op">&quot;</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">at</span><span class="t-op">(</span><span class="t-number">480</span><span class="t-op">,</span> <span class="t-number">30</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">font</span><span class="t-op">(</span><span class="t-var">$body</span><span class="t-op">,</span> <span class="t-number">9</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-op">}</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<p>The closure receives the page object, the 1-based page number, and the total page count. <code>header()</code>, <code>footer()</code> and the generic <code>onEachPage()</code> are all the same mechanism with different names; the distinction is documentary, letting you read back which callbacks were intended as chrome. You may register as many of each as you like and they run in registration order.</p>
+
+<h3 id="page-rules">Selecting pages with PageRule</h3>
+<p>The second argument of <code>header()</code>, <code>footer()</code> and <code>onEachPage()</code> restricts which pages the callback applies to. It accepts a <code>PageRule</code> enum case, an integer, or a closure.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\PageRule</span><span class="t-op">;</span>
+
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">footer</span><span class="t-op">(</span><span class="t-var">$render</span><span class="t-op">)</span><span class="t-op">;</span>                          <span class="t-comment">// PageRule::All (default)</span>
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">onEachPage</span><span class="t-op">(</span><span class="t-var">$notice</span><span class="t-op">,</span>     <span class="t-type">PageRule</span><span class="t-kw">::</span><span class="t-type">First</span><span class="t-op">)</span><span class="t-op">;</span> <span class="t-comment">// first page only</span>
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">onEachPage</span><span class="t-op">(</span><span class="t-var">$colophon</span><span class="t-op">,</span>   <span class="t-type">PageRule</span><span class="t-kw">::</span><span class="t-type">Last</span><span class="t-op">)</span><span class="t-op">;</span>  <span class="t-comment">// last page only</span>
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">onEachPage</span><span class="t-op">(</span><span class="t-var">$confidential</span><span class="t-op">,</span> <span class="t-type">PageRule</span><span class="t-kw">::</span><span class="t-type">Odd</span><span class="t-op">)</span><span class="t-op">;</span> <span class="t-comment">// 1, 3, 5, …</span>
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">onEachPage</span><span class="t-op">(</span><span class="t-var">$tab</span><span class="t-op">,</span>        <span class="t-type">PageRule</span><span class="t-kw">::</span><span class="t-type">Even</span><span class="t-op">)</span><span class="t-op">;</span>  <span class="t-comment">// 2, 4, 6, …</span></code></pre></div>
+
+<table>
+<thead><tr><th>Rule</th><th>Applies to</th></tr></thead>
+<tbody>
+<tr><td><code>PageRule::All</code></td><td>Every page (the default)</td></tr>
+<tr><td><code>PageRule::Odd</code></td><td>Page numbers 1, 3, 5, …</td></tr>
+<tr><td><code>PageRule::Even</code></td><td>Page numbers 2, 4, 6, …</td></tr>
+<tr><td><code>PageRule::First</code></td><td>The first page only</td></tr>
+<tr><td><code>PageRule::Last</code></td><td>The last page only</td></tr>
+</tbody>
+</table>
+
+<p><code>Odd</code> and <code>Even</code> are the natural choice for double-sided printing, where the outer margin alternates sides. When a fixed rule is not enough, pass an integer for every Nth page, or a closure receiving the page number and total that returns a boolean.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">onEachPage</span><span class="t-op">(</span><span class="t-var">$sectionRule</span><span class="t-op">,</span> <span class="t-number">5</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// pages 5, 10, 15, …</span>
+
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">onEachPage</span><span class="t-op">(</span>
+    <span class="t-var">$watermark</span><span class="t-op">,</span>
+    <span class="t-kw">fn</span><span class="t-op">(</span><span class="t-fn">int</span> <span class="t-var">$n</span><span class="t-op">,</span> <span class="t-fn">int</span> <span class="t-var">$total</span><span class="t-op">)</span><span class="t-op">:</span> <span class="t-fn">bool</span> <span class="t-kw">=&gt;</span> <span class="t-var">$n</span> <span class="t-op">&gt;</span> <span class="t-number">1</span> <span class="t-kw">&amp;&amp;</span> <span class="t-var">$n</span> <span class="t-op">&lt;</span> <span class="t-var">$total</span><span class="t-op">,</span>   <span class="t-comment">// skip cover and colophon</span>
+<span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<p>See <code>examples/33_page_operations.php</code> for a five-page report with a running header, a "Page X of Y" footer, and a confidential notice restricted to odd pages.</p>
+
+<h2 id="page-operations">Page operations</h2>
+<p>Three static helpers on <code>PdfDocument</code> take existing files and produce a new one. They parse the sources, wrap each page as a form XObject, and place it on a fresh page — so the visual result is preserved but interactive features on the source pages (annotations, form fields) are not carried across.</p>
+
+<h3 id="merging-documents">Merging documents</h3>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-type">PdfDocument</span><span class="t-kw">::</span><span class="t-fn">merge</span><span class="t-op">(</span><span class="t-op">[</span><span class="t-string">&#039;cover.pdf&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;body.pdf&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;appendix.pdf&#039;</span><span class="t-op">]</span><span class="t-op">,</span> <span class="t-string">&#039;combined.pdf&#039;</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>Pages are concatenated in the order the source paths are given.</p>
+
+<h3 id="extracting-pages">Extracting and reordering pages</h3>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-type">PdfDocument</span><span class="t-kw">::</span><span class="t-fn">extractPages</span><span class="t-op">(</span><span class="t-string">&#039;report.pdf&#039;</span><span class="t-op">,</span> <span class="t-op">[</span><span class="t-number">2</span><span class="t-op">,</span> <span class="t-number">4</span><span class="t-op">]</span><span class="t-op">,</span> <span class="t-string">&#039;excerpt.pdf&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-type">PdfDocument</span><span class="t-kw">::</span><span class="t-fn">extractPages</span><span class="t-op">(</span><span class="t-string">&#039;report.pdf&#039;</span><span class="t-op">,</span> <span class="t-op">[</span><span class="t-number">3</span><span class="t-op">,</span> <span class="t-number">1</span><span class="t-op">,</span> <span class="t-number">2</span><span class="t-op">]</span><span class="t-op">,</span> <span class="t-string">&#039;reordered.pdf&#039;</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>Page numbers are 1-based and are honoured in the order supplied, so the same call both subsets and reorders. Out-of-range numbers are skipped rather than raising an error.</p>
+
+<h3 id="n-up-imposition">N-up imposition</h3>
+<p><code>nUp()</code> tiles several source pages onto each output sheet — the usual way to produce handouts or proof sheets. Each source page is scaled to fit its cell while preserving aspect ratio, then centred within it.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-type">PdfDocument</span><span class="t-kw">::</span><span class="t-fn">nUp</span><span class="t-op">(</span><span class="t-string">&#039;report.pdf&#039;</span><span class="t-op">,</span> <span class="t-number">2</span><span class="t-op">,</span> <span class="t-number">2</span><span class="t-op">,</span> <span class="t-string">&#039;handout.pdf&#039;</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// 4 pages per sheet</span>
+
+<span class="t-type">PdfDocument</span><span class="t-kw">::</span><span class="t-fn">nUp</span><span class="t-op">(</span>
+    <span class="t-string">&#039;report.pdf&#039;</span><span class="t-op">,</span>
+    <span class="t-fn">cols</span><span class="t-op">:</span>   <span class="t-number">3</span><span class="t-op">,</span>
+    <span class="t-fn">rows</span><span class="t-op">:</span>   <span class="t-number">3</span><span class="t-op">,</span>
+    <span class="t-fn">outPath</span><span class="t-op">:</span><span class="t-string">&#039;nine-up.pdf&#039;</span><span class="t-op">,</span>
+    <span class="t-fn">sheetW</span><span class="t-op">:</span> <span class="t-number">841.89</span><span class="t-op">,</span>   <span class="t-comment">// A4 landscape</span>
+    <span class="t-fn">sheetH</span><span class="t-op">:</span> <span class="t-number">595.28</span><span class="t-op">,</span>
+    <span class="t-fn">margin</span><span class="t-op">:</span> <span class="t-number">24.0</span><span class="t-op">,</span>
+    <span class="t-fn">gutter</span><span class="t-op">:</span> <span class="t-number">12.0</span><span class="t-op">,</span>
+<span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<p>Cells are filled left to right, top to bottom. The sheet defaults to A4 portrait with a 20 pt outer margin and a 10 pt gutter between cells.</p>
+
+<h3 id="importing-pages">Importing pages into a document</h3>
+<p>The static helpers above are convenience wrappers around <code>importPages()</code>, which brings pages from another PDF into a document you are still building. Because it returns the newly created <code>PdfPage</code> objects, you can then draw over the imported content — the basis for stamping, watermarking and filling pre-printed forms.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$doc</span> <span class="t-op">=</span> <span class="t-type">PdfDocument</span><span class="t-kw">::</span><span class="t-fn">create</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$font</span> <span class="t-op">=</span> <span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">addFont</span><span class="t-op">(</span><span class="t-string">&#039;Helvetica-Bold&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$pages</span> <span class="t-op">=</span> <span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">importPages</span><span class="t-op">(</span><span class="t-string">&#039;contract.pdf&#039;</span><span class="t-op">)</span><span class="t-op">;</span>           <span class="t-comment">// all pages</span>
+<span class="t-var">$some</span>  <span class="t-op">=</span> <span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">importPages</span><span class="t-op">(</span><span class="t-string">&#039;contract.pdf&#039;</span><span class="t-op">,</span> <span class="t-op">[</span><span class="t-number">1</span><span class="t-op">,</span> <span class="t-number">3</span><span class="t-op">]</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// selected pages</span>
+
+<span class="t-var">$pages</span><span class="t-op">[</span><span class="t-number">0</span><span class="t-op">]</span><span class="t-kw">-&gt;</span><span class="t-fn">add</span><span class="t-op">(</span>
+    <span class="t-type">Text</span><span class="t-kw">::</span><span class="t-fn">write</span><span class="t-op">(</span><span class="t-string">&#039;DRAFT&#039;</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">at</span><span class="t-op">(</span><span class="t-number">200</span><span class="t-op">,</span> <span class="t-number">400</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">font</span><span class="t-op">(</span><span class="t-var">$font</span><span class="t-op">,</span> <span class="t-number">60</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">opacity</span><span class="t-op">(</span><span class="t-number">0.15</span><span class="t-op">)</span><span class="t-op">,</span>
+<span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">save</span><span class="t-op">(</span><span class="t-string">&#039;stamped.pdf&#039;</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<p>For finer control, <code>importPage()</code> takes a single prepared <code>ImportedPage</code> plus an offset and uniform scale factor, which is what you need to place a source page at a specific position on a larger sheet. See <code>examples/16_import_pages.php</code>.</p>
+
+<h2 id="page-labels">Page labels</h2>
+<p>Page labels change the numbering that the viewer shows in its thumbnail strip and "go to page" box, without affecting the physical page order. The classic use is front matter numbered in lowercase roman numerals followed by a body restarting at 1.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Structure\PageLabelStyle</span><span class="t-op">;</span>
+
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">addPageLabel</span><span class="t-op">(</span><span class="t-number">0</span><span class="t-op">,</span> <span class="t-type">PageLabelStyle</span><span class="t-kw">::</span><span class="t-type">RomanLower</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// i, ii, iii, iv</span>
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">addPageLabel</span><span class="t-op">(</span><span class="t-number">4</span><span class="t-op">,</span> <span class="t-type">PageLabelStyle</span><span class="t-kw">::</span><span class="t-type">Decimal</span><span class="t-op">)</span><span class="t-op">;</span>      <span class="t-comment">// 1, 2, 3, …</span></code></pre></div>
+
+<p>The first argument is a 0-based page index at which the range begins; the range runs until the next one starts. A range may also set its own starting number and a prefix.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">addPageLabel</span><span class="t-op">(</span><span class="t-number">4</span><span class="t-op">,</span> <span class="t-type">PageLabelStyle</span><span class="t-kw">::</span><span class="t-type">Decimal</span><span class="t-op">,</span> <span class="t-fn">startValue</span><span class="t-op">:</span> <span class="t-number">1</span><span class="t-op">,</span> <span class="t-fn">prefix</span><span class="t-op">:</span> <span class="t-string">&#039;p.&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">addPageLabel</span><span class="t-op">(</span><span class="t-number">20</span><span class="t-op">,</span> <span class="t-type">PageLabelStyle</span><span class="t-kw">::</span><span class="t-type">AlphaUpper</span><span class="t-op">,</span> <span class="t-fn">startValue</span><span class="t-op">:</span> <span class="t-number">1</span><span class="t-op">,</span> <span class="t-fn">prefix</span><span class="t-op">:</span> <span class="t-string">&#039;Appendix &#039;</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<table>
+<thead><tr><th>Style</th><th>Produces</th></tr></thead>
+<tbody>
+<tr><td><code>PageLabelStyle::Decimal</code></td><td>1, 2, 3, …</td></tr>
+<tr><td><code>PageLabelStyle::RomanLower</code></td><td>i, ii, iii, …</td></tr>
+<tr><td><code>PageLabelStyle::RomanUpper</code></td><td>I, II, III, …</td></tr>
+<tr><td><code>PageLabelStyle::AlphaLower</code></td><td>a, b, c, … aa, bb, …</td></tr>
+<tr><td><code>PageLabelStyle::AlphaUpper</code></td><td>A, B, C, … AA, BB, …</td></tr>
+<tr><td><code>PageLabelStyle::None</code></td><td>Prefix only, no number</td></tr>
+</tbody>
+</table>
+
+<h2 id="named-destinations">Named destinations</h2>
+<p>A named destination is a symbolic label for a position in the document. Link annotations, bookmarks and external URLs can target it by name, so the target survives content being reflowed onto different pages.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$intro</span> <span class="t-op">=</span> <span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">addPage</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">addNamedDestination</span><span class="t-op">(</span><span class="t-string">&#039;intro&#039;</span><span class="t-op">,</span> <span class="t-var">$intro</span><span class="t-op">,</span> <span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">750</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">addNamedDestination</span><span class="t-op">(</span><span class="t-string">&#039;chapter-2&#039;</span><span class="t-op">,</span> <span class="t-var">$chapter2Page</span><span class="t-op">,</span> <span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">780</span><span class="t-op">,</span> <span class="t-number">1.0</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<p>The three optional arguments are the left coordinate, the top coordinate and the zoom factor. Passing <code>null</code> for any of them means "leave that aspect of the current view unchanged", which is usually what you want for the zoom — forcing a zoom level overrides the reader's own preference. A zoom of <code>0</code> also means unchanged.</p>
+
+<p>See <a href="navigation.html">Navigation</a> for linking to these destinations from bookmarks and link annotations.</p>
+
+<h2 id="open-action">Open action</h2>
+<p>The open action tells the viewer where to position the document when it is first opened. Without one, readers start at the top of page 1.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">setOpenDestination</span><span class="t-op">(</span><span class="t-var">$page</span><span class="t-op">,</span> <span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">841</span><span class="t-op">)</span><span class="t-op">;</span>         <span class="t-comment">// top of a given page</span>
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">setOpenDestination</span><span class="t-op">(</span><span class="t-var">$summaryPage</span><span class="t-op">,</span> <span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">500</span><span class="t-op">)</span><span class="t-op">;</span> <span class="t-comment">// scrolled to a specific spot</span></code></pre></div>
+
+<p>Use it to open a long report at its executive summary, or to skip a cover sheet. As with named destinations, leaving the zoom as <code>null</code> respects the reader's default magnification.</p>
+
+<h2 id="viewer-preferences">Viewer preferences</h2>
+<p>Viewer preferences are hints about how the document should be presented — which chrome to hide, how to lay out the window, and how to print. Readers are free to ignore them, but the mainstream ones honour the common keys.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Viewer</span><span class="t-kw">\</span><span class="t-op">{</span><span class="t-type">ViewerPreferences</span><span class="t-op">,</span> <span class="t-type">PrintScaling</span><span class="t-op">,</span> <span class="t-type">Duplex</span><span class="t-op">,</span> <span class="t-type">NonFullScreenPageMode</span><span class="t-op">,</span> <span class="t-type">ReadingDirection</span><span class="t-op">}</span><span class="t-op">;</span>
+
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">setViewerPreferences</span><span class="t-op">(</span>
+    <span class="t-type">ViewerPreferences</span><span class="t-kw">::</span><span class="t-fn">create</span><span class="t-op">(</span><span class="t-op">)</span>
+        <span class="t-kw">-&gt;</span><span class="t-fn">displayDocTitle</span><span class="t-op">(</span><span class="t-op">)</span>
+        <span class="t-kw">-&gt;</span><span class="t-fn">hideToolbar</span><span class="t-op">(</span><span class="t-op">)</span>
+        <span class="t-kw">-&gt;</span><span class="t-fn">fitWindow</span><span class="t-op">(</span><span class="t-op">)</span>
+        <span class="t-kw">-&gt;</span><span class="t-fn">centerWindow</span><span class="t-op">(</span><span class="t-op">)</span>
+        <span class="t-kw">-&gt;</span><span class="t-fn">printScaling</span><span class="t-op">(</span><span class="t-type">PrintScaling</span><span class="t-kw">::</span><span class="t-type">None</span><span class="t-op">)</span>
+        <span class="t-kw">-&gt;</span><span class="t-fn">duplex</span><span class="t-op">(</span><span class="t-type">Duplex</span><span class="t-kw">::</span><span class="t-type">FlipLongEdge</span><span class="t-op">)</span>
+        <span class="t-kw">-&gt;</span><span class="t-fn">nonFullScreenPageMode</span><span class="t-op">(</span><span class="t-type">NonFullScreenPageMode</span><span class="t-kw">::</span><span class="t-type">UseOutlines</span><span class="t-op">)</span>
+        <span class="t-kw">-&gt;</span><span class="t-fn">readingDirection</span><span class="t-op">(</span><span class="t-type">ReadingDirection</span><span class="t-kw">::</span><span class="t-type">LeftToRight</span><span class="t-op">)</span>
+        <span class="t-kw">-&gt;</span><span class="t-fn">numCopies</span><span class="t-op">(</span><span class="t-number">2</span><span class="t-op">)</span>
+<span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<p>The boolean flags — <code>hideToolbar()</code>, <code>hideMenubar()</code>, <code>hideWindowUI()</code>, <code>fitWindow()</code>, <code>centerWindow()</code>, <code>displayDocTitle()</code> — default to <code>true</code>, so calling them with no argument turns them on. Pass <code>false</code> to write an explicit negative.</p>
+
+<p>Two are worth singling out. <code>displayDocTitle()</code> makes the reader show your <code>setTitle()</code> value in the window title instead of the filename. <code>printScaling(PrintScaling::None)</code> disables the reader's "fit to printable area" shrink, which matters whenever the document must print at exact physical size — floor plans, forms, anything with a scale bar.</p>
+
+<table>
+<thead><tr><th>Enum</th><th>Cases</th></tr></thead>
+<tbody>
+<tr><td><code>PrintScaling</code></td><td><code>None</code>, <code>AppDefault</code></td></tr>
+<tr><td><code>Duplex</code></td><td><code>Simplex</code>, <code>FlipShortEdge</code>, <code>FlipLongEdge</code></td></tr>
+<tr><td><code>NonFullScreenPageMode</code></td><td><code>UseNone</code>, <code>UseOutlines</code>, <code>UseThumbs</code>, <code>UseOC</code></td></tr>
+<tr><td><code>ReadingDirection</code></td><td><code>LeftToRight</code>, <code>RightToLeft</code></td></tr>
+</tbody>
+</table>
+
+<p>Less common keys such as <code>/ViewArea</code> or <code>/PrintPageRange</code> have no dedicated method; write them directly with <code>set($key, $value)</code>, passing a PDF object.</p>
+
+<h2 id="file-attachments">File attachments</h2>
+<p>A PDF can carry arbitrary embedded files, which readers surface in an attachments or paperclip panel. This is the standard way to ship the machine-readable source of a report alongside its human-readable rendering.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">attachFile</span><span class="t-op">(</span><span class="t-string">&#039;data.csv&#039;</span><span class="t-op">,</span> <span class="t-fn">file_get_contents</span><span class="t-op">(</span><span class="t-string">&#039;report.csv&#039;</span><span class="t-op">)</span><span class="t-op">,</span> <span class="t-string">&#039;text/csv&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">attachFile</span><span class="t-op">(</span><span class="t-string">&#039;invoice.xml&#039;</span><span class="t-op">,</span> <span class="t-var">$xmlString</span><span class="t-op">,</span> <span class="t-string">&#039;application/xml&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">attachFile</span><span class="t-op">(</span><span class="t-string">&#039;readme.txt&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;Figures are in thousands of USD.&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;text/plain&#039;</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<p>The first argument is the display name shown to the user, the second the raw bytes, and the third the MIME type — it defaults to <code>application/octet-stream</code>, which makes readers treat the file as an opaque download. Supplying a real type lets them offer a sensible "open with".</p>
+
+<div class="warn">
+<p>Attachments are stored uncompressed relative to their own format, so embedding large binaries inflates the PDF by roughly their own size. Compress before attaching if size matters.</p>
+</div>
+
+<p>Attachments can be read back out of an existing file with <code>PdfParser::getAttachments()</code>; see <a href="reading.html">Reading PDFs</a>.</p>
+
+<h2 id="saving-the-document">Saving the document</h2>
+<p><code>save()</code> serialises the document — running any deferred header and footer callbacks first — and writes it to disk.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">save</span><span class="t-op">(</span><span class="t-kw">__DIR__</span> <span class="t-op">.</span> <span class="t-string">&#039;/output/report.pdf&#039;</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<p>Two alternatives exist for when a file on disk is not what you want. <code>toString()</code> returns the complete PDF as a byte string, which is what you need to hand the bytes to a parser, a signer, or a cloud storage client. <code>output()</code> sends the file to the browser with the appropriate headers.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$bytes</span> <span class="t-op">=</span> <span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">toString</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">output</span><span class="t-op">(</span><span class="t-string">&#039;report.pdf&#039;</span><span class="t-op">)</span><span class="t-op">;</span>          <span class="t-comment">// inline, rendered in the browser</span>
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">output</span><span class="t-op">(</span><span class="t-string">&#039;report.pdf&#039;</span><span class="t-op">,</span> <span class="t-fn">false</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// as a download attachment</span></code></pre></div>
+
+<h3 id="smaller-files">Producing smaller files</h3>
+<p>Calling <code>useObjectStreams()</code> before saving packs non-stream objects into compressed object streams and writes a cross-reference stream instead of a classic table. On documents with many small objects this typically cuts file size noticeably, at the cost of requiring a PDF 1.5 reader.</p>
+
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">useObjectStreams</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">save</span><span class="t-op">(</span><span class="t-string">&#039;small.pdf&#039;</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<p>See <code>examples/17_compressed_objects.php</code> for a size comparison, and <a href="file-structure.html">File structure</a> for what the two layouts actually look like on disk.</p>
+
+<nav class="pager"><a class="prev" href="quickstart.html"><span>Previous</span>Quick start</a><a class="next" href="text.html"><span>Next</span>Text &amp; fonts</a></nav>
+</article>
+  </main>
+
+  <aside class="toc"><h4>On this page</h4><ul><li class="lvl-2"><a href="#creating-a-document">Creating a document</a></li><li class="lvl-2"><a href="#document-metadata">Document metadata</a></li><li class="lvl-2"><a href="#adding-pages">Adding pages</a></li><li class="lvl-3"><a href="#standard-page-sizes">Standard page sizes</a></li><li class="lvl-3"><a href="#orientation-and-rotation">Orientation and rotation</a></li><li class="lvl-3"><a href="#page-boundary-boxes">Page boundary boxes</a></li><li class="lvl-2"><a href="#drawing-on-a-page">Drawing on a page</a></li><li class="lvl-3"><a href="#multiple-content-streams">Multiple content streams</a></li><li class="lvl-2"><a href="#headers-and-footers">Running headers and footers</a></li><li class="lvl-3"><a href="#page-rules">Selecting pages with PageRule</a></li><li class="lvl-2"><a href="#page-operations">Page operations</a></li><li class="lvl-3"><a href="#merging-documents">Merging documents</a></li><li class="lvl-3"><a href="#extracting-pages">Extracting and reordering pages</a></li><li class="lvl-3"><a href="#n-up-imposition">N-up imposition</a></li><li class="lvl-3"><a href="#importing-pages">Importing pages into a document</a></li><li class="lvl-2"><a href="#page-labels">Page labels</a></li><li class="lvl-2"><a href="#named-destinations">Named destinations</a></li><li class="lvl-2"><a href="#open-action">Open action</a></li><li class="lvl-2"><a href="#viewer-preferences">Viewer preferences</a></li><li class="lvl-2"><a href="#file-attachments">File attachments</a></li><li class="lvl-2"><a href="#saving-the-document">Saving the document</a></li><li class="lvl-3"><a href="#smaller-files">Producing smaller files</a></li></ul></aside>
+</div>
+
+<footer class="footer">
+  <p>Papier — PHP PDF library implementing ISO 32000-1:2008. Released under the MIT licence.</p>
+</footer>
+
+<script src="assets/docs.js"></script>
+</body>
+</html>

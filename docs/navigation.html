@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bookmarks & navigation — Papier</title>
+<meta name="description" content="Outlines, named destinations, open actions, page labels, the Action classes, link annotations and presentation-mode page transitions.">
+<meta property="og:title" content="Bookmarks & navigation — Papier">
+<meta property="og:description" content="Outlines, named destinations, open actions, page labels, the Action classes, link annotations and presentation-mode page transitions.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<script>
+(function () {
+  var t = localStorage.getItem('papier-theme');
+  if (t) document.documentElement.setAttribute('data-theme', t);
+})();
+</script>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <button class="menu-toggle" type="button" aria-label="Toggle navigation">
+<svg viewBox="0 0 20 20" width="20" height="20"><path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="index.html">
+<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 2h8l5 5v15H6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M14 2v5h5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+<span>Papier</span>
+  </a>
+  <div class="search">
+<input type="search" id="search-input" placeholder="Search documentation…" autocomplete="off" aria-label="Search documentation">
+<kbd>/</kbd>
+<div id="search-results" role="listbox"></div>
+  </div>
+  <div class="topbar-links">
+<a href="https://packagist.org/packages/papier/papier">Packagist</a>
+<a href="https://github.com/papier/papier">GitHub</a>
+<button class="theme-toggle" type="button" aria-label="Toggle dark mode">
+  <svg class="sun" viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.5 1.5M17.6 17.6l1.5 1.5M19.1 4.9l-1.5 1.5M6.4 17.6l-1.5 1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+  <svg class="moon" viewBox="0 0 24 24" width="18" height="18"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+</button>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" aria-label="Documentation">
+<div class="nav-section"><h4>Getting started</h4><ul><li><a href="index.html">Introduction</a></li><li><a href="installation.html">Installation</a></li><li><a href="quickstart.html">Quick start</a></li></ul></div><div class="nav-section"><h4>Creating PDFs</h4><ul><li><a href="documents.html">Documents &amp; pages</a></li><li><a href="text.html">Text &amp; fonts</a></li><li><a href="graphics.html">Graphics</a></li><li><a href="images.html">Images</a></li><li><a href="tables.html">Tables</a></li></ul></div><div class="nav-section"><h4>Interactivity</h4><ul><li><a href="forms.html">Forms</a></li><li><a href="annotations.html">Annotations</a></li><li><a href="navigation.html" class="active">Bookmarks &amp; navigation</a></li><li><a href="multimedia.html">Layers &amp; multimedia</a></li></ul></div><div class="nav-section"><h4>Advanced</h4><ul><li><a href="security.html">Encryption &amp; signatures</a></li><li><a href="accessibility.html">Tagged PDF &amp; PDF/A</a></li><li><a href="file-structure.html">File structure</a></li><li><a href="reading.html">Reading PDFs</a></li></ul></div><div class="nav-section"><h4>Reference</h4><ul><li><a href="examples.html">Examples</a></li><li><a href="changelog.html">Changelog</a></li></ul></div>
+  </nav>
+
+  <main id="main">
+<article class="content">
+<h1>Bookmarks &amp; navigation</h1>
+<p class="lead">A long PDF is only usable if the reader can move around it. This page covers the machinery for that: the outline tree that fills the bookmarks panel, destinations that name places in the document, actions that respond to clicks, page labels that fix the numbering shown in the viewer, and transitions for presentation mode.</p>
+
+<h2 id="outlines">Outlines (bookmarks)</h2>
+<p>The document outline is the collapsible tree in the viewer's sidebar. It is built from two classes: <code>PdfOutline</code> is the root container, and <code>PdfOutlineItem</code> is a single bookmark that may have children.</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Structure</span><span class="t-kw">\</span><span class="t-op">{</span><span class="t-type">PdfOutline</span><span class="t-op">,</span> <span class="t-type">PdfOutlineItem</span><span class="t-op">}</span><span class="t-op">;</span>
+
+<span class="t-var">$outline</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">PdfOutline</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$intro</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">PdfOutlineItem</span><span class="t-op">(</span><span class="t-string">&#039;Introduction&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$outline</span><span class="t-kw">-&gt;</span><span class="t-fn">addItem</span><span class="t-op">(</span><span class="t-var">$intro</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$ch1</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">PdfOutlineItem</span><span class="t-op">(</span><span class="t-string">&#039;Chapter 1: Basics&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$outline</span><span class="t-kw">-&gt;</span><span class="t-fn">addItem</span><span class="t-op">(</span><span class="t-var">$ch1</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">setOutline</span><span class="t-op">(</span><span class="t-var">$outline</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<div class="note">
+<p><code>PdfOutline::addItem()</code> takes a <code>PdfOutlineItem</code> object. Construct the item first with its title, configure it, then add it.</p>
+</div>
+
+<h3 id="nesting-bookmarks">Nesting bookmarks</h3>
+<p>Hierarchy comes from <code>addChild()</code> on the item, not from the root. Only top-level items go through <code>addItem()</code>:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$ch1</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">PdfOutlineItem</span><span class="t-op">(</span><span class="t-string">&#039;Chapter 1: Basics&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$ch1</span><span class="t-kw">-&gt;</span><span class="t-fn">addChild</span><span class="t-op">(</span><span class="t-kw">new</span> <span class="t-type">PdfOutlineItem</span><span class="t-op">(</span><span class="t-string">&#039;1.1 File structure&#039;</span><span class="t-op">)</span><span class="t-op">)</span>
+    <span class="t-kw">-&gt;</span><span class="t-fn">addChild</span><span class="t-op">(</span><span class="t-kw">new</span> <span class="t-type">PdfOutlineItem</span><span class="t-op">(</span><span class="t-string">&#039;1.2 Objects&#039;</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$sec13</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">PdfOutlineItem</span><span class="t-op">(</span><span class="t-string">&#039;1.3 Streams&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$sec13</span><span class="t-kw">-&gt;</span><span class="t-fn">addChild</span><span class="t-op">(</span><span class="t-kw">new</span> <span class="t-type">PdfOutlineItem</span><span class="t-op">(</span><span class="t-string">&#039;1.3.1 Filters&#039;</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$ch1</span><span class="t-kw">-&gt;</span><span class="t-fn">addChild</span><span class="t-op">(</span><span class="t-var">$sec13</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$outline</span><span class="t-kw">-&gt;</span><span class="t-fn">addItem</span><span class="t-op">(</span><span class="t-var">$ch1</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>Nesting is unlimited. Papier computes the <code>/First</code>, <code>/Last</code>, <code>/Next</code>, <code>/Prev</code>, <code>/Parent</code> and <code>/Count</code> links that the outline tree requires.</p>
+
+<h3 id="styling-bookmarks">Styling bookmarks</h3>
+<p>Bookmarks can carry a colour and a bold or italic style — useful for distinguishing chapter headings from sections at a glance:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$ch1</span><span class="t-kw">-&gt;</span><span class="t-fn">setBold</span><span class="t-op">(</span><span class="t-fn">true</span><span class="t-op">)</span>
+    <span class="t-kw">-&gt;</span><span class="t-fn">setItalic</span><span class="t-op">(</span><span class="t-fn">false</span><span class="t-op">)</span>
+    <span class="t-kw">-&gt;</span><span class="t-fn">setColor</span><span class="t-op">(</span><span class="t-number">0.2</span><span class="t-op">,</span> <span class="t-number">0.3</span><span class="t-op">,</span> <span class="t-number">0.6</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// RGB components in [0, 1]</span></code></pre></div>
+<p><code>setColor()</code> also accepts a <code>Color</code> object:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Elements\Color</span><span class="t-op">;</span>
+
+<span class="t-var">$ch1</span><span class="t-kw">-&gt;</span><span class="t-fn">setColor</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">hex</span><span class="t-op">(</span><span class="t-string">&#039;#334d99&#039;</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<h3 id="bookmark-targets">Bookmark targets</h3>
+<p>A bookmark with no destination is just a label. Give it a target with <code>setDestination()</code>, which accepts either a named destination string or an explicit destination array:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Destination\XYZDestination</span><span class="t-op">;</span>
+
+<span class="t-comment">// By name — resolved through the document&#039;s name tree</span>
+<span class="t-var">$ch1</span><span class="t-kw">-&gt;</span><span class="t-fn">setDestination</span><span class="t-op">(</span><span class="t-string">&#039;chapter1&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-comment">// Explicit: scroll page 2 so that (72, 750) is at the top-left, zoom unchanged</span>
+<span class="t-var">$ch1</span><span class="t-kw">-&gt;</span><span class="t-fn">setDestination</span><span class="t-op">(</span><span class="t-type">XYZDestination</span><span class="t-kw">::</span><span class="t-fn">create</span><span class="t-op">(</span><span class="t-var">$page2</span><span class="t-kw">-&gt;</span><span class="t-fn">getDictionary</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">,</span> <span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">750</span><span class="t-op">,</span> <span class="t-fn">null</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>Named destinations are usually the better choice: the bookmark refers to a name, the name refers to a page, and reorganising the document only means updating the name definition. Alternatively, <code>setAction()</code> attaches any action instead of a destination — for example a bookmark that opens a web page.</p>
+
+<h2 id="destinations">Destinations</h2>
+<p>A destination says which page to show and how to fit it in the window. Papier provides one class per fit style in <code>Papier\Destination</code>; each has a static <code>create()</code> returning the destination array.</p>
+<table>
+<thead><tr><th>Class</th><th>Arguments after the page</th><th>Behaviour</th></tr></thead>
+<tbody>
+<tr><td><code>XYZDestination</code></td><td><code>$left, $top, $zoom</code></td><td>Position a specific point at the top-left, with an explicit zoom</td></tr>
+<tr><td><code>FitDestination</code></td><td>—</td><td>Fit the whole page in the window</td></tr>
+<tr><td><code>FitHDestination</code></td><td><code>$top</code></td><td>Fit the page width, positioned at a given vertical coordinate</td></tr>
+<tr><td><code>FitVDestination</code></td><td><code>$left</code></td><td>Fit the page height, positioned at a given horizontal coordinate</td></tr>
+<tr><td><code>FitRDestination</code></td><td><code>$left, $bottom, $right, $top</code></td><td>Fit a specific rectangle in the window</td></tr>
+<tr><td><code>FitBDestination</code></td><td>—</td><td>Fit the page's bounding box (its inked area)</td></tr>
+<tr><td><code>FitBHDestination</code></td><td><code>$top</code></td><td>Fit the bounding box width</td></tr>
+<tr><td><code>FitBVDestination</code></td><td><code>$left</code></td><td>Fit the bounding box height</td></tr>
+</tbody>
+</table>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Destination</span><span class="t-kw">\</span><span class="t-op">{</span><span class="t-type">FitDestination</span><span class="t-op">,</span> <span class="t-type">FitHDestination</span><span class="t-op">,</span> <span class="t-type">FitRDestination</span><span class="t-op">}</span><span class="t-op">;</span>
+
+<span class="t-var">$whole</span>  <span class="t-op">=</span> <span class="t-type">FitDestination</span><span class="t-kw">::</span><span class="t-fn">create</span><span class="t-op">(</span><span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">getDictionary</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$byWide</span> <span class="t-op">=</span> <span class="t-type">FitHDestination</span><span class="t-kw">::</span><span class="t-fn">create</span><span class="t-op">(</span><span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">getDictionary</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">,</span> <span class="t-number">750</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$onFig</span>  <span class="t-op">=</span> <span class="t-type">FitRDestination</span><span class="t-kw">::</span><span class="t-fn">create</span><span class="t-op">(</span><span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">getDictionary</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">,</span> <span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">400</span><span class="t-op">,</span> <span class="t-number">523</span><span class="t-op">,</span> <span class="t-number">640</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>In <code>XYZDestination</code>, passing <code>null</code> for a parameter means "leave this as the reader had it" — so <code>XYZDestination::create($p, null, 750, null)</code> scrolls vertically without changing the horizontal position or the zoom. Passing <code>0</code> for the zoom also means "unchanged", which is why <code>null</code> is the clearer way to express it.</p>
+<div class="note">
+<p><code>FitDestination</code> is the friendliest default for bookmarks: it makes no assumption about the reader's window size or preferred zoom. Fixed <code>XYZ</code> zooms can be jarring on small screens.</p>
+</div>
+
+<h2 id="named-destinations">Named destinations</h2>
+<p>A named destination gives a stable, human-readable label to a place in the document. Links, bookmarks and external references can then target the name rather than a page object, and the target survives editing.</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">addNamedDestination</span><span class="t-op">(</span><span class="t-string">&#039;intro&#039;</span><span class="t-op">,</span>    <span class="t-var">$page1</span><span class="t-op">,</span> <span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">750</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">addNamedDestination</span><span class="t-op">(</span><span class="t-string">&#039;chapter1&#039;</span><span class="t-op">,</span> <span class="t-var">$page2</span><span class="t-op">,</span> <span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">780</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">addNamedDestination</span><span class="t-op">(</span><span class="t-string">&#039;appendix&#039;</span><span class="t-op">,</span> <span class="t-var">$page9</span><span class="t-op">,</span> <span class="t-fn">null</span><span class="t-op">,</span> <span class="t-fn">null</span><span class="t-op">,</span> <span class="t-fn">null</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>The signature is <code>addNamedDestination(string $name, PdfPage $page, ?float $left, ?float $top, ?float $zoom)</code>. It always creates an XYZ destination; omit or pass <code>null</code> for the coordinates you want to leave alone.</p>
+<p>Named destinations are also what makes cross-document linking work — <code>GoToRAction</code> can open another PDF at a named destination without knowing its page numbering.</p>
+
+<h2 id="the-open-action">The open action</h2>
+<p>By default a viewer opens a document at page one. <code>setOpenDestination()</code> overrides that:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">setOpenDestination</span><span class="t-op">(</span><span class="t-var">$page</span><span class="t-op">,</span> <span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">841</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// top-left of the page</span>
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">setOpenDestination</span><span class="t-op">(</span><span class="t-var">$tocPage</span><span class="t-op">)</span><span class="t-op">;</span>        <span class="t-comment">// the table of contents, position unchanged</span></code></pre></div>
+<p>The parameters mirror <code>addNamedDestination()</code>: a page plus optional left, top and zoom. This is how you make a report open on its summary, or a manual open on its index.</p>
+<p>Related presentation settings — whether the bookmarks panel is open on load, whether the toolbar is hidden — live in viewer preferences, covered in <a href="documents.html">Documents &amp; pages</a>.</p>
+
+<h2 id="actions">Actions</h2>
+<p>An action is something that happens when the user activates a link, a bookmark, or a form field. Papier's <code>Papier\Action</code> namespace has a class per action type, each extending the abstract <code>Action</code>.</p>
+
+<h3 id="navigation-actions">Navigation actions</h3>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Action</span><span class="t-kw">\</span><span class="t-op">{</span><span class="t-type">GoToAction</span><span class="t-op">,</span> <span class="t-type">GoToRAction</span><span class="t-op">,</span> <span class="t-type">NamedAction</span><span class="t-op">,</span> <span class="t-type">URIAction</span><span class="t-op">}</span><span class="t-op">;</span>
+
+<span class="t-comment">// Jump within this document — by name or by explicit destination</span>
+<span class="t-var">$goto</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">GoToAction</span><span class="t-op">(</span><span class="t-string">&#039;chapter1&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$goto</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">GoToAction</span><span class="t-op">(</span><span class="t-type">XYZDestination</span><span class="t-kw">::</span><span class="t-fn">create</span><span class="t-op">(</span><span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">getDictionary</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">,</span> <span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">750</span><span class="t-op">,</span> <span class="t-fn">null</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-comment">// Open a URL in the browser</span>
+<span class="t-var">$uri</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">URIAction</span><span class="t-op">(</span><span class="t-string">&#039;https://example.com&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-comment">// Open a destination in another PDF file</span>
+<span class="t-var">$remote</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">GoToRAction</span><span class="t-op">(</span><span class="t-comment">/* file spec, destination, new window */</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-comment">// Trigger a built-in viewer command</span>
+<span class="t-var">$next</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">NamedAction</span><span class="t-op">(</span><span class="t-string">&#039;NextPage&#039;</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// also FirstPage, LastPage, PrevPage, Print</span></code></pre></div>
+<p><code>URIAction</code> takes an optional second argument, <code>$isMap</code>, which appends the click coordinates to the URL for server-side image maps.</p>
+
+<h3 id="interactive-actions">Interactive actions</h3>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Action</span><span class="t-kw">\</span><span class="t-op">{</span><span class="t-type">HideAction</span><span class="t-op">,</span> <span class="t-type">JavaScriptAction</span><span class="t-op">,</span> <span class="t-type">LaunchAction</span><span class="t-op">,</span> <span class="t-type">ResetFormAction</span><span class="t-op">,</span> <span class="t-type">SubmitFormAction</span><span class="t-op">}</span><span class="t-op">;</span>
+
+<span class="t-comment">// Run a script (see the warning below)</span>
+<span class="t-var">$js</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">JavaScriptAction</span><span class="t-op">(</span><span class="t-string">&#039;app.alert(&quot;Please complete all required fields.&quot;);&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-comment">// Reset every form field to its default value</span>
+<span class="t-var">$reset</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">ResetFormAction</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-comment">// Show or hide annotations, addressed by their /NM name</span>
+<span class="t-var">$hide</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">HideAction</span><span class="t-op">(</span><span class="t-var">$annotationRef</span><span class="t-op">,</span> <span class="t-fn">true</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-comment">// Launch an external application or file</span>
+<span class="t-var">$launch</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">LaunchAction</span><span class="t-op">(</span><span class="t-var">$fileSpec</span><span class="t-op">,</span> <span class="t-fn">newWindow</span><span class="t-op">:</span> <span class="t-fn">true</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p><code>SubmitFormAction</code> posts form data to a URL, and pairs naturally with a push button — see <a href="forms.html">Forms</a>.</p>
+<div class="warn">
+<p>JavaScript actions are disabled by default in most modern viewers and are forbidden outright in PDF/A. Never make required functionality depend on one — see <a href="accessibility.html">Tagged PDF &amp; PDF/A</a>.</p>
+</div>
+
+<h3 id="feature-actions">Feature actions</h3>
+<p>The remaining actions drive specific document features: <code>SetOCGStateAction</code> toggles optional content layers, <code>RenditionAction</code> controls media playback, <code>SoundAction</code> plays an embedded sound, <code>MovieAction</code> drives a legacy movie annotation, <code>TransitionAction</code> triggers a page transition, <code>ThreadAction</code> follows an article thread, <code>ImportDataAction</code> loads form data from a file, <code>GoToEAction</code> targets an embedded file, and <code>GoTo3DViewAction</code> selects a view in a 3D annotation.</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Action\SetOCGStateAction</span><span class="t-op">;</span>
+
+<span class="t-var">$toggle</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">SetOCGStateAction</span><span class="t-op">(</span><span class="t-var">$stateArray</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// see the multimedia page for state arrays</span></code></pre></div>
+
+<h3 id="chaining-actions">Chaining actions</h3>
+<p><code>setNext()</code> makes one action run after another, so a single click can do several things:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$jump</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">GoToAction</span><span class="t-op">(</span><span class="t-string">&#039;summary&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$jump</span><span class="t-kw">-&gt;</span><span class="t-fn">setNext</span><span class="t-op">(</span><span class="t-var">$someOtherAction</span><span class="t-kw">-&gt;</span><span class="t-fn">getDictionary</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<h2 id="link-annotations">Link annotations</h2>
+<p>Actions and destinations need something to activate them. That is the job of the link annotation — an invisible rectangle that responds to clicks.</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Annotation\LinkAnnotation</span><span class="t-op">;</span>
+
+<span class="t-var">$link</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">LinkAnnotation</span><span class="t-op">(</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">680</span><span class="t-op">,</span> <span class="t-number">272</span><span class="t-op">,</span> <span class="t-number">700</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$link</span><span class="t-kw">-&gt;</span><span class="t-fn">setURI</span><span class="t-op">(</span><span class="t-string">&#039;https://example.com&#039;</span><span class="t-op">)</span>
+     <span class="t-kw">-&gt;</span><span class="t-fn">setBorderStyle</span><span class="t-op">(</span><span class="t-number">0</span><span class="t-op">)</span><span class="t-op">;</span>        <span class="t-comment">// suppress the default blue rectangle</span>
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">addAnnotation</span><span class="t-op">(</span><span class="t-var">$link</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p><code>setURI()</code> is a shortcut for the common web-link case. For anything else, attach an action or a destination:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Action\GoToAction</span><span class="t-op">;</span>
+<span class="t-kw">use</span> <span class="t-kw">Papier\Destination\FitDestination</span><span class="t-op">;</span>
+
+<span class="t-comment">// Internal jump via an action</span>
+<span class="t-var">$internal</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">LinkAnnotation</span><span class="t-op">(</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">650</span><span class="t-op">,</span> <span class="t-number">272</span><span class="t-op">,</span> <span class="t-number">670</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$internal</span><span class="t-kw">-&gt;</span><span class="t-fn">setAction</span><span class="t-op">(</span><span class="t-kw">new</span> <span class="t-type">GoToAction</span><span class="t-op">(</span><span class="t-string">&#039;chapter1&#039;</span><span class="t-op">)</span><span class="t-op">)</span>
+         <span class="t-kw">-&gt;</span><span class="t-fn">setBorderStyle</span><span class="t-op">(</span><span class="t-number">0</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-comment">// Internal jump via a destination array</span>
+<span class="t-var">$direct</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">LinkAnnotation</span><span class="t-op">(</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">620</span><span class="t-op">,</span> <span class="t-number">272</span><span class="t-op">,</span> <span class="t-number">640</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$direct</span><span class="t-kw">-&gt;</span><span class="t-fn">setDestination</span><span class="t-op">(</span><span class="t-type">FitDestination</span><span class="t-kw">::</span><span class="t-fn">create</span><span class="t-op">(</span><span class="t-var">$page5</span><span class="t-kw">-&gt;</span><span class="t-fn">getDictionary</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">)</span>
+       <span class="t-kw">-&gt;</span><span class="t-fn">setBorderStyle</span><span class="t-op">(</span><span class="t-number">0</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p><code>setHighlightMode()</code> controls the visual feedback while the mouse is down: <code>N</code> none, <code>I</code> invert, <code>O</code> outline, <code>P</code> push.</p>
+<p>A link is a hotspot with no appearance of its own, so draw the visible affordance yourself:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Elements</span><span class="t-kw">\</span><span class="t-op">{</span><span class="t-type">Color</span><span class="t-op">,</span> <span class="t-type">Text</span><span class="t-op">}</span><span class="t-op">;</span>
+
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">add</span><span class="t-op">(</span>
+    <span class="t-type">Text</span><span class="t-kw">::</span><span class="t-fn">write</span><span class="t-op">(</span><span class="t-string">&#039;See Chapter 1&#039;</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">at</span><span class="t-op">(</span><span class="t-number">80</span><span class="t-op">,</span> <span class="t-number">686</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">font</span><span class="t-op">(</span><span class="t-var">$font</span><span class="t-op">,</span> <span class="t-number">11</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">color</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">rgb</span><span class="t-op">(</span><span class="t-number">0.1</span><span class="t-op">,</span> <span class="t-number">0.3</span><span class="t-op">,</span> <span class="t-number">0.8</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">,</span>
+<span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">addAnnotation</span><span class="t-op">(</span><span class="t-var">$internal</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>Full annotation coverage is in <a href="annotations.html">Annotations</a>.</p>
+
+<h2 id="page-labels">Page labels</h2>
+<p>Page labels decouple the numbering the reader sees from the physical page index. Front matter numbered <code>i, ii, iii</code> followed by a body starting at <code>1</code> is the classic case: without labels the viewer's page box and the printed folio disagree, and jumping to "page 12" lands in the wrong place.</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Structure\PageLabelStyle</span><span class="t-op">;</span>
+
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">addPageLabel</span><span class="t-op">(</span><span class="t-number">0</span><span class="t-op">,</span> <span class="t-type">PageLabelStyle</span><span class="t-kw">::</span><span class="t-type">RomanLower</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// pages 1-4 shown as i, ii, iii, iv</span>
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">addPageLabel</span><span class="t-op">(</span><span class="t-number">4</span><span class="t-op">,</span> <span class="t-type">PageLabelStyle</span><span class="t-kw">::</span><span class="t-type">Decimal</span><span class="t-op">)</span><span class="t-op">;</span>      <span class="t-comment">// page 5 onward shown as 1, 2, 3 …</span></code></pre></div>
+<p>Each call opens a range starting at a <strong>0-based</strong> page index and running until the next range begins. The styles are:</p>
+<table>
+<thead><tr><th>Style</th><th>Produces</th></tr></thead>
+<tbody>
+<tr><td><code>PageLabelStyle::Decimal</code></td><td>1, 2, 3 …</td></tr>
+<tr><td><code>PageLabelStyle::RomanLower</code></td><td>i, ii, iii …</td></tr>
+<tr><td><code>PageLabelStyle::RomanUpper</code></td><td>I, II, III …</td></tr>
+<tr><td><code>PageLabelStyle::AlphaLower</code></td><td>a, b, c … aa, bb …</td></tr>
+<tr><td><code>PageLabelStyle::AlphaUpper</code></td><td>A, B, C … AA, BB …</td></tr>
+<tr><td><code>PageLabelStyle::None</code></td><td>No number — prefix only</td></tr>
+</tbody>
+</table>
+<p>Two further parameters control the range. <code>$startValue</code> sets the first number, and <code>$prefix</code> is prepended to every label:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">addPageLabel</span><span class="t-op">(</span><span class="t-number">4</span><span class="t-op">,</span> <span class="t-type">PageLabelStyle</span><span class="t-kw">::</span><span class="t-type">Decimal</span><span class="t-op">,</span> <span class="t-fn">prefix</span><span class="t-op">:</span> <span class="t-string">&#039;p.&#039;</span><span class="t-op">)</span><span class="t-op">;</span>        <span class="t-comment">// p.1, p.2, p.3 …</span>
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">addPageLabel</span><span class="t-op">(</span><span class="t-number">12</span><span class="t-op">,</span> <span class="t-type">PageLabelStyle</span><span class="t-kw">::</span><span class="t-type">Decimal</span><span class="t-op">,</span> <span class="t-fn">startValue</span><span class="t-op">:</span> <span class="t-number">100</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// 100, 101, 102 …</span>
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">addPageLabel</span><span class="t-op">(</span><span class="t-number">20</span><span class="t-op">,</span> <span class="t-type">PageLabelStyle</span><span class="t-kw">::</span><span class="t-type">None</span><span class="t-op">,</span> <span class="t-fn">prefix</span><span class="t-op">:</span> <span class="t-string">&#039;Appendix&#039;</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// Appendix, Appendix …</span></code></pre></div>
+<p>The full signature is <code>addPageLabel(int $startPage, PageLabelStyle $style, int $startValue, string $prefix)</code>.</p>
+
+<h2 id="page-transitions">Page transitions</h2>
+<p>Transitions animate the change from one page to the next in full-screen presentation mode. They are ignored during normal scrolling, so they cost nothing in an ordinary document.</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Structure\PageTransition</span><span class="t-op">;</span>
+
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">setTransition</span><span class="t-op">(</span><span class="t-kw">new</span> <span class="t-type">PageTransition</span><span class="t-op">(</span><span class="t-type">PageTransition</span><span class="t-kw">::</span><span class="t-type">DISSOLVE</span><span class="t-op">,</span> <span class="t-number">1.0</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>The constructor takes a style constant and a duration in seconds. The available styles:</p>
+<table>
+<thead><tr><th>Constant</th><th>Effect</th></tr></thead>
+<tbody>
+<tr><td><code>REPLACE</code></td><td>Instant swap — the default, no animation</td></tr>
+<tr><td><code>SPLIT</code></td><td>Two lines sweep inward or outward</td></tr>
+<tr><td><code>BLINDS</code></td><td>Multiple parallel lines sweep across</td></tr>
+<tr><td><code>BOX</code></td><td>A rectangle expands or contracts from the centre</td></tr>
+<tr><td><code>WIPE</code></td><td>A single line sweeps across the page</td></tr>
+<tr><td><code>DISSOLVE</code></td><td>Random pixel dissolve</td></tr>
+<tr><td><code>GLITTER</code></td><td>Dissolve with a directional sweep</td></tr>
+<tr><td><code>FLY</code></td><td>The new page flies in (PDF 1.5)</td></tr>
+<tr><td><code>PUSH</code></td><td>The new page pushes the old one off (PDF 1.5)</td></tr>
+<tr><td><code>COVER</code></td><td>The new page slides over the old (PDF 1.5)</td></tr>
+<tr><td><code>UNCOVER</code></td><td>The old page slides away (PDF 1.5)</td></tr>
+<tr><td><code>FADE</code></td><td>Cross-fade through the backdrop (PDF 1.5)</td></tr>
+</tbody>
+</table>
+<p>Several styles take a direction or motion modifier:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-comment">// Wipe left to right</span>
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">setTransition</span><span class="t-op">(</span>
+    <span class="t-op">(</span><span class="t-kw">new</span> <span class="t-type">PageTransition</span><span class="t-op">(</span><span class="t-type">PageTransition</span><span class="t-kw">::</span><span class="t-type">WIPE</span><span class="t-op">,</span> <span class="t-number">0.6</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">setDirection</span><span class="t-op">(</span><span class="t-number">0</span><span class="t-op">)</span>
+<span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-comment">// Box expanding outward</span>
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">setTransition</span><span class="t-op">(</span>
+    <span class="t-op">(</span><span class="t-kw">new</span> <span class="t-type">PageTransition</span><span class="t-op">(</span><span class="t-type">PageTransition</span><span class="t-kw">::</span><span class="t-type">BOX</span><span class="t-op">,</span> <span class="t-number">0.8</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">setMotion</span><span class="t-op">(</span><span class="t-type">PageTransition</span><span class="t-kw">::</span><span class="t-type">MOTION_OUT</span><span class="t-op">)</span>
+<span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-comment">// Horizontal blinds</span>
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">setTransition</span><span class="t-op">(</span>
+    <span class="t-op">(</span><span class="t-kw">new</span> <span class="t-type">PageTransition</span><span class="t-op">(</span><span class="t-type">PageTransition</span><span class="t-kw">::</span><span class="t-type">BLINDS</span><span class="t-op">,</span> <span class="t-number">0.7</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">setDimension</span><span class="t-op">(</span><span class="t-type">PageTransition</span><span class="t-kw">::</span><span class="t-type">DIM_H</span><span class="t-op">)</span>
+<span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p><code>setDirection()</code> takes degrees — <code>0</code> left-to-right, <code>90</code> bottom-to-top, <code>180</code> right-to-left, <code>270</code> top-to-bottom, and <code>315</code> for the diagonal used by <code>GLITTER</code>. <code>setMotion()</code> takes <code>MOTION_IN</code> or <code>MOTION_OUT</code>. <code>setDimension()</code> takes <code>DIM_H</code> or <code>DIM_V</code>. For <code>FLY</code>, <code>setStartingScale()</code> and <code>setOpaque()</code> tune how the incoming page enters.</p>
+
+<h3 id="auto-advance">Auto-advance</h3>
+<p>Pair a transition with <code>setDuration()</code> on the page to build a self-running slideshow. Note the naming: the duration passed to <code>PageTransition</code> is how long the <em>animation</em> takes, while <code>PdfPage::setDuration()</code> is how long the <em>page is displayed</em> before advancing.</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$page1</span><span class="t-kw">-&gt;</span><span class="t-fn">setTransition</span><span class="t-op">(</span><span class="t-kw">new</span> <span class="t-type">PageTransition</span><span class="t-op">(</span><span class="t-type">PageTransition</span><span class="t-kw">::</span><span class="t-type">DISSOLVE</span><span class="t-op">,</span> <span class="t-number">1.0</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$page1</span><span class="t-kw">-&gt;</span><span class="t-fn">setDuration</span><span class="t-op">(</span><span class="t-number">5.0</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// hold for 5 s, then advance automatically</span></code></pre></div>
+<p>To make the document open straight into full-screen mode, set the page mode through viewer preferences — see <a href="documents.html">Documents &amp; pages</a>.</p>
+
+<h2 id="examples">Examples</h2>
+<ul>
+<li><code>examples/07_bookmarks_and_encryption.php</code> — a multi-page document with a nested, styled outline tree and viewer preferences.</li>
+<li><code>examples/13_transitions_and_media_elements.php</code> — a slide deck using every transition style with auto-advance.</li>
+<li><code>examples/06_annotations.php</code> — link annotations in context.</li>
+<li><code>examples/19_read_encrypted.php</code> — reading an outline tree back out of a document.</li>
+</ul>
+<div class="code-block" data-lang="bash"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">php</span> examples/07_bookmarks_and_encryption.php
+<span class="t-kw">php</span> examples/13_transitions_and_media_elements.php</code></pre></div>
+
+<nav class="pager"><a class="prev" href="annotations.html"><span>Previous</span>Annotations</a><a class="next" href="multimedia.html"><span>Next</span>Layers &amp; multimedia</a></nav>
+</article>
+  </main>
+
+  <aside class="toc"><h4>On this page</h4><ul><li class="lvl-2"><a href="#outlines">Outlines (bookmarks)</a></li><li class="lvl-3"><a href="#nesting-bookmarks">Nesting bookmarks</a></li><li class="lvl-3"><a href="#styling-bookmarks">Styling bookmarks</a></li><li class="lvl-3"><a href="#bookmark-targets">Bookmark targets</a></li><li class="lvl-2"><a href="#destinations">Destinations</a></li><li class="lvl-2"><a href="#named-destinations">Named destinations</a></li><li class="lvl-2"><a href="#the-open-action">The open action</a></li><li class="lvl-2"><a href="#actions">Actions</a></li><li class="lvl-3"><a href="#navigation-actions">Navigation actions</a></li><li class="lvl-3"><a href="#interactive-actions">Interactive actions</a></li><li class="lvl-3"><a href="#feature-actions">Feature actions</a></li><li class="lvl-3"><a href="#chaining-actions">Chaining actions</a></li><li class="lvl-2"><a href="#link-annotations">Link annotations</a></li><li class="lvl-2"><a href="#page-labels">Page labels</a></li><li class="lvl-2"><a href="#page-transitions">Page transitions</a></li><li class="lvl-3"><a href="#auto-advance">Auto-advance</a></li><li class="lvl-2"><a href="#examples">Examples</a></li></ul></aside>
+</div>
+
+<footer class="footer">
+  <p>Papier — PHP PDF library implementing ISO 32000-1:2008. Released under the MIT licence.</p>
+</footer>
+
+<script src="assets/docs.js"></script>
+</body>
+</html>

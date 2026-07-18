@@ -1,0 +1,152 @@
+<!-- title: Examples -->
+<!-- description: Thirty-four runnable scripts in examples/ covering every feature of Papier, from hello world to signatures, and how to run and verify them. -->
+<h1>Examples</h1>
+<p class="lead">The <code>examples/</code> directory contains runnable, self-contained scripts — one per feature area. They are the fastest way to see a working call sequence, and they double as the library's integration test suite.</p>
+
+<h2 id="running-an-example">Running an example</h2>
+<p>Every script is a plain PHP file with no arguments and no configuration. Install dependencies once, then run whichever script interests you:</p>
+<pre><code class="language-bash">composer install
+php examples/01_hello_world.php</code></pre>
+<p>Each script prints what it created and writes its output to <code>examples/output/</code>, creating that directory if it does not exist. Nothing is written anywhere else, so you can delete <code>examples/output/</code> at any time to start clean.</p>
+<p>Some scripts also print diagnostics rather than only producing a file. Example 17 reports the size difference between a classic and a compressed build; example 18 proves that the original bytes survive an incremental update unchanged; example 29 prints the text it extracted so you can compare it to what was written.</p>
+<div class="note">
+  <p>Examples 15, 20 and 21 embed font files. <code>Lato-Regular.ttf</code> ships in <code>examples/</code>; the CJK examples fall back gracefully if a system CJK font is not found, so they still run on a bare machine.</p>
+</div>
+
+<h2 id="verifying-the-output">Verifying the output</h2>
+<p>Producing a file that parses is not the same as producing a file that <em>displays</em>. A PDF can be structurally valid and still render as a blank page if a resource name is wrong or a content stream is malformed.</p>
+<p>The verification tool closes that gap:</p>
+<pre><code class="language-bash">php tools/verify.php</code></pre>
+<p>It runs every example, renders each resulting PDF with Ghostscript, and runs <code>qpdf --check</code> over it. Ghostscript catches content-level problems — a page that raster­ises to nothing, an undefined operator, a missing font resource. <code>qpdf --check</code> catches structural problems — bad offsets, broken object streams, an inconsistent cross-reference table, damaged filters. Between them they confirm that the files a change produces are not merely well-formed but actually usable.</p>
+<p>Run it after any change to the writer. It needs <code>gs</code> and <code>qpdf</code> on your <code>PATH</code>; both are available from Homebrew and every mainstream Linux package manager.</p>
+<p>For archival output there is also a validator you can call from your own code:</p>
+<pre><code class="language-php">use Papier\Validation\PdfAValidator;
+
+$issues = PdfAValidator::validate($pdfBytes);   // [] means structurally conformant</code></pre>
+
+<h2 id="basics">Basics</h2>
+<table>
+  <thead><tr><th>File</th><th>Demonstrates</th></tr></thead>
+  <tbody>
+    <tr><td><code>01_hello_world.php</code></td><td>Minimal document creation — create, add a page, write a line, save.</td></tr>
+    <tr><td><code>02_text_formatting.php</code></td><td>Text formatting: fonts, sizes, colours, alignment, spacing and leading.</td></tr>
+    <tr><td><code>11_elements.php</code></td><td>The high-level <code>Elements</code> API — <code>Text</code>, <code>TextBox</code>, <code>Image</code>, shapes, composed on a page.</td></tr>
+  </tbody>
+</table>
+<p>Start here, then read <a href="quickstart.html">Quickstart</a> and <a href="documents.html">Documents</a>.</p>
+
+<h2 id="graphics-and-images">Graphics and images</h2>
+<table>
+  <thead><tr><th>File</th><th>Demonstrates</th></tr></thead>
+  <tbody>
+    <tr><td><code>03_graphics.php</code></td><td>Vector graphics: paths, shapes, Bézier curves, line styles, dashes, clipping.</td></tr>
+    <tr><td><code>04_images.php</code></td><td>JPEG and PNG embedding via <code>fromFile()</code>, alpha channels, scaling and fitting.</td></tr>
+    <tr><td><code>08_advanced_graphics.php</code></td><td>Advanced graphics — axial and radial shadings, transparency groups, tiling patterns.</td></tr>
+    <tr><td><code>22_mesh_shadings.php</code></td><td>Mesh shadings, types 4–7: free-form and lattice Gouraud triangles, Coons and tensor patches.</td></tr>
+    <tr><td><code>27_shading_patterns.php</code></td><td>Pattern type 2 — filling shapes and text with a gradient instead of a flat colour.</td></tr>
+    <tr><td><code>31_ccitt_fax.php</code></td><td>CCITT Group 4 bilevel compression, encoded and embedded as an image XObject.</td></tr>
+  </tbody>
+</table>
+<p>See <a href="graphics.html">Graphics</a> and <a href="images.html">Images</a>.</p>
+
+<h2 id="text-and-fonts">Text and fonts</h2>
+<table>
+  <thead><tr><th>File</th><th>Demonstrates</th></tr></thead>
+  <tbody>
+    <tr><td><code>15_ttf_fonts.php</code></td><td>Embedding TrueType and OpenType font files as <code>FontFile2</code>.</td></tr>
+    <tr><td><code>20_font_subsetting.php</code></td><td>TrueType subsetting plus automatic <code>/ToUnicode</code> generation for searchable text.</td></tr>
+    <tr><td><code>21_unicode_cjk.php</code></td><td>Full-Unicode text with Type 0 / CIDFontType2 composite fonts (Identity-H).</td></tr>
+    <tr><td><code>26_type3_font.php</code></td><td>Type 3 fonts, where each glyph is a content stream you draw yourself.</td></tr>
+  </tbody>
+</table>
+<p>See <a href="text.html">Text and fonts</a>.</p>
+
+<h2 id="tables">Tables</h2>
+<table>
+  <thead><tr><th>File</th><th>Demonstrates</th></tr></thead>
+  <tbody>
+    <tr><td><code>14_table.php</code></td><td>The <code>Table</code> element: column widths, header and footer rows, rowspan, per-cell borders.</td></tr>
+    <tr><td><code>16_table_utf8_alignment.php</code></td><td>Right-aligned cells containing UTF-8 (€, non-breaking space, minus sign) — measured with real glyph advance widths rather than byte length. Regression case for GitHub issue #2.</td></tr>
+  </tbody>
+</table>
+<p>See <a href="tables.html">Tables</a>.</p>
+
+<h2 id="forms-and-annotations">Forms and annotations</h2>
+<table>
+  <thead><tr><th>File</th><th>Demonstrates</th></tr></thead>
+  <tbody>
+    <tr><td><code>05_forms.php</code></td><td>Interactive AcroForm fields: text, checkbox, radio, combo, list, push button, signature.</td></tr>
+    <tr><td><code>06_annotations.php</code></td><td>All 14 annotation subtypes, including redaction.</td></tr>
+    <tr><td><code>30_form_filling.php</code></td><td>Filling an existing PDF form with <code>FormFiller</code>, regenerating appearance streams.</td></tr>
+  </tbody>
+</table>
+<p>See <a href="forms.html">Forms</a> and <a href="annotations.html">Annotations</a>.</p>
+
+<h2 id="navigation-and-document-features">Navigation and document features</h2>
+<table>
+  <thead><tr><th>File</th><th>Demonstrates</th></tr></thead>
+  <tbody>
+    <tr><td><code>07_bookmarks_and_encryption.php</code></td><td>Outline (bookmark) trees combined with password protection.</td></tr>
+    <tr><td><code>10_optional_content_layers.php</code></td><td>Optional content groups — togglable layers bound to marked content.</td></tr>
+    <tr><td><code>12_multimedia.php</code></td><td>Multimedia: sound, movie and screen annotations with renditions.</td></tr>
+    <tr><td><code>13_transitions_and_media_elements.php</code></td><td>Page transitions and media elements for presentation-style documents.</td></tr>
+    <tr><td><code>28_tagged_pdf.php</code></td><td>Tagged PDF — marked content, structure tree and <code>/ParentTree</code> for accessibility.</td></tr>
+  </tbody>
+</table>
+<p>See <a href="navigation.html">Navigation</a>, <a href="multimedia.html">Multimedia</a> and <a href="accessibility.html">Accessibility</a>.</p>
+
+<h2 id="page-operations">Page operations</h2>
+<table>
+  <thead><tr><th>File</th><th>Demonstrates</th></tr></thead>
+  <tbody>
+    <tr><td><code>16_import_pages.php</code></td><td>Importing pages from existing PDFs into a document you are building.</td></tr>
+    <tr><td><code>33_page_operations.php</code></td><td>Running headers and footers with page rules, plus merge, extract, N-up and rotate.</td></tr>
+  </tbody>
+</table>
+<div class="note">
+  <p>The <code>examples/</code> directory contains two files numbered 16 — <code>16_import_pages.php</code> and <code>16_table_utf8_alignment.php</code>. The second was added later as a regression case for a reported bug and kept its issue-era number. Both run independently; the duplicate prefix is cosmetic.</p>
+</div>
+
+<h2 id="file-structure-examples">File structure</h2>
+<table>
+  <thead><tr><th>File</th><th>Demonstrates</th></tr></thead>
+  <tbody>
+    <tr><td><code>17_compressed_objects.php</code></td><td>Object streams and a cross-reference stream via <code>useObjectStreams()</code>, with a before/after size comparison.</td></tr>
+    <tr><td><code>18_incremental_update.php</code></td><td>Appending a revision with <code>openForUpdate()</code>, then proving the original bytes are untouched.</td></tr>
+    <tr><td><code>25_xref_recovery.php</code></td><td>Reading files whose <code>startxref</code> is corrupt, and files whose xref and trailer are gone entirely.</td></tr>
+  </tbody>
+</table>
+<p>See <a href="file-structure.html">File structure</a>.</p>
+
+<h2 id="reading-examples">Reading and extraction</h2>
+<table>
+  <thead><tr><th>File</th><th>Demonstrates</th></tr></thead>
+  <tbody>
+    <tr><td><code>09_read_pdf.php</code></td><td>Parsing an existing PDF: metadata, page count, text by page, fonts, annotations, images, <code>getPageInfo()</code>.</td></tr>
+    <tr><td><code>19_read_encrypted.php</code></td><td>Decrypting an RC4/AES-protected document, then reading its outlines, form fields, attachments and XMP.</td></tr>
+    <tr><td><code>29_text_extraction.php</code></td><td>Layout- and <code>/ToUnicode</code>-aware text extraction across accented Latin, subset and Type 0 fonts.</td></tr>
+  </tbody>
+</table>
+<p>See <a href="reading.html">Reading PDFs</a>.</p>
+
+<h2 id="security-and-archival">Security, signatures and archival</h2>
+<table>
+  <thead><tr><th>File</th><th>Demonstrates</th></tr></thead>
+  <tbody>
+    <tr><td><code>23_digital_signature.php</code></td><td>A PKCS#7 (CMS) detached signature applied as an incremental update.</td></tr>
+    <tr><td><code>32_signature_appearance.php</code></td><td>A visible signature appearance plus an RFC 3161 document timestamp (PAdES).</td></tr>
+    <tr><td><code>24_pdf_a.php</code></td><td>PDF/A-2b archival conformance: sRGB OutputIntent, XMP <code>pdfaid</code>, embedded fonts.</td></tr>
+  </tbody>
+</table>
+<p>See <a href="security.html">Security</a>.</p>
+<div class="warn">
+  <p>The signature examples generate a throw-away self-signed certificate at run time so the script works with no setup. That certificate is not trusted by any viewer — the signature will show as "signer unknown". Supply a real certificate and key for production use.</p>
+</div>
+
+<h2 id="using-examples-as-a-starting-point">Using an example as a starting point</h2>
+<p>The scripts are written to be copied. Each begins with a comment block stating what it demonstrates and which section of ISO 32000-1 applies, uses grouped <code>use</code> statements so the imports are easy to lift, and keeps setup and output separated by section comments.</p>
+<p>The most common adaptation is to swap the output. Every example calls <code>save()</code> or <code>toString()</code> near the end:</p>
+<pre><code class="language-php">$doc-&gt;save("$outDir/01_hello_world.pdf");   // write to disk
+
+$bytes = $doc-&gt;toString();                  // or keep it in memory</code></pre>
+<p>Use <code>toString()</code> when you are streaming a response, storing the document in a database, or passing it straight to <code>PdfParser</code> — as several of the examples do to verify their own output without touching the filesystem.</p>

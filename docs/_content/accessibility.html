@@ -1,0 +1,243 @@
+<!-- title: Tagged PDF & PDF/A -->
+<!-- description: Marked content and MCIDs, the structure tree, /ParentTree and /StructParents, PDF/A conformance with enablePdfA(), and the built-in PdfAValidator. -->
+<h1>Tagged PDF &amp; PDF/A</h1>
+<p class="lead">A PDF page is a set of drawing instructions. It records that glyphs appear at certain coordinates, but nothing about which glyphs form a heading, which form a paragraph, or what order a human should read them in. <strong>Tagged PDF</strong> supplies that missing semantic layer, and <strong>PDF/A</strong> adds the constraints that make a document reliably readable decades from now.</p>
+
+<h2 id="why-tagging-matters">Why tagging matters</h2>
+<p>Without tags a screen reader has to guess. It infers reading order from the sequence of drawing operators, which frequently differs from the visual order — a two-column layout may be drawn column by column or line by line across the gutter, and the reader has no way to tell which. Tables become a stream of disconnected cells, and images are silent.</p>
+<p>Tagging attaches a parallel <strong>structure tree</strong> to the document: a hierarchy of elements — <code>Document</code>, <code>H1</code>, <code>P</code>, <code>Table</code>, <code>Figure</code> — where each element claims the specific pieces of page content it corresponds to. Assistive technology walks the tree rather than the page, and gets reading order, heading levels and alternative text.</p>
+<p>Tagging is also required by law in many jurisdictions for public documents, and it is a hard prerequisite for the accessible PDF/A conformance levels and for PDF/UA.</p>
+
+<h2 id="marked-content-and-mcids">Marked content and MCIDs</h2>
+<p>The link between the visible content and the structure tree is the <strong>marked-content identifier</strong>, or MCID. Content is wrapped in a marked-content sequence carrying a tag and a numeric identifier; a structure element then claims that identifier.</p>
+<p>Tagging is a content-stream-level operation, so it uses <code>ContentStream</code> directly:</p>
+<pre><code class="language-php">use Papier\Content\ContentStream;
+
+$cs = new ContentStream();
+$cs-&gt;setFontResolver(fn (string $n) =&gt; $doc-&gt;getWriter()-&gt;getFontMetrics($n));
+
+$cs-&gt;beginMarkedContentMcid('H1', 0)
+   -&gt;beginText()
+       -&gt;setFont($font, 24)
+       -&gt;setTextPosition(72, 760)
+       -&gt;showText('Quarterly Report')
+   -&gt;endText()
+   -&gt;endMarkedContent();
+
+$cs-&gt;beginMarkedContentMcid('P', 1)
+   -&gt;beginText()
+       -&gt;setFont($font, 12)
+       -&gt;setTextPosition(72, 720)
+       -&gt;showText('This paragraph is tagged so assistive technology can read it.')
+   -&gt;endText()
+   -&gt;endMarkedContent();
+
+$page-&gt;addContent($cs);</code></pre>
+<p><code>beginMarkedContentMcid($tag, $mcid)</code> emits a <code>BDC</code> operator carrying the structure type and the identifier; <code>endMarkedContent()</code> emits the matching <code>EMC</code>.</p>
+<div class="note">
+<p>MCIDs are numbered <strong>per page</strong>, starting at zero and increasing. Each must be unique within its page, but pages restart the numbering independently.</p>
+</div>
+<div class="warn">
+<p>Every <code>beginMarkedContentMcid()</code> needs a matching <code>endMarkedContent()</code>. Unbalanced markers corrupt the content stream. Sequences may nest, but they may not overlap.</p>
+</div>
+<p>The related <code>beginMarkedContentProps($tag, $propsName)</code> is used for optional content rather than structure — see <a href="multimedia.html">Layers &amp; multimedia</a>.</p>
+
+<h2 id="the-structure-tree">The structure tree</h2>
+<p>With the content marked, build the tree that gives it meaning. <code>StructTreeRoot</code> is the root, and <code>StructElement</code> is a node.</p>
+<pre><code class="language-php">use Papier\LogicalStructure\{StructElement, StructTreeRoot};
+
+$tree = new StructTreeRoot();
+
+$docElem = new StructElement('Document');
+
+$h1 = new StructElement('H1');
+$h1-&gt;addMCID(0, $page-&gt;getDictionary());
+
+$p1 = new StructElement('P');
+$p1-&gt;addMCID(1, $page-&gt;getDictionary());
+
+$p2 = new StructElement('P');
+$p2-&gt;addMCID(2, $page-&gt;getDictionary());
+
+$docElem-&gt;addChild($h1)-&gt;addChild($p1)-&gt;addChild($p2);
+$tree-&gt;addChild($docElem);
+
+$doc-&gt;setStructTree($tree);</code></pre>
+<p><code>addMCID()</code> takes the identifier and the page dictionary the marked content lives on — the page reference is what allows an element to claim content across several pages, as a paragraph spanning a page break does.</p>
+<p>Papier derives the rest from this tree. When the document is written it emits <code>/MarkInfo</code> with <code>/Marked true</code>, the <code>/StructTreeRoot</code> in the catalog, a <code>/ParentTree</code> number tree mapping every MCID back to its owning element, and a <code>/StructParents</code> key on each page linking it into that tree. These are the reverse mappings a viewer uses to answer "what does this piece of content mean?" — for example when the user selects text and asks for its structure — and getting them consistent by hand is tedious and error-prone.</p>
+
+<h3 id="structure-types">Structure types</h3>
+<p>The type string passed to <code>StructElement</code> should come from the standard structure namespace. The commonly useful ones:</p>
+<table>
+<thead><tr><th>Type</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>Document</code></td><td>The root of a complete document</td></tr>
+<tr><td><code>Part</code>, <code>Sect</code>, <code>Div</code></td><td>Generic grouping levels</td></tr>
+<tr><td><code>H1</code>–<code>H6</code></td><td>Headings, in descending significance</td></tr>
+<tr><td><code>P</code></td><td>A paragraph</td></tr>
+<tr><td><code>L</code>, <code>LI</code>, <code>Lbl</code>, <code>LBody</code></td><td>List, list item, item label, item body</td></tr>
+<tr><td><code>Table</code>, <code>TR</code>, <code>TH</code>, <code>TD</code></td><td>Table, row, header cell, data cell</td></tr>
+<tr><td><code>Figure</code></td><td>An image or illustration</td></tr>
+<tr><td><code>Caption</code></td><td>A caption for a figure or table</td></tr>
+<tr><td><code>Link</code></td><td>A hyperlink</td></tr>
+<tr><td><code>Span</code></td><td>An inline run with distinct properties</td></tr>
+<tr><td><code>Artifact</code></td><td>Decoration with no semantic content</td></tr>
+</tbody>
+</table>
+<p>Use headings in proper order — do not skip from <code>H1</code> to <code>H3</code> because it looks right, since screen-reader users navigate by heading level. And mark purely decorative content as <code>Artifact</code> so it is skipped rather than read aloud.</p>
+
+<h3 id="alternative-text">Alternative text and language</h3>
+<p>The <code>StructElement</code> constructor takes three optional arguments after the type:</p>
+<pre><code class="language-php">$figure = new StructElement(
+    'Figure',
+    lang:       'en-GB',
+    altText:    'Bar chart showing quarterly revenue rising from £1.2M to £3.4M.',
+    actualText: null,
+);
+$figure-&gt;addMCID(3, $page-&gt;getDictionary());</code></pre>
+<p><code>altText</code> becomes <code>/Alt</code> — the description read in place of content that cannot be read directly. Every <code>Figure</code> needs one; a chart or diagram with no alternative text is simply absent for a screen-reader user.</p>
+<p><code>actualText</code> becomes <code>/ActualText</code> and is subtly different: it is the text this content <em>is</em>, for cases where the glyphs do not spell it. A decorative drop cap drawn as a graphic, or a ligature encoded as a single glyph, uses <code>/ActualText</code> so that extraction and search still work.</p>
+<p><code>lang</code> sets the natural language of the subtree, which lets a screen reader switch pronunciation for a quoted passage in another language.</p>
+<p>Two further methods: <code>setTitle()</code> writes <code>/T</code>, a human-readable title for the element, and <code>setAttribute()</code> attaches an attribute dictionary — that is how table cells declare <code>/ColSpan</code> and <code>/RowSpan</code>, and how a list declares its numbering style.</p>
+
+<h3 id="tagging-tables">Tagging tables</h3>
+<p>Tables are where tagging pays off most, and where it is most often skipped. An untagged table is read as an undifferentiated stream of cell contents with no indication of which header each value belongs to.</p>
+<pre><code class="language-php">$table = new StructElement('Table');
+
+$headerRow = new StructElement('TR');
+foreach ([0, 1, 2] as $mcid) {
+    $th = new StructElement('TH');
+    $th-&gt;addMCID($mcid, $page-&gt;getDictionary());
+    $headerRow-&gt;addChild($th);
+}
+$table-&gt;addChild($headerRow);
+
+$dataRow = new StructElement('TR');
+foreach ([3, 4, 5] as $mcid) {
+    $td = new StructElement('TD');
+    $td-&gt;addMCID($mcid, $page-&gt;getDictionary());
+    $dataRow-&gt;addChild($td);
+}
+$table-&gt;addChild($dataRow);
+
+$docElem-&gt;addChild($table);</code></pre>
+<p>Each cell's content must be wrapped in its own marked-content sequence with the matching MCID. See <a href="tables.html">Tables</a> for drawing the table itself.</p>
+
+<h2 id="pdf-a">PDF/A archival conformance</h2>
+<p>PDF/A (ISO 19005) is a profile for long-term preservation. It rests on one principle: <strong>the document must be self-contained</strong>. Everything needed to render it exactly as intended has to be inside the file, because in twenty years the fonts, colour profiles and external resources it depends on may no longer exist.</p>
+<p>That principle produces the constraints. Fonts must be embedded. Colour must be unambiguous, via an embedded output intent. Encryption is forbidden, since an archive must not depend on a key. So are JavaScript, external references, and embedded content in non-conforming formats.</p>
+
+<h3 id="enabling-pdf-a">Enabling PDF/A</h3>
+<pre><code class="language-php">use Papier\Metadata\PdfAConformance;
+
+$doc-&gt;enablePdfA(2, PdfAConformance::Basic);   // PDF/A-2b</code></pre>
+<p>This adds an sRGB OutputIntent with an embedded ICC profile, PDF/A identification metadata in the XMP packet, and a document ID in the trailer.</p>
+<p>The first argument is the PDF/A <strong>part</strong>: <code>1</code> (based on PDF 1.4, the most restrictive), <code>2</code> (based on PDF 1.7 — the default and the usual choice), or <code>3</code> (PDF/A-2 plus arbitrary embedded attachments).</p>
+<p>The second is the <strong>conformance level</strong>:</p>
+<table>
+<thead><tr><th>Case</th><th>Level</th><th>Requirement</th></tr></thead>
+<tbody>
+<tr><td><code>PdfAConformance::Basic</code></td><td>B</td><td>Reliable visual reproduction only</td></tr>
+<tr><td><code>PdfAConformance::Accessible</code></td><td>A</td><td>B, plus full Tagged PDF and Unicode mapping</td></tr>
+<tr><td><code>PdfAConformance::Unicode</code></td><td>U</td><td>B, plus Unicode mapping for all text (PDF/A-2 and later)</td></tr>
+</tbody>
+</table>
+<p>Level A is the accessible one, and it is where this page's two halves meet: it requires everything level B requires <em>and</em> a complete structure tree.</p>
+<pre><code class="language-php">$doc-&gt;enablePdfA(2, PdfAConformance::Accessible);   // PDF/A-2a
+// … then build and set a structure tree, as above</code></pre>
+
+<h3 id="embedding-fonts">Embedding fonts</h3>
+<p>The most common conformance failure is an unembedded font. The 14 standard Type 1 fonts are <em>not</em> embedded — a viewer is expected to supply them — so they are not permitted in PDF/A. Always load fonts from a file:</p>
+<pre><code class="language-php">// Wrong for PDF/A — relies on a viewer-supplied font
+$font = $doc-&gt;addFont('Helvetica');
+
+// Correct — the font program is embedded in the file
+$font = $doc-&gt;addFont(__DIR__ . '/Lato-Regular.ttf', '', subset: true);</code></pre>
+<p>Subsetting is safe and recommended: only the glyphs actually used are embedded, and Papier generates a <code>/ToUnicode</code> CMap so the text remains searchable and copy-pasteable — which is itself a level U and level A requirement. For non-Latin scripts use <code>addUnicodeFont()</code>. See <a href="text.html">Text &amp; fonts</a>.</p>
+<div class="warn">
+<p>Check that the font's licence permits embedding. Some commercial fonts forbid it, and some allow only preview-and-print embedding.</p>
+</div>
+
+<h3 id="a-complete-pdf-a-document">A complete PDF/A document</h3>
+<pre><code class="language-php">use Papier\Elements\{Color, Text};
+use Papier\Metadata\PdfAConformance;
+use Papier\PdfDocument;
+
+$doc = PdfDocument::create();
+$doc-&gt;setTitle('Annual Report 2025')
+    -&gt;setAuthor('Papier')
+    -&gt;setSubject('Archival copy');
+
+$doc-&gt;enablePdfA(2, PdfAConformance::Basic);
+
+$font = $doc-&gt;addFont(__DIR__ . '/Lato-Regular.ttf', '', subset: true);
+
+$page = $doc-&gt;addPage();
+$page-&gt;add(
+    Text::write('Annual Report 2025')-&gt;at(72, 770)-&gt;font($font, 22)-&gt;color(Color::hex('#1a1a2e')),
+    Text::write('This document is suitable for long-term archiving (PDF/A-2b).')
+        -&gt;at(72, 735)-&gt;font($font, 12),
+);
+
+$doc-&gt;save('archive.pdf');</code></pre>
+
+<h2 id="validating">Validating</h2>
+<p><code>PdfAValidator</code> checks the structural requirements and returns a list of human-readable problems. An empty array means no issues were found:</p>
+<pre><code class="language-php">use Papier\Validation\PdfAValidator;
+
+$issues = PdfAValidator::validate(file_get_contents('archive.pdf'));
+
+if ($issues === []) {
+    echo "Structurally conformant.\n";
+} else {
+    foreach ($issues as $issue) {
+        echo "  - $issue\n";
+    }
+}</code></pre>
+<p>A boolean shortcut is available:</p>
+<pre><code class="language-php">if (PdfAValidator::isValid($pdf)) {
+    // …
+}</code></pre>
+<p>The validator checks that the document parses; that it is not encrypted; that the trailer carries a document <code>/ID</code>; that a <code>GTS_PDFA1</code> OutputIntent exists with an embedded <code>/DestOutputProfile</code>; that an uncompressed XMP <code>/Metadata</code> stream is present and declares <code>pdfaid</code>; that every font is embedded; and — when the XMP declares conformance level A — that the document is actually tagged.</p>
+<div class="warn">
+<p>This is a structural check, not a full conformance test. It cannot verify colour space usage, transparency restrictions, or the semantic quality of a structure tree. Run a complete validator such as veraPDF before treating a document as certified.</p>
+</div>
+
+<h2 id="verifying-tagging">Verifying the tagging</h2>
+<p>The parser exposes the read side, which is the quickest way to confirm the writer emitted what you expected:</p>
+<pre><code class="language-php">use Papier\Parser\PdfParser;
+
+$parser = new PdfParser(file_get_contents('tagged.pdf'));
+$parser-&gt;parse();
+
+echo $parser-&gt;isTagged() ? "tagged\n" : "not tagged\n";
+
+$root = $parser-&gt;getStructTreeRoot();
+echo $root !== null ? "has StructTreeRoot\n" : "no structure tree\n";
+echo $root &amp;&amp; $root-&gt;get('ParentTree') !== null ? "has ParentTree\n" : "no ParentTree\n";
+
+echo $parser-&gt;getXmpMetadata();</code></pre>
+<p><code>isTagged()</code> reports whether <code>/MarkInfo</code> declares <code>/Marked true</code>. More reading recipes are in <a href="reading.html">Reading PDFs</a>.</p>
+
+<h2 id="pdf-ua">PDF/UA</h2>
+<p>PDF/UA (ISO 14289) is the accessibility standard proper. Where PDF/A-2a requires a structure tree to exist, PDF/UA specifies what a <em>correct</em> one looks like — and much of it cannot be verified mechanically.</p>
+<p>Building on the tagging described above, a PDF/UA document additionally needs:</p>
+<ul>
+<li>A structure tree covering <strong>all</strong> real content, with decoration marked as <code>Artifact</code>.</li>
+<li>Alternative text on every <code>Figure</code> and every non-text element that conveys meaning.</li>
+<li>Headings used in proper hierarchical order, without skipped levels.</li>
+<li>A document language set, and per-element languages for passages that differ.</li>
+<li><code>/DisplayDocTitle</code> enabled in viewer preferences, so the window title shows the document title rather than the filename (see <a href="documents.html">Documents &amp; pages</a>).</li>
+<li>Tooltips (<code>/TU</code>) on interactive form fields — see <a href="forms.html">Forms</a>.</li>
+<li>Tables tagged with genuine header cells and correct scope.</li>
+<li>Colour never used as the sole carrier of information, and adequate contrast.</li>
+</ul>
+<p>Papier gives you the mechanisms for all of these. Whether the result is genuinely accessible is a matter of authoring judgement, and is worth checking with a real screen reader rather than a validator alone.</p>
+
+<h2 id="examples">Examples</h2>
+<ul>
+<li><code>examples/24_pdf_a.php</code> — a PDF/A-2b document with an embedded subset font, verifying the OutputIntent and XMP markers afterwards.</li>
+<li><code>examples/28_tagged_pdf.php</code> — marked content with MCIDs, a structure tree, and PDF/A-2a conformance, with the tagging read back to confirm the round trip.</li>
+</ul>
+<pre><code class="language-bash">php examples/24_pdf_a.php
+php examples/28_tagged_pdf.php</code></pre>

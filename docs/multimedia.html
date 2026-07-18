@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Layers & multimedia — Papier</title>
+<meta name="description" content="Optional content groups for togglable layers, and embedding sound, video and screen renditions with the multimedia API.">
+<meta property="og:title" content="Layers & multimedia — Papier">
+<meta property="og:description" content="Optional content groups for togglable layers, and embedding sound, video and screen renditions with the multimedia API.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<script>
+(function () {
+  var t = localStorage.getItem('papier-theme');
+  if (t) document.documentElement.setAttribute('data-theme', t);
+})();
+</script>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <button class="menu-toggle" type="button" aria-label="Toggle navigation">
+<svg viewBox="0 0 20 20" width="20" height="20"><path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="index.html">
+<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 2h8l5 5v15H6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M14 2v5h5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+<span>Papier</span>
+  </a>
+  <div class="search">
+<input type="search" id="search-input" placeholder="Search documentation…" autocomplete="off" aria-label="Search documentation">
+<kbd>/</kbd>
+<div id="search-results" role="listbox"></div>
+  </div>
+  <div class="topbar-links">
+<a href="https://packagist.org/packages/papier/papier">Packagist</a>
+<a href="https://github.com/papier/papier">GitHub</a>
+<button class="theme-toggle" type="button" aria-label="Toggle dark mode">
+  <svg class="sun" viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.5 1.5M17.6 17.6l1.5 1.5M19.1 4.9l-1.5 1.5M6.4 17.6l-1.5 1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+  <svg class="moon" viewBox="0 0 24 24" width="18" height="18"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+</button>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" aria-label="Documentation">
+<div class="nav-section"><h4>Getting started</h4><ul><li><a href="index.html">Introduction</a></li><li><a href="installation.html">Installation</a></li><li><a href="quickstart.html">Quick start</a></li></ul></div><div class="nav-section"><h4>Creating PDFs</h4><ul><li><a href="documents.html">Documents &amp; pages</a></li><li><a href="text.html">Text &amp; fonts</a></li><li><a href="graphics.html">Graphics</a></li><li><a href="images.html">Images</a></li><li><a href="tables.html">Tables</a></li></ul></div><div class="nav-section"><h4>Interactivity</h4><ul><li><a href="forms.html">Forms</a></li><li><a href="annotations.html">Annotations</a></li><li><a href="navigation.html">Bookmarks &amp; navigation</a></li><li><a href="multimedia.html" class="active">Layers &amp; multimedia</a></li></ul></div><div class="nav-section"><h4>Advanced</h4><ul><li><a href="security.html">Encryption &amp; signatures</a></li><li><a href="accessibility.html">Tagged PDF &amp; PDF/A</a></li><li><a href="file-structure.html">File structure</a></li><li><a href="reading.html">Reading PDFs</a></li></ul></div><div class="nav-section"><h4>Reference</h4><ul><li><a href="examples.html">Examples</a></li><li><a href="changelog.html">Changelog</a></li></ul></div>
+  </nav>
+
+  <main id="main">
+<article class="content">
+<h1>Layers &amp; multimedia</h1>
+<p class="lead">Two features that make a PDF more than a printed page: <strong>optional content</strong>, which lets the reader switch parts of the page on and off, and <strong>multimedia</strong>, which embeds or references audio and video for playback inside the document.</p>
+
+<h2 id="optional-content">Optional content (layers)</h2>
+<p>Optional content groups — OCGs, shown as "Layers" in most viewers — let a single page carry several alternative or supplementary renderings. A CAD drawing can hide its dimension annotations, a map can toggle its road and terrain layers, a multilingual form can show one language at a time. All the content is present in the file; the viewer simply decides what to paint.</p>
+<p>Three pieces have to line up:</p>
+<ol>
+<li>An <strong>OCGroup</strong> for each layer.</li>
+<li>Each group registered in the page's resources under a property name, and the page content wrapped in marked-content operators that reference that name.</li>
+<li>An <strong>OCProperties</strong> object in the document catalog listing every group and the default visibility configuration.</li>
+</ol>
+
+<h3 id="defining-groups">Defining groups</h3>
+<p>An <code>OCGroup</code> is little more than the name the viewer shows in its layers panel:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\OptionalContent\OCGroup</span><span class="t-op">;</span>
+
+<span class="t-var">$bgGroup</span>    <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">OCGroup</span><span class="t-op">(</span><span class="t-string">&#039;Background&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$textGroup</span>  <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">OCGroup</span><span class="t-op">(</span><span class="t-string">&#039;Text Content&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$annotGroup</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">OCGroup</span><span class="t-op">(</span><span class="t-string">&#039;Annotations&#039;</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p><code>setIntent()</code> declares what the layer is for — <code>'View'</code> (the default) means it affects display, <code>'Design'</code> means it is metadata that viewers should not offer to toggle. <code>setUsage()</code> attaches a usage dictionary describing conditions such as zoom range or print behaviour.</p>
+
+<h3 id="binding-content-to-a-layer">Binding content to a layer</h3>
+<p>This is the step with no high-level shortcut. Layer membership is expressed with the <code>BDC</code> / <code>EMC</code> marked-content operators inside the content stream, so you need <code>ContentStream</code> directly rather than the elements API.</p>
+<p>First register each group's dictionary in the page resources under a property name:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">getResources</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">addProperties</span><span class="t-op">(</span><span class="t-string">&#039;OCBackground&#039;</span><span class="t-op">,</span>  <span class="t-var">$bgGroup</span><span class="t-kw">-&gt;</span><span class="t-fn">getDictionary</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">getResources</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">addProperties</span><span class="t-op">(</span><span class="t-string">&#039;OCText&#039;</span><span class="t-op">,</span>        <span class="t-var">$textGroup</span><span class="t-kw">-&gt;</span><span class="t-fn">getDictionary</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">getResources</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">addProperties</span><span class="t-op">(</span><span class="t-string">&#039;OCAnnotations&#039;</span><span class="t-op">,</span> <span class="t-var">$annotGroup</span><span class="t-kw">-&gt;</span><span class="t-fn">getDictionary</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>Then wrap the drawing operations in a marked-content sequence tagged <code>OC</code> and pointing at that property name:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Content\ContentStream</span><span class="t-op">;</span>
+
+<span class="t-var">$cs</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">ContentStream</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$cs</span><span class="t-kw">-&gt;</span><span class="t-fn">beginMarkedContentProps</span><span class="t-op">(</span><span class="t-string">&#039;OC&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;OCBackground&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$cs</span><span class="t-kw">-&gt;</span><span class="t-fn">setFillRGB</span><span class="t-op">(</span><span class="t-number">0.95</span><span class="t-op">,</span> <span class="t-number">0.95</span><span class="t-op">,</span> <span class="t-number">1.0</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">drawRect</span><span class="t-op">(</span><span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">0</span><span class="t-op">,</span> <span class="t-number">595</span><span class="t-op">,</span> <span class="t-number">841</span><span class="t-op">,</span> <span class="t-fn">true</span><span class="t-op">,</span> <span class="t-fn">false</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$cs</span><span class="t-kw">-&gt;</span><span class="t-fn">setStrokeRGB</span><span class="t-op">(</span><span class="t-number">0.5</span><span class="t-op">,</span> <span class="t-number">0.5</span><span class="t-op">,</span> <span class="t-number">0.8</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">setLineWidth</span><span class="t-op">(</span><span class="t-number">3</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">drawRect</span><span class="t-op">(</span><span class="t-number">30</span><span class="t-op">,</span> <span class="t-number">30</span><span class="t-op">,</span> <span class="t-number">535</span><span class="t-op">,</span> <span class="t-number">781</span><span class="t-op">,</span> <span class="t-fn">false</span><span class="t-op">,</span> <span class="t-fn">true</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$cs</span><span class="t-kw">-&gt;</span><span class="t-fn">endMarkedContent</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$cs</span><span class="t-kw">-&gt;</span><span class="t-fn">beginMarkedContentProps</span><span class="t-op">(</span><span class="t-string">&#039;OC&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;OCText&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$cs</span><span class="t-kw">-&gt;</span><span class="t-fn">beginText</span><span class="t-op">(</span><span class="t-op">)</span>
+       <span class="t-kw">-&gt;</span><span class="t-fn">setFont</span><span class="t-op">(</span><span class="t-string">&#039;F2&#039;</span><span class="t-op">,</span> <span class="t-number">26</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">setFillRGB</span><span class="t-op">(</span><span class="t-number">0.2</span><span class="t-op">,</span> <span class="t-number">0.2</span><span class="t-op">,</span> <span class="t-number">0.6</span><span class="t-op">)</span>
+       <span class="t-kw">-&gt;</span><span class="t-fn">setTextPosition</span><span class="t-op">(</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">760</span><span class="t-op">)</span>
+       <span class="t-kw">-&gt;</span><span class="t-fn">showText</span><span class="t-op">(</span><span class="t-string">&#039;Optional Content Demo&#039;</span><span class="t-op">)</span>
+   <span class="t-kw">-&gt;</span><span class="t-fn">endText</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$cs</span><span class="t-kw">-&gt;</span><span class="t-fn">endMarkedContent</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">addContent</span><span class="t-op">(</span><span class="t-var">$cs</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>Everything between <code>beginMarkedContentProps()</code> and the matching <code>endMarkedContent()</code> belongs to that layer and disappears when the reader switches it off. Content outside any marked-content sequence is always visible.</p>
+<div class="warn">
+<p>Every <code>beginMarkedContentProps()</code> must have a matching <code>endMarkedContent()</code>. Unbalanced markers produce a content stream that viewers reject or render unpredictably.</p>
+</div>
+<p>The related <code>beginMarkedContent($tag)</code> starts a sequence with no property list, and <code>beginMarkedContentMcid($tag, $mcid)</code> starts one carrying a marked-content identifier — that variant is for structural tagging rather than layers, and is covered in <a href="accessibility.html">Tagged PDF &amp; PDF/A</a>.</p>
+
+<h3 id="the-ocproperties-entry">The OCProperties entry</h3>
+<p>Finally, tell the document which groups exist and which are visible when it opens:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\OptionalContent\OCProperties</span><span class="t-op">;</span>
+
+<span class="t-var">$ocProps</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">OCProperties</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$ocProps</span><span class="t-kw">-&gt;</span><span class="t-fn">addOCG</span><span class="t-op">(</span><span class="t-var">$bgGroup</span><span class="t-op">)</span>
+        <span class="t-kw">-&gt;</span><span class="t-fn">addOCG</span><span class="t-op">(</span><span class="t-var">$textGroup</span><span class="t-op">)</span>
+        <span class="t-kw">-&gt;</span><span class="t-fn">addOCG</span><span class="t-op">(</span><span class="t-var">$annotGroup</span><span class="t-op">)</span>
+        <span class="t-kw">-&gt;</span><span class="t-fn">setDefaultConfig</span><span class="t-op">(</span>
+            <span class="t-fn">name</span><span class="t-op">:</span>      <span class="t-string">&#039;Default&#039;</span><span class="t-op">,</span>
+            <span class="t-fn">on</span><span class="t-op">:</span>        <span class="t-op">[</span><span class="t-var">$bgGroup</span><span class="t-op">,</span> <span class="t-var">$textGroup</span><span class="t-op">]</span><span class="t-op">,</span>
+            <span class="t-fn">off</span><span class="t-op">:</span>       <span class="t-op">[</span><span class="t-var">$annotGroup</span><span class="t-op">]</span><span class="t-op">,</span>
+            <span class="t-fn">baseState</span><span class="t-op">:</span> <span class="t-string">&#039;ON&#039;</span><span class="t-op">,</span>
+        <span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$doc</span><span class="t-kw">-&gt;</span><span class="t-fn">setOCProperties</span><span class="t-op">(</span><span class="t-var">$ocProps</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>Every group referenced anywhere in the document must be passed to <code>addOCG()</code> — a group that appears in a content stream but not in <code>/OCProperties</code> makes the file invalid.</p>
+<p><code>setDefaultConfig()</code> takes the configuration name shown in the viewer UI, arrays of groups that start on and off, and a <code>$baseState</code> of <code>'ON'</code>, <code>'OFF'</code> or <code>'Unchanged'</code> governing groups in neither list. Starting from <code>baseState: 'OFF'</code> and listing only what should be visible is convenient for documents with many layers where most are hidden by default.</p>
+
+<h3 id="membership-dictionaries">Membership dictionaries</h3>
+<p>An <code>OCMembership</code> makes visibility depend on a combination of groups rather than a single one — content that appears only when two layers are both on, for instance.</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\OptionalContent\OCMembership</span><span class="t-op">;</span>
+
+<span class="t-var">$both</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">OCMembership</span><span class="t-op">(</span><span class="t-op">[</span><span class="t-var">$layerA</span><span class="t-op">,</span> <span class="t-var">$layerB</span><span class="t-op">]</span><span class="t-op">,</span> <span class="t-string">&#039;AllOn&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">getResources</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">addProperties</span><span class="t-op">(</span><span class="t-string">&#039;OCBoth&#039;</span><span class="t-op">,</span> <span class="t-var">$both</span><span class="t-kw">-&gt;</span><span class="t-fn">getDictionary</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>The policy is <code>'AnyOn'</code> (the default — visible if any listed group is on), <code>'AllOn'</code>, <code>'AnyOff'</code>, or <code>'AllOff'</code>. Reference the membership from a marked-content sequence exactly as you would a plain group.</p>
+
+<h3 id="toggling-layers-from-an-action">Toggling layers from an action</h3>
+<p>A button or link can change layer visibility using <code>SetOCGStateAction</code>, so the document itself can offer a "show annotations" control. See <a href="navigation.html">Bookmarks &amp; navigation</a> for how actions attach to links and form fields.</p>
+
+<h2 id="multimedia">Multimedia</h2>
+<p>PDF gained media support in stages, and the three surviving mechanisms are worth distinguishing before choosing one.</p>
+<table>
+<thead><tr><th>Mechanism</th><th>Introduced</th><th>Best for</th></tr></thead>
+<tbody>
+<tr><td><code>SoundAnnotation</code></td><td>PDF 1.2</td><td>Short audio embedded directly in the file</td></tr>
+<tr><td><code>MovieAnnotation</code></td><td>PDF 1.2</td><td>Legacy video; superseded, kept for compatibility</td></tr>
+<tr><td><code>ScreenAnnotation</code> + rendition</td><td>PDF 1.5</td><td>Modern audio and video with MIME types and playback control</td></tr>
+</tbody>
+</table>
+<div class="note">
+<p>Media playback depends entirely on the viewer. Adobe Acrobat supports renditions; most browser-based viewers ignore them and show only the static appearance. Always draw a meaningful placeholder so the page still makes sense when playback is unavailable.</p>
+</div>
+
+<h3 id="embedded-sound">Embedded sound</h3>
+<p><code>SoundStream</code> wraps raw audio samples as a PDF sound object. Static factories cover the encodings the format supports:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Multimedia\SoundStream</span><span class="t-op">;</span>
+
+<span class="t-var">$sound</span> <span class="t-op">=</span> <span class="t-type">SoundStream</span><span class="t-kw">::</span><span class="t-fn">fromPcm</span><span class="t-op">(</span><span class="t-var">$pcmBytes</span><span class="t-op">,</span> <span class="t-number">44100</span><span class="t-op">,</span> <span class="t-number">1</span><span class="t-op">,</span> <span class="t-number">16</span><span class="t-op">)</span><span class="t-op">;</span>  <span class="t-comment">// data, rate, channels, bits</span>
+<span class="t-var">$sound</span> <span class="t-op">=</span> <span class="t-type">SoundStream</span><span class="t-kw">::</span><span class="t-fn">fromMuLaw</span><span class="t-op">(</span><span class="t-var">$bytes</span><span class="t-op">,</span> <span class="t-number">8000</span><span class="t-op">,</span> <span class="t-number">1</span><span class="t-op">)</span><span class="t-op">;</span>        <span class="t-comment">// G.711 μ-law, telephony</span>
+<span class="t-var">$sound</span> <span class="t-op">=</span> <span class="t-type">SoundStream</span><span class="t-kw">::</span><span class="t-fn">fromALaw</span><span class="t-op">(</span><span class="t-var">$bytes</span><span class="t-op">,</span> <span class="t-number">8000</span><span class="t-op">,</span> <span class="t-number">1</span><span class="t-op">)</span><span class="t-op">;</span>         <span class="t-comment">// G.711 A-law</span>
+<span class="t-var">$sound</span> <span class="t-op">=</span> <span class="t-type">SoundStream</span><span class="t-kw">::</span><span class="t-fn">fromFile</span><span class="t-op">(</span><span class="t-string">&#039;chime.wav&#039;</span><span class="t-op">)</span><span class="t-op">;</span>             <span class="t-comment">// read from disk</span></code></pre></div>
+<p>PCM data is interleaved and little-endian. Generating a tone directly is a compact way to test playback:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$sampleRate</span> <span class="t-op">=</span> <span class="t-number">44100</span><span class="t-op">;</span>
+<span class="t-var">$numSamples</span> <span class="t-op">=</span> <span class="t-kw">(int)</span> <span class="t-op">(</span><span class="t-var">$sampleRate</span> <span class="t-op">*</span> <span class="t-number">0.5</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$pcm</span>        <span class="t-op">=</span> <span class="t-string">&#039;&#039;</span><span class="t-op">;</span>
+<span class="t-kw">for</span> <span class="t-op">(</span><span class="t-var">$i</span> <span class="t-op">=</span> <span class="t-number">0</span><span class="t-op">;</span> <span class="t-var">$i</span> <span class="t-op">&lt;</span> <span class="t-var">$numSamples</span><span class="t-op">;</span> <span class="t-var">$i</span><span class="t-kw">++</span><span class="t-op">)</span> <span class="t-op">{</span>
+    <span class="t-var">$env</span>    <span class="t-op">=</span> <span class="t-fn">min</span><span class="t-op">(</span><span class="t-number">1.0</span><span class="t-op">,</span> <span class="t-fn">min</span><span class="t-op">(</span><span class="t-var">$i</span> <span class="t-op">/</span> <span class="t-number">200.0</span><span class="t-op">,</span> <span class="t-op">(</span><span class="t-var">$numSamples</span> <span class="t-op">-</span> <span class="t-var">$i</span><span class="t-op">)</span> <span class="t-op">/</span> <span class="t-number">200.0</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>  <span class="t-comment">// fade in/out</span>
+    <span class="t-var">$sample</span> <span class="t-op">=</span> <span class="t-kw">(int)</span> <span class="t-op">(</span><span class="t-number">28000</span> <span class="t-op">*</span> <span class="t-var">$env</span> <span class="t-op">*</span> <span class="t-fn">sin</span><span class="t-op">(</span><span class="t-number">2.0</span> <span class="t-op">*</span> <span class="t-type">M_PI</span> <span class="t-op">*</span> <span class="t-number">440.0</span> <span class="t-op">*</span> <span class="t-var">$i</span> <span class="t-op">/</span> <span class="t-var">$sampleRate</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+    <span class="t-var">$pcm</span>   <span class="t-kw">.=</span> <span class="t-fn">pack</span><span class="t-op">(</span><span class="t-string">&#039;v&#039;</span><span class="t-op">,</span> <span class="t-var">$sample</span> <span class="t-kw">&amp;</span> <span class="t-number">0xFFFF</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-op">}</span>
+<span class="t-var">$sound</span> <span class="t-op">=</span> <span class="t-type">SoundStream</span><span class="t-kw">::</span><span class="t-fn">fromPcm</span><span class="t-op">(</span><span class="t-var">$pcm</span><span class="t-op">,</span> <span class="t-var">$sampleRate</span><span class="t-op">,</span> <span class="t-number">1</span><span class="t-op">,</span> <span class="t-number">16</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>Attach it to the page with a <code>SoundAnnotation</code>, which renders as a clickable icon. Note that <code>setSound()</code> takes the underlying stream, obtained with <code>getStream()</code>:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Annotation\SoundAnnotation</span><span class="t-op">;</span>
+<span class="t-kw">use</span> <span class="t-kw">Papier\Elements\Color</span><span class="t-op">;</span>
+
+<span class="t-var">$annot</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">SoundAnnotation</span><span class="t-op">(</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">695</span><span class="t-op">,</span> <span class="t-number">92</span><span class="t-op">,</span> <span class="t-number">715</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$annot</span><span class="t-kw">-&gt;</span><span class="t-fn">setSound</span><span class="t-op">(</span><span class="t-var">$sound</span><span class="t-kw">-&gt;</span><span class="t-fn">getStream</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">)</span>
+      <span class="t-kw">-&gt;</span><span class="t-fn">setIcon</span><span class="t-op">(</span><span class="t-string">&#039;Speaker&#039;</span><span class="t-op">)</span>                  <span class="t-comment">// &#039;Speaker&#039; or &#039;Mic&#039;</span>
+      <span class="t-kw">-&gt;</span><span class="t-fn">setContents</span><span class="t-op">(</span><span class="t-string">&#039;440 Hz tone (0.5 s)&#039;</span><span class="t-op">)</span>
+      <span class="t-kw">-&gt;</span><span class="t-fn">setColor</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">rgb</span><span class="t-op">(</span><span class="t-number">0.1</span><span class="t-op">,</span> <span class="t-number">0.5</span><span class="t-op">,</span> <span class="t-number">0.8</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">addAnnotation</span><span class="t-op">(</span><span class="t-var">$annot</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<div class="warn">
+<p>Embedded PCM is uncompressed — roughly 88 kB per second at CD quality. Keep embedded clips short, or reference a compressed file externally instead.</p>
+</div>
+
+<h3 id="media-clips">Media clips and file references</h3>
+<p>A <code>MediaClip</code> describes a piece of media: where it lives and what MIME type it is. The choice of factory decides whether the media travels with the PDF.</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Multimedia\MediaClip</span><span class="t-op">;</span>
+
+<span class="t-comment">// External reference — the file must sit next to the PDF</span>
+<span class="t-var">$video</span> <span class="t-op">=</span> <span class="t-type">MediaClip</span><span class="t-kw">::</span><span class="t-fn">fromFile</span><span class="t-op">(</span><span class="t-string">&#039;demo.mp4&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;video/mp4&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;Demo Video&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-comment">// Embedded — the bytes are copied into the PDF, making it self-contained</span>
+<span class="t-var">$video</span> <span class="t-op">=</span> <span class="t-type">MediaClip</span><span class="t-kw">::</span><span class="t-fn">fromEmbedded</span><span class="t-op">(</span><span class="t-string">&#039;/path/to/demo.mp4&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;video/mp4&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;Demo Video&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-comment">// From a file specification you built yourself</span>
+<span class="t-var">$video</span> <span class="t-op">=</span> <span class="t-type">MediaClip</span><span class="t-kw">::</span><span class="t-fn">fromSpec</span><span class="t-op">(</span><span class="t-var">$fileSpec</span><span class="t-op">,</span> <span class="t-string">&#039;video/mp4&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;Demo Video&#039;</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>External references keep the PDF small but break if the file moves. Embedding produces a self-contained document at the cost of size. <code>FileSpec</code> exposes the same choice directly:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Multimedia\FileSpec</span><span class="t-op">;</span>
+
+<span class="t-var">$spec</span> <span class="t-op">=</span> <span class="t-type">FileSpec</span><span class="t-kw">::</span><span class="t-fn">external</span><span class="t-op">(</span><span class="t-string">&#039;demo.mp4&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;video/mp4&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$spec</span> <span class="t-op">=</span> <span class="t-type">FileSpec</span><span class="t-kw">::</span><span class="t-fn">embedded</span><span class="t-op">(</span><span class="t-string">&#039;/path/to/demo.mp4&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;video/mp4&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$spec</span> <span class="t-op">=</span> <span class="t-type">FileSpec</span><span class="t-kw">::</span><span class="t-fn">fromBytes</span><span class="t-op">(</span><span class="t-string">&#039;demo.mp4&#039;</span><span class="t-op">,</span> <span class="t-var">$bytes</span><span class="t-op">,</span> <span class="t-string">&#039;video/mp4&#039;</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p><code>setPermissions()</code> on the clip attaches a <code>MediaPermissions</code> dictionary controlling whether the viewer may write a temporary file during playback — <code>TEMP_ACCESS</code>, <code>NO_OPS</code>, or <code>NEVER_WRITTEN</code>.</p>
+
+<h3 id="play-parameters">Play parameters</h3>
+<p><code>MediaPlayParams</code> controls how the clip plays:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Multimedia\MediaPlayParams</span><span class="t-op">;</span>
+
+<span class="t-var">$params</span> <span class="t-op">=</span> <span class="t-op">(</span><span class="t-kw">new</span> <span class="t-type">MediaPlayParams</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">)</span>
+    <span class="t-kw">-&gt;</span><span class="t-fn">setVolume</span><span class="t-op">(</span><span class="t-number">90</span><span class="t-op">)</span>          <span class="t-comment">// 0-100</span>
+    <span class="t-kw">-&gt;</span><span class="t-fn">setShowControls</span><span class="t-op">(</span><span class="t-fn">true</span><span class="t-op">)</span>  <span class="t-comment">// transport bar</span>
+    <span class="t-kw">-&gt;</span><span class="t-fn">setAutoPlay</span><span class="t-op">(</span><span class="t-fn">false</span><span class="t-op">)</span>     <span class="t-comment">// play on activation rather than on page open</span>
+    <span class="t-kw">-&gt;</span><span class="t-fn">setRepeatCount</span><span class="t-op">(</span><span class="t-number">1.0</span><span class="t-op">)</span>    <span class="t-comment">// 0.0 = loop forever</span>
+    <span class="t-kw">-&gt;</span><span class="t-fn">setFitStyle</span><span class="t-op">(</span><span class="t-type">MediaPlayParams</span><span class="t-kw">::</span><span class="t-type">FIT_MEET</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>The fit styles govern how the media is scaled into the annotation rectangle:</p>
+<table>
+<thead><tr><th>Constant</th><th>Behaviour</th></tr></thead>
+<tbody>
+<tr><td><code>FIT_MEET</code></td><td>Scale proportionally so the whole clip fits — letterboxed</td></tr>
+<tr><td><code>FIT_SLICE</code></td><td>Scale proportionally to fill the box — cropped</td></tr>
+<tr><td><code>FIT_FILL</code></td><td>Stretch to fill, ignoring aspect ratio</td></tr>
+<tr><td><code>FIT_SCROLL</code></td><td>Show at natural size with scroll bars</td></tr>
+<tr><td><code>FIT_HIDDEN</code></td><td>Do not display the media</td></tr>
+<tr><td><code>FIT_TIGHTEST</code></td><td>Use the media's own preferred size</td></tr>
+</tbody>
+</table>
+
+<h3 id="renditions">Renditions and screen annotations</h3>
+<p>A <code>MediaRendition</code> ties a clip to its play parameters, and a <code>ScreenAnnotation</code> gives it a place on the page.</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Annotation\ScreenAnnotation</span><span class="t-op">;</span>
+<span class="t-kw">use</span> <span class="t-kw">Papier\Multimedia</span><span class="t-kw">\</span><span class="t-op">{</span><span class="t-type">MediaClip</span><span class="t-op">,</span> <span class="t-type">MediaPlayParams</span><span class="t-op">,</span> <span class="t-type">MediaRendition</span><span class="t-op">}</span><span class="t-op">;</span>
+
+<span class="t-var">$clip</span>   <span class="t-op">=</span> <span class="t-type">MediaClip</span><span class="t-kw">::</span><span class="t-fn">fromFile</span><span class="t-op">(</span><span class="t-string">&#039;intro.mp4&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;video/mp4&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;Intro Video&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$params</span> <span class="t-op">=</span> <span class="t-op">(</span><span class="t-kw">new</span> <span class="t-type">MediaPlayParams</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">)</span>
+    <span class="t-kw">-&gt;</span><span class="t-fn">setVolume</span><span class="t-op">(</span><span class="t-number">90</span><span class="t-op">)</span>
+    <span class="t-kw">-&gt;</span><span class="t-fn">setShowControls</span><span class="t-op">(</span><span class="t-fn">true</span><span class="t-op">)</span>
+    <span class="t-kw">-&gt;</span><span class="t-fn">setAutoPlay</span><span class="t-op">(</span><span class="t-fn">false</span><span class="t-op">)</span>
+    <span class="t-kw">-&gt;</span><span class="t-fn">setFitStyle</span><span class="t-op">(</span><span class="t-type">MediaPlayParams</span><span class="t-kw">::</span><span class="t-type">FIT_MEET</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$rendition</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">MediaRendition</span><span class="t-op">(</span><span class="t-var">$clip</span><span class="t-op">,</span> <span class="t-string">&#039;Intro Video&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$rendition</span><span class="t-kw">-&gt;</span><span class="t-fn">setPlayParams</span><span class="t-op">(</span><span class="t-var">$params</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$screen</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">ScreenAnnotation</span><span class="t-op">(</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">400</span><span class="t-op">,</span> <span class="t-number">292</span><span class="t-op">,</span> <span class="t-number">510</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$screen</span><span class="t-kw">-&gt;</span><span class="t-fn">setTitle</span><span class="t-op">(</span><span class="t-string">&#039;Intro Video&#039;</span><span class="t-op">)</span>
+       <span class="t-kw">-&gt;</span><span class="t-fn">setRendition</span><span class="t-op">(</span><span class="t-var">$rendition</span><span class="t-kw">-&gt;</span><span class="t-fn">getDictionary</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">addAnnotation</span><span class="t-op">(</span><span class="t-var">$screen</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<div class="note">
+<p>Two easy mistakes: <code>MediaRendition</code>'s first argument is a <code>MediaClip</code> object (not a MIME string), and <code>setRendition()</code> expects a PDF object, so pass <code>$rendition-&gt;getDictionary()</code>.</p>
+</div>
+<p>Because the screen annotation itself paints nothing until playback starts, draw a placeholder underneath it:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Elements</span><span class="t-kw">\</span><span class="t-op">{</span><span class="t-type">Color</span><span class="t-op">,</span> <span class="t-type">Rectangle</span><span class="t-op">,</span> <span class="t-type">Text</span><span class="t-op">}</span><span class="t-op">;</span>
+
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">add</span><span class="t-op">(</span>
+    <span class="t-type">Rectangle</span><span class="t-kw">::</span><span class="t-fn">create</span><span class="t-op">(</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">400</span><span class="t-op">,</span> <span class="t-number">220</span><span class="t-op">,</span> <span class="t-number">110</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">fill</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">rgb</span><span class="t-op">(</span><span class="t-number">0.05</span><span class="t-op">,</span> <span class="t-number">0.05</span><span class="t-op">,</span> <span class="t-number">0.05</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">,</span>
+    <span class="t-type">Text</span><span class="t-kw">::</span><span class="t-fn">write</span><span class="t-op">(</span><span class="t-string">&#039;▶  intro.mp4&#039;</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">at</span><span class="t-op">(</span><span class="t-number">100</span><span class="t-op">,</span> <span class="t-number">450</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">font</span><span class="t-op">(</span><span class="t-var">$bold</span><span class="t-op">,</span> <span class="t-number">12</span><span class="t-op">)</span><span class="t-kw">-&gt;</span><span class="t-fn">color</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">white</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">,</span>
+<span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">addAnnotation</span><span class="t-op">(</span><span class="t-var">$screen</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>Background audio uses the same construction with a small, unobtrusive rectangle:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-var">$audioClip</span>   <span class="t-op">=</span> <span class="t-type">MediaClip</span><span class="t-kw">::</span><span class="t-fn">fromFile</span><span class="t-op">(</span><span class="t-string">&#039;background.mp3&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;audio/mpeg&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;Background Music&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$audioParams</span> <span class="t-op">=</span> <span class="t-op">(</span><span class="t-kw">new</span> <span class="t-type">MediaPlayParams</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">)</span>
+    <span class="t-kw">-&gt;</span><span class="t-fn">setVolume</span><span class="t-op">(</span><span class="t-number">60</span><span class="t-op">)</span>
+    <span class="t-kw">-&gt;</span><span class="t-fn">setShowControls</span><span class="t-op">(</span><span class="t-fn">false</span><span class="t-op">)</span>
+    <span class="t-kw">-&gt;</span><span class="t-fn">setAutoPlay</span><span class="t-op">(</span><span class="t-fn">true</span><span class="t-op">)</span>
+    <span class="t-kw">-&gt;</span><span class="t-fn">setRepeatCount</span><span class="t-op">(</span><span class="t-number">0.0</span><span class="t-op">)</span><span class="t-op">;</span>   <span class="t-comment">// loop forever</span>
+
+<span class="t-var">$audioRendition</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">MediaRendition</span><span class="t-op">(</span><span class="t-var">$audioClip</span><span class="t-op">,</span> <span class="t-string">&#039;Background Music&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$audioRendition</span><span class="t-kw">-&gt;</span><span class="t-fn">setPlayParams</span><span class="t-op">(</span><span class="t-var">$audioParams</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$audioScreen</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">ScreenAnnotation</span><span class="t-op">(</span><span class="t-number">320</span><span class="t-op">,</span> <span class="t-number">435</span><span class="t-op">,</span> <span class="t-number">520</span><span class="t-op">,</span> <span class="t-number">475</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$audioScreen</span><span class="t-kw">-&gt;</span><span class="t-fn">setTitle</span><span class="t-op">(</span><span class="t-string">&#039;Background Music&#039;</span><span class="t-op">)</span>
+            <span class="t-kw">-&gt;</span><span class="t-fn">setRendition</span><span class="t-op">(</span><span class="t-var">$audioRendition</span><span class="t-kw">-&gt;</span><span class="t-fn">getDictionary</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">addAnnotation</span><span class="t-op">(</span><span class="t-var">$audioScreen</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+
+<h3 id="legacy-movies">Legacy movie annotations</h3>
+<p><code>MovieAnnotation</code> is the PDF 1.2 mechanism. It is simpler than a rendition but has no MIME typing and less playback control. Use it only for compatibility with older viewers.</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Annotation\MovieAnnotation</span><span class="t-op">;</span>
+<span class="t-kw">use</span> <span class="t-kw">Papier\Multimedia</span><span class="t-kw">\</span><span class="t-op">{</span><span class="t-type">MovieActivation</span><span class="t-op">,</span> <span class="t-type">MovieDictionary</span><span class="t-op">}</span><span class="t-op">;</span>
+
+<span class="t-var">$movie</span> <span class="t-op">=</span> <span class="t-type">MovieDictionary</span><span class="t-kw">::</span><span class="t-fn">fromFile</span><span class="t-op">(</span><span class="t-string">&#039;sample.mp4&#039;</span><span class="t-op">)</span>
+    <span class="t-kw">-&gt;</span><span class="t-fn">setAspect</span><span class="t-op">(</span><span class="t-number">1280</span><span class="t-op">,</span> <span class="t-number">720</span><span class="t-op">)</span>
+    <span class="t-kw">-&gt;</span><span class="t-fn">setPoster</span><span class="t-op">(</span><span class="t-fn">true</span><span class="t-op">)</span><span class="t-op">;</span>        <span class="t-comment">// show the first frame as a still</span>
+
+<span class="t-var">$activation</span> <span class="t-op">=</span> <span class="t-op">(</span><span class="t-kw">new</span> <span class="t-type">MovieActivation</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">)</span>
+    <span class="t-kw">-&gt;</span><span class="t-fn">setVolume</span><span class="t-op">(</span><span class="t-number">1.0</span><span class="t-op">)</span>          <span class="t-comment">// 0.0-1.0 here, unlike MediaPlayParams</span>
+    <span class="t-kw">-&gt;</span><span class="t-fn">setShowControls</span><span class="t-op">(</span><span class="t-fn">true</span><span class="t-op">)</span>
+    <span class="t-kw">-&gt;</span><span class="t-fn">setMode</span><span class="t-op">(</span><span class="t-type">MovieActivation</span><span class="t-kw">::</span><span class="t-type">MODE_ONCE</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$annot</span> <span class="t-op">=</span> <span class="t-kw">new</span> <span class="t-type">MovieAnnotation</span><span class="t-op">(</span><span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">560</span><span class="t-op">,</span> <span class="t-number">272</span><span class="t-op">,</span> <span class="t-number">640</span><span class="t-op">)</span><span class="t-op">;</span>
+<span class="t-var">$annot</span><span class="t-kw">-&gt;</span><span class="t-fn">setTitle</span><span class="t-op">(</span><span class="t-string">&#039;Sample Movie&#039;</span><span class="t-op">)</span>
+      <span class="t-kw">-&gt;</span><span class="t-fn">setMovie</span><span class="t-op">(</span><span class="t-var">$movie</span><span class="t-kw">-&gt;</span><span class="t-fn">getDictionary</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">)</span>
+      <span class="t-kw">-&gt;</span><span class="t-fn">setActivation</span><span class="t-op">(</span><span class="t-var">$activation</span><span class="t-kw">-&gt;</span><span class="t-fn">getDictionary</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">addAnnotation</span><span class="t-op">(</span><span class="t-var">$annot</span><span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>The activation modes are <code>MODE_ONCE</code>, <code>MODE_OPEN</code> (play and leave the window open), <code>MODE_REPEAT</code> and <code>MODE_PALINDROME</code> (play forwards then backwards). <code>setRate()</code> adjusts playback speed and <code>setSynchronous()</code> blocks the viewer until playback finishes.</p>
+
+<h3 id="media-elements">Media elements</h3>
+<p>The high-level elements API wraps the common cases so you do not have to assemble the pieces or call <code>addAnnotation()</code> yourself. <code>SoundElement</code> draws a click-to-play icon and registers the sound annotation:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Elements</span><span class="t-kw">\</span><span class="t-op">{</span><span class="t-type">Color</span><span class="t-op">,</span> <span class="t-type">SoundElement</span><span class="t-op">}</span><span class="t-op">;</span>
+
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">add</span><span class="t-op">(</span>
+    <span class="t-type">SoundElement</span><span class="t-kw">::</span><span class="t-fn">create</span><span class="t-op">(</span><span class="t-var">$sound</span><span class="t-op">,</span> <span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">670</span><span class="t-op">)</span>
+        <span class="t-kw">-&gt;</span><span class="t-fn">size</span><span class="t-op">(</span><span class="t-number">22</span><span class="t-op">)</span>
+        <span class="t-kw">-&gt;</span><span class="t-fn">icon</span><span class="t-op">(</span><span class="t-string">&#039;Speaker&#039;</span><span class="t-op">)</span>
+        <span class="t-kw">-&gt;</span><span class="t-fn">color</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">rgb</span><span class="t-op">(</span><span class="t-number">0.15</span><span class="t-op">,</span> <span class="t-number">0.45</span><span class="t-op">,</span> <span class="t-number">0.8</span><span class="t-op">)</span><span class="t-op">)</span>
+        <span class="t-kw">-&gt;</span><span class="t-fn">contents</span><span class="t-op">(</span><span class="t-string">&#039;440 Hz tone, 0.5 s&#039;</span><span class="t-op">)</span><span class="t-op">,</span>
+<span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p><code>VideoElement</code> draws the placeholder rectangle and attaches the screen annotation and rendition in one step:</p>
+<div class="code-block" data-lang="php"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">use</span> <span class="t-kw">Papier\Elements\VideoElement</span><span class="t-op">;</span>
+<span class="t-kw">use</span> <span class="t-kw">Papier\Multimedia</span><span class="t-kw">\</span><span class="t-op">{</span><span class="t-type">MediaClip</span><span class="t-op">,</span> <span class="t-type">MediaPlayParams</span><span class="t-op">}</span><span class="t-op">;</span>
+
+<span class="t-var">$clip</span> <span class="t-op">=</span> <span class="t-type">MediaClip</span><span class="t-kw">::</span><span class="t-fn">fromFile</span><span class="t-op">(</span><span class="t-string">&#039;demo.mp4&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;video/mp4&#039;</span><span class="t-op">,</span> <span class="t-string">&#039;Demo Video&#039;</span><span class="t-op">)</span><span class="t-op">;</span>
+
+<span class="t-var">$page</span><span class="t-kw">-&gt;</span><span class="t-fn">add</span><span class="t-op">(</span>
+    <span class="t-type">VideoElement</span><span class="t-kw">::</span><span class="t-fn">create</span><span class="t-op">(</span><span class="t-var">$clip</span><span class="t-op">,</span> <span class="t-number">72</span><span class="t-op">,</span> <span class="t-number">490</span><span class="t-op">,</span> <span class="t-number">220</span><span class="t-op">,</span> <span class="t-number">138</span><span class="t-op">)</span>
+        <span class="t-kw">-&gt;</span><span class="t-fn">bgColor</span><span class="t-op">(</span><span class="t-type">Color</span><span class="t-kw">::</span><span class="t-fn">rgb</span><span class="t-op">(</span><span class="t-number">0.05</span><span class="t-op">,</span> <span class="t-number">0.05</span><span class="t-op">,</span> <span class="t-number">0.05</span><span class="t-op">)</span><span class="t-op">)</span>
+        <span class="t-kw">-&gt;</span><span class="t-fn">label</span><span class="t-op">(</span><span class="t-string">&#039;▶  demo.mp4&#039;</span><span class="t-op">,</span> <span class="t-var">$bold</span><span class="t-op">,</span> <span class="t-number">11</span><span class="t-op">)</span>
+        <span class="t-kw">-&gt;</span><span class="t-fn">title</span><span class="t-op">(</span><span class="t-string">&#039;Demo Video&#039;</span><span class="t-op">)</span>
+        <span class="t-kw">-&gt;</span><span class="t-fn">playParams</span><span class="t-op">(</span>
+            <span class="t-op">(</span><span class="t-kw">new</span> <span class="t-type">MediaPlayParams</span><span class="t-op">(</span><span class="t-op">)</span><span class="t-op">)</span>
+                <span class="t-kw">-&gt;</span><span class="t-fn">setVolume</span><span class="t-op">(</span><span class="t-number">90</span><span class="t-op">)</span>
+                <span class="t-kw">-&gt;</span><span class="t-fn">setShowControls</span><span class="t-op">(</span><span class="t-fn">true</span><span class="t-op">)</span>
+                <span class="t-kw">-&gt;</span><span class="t-fn">setAutoPlay</span><span class="t-op">(</span><span class="t-fn">false</span><span class="t-op">)</span>
+                <span class="t-kw">-&gt;</span><span class="t-fn">setFitStyle</span><span class="t-op">(</span><span class="t-type">MediaPlayParams</span><span class="t-kw">::</span><span class="t-type">FIT_MEET</span><span class="t-op">)</span>
+        <span class="t-op">)</span><span class="t-op">,</span>
+<span class="t-op">)</span><span class="t-op">;</span></code></pre></div>
+<p>This is the recommended path for slide decks and brochures. Drop down to the raw annotation API only when you need control the elements do not expose.</p>
+
+<h2 id="examples">Examples</h2>
+<ul>
+<li><code>examples/10_optional_content_layers.php</code> — three togglable layers built with marked-content operators.</li>
+<li><code>examples/12_multimedia.php</code> — sound, movie and screen annotations side by side, with generated audio.</li>
+<li><code>examples/13_transitions_and_media_elements.php</code> — <code>SoundElement</code> and <code>VideoElement</code> in a presentation with page transitions.</li>
+</ul>
+<div class="code-block" data-lang="bash"><button class="copy" type="button" aria-label="Copy code">Copy</button><pre><code><span class="t-kw">php</span> examples/10_optional_content_layers.php
+<span class="t-kw">php</span> examples/12_multimedia.php</code></pre></div>
+
+<nav class="pager"><a class="prev" href="navigation.html"><span>Previous</span>Bookmarks &amp; navigation</a><a class="next" href="security.html"><span>Next</span>Encryption &amp; signatures</a></nav>
+</article>
+  </main>
+
+  <aside class="toc"><h4>On this page</h4><ul><li class="lvl-2"><a href="#optional-content">Optional content (layers)</a></li><li class="lvl-3"><a href="#defining-groups">Defining groups</a></li><li class="lvl-3"><a href="#binding-content-to-a-layer">Binding content to a layer</a></li><li class="lvl-3"><a href="#the-ocproperties-entry">The OCProperties entry</a></li><li class="lvl-3"><a href="#membership-dictionaries">Membership dictionaries</a></li><li class="lvl-3"><a href="#toggling-layers-from-an-action">Toggling layers from an action</a></li><li class="lvl-2"><a href="#multimedia">Multimedia</a></li><li class="lvl-3"><a href="#embedded-sound">Embedded sound</a></li><li class="lvl-3"><a href="#media-clips">Media clips and file references</a></li><li class="lvl-3"><a href="#play-parameters">Play parameters</a></li><li class="lvl-3"><a href="#renditions">Renditions and screen annotations</a></li><li class="lvl-3"><a href="#legacy-movies">Legacy movie annotations</a></li><li class="lvl-3"><a href="#media-elements">Media elements</a></li><li class="lvl-2"><a href="#examples">Examples</a></li></ul></aside>
+</div>
+
+<footer class="footer">
+  <p>Papier — PHP PDF library implementing ISO 32000-1:2008. Released under the MIT licence.</p>
+</footer>
+
+<script src="assets/docs.js"></script>
+</body>
+</html>
