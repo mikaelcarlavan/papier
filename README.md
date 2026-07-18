@@ -61,16 +61,27 @@ Papier was built with the assistance of [Claude](https://claude.ai) (Anthropic's
 
 ## Documentation
 
-Full guides live in [`docs/`](docs/) as a static site — installation, a quick
-start, and a chapter for each subsystem. Preview it locally with:
+**https://mikaelcarlavan.github.io/papier/**
+
+Installation, a quick start, and a chapter for each subsystem — documents and
+pages, text and fonts, graphics, images, tables, forms, annotations, navigation,
+layers and multimedia, encryption and signatures, tagged PDF and PDF/A, file
+structure, and reading.
+
+| | |
+|---|---|
+| [Installation](https://mikaelcarlavan.github.io/papier/installation.html) | Composer setup and extension checks |
+| [Quick start](https://mikaelcarlavan.github.io/papier/quickstart.html) | Build a complete document in a few minutes |
+| [Examples](https://mikaelcarlavan.github.io/papier/examples.html) | All 34 runnable scripts, by theme |
+
+The site is served from [`docs/`](docs/) and generated from the fragments in
+`docs/_content/` by `php tools/build-docs.php`. To preview it locally:
 
 ```bash
 php -S 127.0.0.1:8000 -t docs
 ```
 
-The pages are generated from the fragments in `docs/_content/` by
-`php tools/build-docs.php`. See [`docs/README.md`](docs/README.md) for the
-editing workflow.
+See [`docs/README.md`](docs/README.md) for the editing workflow.
 
 ## Requirements
 
