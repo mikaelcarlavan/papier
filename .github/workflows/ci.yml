@@ -13,7 +13,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['8.1', '8.2', '8.3', '8.4']
+        # PHPUnit 11 requires PHP 8.2. The library itself supports 8.1, which
+        # the compatibility job below covers.
+        php: ['8.2', '8.3', '8.4']
 
     steps:
       - uses: actions/checkout@v4
@@ -41,8 +43,8 @@ jobs:
       - name: Run PHPUnit
         run: vendor/bin/phpunit --colors=always
 
-  static-analysis:
-    name: Static analysis
+  compatibility:
+    name: PHP 8.1 compatibility
     runs-on: ubuntu-latest
 
     steps:
@@ -55,16 +57,44 @@ jobs:
           extensions: zlib, mbstring, openssl, gd
           coverage: none
 
+      # composer.json declares php >=8.1, but the dev toolchain cannot be
+      # installed there. Production dependencies only, then check that the
+      # source parses and that a document round-trips — so the lowest
+      # supported version is backed by something that runs.
+      - name: Install production dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist --no-dev
+
+      - name: Lint every source file
+        run: find src tools -name '*.php' -print0 | xargs -0 -n1 -P4 php -l > /dev/null
+
+      - name: Smoke test
+        run: php tools/smoke.php
+
+  static-analysis:
+    name: Static analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: zlib, mbstring, openssl, gd
+          coverage: none
+
       - name: Cache Composer packages
         uses: actions/cache@v4
         with:
           path: ~/.composer/cache
-          key: composer-8.1-${{ hashFiles('composer.json') }}
-          restore-keys: composer-8.1-
+          key: composer-8.3-${{ hashFiles('composer.json') }}
+          restore-keys: composer-8.3-
 
       - name: Install dependencies
         run: composer install --no-interaction --no-progress --prefer-dist
 
-      # PHPStan exhausts the default 128M limit on this codebase.
+      # PHPStan exhausts the default 128M limit on this codebase. The analysis
+      # targets 8.1, the lowest version composer.json supports.
       - name: Run PHPStan
         run: vendor/bin/phpstan analyse --no-progress --memory-limit=1G

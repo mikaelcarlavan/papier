@@ -1,4 +1,7 @@
 parameters:
     level: 5
+    # The lowest version composer.json supports. Analysing against it catches
+    # accidental use of 8.2+ features, which would break that claim.
+    phpVersion: 80100
     paths:
         - src

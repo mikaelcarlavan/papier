@@ -43,9 +43,11 @@
         "analyse": "phpstan analyse --no-progress --memory-limit=1G",
         "docs": "php tools/build-docs.php",
         "docs:check": "php tools/check-docs.php",
+        "smoke": "php tools/smoke.php",
         "ci": [
             "@test",
             "@analyse",
+            "@smoke",
             "@docs:check"
         ]
     },
@@ -54,6 +56,7 @@
         "analyse": "Run PHPStan static analysis",
         "docs": "Regenerate the documentation site from docs/_content/",
         "docs:check": "Validate documentation snippets, links and anchors",
+        "smoke": "Build and re-read a document end to end, without dev dependencies",
         "ci": "Run everything CI runs"
     }
 }
