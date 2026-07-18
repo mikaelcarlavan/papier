@@ -4,5 +4,6 @@ composer.lock
 *.pdf
 .idea
 .claude
+.phpunit.cache
 /public
 /doc
