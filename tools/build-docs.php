@@ -280,7 +280,7 @@ function render_page(string $slug, array $meta): string
       </div>
       <div class="topbar-links">
         <a href="https://packagist.org/packages/papier/papier">Packagist</a>
-        <a href="https://github.com/papier/papier">GitHub</a>
+        <a href="https://github.com/mikaelcarlavan/papier">GitHub</a>
         <button class="theme-toggle" type="button" aria-label="Toggle dark mode">
           <svg class="sun" viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.5 1.5M17.6 17.6l1.5 1.5M19.1 4.9l-1.5 1.5M6.4 17.6l-1.5 1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
           <svg class="moon" viewBox="0 0 24 24" width="18" height="18"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
